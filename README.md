@@ -5,7 +5,8 @@ World of Warcraft (WoW) 3.3.5a character data.
 
 ## Status
 
-**Experimental.** Owned by Gihed Annabi. The solution builds and the initial domain model has tests, but the
+**Experimental.** Owned by Gihed Annabi ([project issues](https://github.com/AnnabiGihed/RaidManager/issues)).
+The solution builds and the initial domain model has tests, but the
 website, Discord bot, addon synchronization, and raid workflows are not yet usable product features.
 
 ## Build locally
@@ -44,11 +45,13 @@ All workflows in that scope document belong to version 1, not a later feature ph
 ## Documentation
 
 - [Documentation index](./docs/index.md)
+- [Published documentation](https://annabigihed.github.io/RaidManager/)
 - [Product scope and workflows](./docs/explanation/product.md)
 - [Version 1 visual guide](./docs/explanation/visual-guide.md)
 - [Architecture and implementation status](./docs/explanation/architecture.md)
 - [Architecture decisions](./docs/adr/README.md)
 - [Contributing](./CONTRIBUTING.md)
+- [Security reporting](./SECURITY.md)
 - [Changelog](./CHANGELOG.md)
 
 ## License

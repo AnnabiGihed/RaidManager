@@ -1,0 +1,45 @@
+"""Check the required pull-request description structure."""
+
+from __future__ import annotations
+
+import os
+import re
+
+
+REQUIRED_SECTIONS = (
+    "What changed",
+    "Why it changed",
+    "How it was tested",
+    "What to review carefully",
+    "Migration or deployment notes",
+)
+
+
+def validate(body: str) -> list[str]:
+    errors: list[str] = []
+    headings = [line[3:].strip() for line in body.splitlines() if line.startswith("## ")]
+    if headings[: len(REQUIRED_SECTIONS)] != list(REQUIRED_SECTIONS):
+        errors.append("PR description must contain the five required sections in order")
+    if not re.search(r"\bCloses #\d+\b", body, re.IGNORECASE):
+        errors.append("PR description must close its task issue with Closes #number")
+    if "### Author self-review" not in body or "- [" not in body:
+        errors.append("PR description must include the author self-review checklist")
+    for placeholder in ("Describe the user or maintainer-visible outcome.", "List automated checks, negative cases"):
+        if placeholder in body:
+            errors.append("PR description still contains an unfilled template instruction")
+            break
+    return errors
+
+
+def main() -> int:
+    errors = validate(os.environ.get("PR_BODY", ""))
+    for error in errors:
+        print(f"ERROR: {error}")
+    if errors:
+        return 1
+    print("Pull-request description passed")
+    return 0
+
+
+if __name__ == "__main__":
+    raise SystemExit(main())
