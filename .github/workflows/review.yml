@@ -1,13 +1,16 @@
 name: review
 
 # Pull-request events use pull_request_target and check completions use workflow_run, so main's copy of this workflow
-# runs for both and a pull request cannot change them. Reviews re-evaluate the gate. No step runs pull-request code.
+# runs for both and a pull request cannot change them. Reviews and review comments re-evaluate the gate. No step runs
+# pull-request code, and no personal token is used: reviews, comments and the diff are read with the workflow token.
 on:
   pull_request_target:
     branches: [main]
     types: [opened, synchronize, reopened, ready_for_review]
   pull_request_review:
     types: [submitted, edited, dismissed]
+  pull_request_review_comment:
+    types: [created, edited, deleted]
   workflow_run:
     workflows: [ci, docs]
     types: [completed]
@@ -16,7 +19,7 @@ permissions: {}
 
 jobs:
   # One job per event: hand new commits back to the operator, act on the operator's sign-off, set the required
-  # review-files-viewed status, and merge once everything passes. Waiting for a review is a pending status; the job
+  # review-gate status, and merge once everything passes. Waiting for a review is a pending status; the job
   # fails only on an unexpected error.
   review:
     if: >-
@@ -32,13 +35,12 @@ jobs:
     permissions:
       actions: write
       contents: write
+      issues: write
       pull-requests: write
       statuses: write
     env:
-      # People who review pull requests. Each needs a REVIEW_TOKEN_<LOGIN> secret: their own read-only token.
+      # People who review pull requests; the operator's sign-off requests the others.
       REVIEWERS: AnnabiGihed anthermook
-      REVIEW_TOKEN_ANNABIGIHED: ${{ secrets.REVIEW_TOKEN_ANNABIGIHED }}
-      REVIEW_TOKEN_ANTHERMOOK: ${{ secrets.REVIEW_TOKEN_ANTHERMOOK || secrets.REVIEW_GATE_TOKEN }}
       GH_TOKEN: ${{ github.token }}
       PR_NUMBER: ${{ github.event.pull_request.number || github.event.workflow_run.pull_requests[0].number }}
       AUTHOR: ${{ github.event.pull_request.user.login }}
@@ -59,18 +61,18 @@ jobs:
         run: |
           gh pr ready "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --undo
           gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body \
-            "Returned to draft: @$AUTHOR reviews the new commits, marks every file as viewed, then marks it ready."
+            "Returned to draft: @$AUTHOR reviews the new commits in a review comment, then marks it ready."
 
-      # Marking the draft ready is the operator's sign-off. Backed by viewing every file, it asks the peer to review.
+      # Marking the draft ready is the operator's sign-off. Backed by their review comment, it asks the peer to review.
       - name: Act on the operator's sign-off
         if: github.event.action == 'ready_for_review' && github.run_attempt == 1
         run: |
           status=0
-          python scripts/verify_review_viewed.py operator > result.txt 2>&1 || status=$?
+          python scripts/verify_review.py operator > result.txt 2>&1 || status=$?
           cat result.txt
           if [ "$status" -ne 0 ]; then
             gh pr ready "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --undo
-            { echo "Returned to draft: @$AUTHOR must mark every changed file as viewed before marking it ready."
+            { echo "Returned to draft: @$AUTHOR must post a meaningful review comment before marking it ready."
               echo; echo '```'; cat result.txt; echo '```'; } > comment.md
             gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file comment.md
             exit 0
@@ -87,7 +89,7 @@ jobs:
         run: |
           head_sha=$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json headRefOid --jq .headRefOid)
           code=0
-          python scripts/verify_review_viewed.py gate > result.txt 2>&1 || code=$?
+          python scripts/verify_review.py gate > result.txt 2>&1 || code=$?
           cat result.txt
           case "$code" in
             0) state=success ;;
@@ -97,25 +99,31 @@ jobs:
           description=$(head -n 1 result.txt | sed -E 's/^[A-Z]+: //' | cut -c 1-140)
           gh api -X POST "repos/$GITHUB_REPOSITORY/statuses/$head_sha" \
             -f state="$state" \
-            -f context=review-files-viewed \
+            -f context=review-gate \
             -f description="${description:-Review gate $state}" \
             -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > /dev/null
-          echo "review-files-viewed: $state"
+          echo "review-gate: $state"
           echo "state=$state" >> "$GITHUB_OUTPUT"
           echo "head_sha=$head_sha" >> "$GITHUB_OUTPUT"
 
       # Branch protection still decides: GitHub refuses the merge unless every required review and check passes.
-      # A merge made with the workflow token starts no push workflows, so the main workflows are started explicitly.
+      # A merge made with the workflow token triggers no push workflows, no closing keywords and no branch deletion,
+      # so the job does all three itself.
       - name: Merge once everything passes
         if: steps.gate.outputs.state == 'success'
         env:
           HEAD_SHA: ${{ steps.gate.outputs.head_sha }}
         run: |
+          closes=$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json closingIssuesReferences \
+            --jq '.closingIssuesReferences[].number')
           # GitHub needs a moment to take the new status into account, so the merge is retried for a minute.
           for attempt in $(seq 1 12); do
-            if gh pr merge "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --squash --match-head-commit "$HEAD_SHA" \
-              > merge.txt 2>&1; then
+            if gh pr merge "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --squash --delete-branch \
+              --match-head-commit "$HEAD_SHA" > merge.txt 2>&1; then
               cat merge.txt
+              for issue in $closes; do
+                gh issue close "$issue" --repo "$GITHUB_REPOSITORY" --reason completed --comment "Completed by #$PR_NUMBER."
+              done
               for workflow in ci.yml docs.yml docs-publish.yml; do
                 gh workflow run "$workflow" --repo "$GITHUB_REPOSITORY" --ref main
               done

@@ -1,6 +1,7 @@
 # ADR-0008: Merge approved pull requests with the workflow token
 
-- Status: Proposed
+- Status: Proposed; [ADR-0009](0009-prove-reviews-with-meaningful-comments.md) renames the status to `review-gate`
+  and adds closing linked issues and deleting the branch after merging
 - Date: 2026-09-29
 - Deciders: Gihed Annabi
 - Supersedes: [ADR-0007](0007-queue-auto-merge-when-ready.md)
