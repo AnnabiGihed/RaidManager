@@ -29,7 +29,9 @@ A review is proven by meaningful review comments, and the Viewed marks and every
   - contains only generic praise such as LGTM, looks good, ok, approved, +1, or an emoji;
   - contains random text: a keyboard mash, or many words without a pronounceable shape;
   - is a review summary that names neither a changed file nor an identifier from the diff. An inline comment is
-    already anchored to a changed file.
+    already anchored to a changed file;
+  - repeats another person's review comment on the same pull request: at least 80% of its word sequence matches,
+    so light edits do not hide a copy. Repeating your own earlier comment, such as when approving again, is allowed.
 - A failing comment turns the required `review-gate` status red and names the comment and the fix. Editing the
   comment re-evaluates the gate, so no new review is needed.
 - The gate reads reviews, comments, the diff, and the Ready for review event with the workflow token. The
@@ -46,7 +48,7 @@ A review is proven by meaningful review comments, and the Viewed marks and every
 
 - No personal token remains in the review or merge process.
 - A review leaves a written record of what was checked, which a Viewed mark never did.
-- Random or generic comments cannot count as a review.
+- Random, generic, or copied comments cannot count as a review.
 
 **Negative**
 

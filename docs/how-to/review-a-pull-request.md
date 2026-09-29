@@ -36,6 +36,7 @@ A review comment, whether a review summary or an inline comment, must be meaning
 - It is not only generic praise such as LGTM, looks good, ok, approved, +1, or an emoji.
 - It contains no random text, such as a keyboard mash.
 - A summary names a changed file or an identifier from the diff. An inline comment is already attached to a file.
+- It does not copy another person's review comment, even with small edits. Write what you checked yourself.
 
 | Comment | Result |
 | --- | --- |
@@ -44,6 +45,7 @@ A review comment, whether a review summary or an inline comment, must be meaning
 | LGTM | Fails: only generic praise |
 | Implementation looks correct, awaiting test results | Fails: 6 words, and it names nothing from the change |
 | Reviewed everything carefully and it all seems correct to me, no issues were found at all. | Fails: it names nothing from the change |
+| The operator's review comment, pasted as the approval comment | Fails: it repeats another person's comment |
 
 Quoted text, which starts with `>`, and links do not count as your own words.
 
