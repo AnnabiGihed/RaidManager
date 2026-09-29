@@ -28,8 +28,11 @@ file as viewed.
   so it cannot be limited to this repository alone. If this repository becomes private, only a classic token with
   the broad `repo` scope can read it, and that trade-off needs a new decision.
 - Runs of the check never cancel each other, so a superseded run does not appear as a failure.
-- The check runs on pull-request updates and on review submission, edit, or dismissal. Viewing a file raises no
-  event, so the reviewer submits the approval after viewing every file, or re-submits it to re-run the check.
+- Only pull-request events (opened, synchronize, reopened) produce the required check. Each workflow run is its own
+  check suite, and a passing run from a review event would not replace the failed pull-request run. A review
+  submission, edit, or dismissal therefore runs a separate `review-refresh` job that re-runs the pull-request runs
+  for the head commit. Viewing a file raises no event, so the reviewer submits the approval after viewing every file,
+  or re-submits it to re-evaluate the check.
 - The workflow always runs the gate script from `main`, so a pull request cannot change the code that reads the
   reviewer token.
 - Branch protection dismisses stale approvals on a new push, requires approval of the most recent push by someone

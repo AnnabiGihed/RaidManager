@@ -3,7 +3,7 @@ name: review
 on:
   pull_request:
     branches: [main]
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [opened, synchronize, reopened]
   pull_request_review:
     types: [submitted, edited, dismissed]
 
@@ -11,8 +11,9 @@ permissions:
   contents: read
 
 jobs:
+  # The required check. Only pull-request events produce it, so one check suite per head commit holds its result.
   review-files-viewed:
-    if: github.event.pull_request.base.ref == 'main'
+    if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
     steps:
       # The gate reads the reviewer's token, so it always runs the script from main, never from the pull request.
@@ -28,3 +29,33 @@ jobs:
           REVIEW_GATE_TOKEN: ${{ secrets.REVIEW_GATE_TOKEN }}
           PR_NUMBER: ${{ github.event.pull_request.number }}
         run: python scripts/verify_review_viewed.py
+
+  # A review result in its own check suite would not replace the failed required check, so a review re-runs it instead.
+  review-refresh:
+    if: github.event_name == 'pull_request_review' && github.event.pull_request.base.ref == 'main'
+    runs-on: ubuntu-latest
+    permissions:
+      actions: write
+      contents: read
+    steps:
+      - name: Re-run the required check for the head commit
+        env:
+          GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: |
+          runs="repos/$GITHUB_REPOSITORY/actions/workflows/review.yml/runs?event=pull_request&head_sha=$HEAD_SHA"
+          for attempt in $(seq 1 30); do
+            pending=$(gh api "$runs" --jq '[.workflow_runs[] | select(.status != "completed")] | length')
+            [ "$pending" = "0" ] && break
+            echo "Waiting for $pending running check(s) to finish"
+            sleep 10
+          done
+          ids=$(gh api "$runs" --jq '.workflow_runs[] | select(.status == "completed") | .id')
+          if [ -z "$ids" ]; then
+            echo "::error::No completed review-files-viewed run exists for $HEAD_SHA"
+            exit 1
+          fi
+          for id in $ids; do
+            echo "Re-running review-files-viewed run $id"
+            gh api -X POST "repos/$GITHUB_REPOSITORY/actions/runs/$id/rerun"
+          done
