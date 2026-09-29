@@ -99,28 +99,39 @@ jobs:
   review-refresh:
     if: github.event_name == 'pull_request_review' && github.event.pull_request.base.ref == 'main'
     runs-on: ubuntu-latest
+    timeout-minutes: 15
     permissions:
       actions: write
       contents: read
     steps:
+      # A run already in progress may have read the reviews before this one, so every run is re-run after it ends.
       - name: Re-run the required check for the head commit
         env:
           GH_TOKEN: ${{ github.token }}
           HEAD_SHA: ${{ github.event.pull_request.head.sha }}
         run: |
           runs="repos/$GITHUB_REPOSITORY/actions/workflows/review.yml/runs?event=pull_request&head_sha=$HEAD_SHA"
-          for attempt in $(seq 1 30); do
-            pending=$(gh api "$runs" --jq '[.workflow_runs[] | select(.status != "completed")] | length')
-            [ "$pending" = "0" ] && break
-            echo "Waiting for $pending running check(s) to finish"
-            sleep 10
-          done
-          ids=$(gh api "$runs" --jq '.workflow_runs[] | select(.status == "completed") | .id')
+          ids=$(gh api "$runs" --jq '.workflow_runs[].id')
           if [ -z "$ids" ]; then
-            echo "::error::No completed review-files-viewed run exists for $HEAD_SHA"
+            echo "::error::No review-files-viewed run exists for $HEAD_SHA"
             exit 1
           fi
           for id in $ids; do
-            echo "Re-running review-files-viewed run $id"
-            gh api -X POST "repos/$GITHUB_REPOSITORY/actions/runs/$id/rerun"
+            for attempt in $(seq 1 30); do
+              if [ "$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$id" --jq .status)" = "completed" ]; then
+                if output=$(gh api -X POST "repos/$GITHUB_REPOSITORY/actions/runs/$id/rerun" 2>&1); then
+                  echo "Re-running review-files-viewed run $id"
+                  continue 2
+                fi
+                # Another review's refresh re-ran it first; wait for that run, then re-run it after this review.
+                if ! grep -q "already running" <<< "$output"; then
+                  echo "$output"
+                  exit 1
+                fi
+              fi
+              echo "Run $id is running; waiting to re-run it after this review"
+              sleep 10
+            done
+            echo "::error::Run $id did not finish within five minutes, so it could not be re-run after this review"
+            exit 1
           done

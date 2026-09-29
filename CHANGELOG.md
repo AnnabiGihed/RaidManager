@@ -41,3 +41,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - The review workflow no longer carries code for the retired single-reviewer gate (#69).
 - Pull requests now use protected automatic squash merging and delete their source branches after merge (#46).
 - Documentation contributions now pass root-file, style, link, diagram, and rendered-site checks before merging (#44).
+
+### Fixed
+
+- Two reviews in quick succession no longer leave the required review check stale: the refresh waits for a
+  running check and re-runs it after the latest review (#71).
