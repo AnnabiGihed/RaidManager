@@ -13,6 +13,7 @@ nav:
       - Raid sequences: explanation/sequence-raids.md
       - States and readiness: explanation/state-models.md
   - Diagram maintenance: how-to/diagrams.md
+  - Review a pull request: how-to/review-a-pull-request.md
   - Glossary: glossary.md
   - API contracts: reference/api-contracts.md
   - Warmane lockout evidence: reference/warmane-lockout-rules.md
