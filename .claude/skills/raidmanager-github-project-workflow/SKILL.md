@@ -60,12 +60,12 @@ tests, documentation, and skill edits for a story may not.
    passed.
 6. Mark the PR ready only when required CI is green on its latest commit and review comments are resolved. Queue
    every ready PR with `gh pr merge --auto --squash`; never use `--admin`, self-merge, or force-push. GitHub must
-   wait for the independent approval, required checks, and resolved conversations. The repository deletes the
-   source branch after merge. If auto-merge cannot be queued, leave the PR open and report the reason; never merge
-   manually to bypass a gate. After merge, verify the source branch was deleted and the task is closed and `Done`;
-   mark a story `Done`
-   only when every acceptance criterion is evidenced and all required child work is merged. Mark an epic `Done`
-   only when all child stories satisfy their exit criteria.
+   wait for the independent approval, required checks (including `review-files-viewed`, which needs the reviewer to
+   mark every changed file as Viewed before approving the head commit), and resolved conversations. The repository
+   deletes the source branch after merge. If auto-merge cannot be queued, leave the PR open and report the reason;
+   never merge manually to bypass a gate. After merge, verify the source branch was deleted and the task is closed
+   and `Done`; mark a story `Done` only when every acceptance criterion is evidenced and all required child work is
+   merged. Mark an epic `Done` only when all child stories satisfy their exit criteria.
 
 The `v1.0` milestone tracks release scope; it does not itself authorize a release. Release or tagging requires
 all included stories accepted, release checks completed, and explicit owner approval.

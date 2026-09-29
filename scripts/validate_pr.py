@@ -15,6 +15,16 @@ REQUIRED_SECTIONS = (
 )
 
 
+# Only this item may stay unchecked when the pull request opens: CI and approval happen afterwards.
+DEFERRED_ITEM = "Required CI checks pass"
+
+
+def unchecked_self_review_items(body: str) -> list[str]:
+    section = body.split("### Author self-review", 1)[1] if "### Author self-review" in body else ""
+    items = [line.strip()[len("- [ ]"):].strip() for line in section.splitlines() if line.strip().startswith("- [ ]")]
+    return [item for item in items if not item.startswith(DEFERRED_ITEM)]
+
+
 def validate(body: str) -> list[str]:
     errors: list[str] = []
     headings = [line[3:].strip() for line in body.splitlines() if line.startswith("## ")]
@@ -24,6 +34,8 @@ def validate(body: str) -> list[str]:
         errors.append("PR description must close its task issue with Closes #number")
     if "### Author self-review" not in body or "- [" not in body:
         errors.append("PR description must include the author self-review checklist")
+    for item in unchecked_self_review_items(body):
+        errors.append(f"Author self-review item is not checked: {item}")
     for placeholder in ("Describe the user or maintainer-visible outcome.", "List automated checks, negative cases"):
         if placeholder in body:
             errors.append("PR description still contains an unfilled template instruction")

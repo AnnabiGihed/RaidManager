@@ -40,6 +40,17 @@ class PullRequestValidationTests(unittest.TestCase):
     def test_missing_section_fails(self) -> None:
         self.assertTrue(any("five required sections" in error for error in validate(VALID_BODY.replace("## How it was tested", "## Tests"))))
 
+    def test_unchecked_self_review_item_fails(self) -> None:
+        body = VALID_BODY + "- [ ] I confirmed that no credentials or personal information are committed.\n"
+        self.assertEqual(
+            ["Author self-review item is not checked: I confirmed that no credentials or personal information are committed."],
+            validate(body),
+        )
+
+    def test_ci_and_approval_item_may_stay_unchecked(self) -> None:
+        body = VALID_BODY + "- [ ] Required CI checks pass on the latest commit, and an independent reviewer approved the PR.\n"
+        self.assertEqual([], validate(body))
+
     def test_unfilled_template_fails(self) -> None:
         self.assertTrue(any("unfilled template" in error for error in validate(VALID_BODY + "\nDescribe the user or maintainer-visible outcome.")))
 

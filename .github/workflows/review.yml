@@ -1,0 +1,40 @@
+name: review
+
+on:
+  pull_request:
+    branches: [main]
+    types: [opened, synchronize, reopened, ready_for_review]
+  pull_request_review:
+    types: [submitted, edited, dismissed]
+
+permissions:
+  contents: read
+
+concurrency:
+  group: review-${{ github.event.pull_request.number }}
+  cancel-in-progress: true
+
+jobs:
+  review-files-viewed:
+    if: github.event.pull_request.base.ref == 'main'
+    runs-on: ubuntu-latest
+    steps:
+      # The gate reads the reviewer's token, so it always runs the script from main, never from the pull request.
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Every changed file viewed before approval
+        env:
+          REVIEW_GATE_TOKEN: ${{ secrets.REVIEW_GATE_TOKEN }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        # Only the pull request that introduces the gate runs before main has the script; every later one is enforced.
+        run: |
+          if [ ! -f scripts/verify_review_viewed.py ]; then
+            echo "::notice::The review gate is not on main yet; it is enforced once this workflow is merged."
+            exit 0
+          fi
+          python scripts/verify_review_viewed.py
