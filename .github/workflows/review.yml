@@ -1,29 +1,37 @@
 name: review
 
-# Pull-request events use pull_request_target, so main's copy of this workflow always runs and a pull request cannot
-# change the gate that checks it. Reviews re-evaluate the gate. No step checks out or runs pull-request code.
+# Pull-request events use pull_request_target and check completions use workflow_run, so main's copy of this workflow
+# runs for both and a pull request cannot change them. Reviews re-evaluate the gate. No step runs pull-request code.
 on:
   pull_request_target:
     branches: [main]
     types: [opened, synchronize, reopened, ready_for_review]
   pull_request_review:
     types: [submitted, edited, dismissed]
+  workflow_run:
+    workflows: [ci, docs]
+    types: [completed]
 
 permissions: {}
 
 jobs:
-  # One job per event: hand new commits back to the operator, act on the operator's sign-off, then set the required
-  # review-files-viewed status. Waiting for a review is a pending status; the job fails only on an unexpected error.
+  # One job per event: hand new commits back to the operator, act on the operator's sign-off, set the required
+  # review-files-viewed status, and merge once everything passes. Waiting for a review is a pending status; the job
+  # fails only on an unexpected error.
   review:
     if: >-
-      github.event.pull_request.base.ref == 'main' &&
-      github.event.pull_request.head.repo.full_name == github.repository
+      (github.event_name != 'workflow_run' &&
+        github.event.pull_request.base.ref == 'main' &&
+        github.event.pull_request.head.repo.full_name == github.repository) ||
+      (github.event_name == 'workflow_run' && github.event.workflow_run.event == 'pull_request' &&
+        github.event.workflow_run.pull_requests[0] != null)
     runs-on: ubuntu-latest
     # One evaluation per pull request at a time, so the last status posted reflects the latest event.
     concurrency:
-      group: review-${{ github.event.pull_request.number }}
+      group: review-${{ github.event.pull_request.number || github.event.workflow_run.pull_requests[0].number }}
     permissions:
-      contents: read
+      actions: write
+      contents: write
       pull-requests: write
       statuses: write
     env:
@@ -32,9 +40,8 @@ jobs:
       REVIEW_TOKEN_ANNABIGIHED: ${{ secrets.REVIEW_TOKEN_ANNABIGIHED }}
       REVIEW_TOKEN_ANTHERMOOK: ${{ secrets.REVIEW_TOKEN_ANTHERMOOK || secrets.REVIEW_GATE_TOKEN }}
       GH_TOKEN: ${{ github.token }}
-      PR_NUMBER: ${{ github.event.pull_request.number }}
+      PR_NUMBER: ${{ github.event.pull_request.number || github.event.workflow_run.pull_requests[0].number }}
       AUTHOR: ${{ github.event.pull_request.user.login }}
-      HEAD_SHA: ${{ github.event.pull_request.head.sha }}
     steps:
       - uses: actions/checkout@v4
         with:
@@ -54,12 +61,9 @@ jobs:
           gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body \
             "Returned to draft: @$AUTHOR reviews the new commits, marks every file as viewed, then marks it ready."
 
-      # Marking the draft ready is the operator's sign-off. Backed by viewing every file, it asks the peer to review
-      # and queues the squash auto-merge with the owner's token, so the main push still publishes the documentation.
+      # Marking the draft ready is the operator's sign-off. Backed by viewing every file, it asks the peer to review.
       - name: Act on the operator's sign-off
         if: github.event.action == 'ready_for_review' && github.run_attempt == 1
-        env:
-          AUTO_MERGE_TOKEN: ${{ secrets.AUTO_MERGE_TOKEN }}
         run: |
           status=0
           python scripts/verify_review_viewed.py operator > result.txt 2>&1 || status=$?
@@ -76,11 +80,12 @@ jobs:
               gh pr edit "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --add-reviewer "$reviewer"
             fi
           done
-          GH_TOKEN="$AUTO_MERGE_TOKEN" gh pr merge "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --auto --squash
 
       # Pending while a review is outstanding, success when the gate passes, failure only for a problem to fix.
       - name: Set the review status
+        id: gate
         run: |
+          head_sha=$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json headRefOid --jq .headRefOid)
           code=0
           python scripts/verify_review_viewed.py gate > result.txt 2>&1 || code=$?
           cat result.txt
@@ -90,9 +95,33 @@ jobs:
             *) state=failure ;;
           esac
           description=$(head -n 1 result.txt | sed -E 's/^[A-Z]+: //' | cut -c 1-140)
-          gh api -X POST "repos/$GITHUB_REPOSITORY/statuses/$HEAD_SHA" \
+          gh api -X POST "repos/$GITHUB_REPOSITORY/statuses/$head_sha" \
             -f state="$state" \
             -f context=review-files-viewed \
             -f description="${description:-Review gate $state}" \
             -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > /dev/null
           echo "review-files-viewed: $state"
+          echo "state=$state" >> "$GITHUB_OUTPUT"
+          echo "head_sha=$head_sha" >> "$GITHUB_OUTPUT"
+
+      # Branch protection still decides: GitHub refuses the merge unless every required review and check passes.
+      # A merge made with the workflow token starts no push workflows, so the main workflows are started explicitly.
+      - name: Merge once everything passes
+        if: steps.gate.outputs.state == 'success'
+        env:
+          HEAD_SHA: ${{ steps.gate.outputs.head_sha }}
+        run: |
+          # GitHub needs a moment to take the new status into account, so the merge is retried for a minute.
+          for attempt in $(seq 1 12); do
+            if gh pr merge "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --squash --match-head-commit "$HEAD_SHA" \
+              > merge.txt 2>&1; then
+              cat merge.txt
+              for workflow in ci.yml docs.yml docs-publish.yml; do
+                gh workflow run "$workflow" --repo "$GITHUB_REPOSITORY" --ref main
+              done
+              exit 0
+            fi
+            sleep 5
+          done
+          cat merge.txt
+          echo "Not mergeable yet; a required check that finishes later re-runs this job and merges then."

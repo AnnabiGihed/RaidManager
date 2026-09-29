@@ -5,6 +5,8 @@ on:
     branches: [main]
   push:
     branches: [main]
+  # The review workflow starts it on main after merging, because its workflow-token merge triggers no push.
+  workflow_dispatch:
 
 jobs:
   build-test:
