@@ -28,7 +28,7 @@ file as viewed.
   other permission. A fine-grained token cannot select a repository owned by another user, even for a collaborator,
   so it cannot be limited to this repository alone. If this repository becomes private, only a classic token with
   the broad `repo` scope can read it, and that trade-off needs a new decision.
-- The `review-gate` job posts `review-files-viewed` as a commit status, not as its own job result. The status is
+- The `review` job posts `review-files-viewed` as a commit status, not as its own job result. The status is
   pending while a review is outstanding, success when the gate passes, and failure only for a problem someone must
   fix. The job succeeds whenever it can post the status, so waiting for a review never shows a failed job.
 - A commit status has one current value per commit, so every pull-request and review event re-evaluates it.
@@ -60,9 +60,10 @@ file as viewed.
 
 **Residual risk**
 
-- A pull request can still edit `.github/workflows/review.yml`. On `pull_request` events GitHub runs the workflow
-  definition from the pull request, which could skip the check or expose the reviewer token. The reviewer must view
-  that file like any other before approving. The token's read-only, public-repository access limits the harm.
+- Pull-request events run on `pull_request_target`, so `main`'s copy of `.github/workflows/review.yml` evaluates
+  every push. Review events have no such variant: GitHub runs the workflow definition from the pull request, which
+  a pull request could edit to post a false status or expose a review token. The operator and the reviewer must view
+  that file like any other before approving. The tokens' read-only, public-repository access limits the harm.
 
 ## Alternatives considered
 

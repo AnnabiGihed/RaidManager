@@ -17,15 +17,16 @@ start the `main` push workflow that publishes documentation.
 
 ## Decision
 
-The `auto-merge` workflow queues a squash auto-merge when a same-repository pull request into `main` becomes ready
-for review. This replaces ADR-0004's manual queue step; everything else in ADR-0004 still applies.
+The `review` workflow queues a squash auto-merge when a same-repository pull request into `main` becomes ready for
+review and the operator's sign-off checks out. This replaces ADR-0004's manual queue step; everything else in
+ADR-0004 still applies.
 
 - It uses the owner's `AUTO_MERGE_TOKEN`: a fine-grained token owned by Gihed Annabi, limited to this repository,
   with Pull requests and Contents read and write. The merge happens as the owner, so the `main` push publishes the
   documentation as before.
 - It runs on `pull_request_target`, so GitHub always uses `main`'s copy of the workflow and a pull request cannot
-  change the step that holds the token. The job never checks out or runs pull-request code, and the workflow token
-  has no permissions. Pull requests from forks are skipped.
+  change the step that holds the token. The job never checks out or runs pull-request code. Pull requests from forks
+  are skipped.
 - Queueing does not bypass anything. Branch protection still requires the operator's review, the peer approval,
   the required checks and resolved conversations. A pull request returned to draft cannot merge until it is ready
   again, which queues it again.

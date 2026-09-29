@@ -61,10 +61,10 @@ tests, documentation, and skill edits for a story may not.
 6. Never mark the PR ready and never mark files as viewed: those actions are the operator's review (ADR-0006). Tell
    the operator the draft is ready for their review once required CI is green. The operator views every file and
    marks it Ready for review; the workflow then requests the peer, and any new commit returns the PR to draft.
-   Marking it ready also queues a squash auto-merge through the `auto-merge` workflow (ADR-0007); queue it yourself
-   with `gh pr merge --auto --squash` only if that workflow failed. Never use `--admin`, self-merge, or force-push.
-   GitHub must wait for the peer approval, required checks (including `review-files-viewed`, which needs the
-   operator's review first and then a peer approval of the head commit, both after viewing every file), and resolved
+   Marking it ready also queues a squash auto-merge through the `review` workflow (ADR-0007); queue it yourself with
+   `gh pr merge --auto --squash` only if that workflow failed. Never use `--admin`, self-merge, or force-push. GitHub
+   must wait for the peer approval, required checks (including `review-files-viewed`, which needs the operator's
+   review first and then a peer approval of the head commit, both after viewing every file), and resolved
    conversations. The repository deletes the source branch after merge. If auto-merge cannot be queued, leave the PR
    open and report the reason; never merge manually to bypass a gate. After merge, verify the source branch was
    deleted and the task is closed and `Done`; mark a story `Done` only when every acceptance criterion is evidenced
