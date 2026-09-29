@@ -17,6 +17,7 @@ namespace RaidManager.Domain.Tests.Features.Raids.Aggregates;
 /// Purpose: Verifies that multiple offered loadouts for one person still produce at most one final roster place.
 /// </remarks>
 [Binding]
+[Scope(Feature = "Raid roster selection")]
 public sealed class RaidStepDefinitions
 {
     #region Fields
@@ -68,7 +69,8 @@ public sealed class RaidStepDefinitions
         _secondLoadoutId = new LoadoutId(Guid.NewGuid());
         _raid.SubmitSignup(
             _userId,
-            RaidSignupStatus.Available,
+            RaidAvailability.Confirmed,
+            null,
             [new SignupOption(_firstCharacterId, _firstLoadoutId), new SignupOption(_secondCharacterId, _secondLoadoutId)],
             null,
             DateTimeOffset.UtcNow);

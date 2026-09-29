@@ -154,12 +154,19 @@ public sealed class Raid : AggregateRoot<RaidId>
 
     /// <summary>Creates or refreshes a participant signup.</summary>
     /// <param name="userId">The participant user.</param>
-    /// <param name="status">The participant availability.</param>
+    /// <param name="availability">Whether the participant plans to attend.</param>
+    /// <param name="lateArrivalUtc">The expected arrival instant; required for a late signup, forbidden otherwise.</param>
     /// <param name="options">The verified character loadouts offered by the participant.</param>
     /// <param name="comment">The optional participant comment.</param>
     /// <param name="nowUtc">The UTC instant at which the signup is submitted.</param>
     /// <returns>The participant signup identifier.</returns>
-    public RaidSignupId SubmitSignup(UserId userId, RaidSignupStatus status, IEnumerable<SignupOption> options, string? comment, DateTimeOffset nowUtc)
+    public RaidSignupId SubmitSignup(
+        UserId userId,
+        RaidAvailability availability,
+        DateTimeOffset? lateArrivalUtc,
+        IEnumerable<SignupOption> options,
+        string? comment,
+        DateTimeOffset nowUtc)
     {
         if (Status != RaidStatus.OpenForSignups)
         {
@@ -174,12 +181,12 @@ public sealed class Raid : AggregateRoot<RaidId>
         var signup = _signups.SingleOrDefault(candidate => candidate.UserId == userId);
         if (signup is null)
         {
-            signup = RaidSignup.Create(userId, status, options, comment);
+            signup = RaidSignup.Create(userId, availability, lateArrivalUtc, options, comment);
             _signups.Add(signup);
         }
         else
         {
-            signup.Refresh(status, options, comment);
+            signup.Refresh(availability, lateArrivalUtc, options, comment);
         }
 
         RaiseDomainEvent(new RaidSignupSubmitted(Id, signup.Id, userId));
@@ -214,7 +221,6 @@ public sealed class Raid : AggregateRoot<RaidId>
         }
 
         _rosterSelections.Add(RosterSelection.Create(userId, characterId, loadoutId, groupNumber, position));
-        signup.Refresh(RaidSignupStatus.Selected, signup.Options, signup.Comment);
         RaiseDomainEvent(new RosterSelectionChanged(Id, userId, characterId, loadoutId));
     }
 

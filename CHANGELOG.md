@@ -16,6 +16,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Initial Identity, Characters, Communities and Raids domain model.
 - Domain events and repository contracts for aggregate roots.
 - Architecture decision record for Discord-only authentication and Warmane-first integration.
+- Signup availability in the domain: confirmed, tentative, late with an arrival time, or declined, independent
+  of roster selection (#50).
 
 ### Changed
 
