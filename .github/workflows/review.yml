@@ -39,8 +39,6 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           REVIEW_TOKEN_ANNABIGIHED: ${{ secrets.REVIEW_TOKEN_ANNABIGIHED }}
           REVIEW_TOKEN_ANTHERMOOK: ${{ secrets.REVIEW_TOKEN_ANTHERMOOK || secrets.REVIEW_GATE_TOKEN }}
-          # Read only by the single-reviewer gate that main runs until this workflow's own pull request merges.
-          REVIEW_GATE_TOKEN: ${{ secrets.REVIEW_TOKEN_ANTHERMOOK || secrets.REVIEW_GATE_TOKEN }}
         run: python scripts/verify_review_viewed.py gate
 
   # New commits need the operator's review before a peer is asked, so a ready pull request goes back to draft.
@@ -82,11 +80,8 @@ jobs:
           REVIEW_TOKEN_ANTHERMOOK: ${{ secrets.REVIEW_TOKEN_ANTHERMOOK || secrets.REVIEW_GATE_TOKEN }}
         run: |
           status=0
-          # Until this workflow's own pull request merges, main's script has no operator mode to verify with.
-          if grep -q "def operator_errors" scripts/verify_review_viewed.py; then
-            python scripts/verify_review_viewed.py operator > result.txt || status=$?
-            cat result.txt
-          fi
+          python scripts/verify_review_viewed.py operator > result.txt || status=$?
+          cat result.txt
           if [ "$status" -ne 0 ]; then
             gh pr ready "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --undo
             { echo "Returned to draft: @$AUTHOR must mark every changed file as viewed before marking it ready."
