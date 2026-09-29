@@ -65,9 +65,9 @@ public sealed class CharacterStepDefinitions
     [When("the character raid lockouts are synchronized with Icecrown Citadel 25-player")]
     public void WhenTheCharacterRaidLockoutsAreSynchronizedWithIcecrownCitadel25Player()
     {
-        _character.SynchronizeRaidLockouts(
+        _character.RecordCompleteRaidSaveScan(
             [new RaidLockout(RaidInstance.IcecrownCitadel, RaidDifficulty.TwentyFivePlayer, "12345", _synchronizedAtUtc.AddDays(2), false)],
-            _synchronizedAtUtc);
+            _synchronizedAtUtc).IsSuccess.ShouldBeTrue();
     }
     #endregion When Steps
 

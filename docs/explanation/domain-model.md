@@ -89,7 +89,7 @@ A diagram concept is not an implemented class merely because it appears there.
 | --- | --- |
 | `Identity/Aggregates/User.cs` and `Communities/Aggregates/Community.cs` exist. | Discord sign-in, sessions, pairing and permission workflows need implementation. |
 | `Characters/Aggregates/Character.cs` owns `CharacterClaim` entries with the pending, approved, rejected and conflict lifecycle; uploads never transfer ownership. | Ownership evidence, conflict resolution and the mandatory approval page are planned. |
-| `Characters/Aggregates/Loadout.cs` and raid lockouts exist. | Complete-scan evidence, snapshot history, source-specific freshness and manual-source handling are planned. |
+| `Characters/Aggregates/Loadout.cs` and raid lockouts exist. Only a complete saved-instance scan replaces the raid saves; an incomplete scan is recorded without erasing them, and an older complete scan is rejected. | The addon and companion complete-scan marker, snapshot history, source-specific freshness and manual-source handling are planned. |
 | `Raids/Aggregates/Raid.cs` requires one or more distinct `RaidTarget` instance and difficulty pairs. | Recurrence, composition revisions and re-evaluation are planned. |
 | `Raids/Services/RaidReadinessEvaluator.cs` gives each target a `ReadinessVerdict` at raid start; `CharacterReadiness` takes the most restrictive, and `Raid` rejects a locked character for signup or roster. | Validated realm reset rules, difficulty sharing, snapshot provenance and officer exceptions are planned. |
 | `Raids/Aggregates/RaidSignup.cs` stores options and a confirmed, tentative, late or declined availability; selection no longer changes it. | Withdrawal, presets, preferred option, notes and bench entries are planned. |
