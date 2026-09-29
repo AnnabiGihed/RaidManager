@@ -1,0 +1,38 @@
+<Project>
+  <PropertyGroup>
+    <ManagePackageVersionsCentrally>true</ManagePackageVersionsCentrally>
+    <!-- Pivot.Framework has no public release/tag surfaced by GitHub as of 2026-09-29. Pin these floating entries immediately after the authenticated GitHub Packages feed is available. -->
+    <PivotFrameworkVersion>*</PivotFrameworkVersion>
+  </PropertyGroup>
+
+  <ItemGroup>
+    <PackageVersion Include="Pivot.Framework.Domain" Version="$(PivotFrameworkVersion)" />
+    <PackageVersion Include="Pivot.Framework.Application" Version="$(PivotFrameworkVersion)" />
+    <PackageVersion Include="Pivot.Framework.Infrastructure.Abstraction" Version="$(PivotFrameworkVersion)" />
+    <PackageVersion Include="Pivot.Framework.Infrastructure.Persistence.EntityFrameworkCore" Version="$(PivotFrameworkVersion)" />
+    <PackageVersion Include="Pivot.Framework.Tools.DependencyInjection" Version="$(PivotFrameworkVersion)" />
+    <PackageVersion Include="Pivot.Framework.Containers.API" Version="$(PivotFrameworkVersion)" />
+    <PackageVersion Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="10.0.100" />
+    <PackageVersion Include="StyleCop.Analyzers" Version="1.2.0-beta.556" />
+    <PackageVersion Include="Microsoft.AspNetCore.OpenApi" Version="10.*" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.*" />
+    <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.*" />
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.*" />
+    <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.*" />
+    <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.*" />
+    <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.*" />
+    <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.*" />
+    <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.*" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.*" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Http" Version="1.*" />
+    <PackageVersion Include="OpenTelemetry.Instrumentation.Runtime" Version="1.*" />
+    <PackageVersion Include="Reqnroll.xUnit" Version="3.*" />
+    <PackageVersion Include="Shouldly" Version="4.*" />
+    <PackageVersion Include="Moq" Version="4.*" />
+    <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.*" />
+    <PackageVersion Include="xunit" Version="2.*" />
+    <PackageVersion Include="xunit.runner.visualstudio" Version="3.*" />
+    <PackageVersion Include="coverlet.collector" Version="6.*" />
+    <PackageVersion Include="bunit" Version="2.*" />
+  </ItemGroup>
+</Project>

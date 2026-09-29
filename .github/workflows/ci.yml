@@ -1,0 +1,27 @@
+name: ci
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+
+jobs:
+  build-test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Restore
+        env:
+          PIVOT_PACKAGES_USER: ${{ secrets.PIVOT_PACKAGES_USER }}
+          PIVOT_PACKAGES_TOKEN: ${{ secrets.PIVOT_PACKAGES_TOKEN }}
+        run: dotnet restore WarmaneRaidManager.sln
+      - name: Format
+        run: dotnet format WarmaneRaidManager.sln --no-restore --verify-no-changes
+      - name: Build
+        run: dotnet build WarmaneRaidManager.sln --no-restore --configuration Release
+      - name: Test
+        run: dotnet test WarmaneRaidManager.sln --no-build --configuration Release

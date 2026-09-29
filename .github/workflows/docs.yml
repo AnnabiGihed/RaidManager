@@ -1,0 +1,25 @@
+name: docs
+
+on:
+  pull_request:
+    branches: [main]
+  push:
+    branches: [main]
+    paths: ['docs/**', 'mkdocs.yml', 'README.md', 'CHANGELOG.md']
+
+jobs:
+  validate:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-node@v4
+        with:
+          node-version: '20'
+      - name: Required root files
+        run: for f in README.md CHANGELOG.md LICENSE; do test -f "$f" || { echo "::error::Missing $f"; exit 1; }; done
+      - name: Markdown lint
+        run: npx markdownlint-cli2 "**/*.md" "#node_modules"
+      - name: Internal link check
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --offline --include-verbatim docs README.md

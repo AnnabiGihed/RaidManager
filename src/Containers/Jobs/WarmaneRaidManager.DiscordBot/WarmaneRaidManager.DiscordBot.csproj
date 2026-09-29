@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+  <ItemGroup>
+    <ProjectReference Include="../../../Core/WarmaneRaidManager.Application/WarmaneRaidManager.Application.csproj" />
+    <ProjectReference Include="../../../Infrastructure/WarmaneRaidManager.Infrastructure/WarmaneRaidManager.Infrastructure.csproj" />
+    <ProjectReference Include="../../Aspire/Defaults/WarmaneRaidManager.ServiceDefaults/WarmaneRaidManager.ServiceDefaults.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+  </ItemGroup>
+</Project>

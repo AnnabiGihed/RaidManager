@@ -1,0 +1,16 @@
+@page "/"
+
+<ErrorBoundary>
+    <ChildContent>
+        <main>
+            <h1>Warmane Raid Manager</h1>
+            <p>The project foundation is ready for Discord authentication, Warmane character sync and raid planning.</p>
+        </main>
+    </ChildContent>
+    <ErrorContent Context="exception">
+        <main>
+            <h1>Unable to render the page</h1>
+            <p>@exception.Message</p>
+        </main>
+    </ErrorContent>
+</ErrorBoundary>

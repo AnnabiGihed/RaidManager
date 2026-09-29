@@ -1,0 +1,10 @@
+site_name: Warmane Raid Manager
+nav:
+  - Home: index.md
+  - Architecture: architecture/overview.md
+  - Glossary: glossary.md
+  - API contracts: api/contracts.md
+  - Decisions:
+      - Foundation and authentication: adr/0001-foundation-and-authentication.md
+theme:
+  name: material

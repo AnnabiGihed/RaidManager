@@ -1,0 +1,12 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../../Core/WarmaneRaidManager.Application/WarmaneRaidManager.Application.csproj" />
+    <ProjectReference Include="../../Core/WarmaneRaidManager.Domain/WarmaneRaidManager.Domain.csproj" />
+    <PackageReference Include="Pivot.Framework.Infrastructure.Persistence.EntityFrameworkCore" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
+    <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
+      <PrivateAssets>all</PrivateAssets>
+      <IncludeAssets>runtime; build; native; contentfiles; analyzers; buildtransitive</IncludeAssets>
+    </PackageReference>
+  </ItemGroup>
+</Project>

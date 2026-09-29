@@ -1,0 +1,8 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../../Core/WarmaneRaidManager.Application/WarmaneRaidManager.Application.csproj" />
+    <ProjectReference Include="../../Core/WarmaneRaidManager.Domain/WarmaneRaidManager.Domain.csproj" />
+    <ProjectReference Include="../../Core/WarmaneRaidManager.IntegrationEvents/WarmaneRaidManager.IntegrationEvents.csproj" />
+    <PackageReference Include="Pivot.Framework.Tools.DependencyInjection" />
+  </ItemGroup>
+</Project>

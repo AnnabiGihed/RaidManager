@@ -1,0 +1,6 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <ItemGroup>
+    <ProjectReference Include="../../../../Core/WarmaneRaidManager.Application/WarmaneRaidManager.Application.csproj" />
+    <ProjectReference Include="../WarmaneRaidManager.Shared/WarmaneRaidManager.Shared.csproj" />
+  </ItemGroup>
+</Project>
