@@ -39,6 +39,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   a peer approval counts only after that review; new commits return the pull request to draft (#65).
 - Marking a pull request ready now queues its squash auto-merge automatically (#67).
 - The review workflow no longer carries code for the retired single-reviewer gate (#69).
+- The review gate now shows as a pending status while a review is outstanding, and fails only for a real
+  problem, instead of failing until both reviews are done (#73).
 - Pull requests now use protected automatic squash merging and delete their source branches after merge (#46).
 - Documentation contributions now pass root-file, style, link, diagram, and rendered-site checks before merging (#44).
 

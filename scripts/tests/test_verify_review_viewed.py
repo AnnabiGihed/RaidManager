@@ -8,7 +8,7 @@ from datetime import datetime, timedelta, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from verify_review_viewed import PullRequest, Review, gate_errors, operator_errors, token_variable  # noqa: E402
+from verify_review_viewed import FAILURE, PENDING, SUCCESS, PullRequest, Review, gate_result, operator_errors, token_variable  # noqa: E402
 
 
 HEAD = "a" * 40
@@ -54,44 +54,60 @@ class OperatorReviewTests(unittest.TestCase):
         )
 
 
-class PeerReviewTests(unittest.TestCase):
-    def test_peer_approval_after_the_operator_review_passes(self) -> None:
-        self.assertEqual([], gate_errors(pull_request(reviews=[approval()]), viewed()))
+class GateResultTests(unittest.TestCase):
+    def test_peer_approval_after_the_operator_review_succeeds(self) -> None:
+        self.assertEqual((SUCCESS, []), gate_result(pull_request(reviews=[approval()]), viewed()))
 
-    def test_operator_errors_come_before_peer_errors(self) -> None:
-        errors = gate_errors(pull_request(is_draft=True, reviews=[approval()]), viewed())
-        self.assertIn("has not finished their review", errors[0])
+    def test_a_draft_is_pending_on_the_operator(self) -> None:
+        state, messages = gate_result(pull_request(is_draft=True, reviews=[approval()]), viewed())
+        self.assertEqual(PENDING, state)
+        self.assertIn("waiting for @AnnabiGihed to finish their review", messages[0])
 
-    def test_no_peer_approval_fails(self) -> None:
-        errors = gate_errors(pull_request(), viewed())
-        self.assertEqual(["waiting for a peer approval: someone other than @AnnabiGihed must approve"], errors)
+    def test_operator_files_not_yet_viewed_are_pending(self) -> None:
+        state, _ = gate_result(pull_request(), viewed(operator={**ALL_VIEWED, "a.md": "UNVIEWED"}))
+        self.assertEqual(PENDING, state)
+
+    def test_missing_operator_token_fails(self) -> None:
+        self.assertEqual(FAILURE, gate_result(pull_request(), viewed(operator=None))[0])
+
+    def test_no_peer_approval_is_pending(self) -> None:
+        self.assertEqual(
+            (PENDING, ["waiting for a peer approval: someone other than @AnnabiGihed must approve"]),
+            gate_result(pull_request(), viewed()),
+        )
 
     def test_the_author_cannot_be_the_peer(self) -> None:
-        errors = gate_errors(pull_request(reviews=[approval(author=OPERATOR)]), viewed())
-        self.assertIn("waiting for a peer approval", errors[0])
+        self.assertEqual(PENDING, gate_result(pull_request(reviews=[approval(author=OPERATOR)]), viewed())[0])
 
     def test_peer_approval_before_the_operator_marked_ready_fails(self) -> None:
-        errors = gate_errors(pull_request(reviews=[approval(minutes_after_ready=-5)]), viewed())
-        self.assertEqual(["@anthermook approved before @AnnabiGihed marked the pull request ready"], errors)
+        self.assertEqual(
+            (FAILURE, ["@anthermook approved before @AnnabiGihed marked the pull request ready"]),
+            gate_result(pull_request(reviews=[approval(minutes_after_ready=-5)]), viewed()),
+        )
 
     def test_peer_approval_of_an_older_commit_fails(self) -> None:
-        errors = gate_errors(pull_request(reviews=[approval(commit="b" * 40)]), viewed())
-        self.assertTrue(any("not the current head" in error for error in errors))
+        state, messages = gate_result(pull_request(reviews=[approval(commit="b" * 40)]), viewed())
+        self.assertEqual(FAILURE, state)
+        self.assertTrue(any("not the current head" in message for message in messages))
 
-    def test_peer_must_view_every_file(self) -> None:
-        errors = gate_errors(pull_request(reviews=[approval()]), viewed(peer={**ALL_VIEWED, "a.md": "UNVIEWED"}))
-        self.assertEqual(["not marked as viewed by @anthermook: a.md"], errors)
+    def test_peer_approval_without_viewing_every_file_fails(self) -> None:
+        self.assertEqual(
+            (FAILURE, ["not marked as viewed by @anthermook: a.md"]),
+            gate_result(pull_request(reviews=[approval()]), viewed(peer={**ALL_VIEWED, "a.md": "UNVIEWED"})),
+        )
 
     def test_changes_requested_by_a_peer_fails(self) -> None:
         review = Review(PEER, "CHANGES_REQUESTED", HEAD, READY_AT + timedelta(minutes=5))
-        self.assertEqual(["@anthermook requested changes"], gate_errors(pull_request(reviews=[review]), viewed()))
+        self.assertEqual((FAILURE, ["@anthermook requested changes"]), gate_result(pull_request(reviews=[review]), viewed()))
 
-    def test_missing_peer_token_names_the_secret(self) -> None:
-        errors = gate_errors(pull_request(reviews=[approval()]), viewed(peer=None))
-        self.assertEqual(["no review token for @anthermook: add the REVIEW_TOKEN_ANTHERMOOK repository secret"], errors)
+    def test_missing_peer_token_fails_and_names_the_secret(self) -> None:
+        self.assertEqual(
+            (FAILURE, ["no review token for @anthermook: add the REVIEW_TOKEN_ANTHERMOOK repository secret"]),
+            gate_result(pull_request(reviews=[approval()]), viewed(peer=None)),
+        )
 
     def test_login_matching_is_case_insensitive(self) -> None:
-        self.assertEqual([], gate_errors(pull_request(reviews=[approval(author="Anthermook")]), viewed()))
+        self.assertEqual(SUCCESS, gate_result(pull_request(reviews=[approval(author="Anthermook")]), viewed())[0])
 
 
 class TokenVariableTests(unittest.TestCase):
