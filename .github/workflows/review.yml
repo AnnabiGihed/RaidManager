@@ -3,20 +3,30 @@ name: review
 on:
   pull_request:
     branches: [main]
-    types: [opened, synchronize, reopened]
+    types: [opened, synchronize, reopened, ready_for_review]
   pull_request_review:
     types: [submitted, edited, dismissed]
 
 permissions:
   contents: read
 
+env:
+  # People who review pull requests. Each needs a REVIEW_TOKEN_<LOGIN> secret: their own read-only token.
+  REVIEWERS: AnnabiGihed anthermook
+  PR_NUMBER: ${{ github.event.pull_request.number }}
+  AUTHOR: ${{ github.event.pull_request.user.login }}
+
 jobs:
-  # The required check. Only pull-request events produce it, so one check suite per head commit holds its result.
+  # The required check: the operator (the author) reviewed every file first, then a peer approved the head commit.
+  # Only pull-request events produce it, so one check suite per event holds its result; reviews re-run it below.
   review-files-viewed:
     if: github.event_name == 'pull_request'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: read
     steps:
-      # The gate reads the reviewer's token, so it always runs the script from main, never from the pull request.
+      # The gate reads people's review tokens, so it always runs the script from main, never from the pull request.
       - uses: actions/checkout@v4
         with:
           ref: main
@@ -24,11 +34,71 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Every changed file viewed before approval
+      - name: Operator review, then peer approval, each after viewing every file
         env:
-          REVIEW_GATE_TOKEN: ${{ secrets.REVIEW_GATE_TOKEN }}
-          PR_NUMBER: ${{ github.event.pull_request.number }}
-        run: python scripts/verify_review_viewed.py
+          GH_TOKEN: ${{ github.token }}
+          REVIEW_TOKEN_ANNABIGIHED: ${{ secrets.REVIEW_TOKEN_ANNABIGIHED }}
+          REVIEW_TOKEN_ANTHERMOOK: ${{ secrets.REVIEW_TOKEN_ANTHERMOOK || secrets.REVIEW_GATE_TOKEN }}
+          # Read only by the single-reviewer gate that main runs until this workflow's own pull request merges.
+          REVIEW_GATE_TOKEN: ${{ secrets.REVIEW_TOKEN_ANTHERMOOK || secrets.REVIEW_GATE_TOKEN }}
+        run: python scripts/verify_review_viewed.py gate
+
+  # New commits need the operator's review before a peer is asked, so a ready pull request goes back to draft.
+  return-to-draft:
+    if: >-
+      github.event_name == 'pull_request' && github.run_attempt == 1 && !github.event.pull_request.draft &&
+      contains(fromJSON('["opened", "synchronize", "reopened"]'), github.event.action)
+    runs-on: ubuntu-latest
+    permissions:
+      pull-requests: write
+    steps:
+      - name: Return the pull request to draft
+        env:
+          GH_TOKEN: ${{ github.token }}
+        run: |
+          gh pr ready "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --undo
+          gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body \
+            "Returned to draft: @$AUTHOR reviews the new commits, marks every file as viewed, then marks it ready."
+
+  # Marking the draft ready is the operator's sign-off. It must be backed by viewing every file; then a peer is asked.
+  operator-signoff:
+    if: github.event_name == 'pull_request' && github.event.action == 'ready_for_review' && github.run_attempt == 1
+    runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      pull-requests: write
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Verify the operator review and request a peer review
+        env:
+          GH_TOKEN: ${{ github.token }}
+          REVIEW_TOKEN_ANNABIGIHED: ${{ secrets.REVIEW_TOKEN_ANNABIGIHED }}
+          REVIEW_TOKEN_ANTHERMOOK: ${{ secrets.REVIEW_TOKEN_ANTHERMOOK || secrets.REVIEW_GATE_TOKEN }}
+        run: |
+          status=0
+          # Until this workflow's own pull request merges, main's script has no operator mode to verify with.
+          if grep -q "def operator_errors" scripts/verify_review_viewed.py; then
+            python scripts/verify_review_viewed.py operator > result.txt || status=$?
+            cat result.txt
+          fi
+          if [ "$status" -ne 0 ]; then
+            gh pr ready "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --undo
+            { echo "Returned to draft: @$AUTHOR must mark every changed file as viewed before marking it ready."
+              echo; echo '```'; cat result.txt; echo '```'; } > comment.md
+            gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file comment.md
+            exit 1
+          fi
+          for reviewer in $REVIEWERS; do
+            if [ "${reviewer,,}" != "${AUTHOR,,}" ]; then
+              gh pr edit "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --add-reviewer "$reviewer"
+            fi
+          done
 
   # A review result in its own check suite would not replace the failed required check, so a review re-runs it instead.
   review-refresh:

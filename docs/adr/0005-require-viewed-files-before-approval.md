@@ -1,6 +1,7 @@
 # ADR-0005: Require viewed files before approval
 
-- Status: Proposed
+- Status: Proposed; extended by [ADR-0006](0006-review-by-operator-before-peer.md), which adds the operator's
+  review and per-person tokens
 - Date: 2026-09-29
 - Deciders: Gihed Annabi
 

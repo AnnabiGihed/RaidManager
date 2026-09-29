@@ -22,8 +22,10 @@ Do not combine unrelated refactors and feature behavior in one commit.
 Every pull request must:
 
 - target `main`, link its task, and include the required five-section description and author checklist;
-- receive one approval of the latest commit, from someone other than its author and last pusher, given only after
-  the reviewer marked every changed file as **Viewed**;
+- be reviewed first by its operator, the author who ran the agent: the operator marks every changed file as
+  **Viewed** and then marks the draft **Ready for review**;
+- then receive one approval of the latest commit, from someone other than its author and last pusher, given after
+  the operator's review and after the reviewer marked every changed file as **Viewed**;
 - check every author self-review item except the CI and approval item;
 - preserve inward-only project dependencies;
 - include tests for business behavior and changed UI behavior;
@@ -36,10 +38,14 @@ Every pull request must:
 The checks catch mechanical defects; reviewers still verify technical accuracy, acceptance criteria, terminology,
 and whether behavior changes have matching documentation. The published site is updated automatically after merge.
 
-Reviewers mark each file as **Viewed** in the **Files changed** tab, then submit the approval. Viewing a file does not
-re-run `review-files-viewed`; submit or re-submit the approval after the last file is viewed. A new push dismisses
-the approval, and any file it changes loses its Viewed mark, as described in
-[ADR-0005](docs/adr/0005-require-viewed-files-before-approval.md).
+Agent pull requests open as drafts. The operator reviews first: mark each file as **Viewed** in the **Files
+changed** tab, then click **Ready for review**. If a file is not viewed, the pull request returns to draft with a
+comment listing it; otherwise the other reviewers are requested. A new commit returns the pull request to draft for
+another operator pass. The peer then marks every file as **Viewed** and approves. Viewing a file does not re-run
+`review-files-viewed`, so approve (or re-submit the approval) after the last file is viewed. Each reviewer needs a
+read-only `REVIEW_TOKEN_<LOGIN>` secret. See [ADR-0005](docs/adr/0005-require-viewed-files-before-approval.md) and
+[ADR-0006](docs/adr/0006-review-by-operator-before-peer.md). The agent never marks files as viewed or a pull request
+as ready.
 
 GitHub permits squash merges only. Once a pull request is ready and its latest checks pass, the task owner queues
 auto-merge with `gh pr merge --auto --squash`. GitHub merges only after an independent approval, the required
