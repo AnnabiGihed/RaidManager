@@ -34,6 +34,12 @@ Every pull request must:
 The checks catch mechanical defects; reviewers still verify technical accuracy, acceptance criteria, terminology,
 and whether behavior changes have matching documentation. The published site is updated automatically after merge.
 
+GitHub permits squash merges only. Once a pull request is ready and its latest checks pass, the task owner queues
+auto-merge with `gh pr merge --auto --squash`. GitHub merges only after an independent approval, the required
+`build-test` and `validate` checks, and resolution of review conversations. Do not use administrator bypass or merge
+your own pull request. GitHub deletes the source branch after merge; confirm the linked task is closed and its
+project status is `Done`.
+
 ## Local setup
 
 Install the .NET 10 SDK and configure the Pivot.Framework GitHub Packages credentials described in `README.md`.
