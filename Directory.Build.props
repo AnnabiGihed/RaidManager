@@ -4,6 +4,16 @@
     <LangVersion>14.0</LangVersion>
     <Nullable>enable</Nullable>
     <ImplicitUsings>enable</ImplicitUsings>
+    <Product>RaidManager</Product>
+    <Company>RaidManager</Company>
+    <Authors>Gihed Annabi</Authors>
+    <PackageProjectUrl>https://github.com/AnnabiGihed/RaidManager</PackageProjectUrl>
+    <RepositoryUrl>https://github.com/AnnabiGihed/RaidManager</RepositoryUrl>
+    <RepositoryType>git</RepositoryType>
+    <PackageLicenseFile>LICENSE</PackageLicenseFile>
+    <Description>RaidManager components for coordinating raid communities, characters, rosters, signups, and supporting services.</Description>
+    <NoWarn>$(NoWarn);CS1591;SA1101;SA1200;SA1210;SA1309;SA1514;SA1633;SA1642;ASPIRE010;CA1716</NoWarn>
+    <ReqnrollGenerationTaskFactory>AssemblyTaskFactory</ReqnrollGenerationTaskFactory>
     <TreatWarningsAsErrors>true</TreatWarningsAsErrors>
     <GenerateDocumentationFile>true</GenerateDocumentationFile>
     <AnalysisLevel>latest-recommended</AnalysisLevel>
@@ -11,6 +21,7 @@
   </PropertyGroup>
 
   <ItemGroup>
+    <None Include="$(MSBuildThisFileDirectory)LICENSE" Pack="true" PackagePath="" />
     <PackageReference Include="Microsoft.CodeAnalysis.NetAnalyzers" PrivateAssets="all" />
     <PackageReference Include="StyleCop.Analyzers" PrivateAssets="all" />
     <AdditionalFiles Include="$(MSBuildThisFileDirectory)stylecop.json" Link="stylecop.json" />

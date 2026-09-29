@@ -1,0 +1,18 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageId>RaidManager.ServiceDefaults.Tests</PackageId>
+    <Version>1.0.0</Version>
+    <PackageTags>tests;aspire;raid-management</PackageTags>
+    <Description>Tests for RaidManager shared service defaults.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../../../src/Containers/Aspire/Defaults/RaidManager.ServiceDefaults/RaidManager.ServiceDefaults.csproj" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="xunit" />
+    <PackageReference Include="xunit.runner.visualstudio"><PrivateAssets>all</PrivateAssets></PackageReference>
+    <PackageReference Include="coverlet.collector"><PrivateAssets>all</PrivateAssets></PackageReference>
+  </ItemGroup>
+</Project>

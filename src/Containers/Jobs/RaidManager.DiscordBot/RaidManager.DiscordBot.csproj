@@ -1,0 +1,16 @@
+<Project Sdk="Microsoft.NET.Sdk.Worker">
+  <PropertyGroup>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageId>RaidManager.DiscordBot</PackageId>
+    <Version>1.0.0</Version>
+    <PackageTags>discord;worker;hosting;raid-management</PackageTags>
+    <Description>Background worker host for RaidManager Discord integration.</Description>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../Core/RaidManager.Application/RaidManager.Application.csproj" />
+    <ProjectReference Include="../../../Infrastructure/RaidManager.Infrastructure/RaidManager.Infrastructure.csproj" />
+    <ProjectReference Include="../../Aspire/Defaults/RaidManager.ServiceDefaults/RaidManager.ServiceDefaults.csproj" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+  </ItemGroup>
+</Project>

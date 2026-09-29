@@ -1,7 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk.Web">
-  <ItemGroup>
-    <ProjectReference Include="../../Core/WarmaneRaidManager.Shared/WarmaneRaidManager.Shared.csproj" />
-    <ProjectReference Include="../../Core/WarmaneRaidManager.ViewModels/WarmaneRaidManager.ViewModels.csproj" />
-    <ProjectReference Include="../../../Aspire/Defaults/WarmaneRaidManager.ServiceDefaults/WarmaneRaidManager.ServiceDefaults.csproj" />
-  </ItemGroup>
-</Project>

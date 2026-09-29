@@ -52,8 +52,8 @@ export PIVOT_PACKAGES_TOKEN="your-github-package-token"
 Then restore and build:
 
 ```bash
-dotnet restore WarmaneRaidManager.sln
-dotnet build WarmaneRaidManager.sln --no-restore
+dotnet restore RaidManager.sln
+dotnet build RaidManager.sln --no-restore
 ```
 
 > The initial generated skeleton deliberately uses floating package ranges where a stable version could not be verified
@@ -61,4 +61,4 @@ dotnet build WarmaneRaidManager.sln --no-restore
 
 ## Ownership
 
-Owner: Rodolphe Balay
+Owner: Gihed Annabi

@@ -1,0 +1,20 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <IsPackable>false</IsPackable>
+    <IsTestProject>true</IsTestProject>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageId>RaidManager.Domain.Tests</PackageId>
+    <Version>1.0.0</Version>
+    <PackageTags>tests;core;raid-management</PackageTags>
+    <Description>Tests for RaidManager domain model.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../src/Core/RaidManager.Domain/RaidManager.Domain.csproj" />
+    <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Reqnroll.xUnit" />
+    <PackageReference Include="Shouldly" />
+    <PackageReference Include="Moq" />
+    <PackageReference Include="xunit.runner.visualstudio"><PrivateAssets>all</PrivateAssets></PackageReference>
+    <PackageReference Include="coverlet.collector"><PrivateAssets>all</PrivateAssets></PackageReference>
+  </ItemGroup>
+</Project>

@@ -1,0 +1,13 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>RaidManager.ViewModels</PackageId>
+    <Version>1.0.0</Version>
+    <PackageTags>ui;viewmodels;application;raid-management</PackageTags>
+    <Description>View models connecting the RaidManager UI with application workflows.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../../Core/RaidManager.Application/RaidManager.Application.csproj" />
+    <ProjectReference Include="../RaidManager.Shared/RaidManager.Shared.csproj" />
+  </ItemGroup>
+</Project>

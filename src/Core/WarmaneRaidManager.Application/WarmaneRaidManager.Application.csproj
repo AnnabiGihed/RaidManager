@@ -1,7 +1,0 @@
-<Project Sdk="Microsoft.NET.Sdk">
-  <ItemGroup>
-    <ProjectReference Include="../WarmaneRaidManager.Domain/WarmaneRaidManager.Domain.csproj" />
-    <PackageReference Include="Pivot.Framework.Application" />
-    <PackageReference Include="Pivot.Framework.Infrastructure.Abstraction" />
-  </ItemGroup>
-</Project>

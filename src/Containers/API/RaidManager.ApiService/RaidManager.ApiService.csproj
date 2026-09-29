@@ -1,0 +1,19 @@
+<Project Sdk="Microsoft.NET.Sdk.Web">
+  <PropertyGroup>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageId>RaidManager.ApiService</PackageId>
+    <Version>1.0.0</Version>
+    <PackageTags>api;hosting;http;raid-management</PackageTags>
+    <Description>HTTP API host for RaidManager communities, characters, raids, and signups.</Description>
+    <IsPackable>false</IsPackable>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../../../Core/RaidManager.Application/RaidManager.Application.csproj" />
+    <ProjectReference Include="../../../Infrastructure/RaidManager.Infrastructure/RaidManager.Infrastructure.csproj" />
+    <ProjectReference Include="../../../Infrastructure/RaidManager.Persistence.EntityFrameworkCore/RaidManager.Persistence.EntityFrameworkCore.csproj" />
+    <ProjectReference Include="../../Aspire/Defaults/RaidManager.ServiceDefaults/RaidManager.ServiceDefaults.csproj" />
+    <PackageReference Include="Pivot.Framework.Containers.API" />
+    <PackageReference Include="Microsoft.AspNetCore.OpenApi" />
+    <PackageReference Include="Pivot.Framework.Tools.DependencyInjection" />
+  </ItemGroup>
+</Project>

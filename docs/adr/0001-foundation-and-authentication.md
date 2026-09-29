@@ -2,7 +2,7 @@
 
 - Status: Accepted
 - Date: 2026-09-29
-- Decision owners: Rodolphe Balay
+- Decision owners: Gihed Annabi
 
 ## Context
 

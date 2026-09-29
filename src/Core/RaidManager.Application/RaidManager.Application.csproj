@@ -1,0 +1,14 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <GeneratePackageOnBuild>true</GeneratePackageOnBuild>
+    <PackageId>RaidManager.Application</PackageId>
+    <Version>1.0.0</Version>
+    <PackageTags>application;use-cases;clean-architecture;raid-management</PackageTags>
+    <Description>Application layer contracts and use cases for RaidManager workflows.</Description>
+  </PropertyGroup>
+  <ItemGroup>
+    <ProjectReference Include="../RaidManager.Domain/RaidManager.Domain.csproj" />
+    <PackageReference Include="Pivot.Framework.Application" />
+    <PackageReference Include="Pivot.Framework.Infrastructure.Abstraction" />
+  </ItemGroup>
+</Project>
