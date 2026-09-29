@@ -15,6 +15,7 @@ nav:
   - Diagram maintenance: how-to/diagrams.md
   - Glossary: glossary.md
   - API contracts: reference/api-contracts.md
+  - Warmane lockout evidence: reference/warmane-lockout-rules.md
   - Decisions:
       - Index: adr/README.md
       - Foundation and authentication: adr/0001-foundation-and-authentication.md
