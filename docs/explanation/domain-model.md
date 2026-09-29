@@ -82,6 +82,8 @@ Reusing an officer exception against changed evidence requires renewed review.
 ## Relationship to current code
 
 The current types are under `src/Core/RaidManager.Domain/Features/`, grouped by domain area.
+The diagrams above describe the version 1 target model.
+A diagram concept is not an implemented class merely because it appears there.
 
 | Current foundation | Version 1 design extension |
 | --- | --- |
