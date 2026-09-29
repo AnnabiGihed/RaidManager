@@ -149,14 +149,20 @@ public sealed class Raid : AggregateRoot<RaidId>
     /// <param name="availability">Whether the participant plans to attend.</param>
     /// <param name="lateArrivalUtc">The expected arrival instant; required for a late signup, forbidden otherwise.</param>
     /// <param name="options">The verified character loadouts offered by the participant.</param>
+    /// <param name="readiness">The current raid-start readiness of every offered character.</param>
     /// <param name="comment">The optional participant comment.</param>
     /// <param name="nowUtc">The UTC instant at which the signup is submitted.</param>
     /// <returns>The participant signup identifier.</returns>
+    /// <exception cref="DomainException">
+    /// Thrown when the raid is closed, an offered character lacks a current assessment or is locked through raid start,
+    /// or the signup itself is invalid.
+    /// </exception>
     public RaidSignupId SubmitSignup(
         UserId userId,
         RaidAvailability availability,
         DateTimeOffset? lateArrivalUtc,
         IEnumerable<SignupOption> options,
+        IEnumerable<CharacterReadiness> readiness,
         string? comment,
         DateTimeOffset nowUtc)
     {
@@ -170,15 +176,22 @@ public sealed class Raid : AggregateRoot<RaidId>
             throw new UnknownDomainException("Raid signup deadline has passed.");
         }
 
+        var optionList = options.ToList();
+        var readinessList = readiness.ToList();
+        foreach (var characterId in optionList.Select(option => option.CharacterId).Distinct())
+        {
+            EnsureNotLocked(FindCurrentReadiness(readinessList, characterId));
+        }
+
         var signup = _signups.SingleOrDefault(candidate => candidate.UserId == userId);
         if (signup is null)
         {
-            signup = RaidSignup.Create(userId, availability, lateArrivalUtc, options, comment);
+            signup = RaidSignup.Create(userId, availability, lateArrivalUtc, optionList, comment);
             _signups.Add(signup);
         }
         else
         {
-            signup.Refresh(availability, lateArrivalUtc, options, comment);
+            signup.Refresh(availability, lateArrivalUtc, optionList, comment);
         }
 
         RaiseDomainEvent(new RaidSignupSubmitted(Id, signup.Id, userId));
@@ -189,9 +202,14 @@ public sealed class Raid : AggregateRoot<RaidId>
     /// <param name="userId">The participant user.</param>
     /// <param name="characterId">The selected offered character.</param>
     /// <param name="loadoutId">The selected offered loadout.</param>
+    /// <param name="readiness">The current raid-start readiness of the selected character.</param>
     /// <param name="groupNumber">The target one-based raid group.</param>
     /// <param name="position">The target one-based group position.</param>
-    public void SelectRosterOption(UserId userId, CharacterId characterId, LoadoutId loadoutId, int groupNumber, int position)
+    /// <exception cref="DomainException">
+    /// Thrown when the option was not offered, the character lacks a current assessment or is locked through raid start,
+    /// or the position is occupied. A confirmed lock has no override.
+    /// </exception>
+    public void SelectRosterOption(UserId userId, CharacterId characterId, LoadoutId loadoutId, CharacterReadiness readiness, int groupNumber, int position)
     {
         var signup = _signups.SingleOrDefault(candidate => candidate.UserId == userId)
             ?? throw new UnknownDomainException("User must have a raid signup before being selected for the roster.");
@@ -200,6 +218,8 @@ public sealed class Raid : AggregateRoot<RaidId>
         {
             throw new UnknownDomainException("Selected character loadout was not offered by this user.");
         }
+
+        EnsureNotLocked(FindCurrentReadiness([readiness], characterId));
 
         if (_rosterSelections.Any(selection => selection.GroupNumber == groupNumber && selection.Position == position && selection.UserId != userId))
         {
@@ -261,5 +281,30 @@ public sealed class Raid : AggregateRoot<RaidId>
             throw new UnknownDomainException("A raid cannot require the same instance and difficulty twice.");
         }
     }
+
+    /// <summary>Ensures a character is not confirmed to remain saved to any required target at raid start.</summary>
+    /// <param name="readiness">The character's current readiness.</param>
+    /// <exception cref="DomainException">Thrown when the character is locked through raid start.</exception>
+    private static void EnsureNotLocked(CharacterReadiness readiness)
+    {
+        if (readiness.IsBlocked)
+        {
+            var lockedTargets = readiness.Assessments
+                .Where(assessment => assessment.Verdict == ReadinessVerdict.LockedThroughRaid)
+                .Select(assessment => assessment.Target.ToString());
+            throw new UnknownDomainException($"Character is locked through raid start for {string.Join(", ", lockedTargets)}.");
+        }
+    }
     #endregion Invariants
+
+    #region Private Helpers
+    /// <summary>Finds a character's readiness assessed for this raid's current targets and scheduled start.</summary>
+    /// <param name="readiness">The supplied assessments.</param>
+    /// <param name="characterId">The character to find.</param>
+    /// <returns>The character's current readiness.</returns>
+    /// <exception cref="DomainException">Thrown when no current assessment exists for the character.</exception>
+    private CharacterReadiness FindCurrentReadiness(IEnumerable<CharacterReadiness> readiness, CharacterId characterId) =>
+        readiness.FirstOrDefault(candidate => candidate.CharacterId == characterId && candidate.IsCurrentFor(_targets, StartsAtUtc))
+            ?? throw new UnknownDomainException("Character must be assessed for this raid's current targets and start time.");
+    #endregion Private Helpers
 }

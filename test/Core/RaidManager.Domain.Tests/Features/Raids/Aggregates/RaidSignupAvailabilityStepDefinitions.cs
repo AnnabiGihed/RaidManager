@@ -6,6 +6,7 @@ using RaidManager.Domain.Features.Raids.Enums;
 using RaidManager.Domain.Features.Raids.ValueObjects;
 using RaidManager.Domain.Features.Shared.Enums;
 using RaidManager.Domain.Features.Shared.Identifiers;
+using RaidManager.Domain.Tests.Features.Raids.Support;
 
 namespace RaidManager.Domain.Tests.Features.Raids.Aggregates;
 
@@ -66,7 +67,14 @@ public sealed class RaidSignupAvailabilityStepDefinitions
     {
         var option = NewOption();
         _offeredOptions[player] = option;
-        _raid.SubmitSignup(PlayerId(player), Enum.Parse<RaidAvailability>(availability), null, [option], null, DateTimeOffset.UtcNow);
+        _raid.SubmitSignup(
+            PlayerId(player),
+            Enum.Parse<RaidAvailability>(availability),
+            null,
+            [option],
+            [ReadinessAssessments.Available(_raid, option.CharacterId)],
+            null,
+            DateTimeOffset.UtcNow);
     }
     #endregion Given Steps
 
@@ -112,7 +120,13 @@ public sealed class RaidSignupAvailabilityStepDefinitions
     public void WhenTheOfficerSelectsTheOfferedLoadoutOfForGroupPosition(string player, int groupNumber, int position)
     {
         var option = _offeredOptions[player];
-        _raid.SelectRosterOption(PlayerId(player), option.CharacterId, option.LoadoutId, groupNumber, position);
+        _raid.SelectRosterOption(
+            PlayerId(player),
+            option.CharacterId,
+            option.LoadoutId,
+            ReadinessAssessments.Available(_raid, option.CharacterId),
+            groupNumber,
+            position);
     }
     #endregion When Steps
 
@@ -161,7 +175,14 @@ public sealed class RaidSignupAvailabilityStepDefinitions
     {
         try
         {
-            _raid.SubmitSignup(PlayerId(player), availability, lateArrivalUtc, options, null, DateTimeOffset.UtcNow);
+            _raid.SubmitSignup(
+                PlayerId(player),
+                availability,
+                lateArrivalUtc,
+                options,
+                ReadinessAssessments.AvailableFor(_raid, options),
+                null,
+                DateTimeOffset.UtcNow);
         }
         catch (DomainException exception)
         {

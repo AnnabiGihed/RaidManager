@@ -21,6 +21,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   upload never approves, reopens, or transfers a claim (#48).
 - Signup availability in the domain: confirmed, tentative, late with an arrival time, or declined, independent
   of roster selection (#50).
+- Raid-start readiness in the domain: each raid target gets an available, resets-before-raid, needs-fresh-sync,
+  or locked-through-raid verdict, a combined raid takes the most restrictive, and a locked character cannot
+  sign up or be rostered (#54).
 
 ### Changed
 
