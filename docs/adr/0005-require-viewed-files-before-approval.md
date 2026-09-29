@@ -20,20 +20,22 @@ GitHub records a file's **Viewed** mark per user and exposes it only to that use
 An approval counts only when the designated reviewer approved the current head commit after marking every changed
 file as viewed.
 
-- The `review` workflow's required `review-files-viewed` check reads the reviewer's viewed marks and latest review
-  with the reviewer's own token, stored as the `REVIEW_GATE_TOKEN` repository secret. It fails
-  on any file not marked as viewed, any file changed since it was viewed, and an approval of an older commit. It
-  fails closed when the secret is missing.
+- The `review` workflow's required `review-files-viewed` commit status reads the reviewer's viewed marks and
+  latest review with the reviewer's own token, stored as the `REVIEW_GATE_TOKEN` repository secret. It fails on any
+  file not marked as viewed, any file changed since it was viewed, and an approval of an older commit. It fails
+  closed when the secret is missing.
 - The token is a fine-grained token owned by the reviewer with read-only access to public repositories and no
   other permission. A fine-grained token cannot select a repository owned by another user, even for a collaborator,
   so it cannot be limited to this repository alone. If this repository becomes private, only a classic token with
   the broad `repo` scope can read it, and that trade-off needs a new decision.
-- Runs of the check never cancel each other, so a superseded run does not appear as a failure.
-- Only pull-request events (opened, synchronize, reopened) produce the required check. Each workflow run is its own
-  check suite, and a passing run from a review event would not replace the failed pull-request run. A review
-  submission, edit, or dismissal therefore runs a separate `review-refresh` job that re-runs the pull-request runs
-  for the head commit. Viewing a file raises no event, so the reviewer submits the approval after viewing every file,
-  or re-submits it to re-evaluate the check.
+- The `review-gate` job posts `review-files-viewed` as a commit status, not as its own job result. The status is
+  pending while a review is outstanding, success when the gate passes, and failure only for a problem someone must
+  fix. The job succeeds whenever it can post the status, so waiting for a review never shows a failed job.
+- A commit status has one current value per commit, so every pull-request and review event re-evaluates it.
+  Evaluations of one pull request run one at a time, so the last status posted reflects the latest event. An
+  earlier design used the job result itself; each workflow run formed its own check suite, and a later success did
+  not replace an earlier failure. Viewing a file raises no event, so the reviewer submits the approval after
+  viewing every file, or re-submits it to re-evaluate the status.
 - The workflow always runs the gate script from `main`, so a pull request cannot change the code that reads the
   reviewer token.
 - Branch protection dismisses stale approvals on a new push, requires approval of the most recent push by someone

@@ -7,7 +7,7 @@ the head commit, after that Ready for review event, having also marked every cha
 GitHub exposes a file's viewed state only to the user who viewed it, so each person's marks are read with that
 person's own read-only token, from the environment variable REVIEW_TOKEN_<LOGIN>.
 
-Usage: verify_review_viewed.py gate      full check for the required status check
+Usage: verify_review_viewed.py gate      full check; exits 0 when it passes, 3 while a review is outstanding, 1 on a problem
        verify_review_viewed.py operator  operator step only, run when the pull request is marked ready
 """
 
@@ -20,6 +20,11 @@ import sys
 import urllib.request
 from dataclasses import dataclass
 from datetime import datetime
+
+
+SUCCESS, PENDING, FAILURE = "success", "pending", "failure"
+EXIT_CODES = {SUCCESS: 0, FAILURE: 1, PENDING: 3}
+MISSING_TOKEN = "no review token"
 
 
 GRAPHQL_URL = "https://api.github.com/graphql"
@@ -82,7 +87,7 @@ def token_variable(login: str) -> str:
 def viewed_errors(login: str, files: dict[str, str] | None) -> list[str]:
     """Return why a person has not viewed every changed file; None means their token is missing."""
     if files is None:
-        return [f"no review token for @{login}: add the {token_variable(login)} repository secret"]
+        return [f"{MISSING_TOKEN} for @{login}: add the {token_variable(login)} repository secret"]
     errors: list[str] = []
     for path, state in sorted(files.items()):
         if state == "DISMISSED":
@@ -96,7 +101,7 @@ def operator_errors(pull_request: PullRequest, operator_files: dict[str, str] | 
     """Return why the operator's review is not complete."""
     operator = pull_request.author
     if pull_request.is_draft or pull_request.ready_at is None:
-        return [f"@{operator} has not finished their review: view every file, then mark the draft Ready for review"]
+        return [f"waiting for @{operator} to finish their review: view every file, then mark the draft Ready for review"]
     return viewed_errors(operator, operator_files)
 
 
@@ -131,10 +136,18 @@ def peer_errors(pull_request: PullRequest, files_by_login: dict[str, dict[str, s
     return latest_errors
 
 
-def gate_errors(pull_request: PullRequest, files_by_login: dict[str, dict[str, str] | None]) -> list[str]:
-    """Return every reason the pull request may not merge yet; an empty list means the gate passes."""
+def gate_result(pull_request: PullRequest, files_by_login: dict[str, dict[str, str] | None]) -> tuple[str, list[str]]:
+    """Classify the gate: pending while a review is outstanding, failure only for a problem someone must fix."""
     errors = operator_errors(pull_request, files_by_login.get(pull_request.author.lower()))
-    return errors or peer_errors(pull_request, files_by_login)
+    if errors:
+        # The operator is still reviewing; operator-signoff returns a ready pull request with unviewed files to draft.
+        missing_token = any(error.startswith(MISSING_TOKEN) for error in errors)
+        return (FAILURE if missing_token else PENDING), errors
+    errors = peer_errors(pull_request, files_by_login)
+    if not errors:
+        return SUCCESS, []
+    waiting = len(errors) == 1 and errors[0].startswith("waiting for a peer approval")
+    return (PENDING if waiting else FAILURE), errors
 
 
 def graphql(token: str, query: str, variables: dict[str, object]) -> dict:
@@ -197,17 +210,19 @@ def main(mode: str) -> int:
 
     if mode == "operator":
         errors = viewed_errors(pull_request.author, files_by_login[pull_request.author.lower()])
-    else:
-        errors = gate_errors(pull_request, files_by_login)
-    for error in errors:
-        print(f"ERROR: {error}")
-    if errors:
-        return 1
-    if mode == "operator":
+        for error in errors:
+            print(f"ERROR: {error}")
+        if errors:
+            return 1
         print(f"@{pull_request.author} viewed every changed file; a peer review is now expected")
-    else:
-        print(f"@{pull_request.author} reviewed, then a peer approved {pull_request.head_sha[:7]}, both after viewing every file")
-    return 0
+        return 0
+
+    state, messages = gate_result(pull_request, files_by_login)
+    if state == SUCCESS:
+        messages = [f"@{pull_request.author} reviewed, then a peer approved {pull_request.head_sha[:7]}; all files viewed"]
+    for message in messages:
+        print(f"{state.upper()}: {message[:1].upper()}{message[1:]}")
+    return EXIT_CODES[state]
 
 
 if __name__ == "__main__":

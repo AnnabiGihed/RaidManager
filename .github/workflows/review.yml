@@ -17,14 +17,19 @@ env:
   AUTHOR: ${{ github.event.pull_request.user.login }}
 
 jobs:
-  # The required check: the operator (the author) reviewed every file first, then a peer approved the head commit.
-  # Only pull-request events produce it, so one check suite per event holds its result; reviews re-run it below.
-  review-files-viewed:
-    if: github.event_name == 'pull_request'
+  # Sets the required review-files-viewed commit status: pending while a review is outstanding, success when the
+  # operator reviewed every file and then a peer approved the head commit, failure only for a problem to fix.
+  # A status has one current value per commit, so every event simply re-evaluates it.
+  review-gate:
+    if: github.event.pull_request.base.ref == 'main'
     runs-on: ubuntu-latest
+    # One evaluation per pull request at a time, so the last status posted reflects the latest event.
+    concurrency:
+      group: review-gate-${{ github.event.pull_request.number }}
     permissions:
       contents: read
       pull-requests: read
+      statuses: write
     steps:
       # The gate reads people's review tokens, so it always runs the script from main, never from the pull request.
       - uses: actions/checkout@v4
@@ -37,9 +42,25 @@ jobs:
       - name: Operator review, then peer approval, each after viewing every file
         env:
           GH_TOKEN: ${{ github.token }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
           REVIEW_TOKEN_ANNABIGIHED: ${{ secrets.REVIEW_TOKEN_ANNABIGIHED }}
           REVIEW_TOKEN_ANTHERMOOK: ${{ secrets.REVIEW_TOKEN_ANTHERMOOK || secrets.REVIEW_GATE_TOKEN }}
-        run: python scripts/verify_review_viewed.py gate
+        run: |
+          code=0
+          python scripts/verify_review_viewed.py gate > result.txt 2>&1 || code=$?
+          cat result.txt
+          case "$code" in
+            0) state=success ;;
+            3) state=pending ;;
+            *) state=failure ;;
+          esac
+          description=$(head -n 1 result.txt | sed -E 's/^[A-Z]+: //' | cut -c 1-140)
+          gh api -X POST "repos/$GITHUB_REPOSITORY/statuses/$HEAD_SHA" \
+            -f state="$state" \
+            -f context=review-files-viewed \
+            -f description="${description:-Review gate $state}" \
+            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > /dev/null
+          echo "review-files-viewed: $state"
 
   # New commits need the operator's review before a peer is asked, so a ready pull request goes back to draft.
   return-to-draft:
@@ -82,56 +103,16 @@ jobs:
           status=0
           python scripts/verify_review_viewed.py operator > result.txt || status=$?
           cat result.txt
+          # A skipped file is the operator's to fix, not a job failure: the comment says what to do.
           if [ "$status" -ne 0 ]; then
             gh pr ready "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --undo
             { echo "Returned to draft: @$AUTHOR must mark every changed file as viewed before marking it ready."
               echo; echo '```'; cat result.txt; echo '```'; } > comment.md
             gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file comment.md
-            exit 1
+            exit 0
           fi
           for reviewer in $REVIEWERS; do
             if [ "${reviewer,,}" != "${AUTHOR,,}" ]; then
               gh pr edit "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --add-reviewer "$reviewer"
             fi
-          done
-
-  # A review result in its own check suite would not replace the failed required check, so a review re-runs it instead.
-  review-refresh:
-    if: github.event_name == 'pull_request_review' && github.event.pull_request.base.ref == 'main'
-    runs-on: ubuntu-latest
-    timeout-minutes: 15
-    permissions:
-      actions: write
-      contents: read
-    steps:
-      # A run already in progress may have read the reviews before this one, so every run is re-run after it ends.
-      - name: Re-run the required check for the head commit
-        env:
-          GH_TOKEN: ${{ github.token }}
-          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
-        run: |
-          runs="repos/$GITHUB_REPOSITORY/actions/workflows/review.yml/runs?event=pull_request&head_sha=$HEAD_SHA"
-          ids=$(gh api "$runs" --jq '.workflow_runs[].id')
-          if [ -z "$ids" ]; then
-            echo "::error::No review-files-viewed run exists for $HEAD_SHA"
-            exit 1
-          fi
-          for id in $ids; do
-            for attempt in $(seq 1 30); do
-              if [ "$(gh api "repos/$GITHUB_REPOSITORY/actions/runs/$id" --jq .status)" = "completed" ]; then
-                if output=$(gh api -X POST "repos/$GITHUB_REPOSITORY/actions/runs/$id/rerun" 2>&1); then
-                  echo "Re-running review-files-viewed run $id"
-                  continue 2
-                fi
-                # Another review's refresh re-ran it first; wait for that run, then re-run it after this review.
-                if ! grep -q "already running" <<< "$output"; then
-                  echo "$output"
-                  exit 1
-                fi
-              fi
-              echo "Run $id is running; waiting to re-run it after this review"
-              sleep 10
-            done
-            echo "::error::Run $id did not finish within five minutes, so it could not be re-run after this review"
-            exit 1
           done
