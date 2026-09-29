@@ -1,6 +1,7 @@
 # ADR-0006: Review by the operator before a peer
 
-- Status: Proposed
+- Status: Proposed; amended by [ADR-0009](0009-prove-reviews-with-meaningful-comments.md), which replaces the Viewed
+  marks and per-person tokens with meaningful review comments
 - Date: 2026-09-29
 - Deciders: Gihed Annabi
 

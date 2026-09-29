@@ -22,33 +22,35 @@ Do not combine unrelated refactors and feature behavior in one commit.
 Every pull request must:
 
 - target `main`, link its task, and include the required five-section description and author checklist;
-- be reviewed first by its operator, the author who ran the agent: the operator marks every changed file as
-  **Viewed** and then marks the draft **Ready for review**;
-- then receive one approval of the latest commit, from someone other than its author and last pusher, given after
-  the operator's review and after the reviewer marked every changed file as **Viewed**;
+- be reviewed first by its operator, the author who ran the agent: a meaningful review comment on the latest commit,
+  then **Ready for review** on the draft;
+- then receive one approval of the latest commit, with a meaningful comment, from someone other than its author and
+  last pusher, given after the operator's review;
 - check every author self-review item except the CI and approval item;
 - preserve inward-only project dependencies;
 - include tests for business behavior and changed UI behavior;
 - update documentation, API contracts, diagrams, and the glossary when affected;
 - add a human-readable entry under `CHANGELOG.md` `[Unreleased]` for observable changes;
 - contain no credentials or environment-specific secrets;
-- pass the required `build-test`, `validate`, and `review-files-viewed` checks, including format, analyzers, tests,
-  Markdown lint, prose, internal links, a strict documentation build, and the viewed-files review gate.
+- pass the required `build-test`, `validate`, and `review-gate` checks, including format, analyzers, tests, Markdown
+  lint, prose, internal links, a strict documentation build, and the review gate.
 
 The checks catch mechanical defects; reviewers still verify technical accuracy, acceptance criteria, terminology,
 and whether behavior changes have matching documentation. The published site is updated automatically after merge.
 
-Agent pull requests open as drafts. The operator reviews first: mark each file as **Viewed** in the **Files
-changed** tab, then click **Ready for review**. If a file is not viewed, the pull request returns to draft with a
-comment listing it; otherwise the other reviewers are requested. A new commit returns the pull request to draft for
-another operator pass. The peer then marks every file as **Viewed** and approves. Viewing a file does not re-run
-`review-files-viewed`, so approve (or re-submit the approval) after the last file is viewed. Each reviewer needs a
-read-only `REVIEW_TOKEN_<LOGIN>` secret. See [ADR-0005](docs/adr/0005-require-viewed-files-before-approval.md) and
-[ADR-0006](docs/adr/0006-review-by-operator-before-peer.md). The agent never marks files as viewed or a pull request
-as ready.
+Agent pull requests open as drafts. The operator reviews first: submit a review with **Comment** that explains what
+you checked and names a changed file or identifier, then click **Ready for review**. Without that comment the pull
+request returns to draft with the reason; otherwise the other reviewers are requested. A new commit returns the pull
+request to draft for another operator pass. The peer then approves with a comment of their own. Every review comment,
+summary or inline, must be meaningful: at least 10 words for a summary or 5 for an inline comment, not only generic
+praise such as LGTM, not random text, and a summary must name a changed file or an identifier from the diff. A failing
+comment turns `review-gate` red and names the fix; editing the comment re-checks it. See
+[ADR-0009](docs/adr/0009-prove-reviews-with-meaningful-comments.md) and
+[ADR-0006](docs/adr/0006-review-by-operator-before-peer.md). The agent never writes the operator's review comments and
+never marks a pull request ready.
 
 GitHub permits squash merges only. The `review` workflow merges a pull request as soon as the operator's review, the
-peer approval, the required `build-test`, `validate`, and `review-files-viewed` checks, and resolution of review
+peer approval, the required `build-test`, `validate`, and `review-gate` checks, and resolution of review
 conversations are all in place ([ADR-0008](docs/adr/0008-merge-with-the-workflow-token.md)). Branch protection still
 decides, and nobody queues or clicks the merge. Do not use administrator bypass or merge your own pull request. GitHub
 deletes the source branch after merge; confirm the linked task is closed and its project status is `Done`.

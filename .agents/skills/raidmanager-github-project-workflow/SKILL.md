@@ -58,17 +58,18 @@ tests, documentation, and skill edits for a story may not.
    parent with `Refs #<story-number>`. Map each task criterion to evidence and include the five required sections
    and completed author checklist from `pr-and-branching-standards`. Do not describe a skipped or failing check as
    passed.
-6. Never mark the PR ready and never mark files as viewed: those actions are the operator's review (ADR-0006). Tell
-   the operator the draft is ready for their review once required CI is green. The operator views every file and
-   marks it Ready for review; the workflow then requests the peer, and any new commit returns the PR to draft. The
-   `review` workflow merges the PR itself once every gate passes (ADR-0008); never queue or perform the merge
-   yourself. Never use `--admin`, self-merge, or force-push. GitHub must wait for the peer approval, required checks
-   (including `review-files-viewed`, which needs the operator's review first and then a peer approval of the head
-   commit, both after viewing every file), and resolved conversations. The repository deletes the source branch after
-   merge. If the PR does not merge after every gate passes, report the reason; never merge manually to bypass a gate.
-   After merge, verify the source branch was deleted and the task is closed and `Done`; mark a story `Done` only when
-   every acceptance criterion is evidenced and all required child work is merged. Mark an epic `Done` only when all
-   child stories satisfy their exit criteria.
+6. Never mark the PR ready and never write a review or review comment in the operator's name: those are the
+   operator's review (ADR-0006, ADR-0009). Tell the operator the draft is ready for their review once required CI is
+   green. The operator posts a meaningful review comment and marks it Ready for review; the workflow then requests
+   the peer, and any new commit returns the PR to draft. The `review` workflow merges the PR itself once every gate
+   passes (ADR-0008); never queue or perform the merge yourself. Never use `--admin`, self-merge, or force-push.
+   GitHub must wait for the peer approval, required checks (including `review-gate`, which needs the operator's
+   review comment first and then a peer approval of the head commit, every review comment meaningful), and resolved
+   conversations. The repository deletes the source branch after merge. If the PR does not merge after every gate
+   passes, report the reason; never merge manually to bypass a gate. After merge, verify the source branch was
+   deleted and the task is closed and `Done`; mark a story `Done` only when every acceptance criterion is evidenced
+   and all required child work is merged. Mark an epic `Done` only when all child stories satisfy their exit
+   criteria.
 
 The `v1.0` milestone tracks release scope; it does not itself authorize a release. Release or tagging requires
 all included stories accepted, release checks completed, and explicit owner approval.

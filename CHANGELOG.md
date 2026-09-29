@@ -45,6 +45,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   are one job, and documentation publishing and the weekly link check run in their own workflows (#75).
 - The review workflow now merges approved pull requests itself with the workflow token, so no personal write
   token is needed (#77).
+- Reviews are now proven by meaningful review comments instead of Viewed marks, so no review token is needed;
+  the required status is renamed `review-gate`, and merges close linked issues and delete the branch (#79).
 - Pull requests now use protected automatic squash merging and delete their source branches after merge (#46).
 - Documentation contributions now pass root-file, style, link, diagram, and rendered-site checks before merging (#44).
 
