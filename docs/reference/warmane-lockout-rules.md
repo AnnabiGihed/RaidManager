@@ -39,7 +39,7 @@ The reports above do not establish daylight-saving behavior or whether all insta
 | Icecrown Citadel, 10 versus 25 players | Separate IDs, as reported. | [2016 realm report](https://forum.warmane.com/showthread.php?t=342958). | **Reported**, not confirmed per realm. |
 | Ruby Sanctum, each size | Normal and Heroic share an ID, as reported. | [Warmane player report](https://forum.warmane.com/showthread.php?t=391214). | **Reported**, not confirmed per realm. |
 | Trial of the Crusader, each size | Normal and Heroic have separate IDs, as reported. | [Warmane player report](https://forum.warmane.com/showthread.php?t=391214). | **Reported**, not confirmed per realm. |
-| Other modeled raids | Size and difficulty sharing has no complete current matrix. | [Player discussion](https://forum.warmane.com/showthread.php?t=438424) describes Wrath of the Lich King examples. | **Unknown** per instance and realm. |
+| Other modeled raids | Size and difficulty sharing has no complete current matrix. | [Player discussion](https://forum.warmane.com/showthread.php?t=438424) describes older raid examples. | **Unknown** per instance and realm. |
 
 An Icecrown Citadel save cannot be declared free solely because the target's Normal/Heroic enum value differs.
 Warmane staff discussed changing difficulty inside one Icecrown Citadel run in 2016.
