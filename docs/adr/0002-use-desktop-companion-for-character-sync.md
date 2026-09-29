@@ -1,6 +1,6 @@
 # ADR-0002: Use a desktop companion for character synchronization
 
-- Status: Proposed
+- Status: Accepted
 - Date: 2026-09-29
 - Deciders: Gihed Annabi
 

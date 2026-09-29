@@ -28,7 +28,12 @@ The external Discord account that authenticates a platform user. The platform do
 
 Whether an approved character can join a scheduled raid target.
 The decision compares the matching instance and difficulty lockout reset with the raid start.
-Missing or stale lockout data produces an unknown result.
+Missing or stale lockout data produces a needs-fresh-sync verdict, not an available result.
+
+## Officer exception
+
+A recorded, visible reason for rostering a character whose lockout status needs a fresh sync.
+It does not make that character eligible and cannot override a confirmed active lockout.
 
 ## GearScore
 
@@ -49,10 +54,16 @@ Lockouts do not belong to a loadout.
 ## Raid signup
 
 A user's expression of availability for a raid, including one or more offered verified character loadouts.
+The website and Discord bot edit the same response. Availability can be confirmed, tentative, late, or declined.
 
 ## Roster selection
 
 The single signup option chosen by a raid leader for a user in a concrete raid roster.
+
+## Raid-start readiness
+
+The verdict for one character and raid target at the scheduled start: available, resets before raid,
+locked through raid, or needs fresh sync.
 
 ## SavedVariables
 

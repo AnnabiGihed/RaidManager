@@ -30,10 +30,16 @@ Players sign in through Discord and approve characters discovered across their W
 The addon captures character loadouts and raid lockouts; the companion uploads saved data when the game writes it
 to disk. Raid leaders schedule raids and select from players' offered characters and specializations.
 Eligibility depends on whether each character's matching lockout has expired by the scheduled raid start.
+The first usable version also includes recurring raid templates, one signup shared by the website and bot,
+officer compositions and buff coverage, boss assignments, reminders, gear checks, attendance history,
+and roster export to the addon.
+Missing or stale lockout data requires a fresh sync or a reasoned officer exception; an active lockout cannot be
+overridden.
 
 The raid list, signup, roster, character, raid-save, and preset workflows use
 [raiding.site](https://raiding.site/) as a product reference. The [product scope](./docs/explanation/product.md)
 records the observed reference screens and the planned improvements; it does not claim feature parity today.
+All workflows in that scope document belong to version 1, not a later feature phase.
 
 ## Documentation
 
