@@ -15,6 +15,7 @@ namespace RaidManager.Domain.Tests.Features.Characters.Aggregates;
 /// Purpose: Verifies that loadout-specific raid readiness remains separate from character-wide lockouts.
 /// </remarks>
 [Binding]
+[Scope(Feature = "Character synchronization")]
 public sealed class CharacterStepDefinitions
 {
     #region Fields
