@@ -49,8 +49,7 @@ public sealed class RaidStepDefinitions
         _raid = Raid.Create(
             new CommunityId(Guid.NewGuid()),
             new UserId(Guid.NewGuid()),
-            RaidInstance.IcecrownCitadel,
-            RaidDifficulty.TwentyFivePlayer,
+            [new RaidTarget(RaidInstance.IcecrownCitadel, RaidDifficulty.TwentyFivePlayer)],
             startsAtUtc,
             startsAtUtc.AddHours(-4),
             new RaidRequirements(new GearScore(6000), true, TimeSpan.FromDays(2)),

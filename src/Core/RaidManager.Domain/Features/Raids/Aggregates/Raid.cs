@@ -1,5 +1,3 @@
-using RaidManager.Domain.Features.Characters.Enums;
-using RaidManager.Domain.Features.Shared.Enums;
 using RaidManager.Domain.Features.Raids.Enums;
 using RaidManager.Domain.Features.Raids.Events;
 using RaidManager.Domain.Features.Raids.ValueObjects;
@@ -21,6 +19,9 @@ public sealed class Raid : AggregateRoot<RaidId>
 
     /// <summary>Stores one final selected character loadout per rostered user.</summary>
     private readonly List<RosterSelection> _rosterSelections = [];
+
+    /// <summary>Stores every instance and difficulty the raid requires, in the organizer's order.</summary>
+    private readonly List<RaidTarget> _targets = [];
     #endregion Fields
 
     #region Constructors
@@ -37,8 +38,6 @@ public sealed class Raid : AggregateRoot<RaidId>
     /// <param name="id">The raid identifier.</param>
     /// <param name="communityId">The organizing community.</param>
     /// <param name="createdByUserId">The creating raid leader.</param>
-    /// <param name="instance">The raid instance.</param>
-    /// <param name="difficulty">The raid size and difficulty.</param>
     /// <param name="startsAtUtc">The scheduled start instant.</param>
     /// <param name="signupDeadlineUtc">The signup deadline.</param>
     /// <param name="requirements">The automatic signup requirements.</param>
@@ -47,8 +46,6 @@ public sealed class Raid : AggregateRoot<RaidId>
         RaidId id,
         CommunityId communityId,
         UserId createdByUserId,
-        RaidInstance instance,
-        RaidDifficulty difficulty,
         DateTimeOffset startsAtUtc,
         DateTimeOffset signupDeadlineUtc,
         RaidRequirements requirements,
@@ -57,8 +54,6 @@ public sealed class Raid : AggregateRoot<RaidId>
     {
         CommunityId = communityId;
         CreatedByUserId = createdByUserId;
-        Instance = instance;
-        Difficulty = difficulty;
         StartsAtUtc = startsAtUtc;
         SignupDeadlineUtc = signupDeadlineUtc;
         Requirements = requirements;
@@ -74,11 +69,8 @@ public sealed class Raid : AggregateRoot<RaidId>
     /// <summary>Gets the user who created the raid.</summary>
     public UserId CreatedByUserId { get; private set; }
 
-    /// <summary>Gets the raid instance.</summary>
-    public RaidInstance Instance { get; private set; }
-
-    /// <summary>Gets the raid size and difficulty.</summary>
-    public RaidDifficulty Difficulty { get; private set; }
+    /// <summary>Gets every instance and difficulty the raid requires; each receives its own readiness verdict.</summary>
+    public IReadOnlyCollection<RaidTarget> Targets => _targets.AsReadOnly();
 
     /// <summary>Gets the scheduled UTC start instant.</summary>
     public DateTimeOffset StartsAtUtc { get; private set; }
@@ -106,35 +98,35 @@ public sealed class Raid : AggregateRoot<RaidId>
     /// <summary>Creates a draft raid event.</summary>
     /// <param name="communityId">The organizing community.</param>
     /// <param name="createdByUserId">The creating raid leader.</param>
-    /// <param name="instance">The raid instance.</param>
-    /// <param name="difficulty">The raid size and difficulty.</param>
+    /// <param name="targets">The required instances and difficulties: at least one, each listed once.</param>
     /// <param name="startsAtUtc">The scheduled start instant.</param>
     /// <param name="signupDeadlineUtc">The signup deadline.</param>
     /// <param name="requirements">The automatic signup requirements.</param>
     /// <param name="description">The optional organizer description.</param>
     /// <returns>The draft raid.</returns>
+    /// <exception cref="DomainException">Thrown when the schedule or the targets are invalid.</exception>
     public static Raid Create(
         CommunityId communityId,
         UserId createdByUserId,
-        RaidInstance instance,
-        RaidDifficulty difficulty,
+        IEnumerable<RaidTarget> targets,
         DateTimeOffset startsAtUtc,
         DateTimeOffset signupDeadlineUtc,
         RaidRequirements requirements,
         string? description)
     {
         EnsureSchedule(startsAtUtc, signupDeadlineUtc);
+        var targetList = targets.ToList();
+        EnsureTargets(targetList);
         var raid = new Raid(
             new RaidId(Guid.NewGuid()),
             communityId,
             createdByUserId,
-            instance,
-            difficulty,
             startsAtUtc,
             signupDeadlineUtc,
             requirements,
             string.IsNullOrWhiteSpace(description) ? null : description.Trim());
-        raid.RaiseDomainEvent(new RaidCreated(raid.Id, communityId, instance.ToString(), startsAtUtc));
+        raid._targets.AddRange(targetList);
+        raid.RaiseDomainEvent(new RaidCreated(raid.Id, communityId, targetList.ConvertAll(target => target.ToString()), startsAtUtc));
         return raid;
     }
     #endregion Factory Methods
@@ -251,6 +243,22 @@ public sealed class Raid : AggregateRoot<RaidId>
         if (signupDeadlineUtc >= startsAtUtc)
         {
             throw new UnknownDomainException("Raid signup deadline must be before raid start time.");
+        }
+    }
+
+    /// <summary>Ensures a raid requires at least one target and lists each target once.</summary>
+    /// <param name="targets">The required raid targets.</param>
+    /// <exception cref="DomainException">Thrown when no target is given or a target is repeated.</exception>
+    private static void EnsureTargets(List<RaidTarget> targets)
+    {
+        if (targets.Count == 0)
+        {
+            throw new UnknownDomainException("A raid must require at least one instance and difficulty.");
+        }
+
+        if (targets.Distinct().Count() != targets.Count)
+        {
+            throw new UnknownDomainException("A raid cannot require the same instance and difficulty twice.");
         }
     }
     #endregion Invariants
