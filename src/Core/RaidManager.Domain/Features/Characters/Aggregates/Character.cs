@@ -1,4 +1,6 @@
+using Pivot.Framework.Domain.Shared;
 using RaidManager.Domain.Features.Characters.Enums;
+using RaidManager.Domain.Features.Characters.Errors;
 using RaidManager.Domain.Features.Shared.Enums;
 using RaidManager.Domain.Features.Characters.Events;
 using RaidManager.Domain.Features.Characters.ValueObjects;
@@ -20,6 +22,9 @@ public sealed class Character : AggregateRoot<CharacterId>
 
     /// <summary>Stores the current character-wide raid lockouts.</summary>
     private readonly List<RaidLockout> _raidLockouts = [];
+
+    /// <summary>Stores every ownership claim made on the character, one per requesting user.</summary>
+    private readonly List<CharacterClaim> _claims = [];
     #endregion Fields
 
     #region Constructors
@@ -75,7 +80,7 @@ public sealed class Character : AggregateRoot<CharacterId>
     /// <summary>Gets the optional current guild name.</summary>
     public string? GuildName { get; private set; }
 
-    /// <summary>Gets a value indicating whether ownership was verified through a trusted proof flow.</summary>
+    /// <summary>Gets a value indicating whether a user owns the character through an approved claim.</summary>
     public bool IsOwnershipVerified { get; private set; }
 
     /// <summary>Gets the UTC timestamp of the latest successful Warmane Armory synchronization.</summary>
@@ -89,6 +94,9 @@ public sealed class Character : AggregateRoot<CharacterId>
 
     /// <summary>Gets the current character-wide raid lockouts.</summary>
     public IReadOnlyCollection<RaidLockout> RaidLockouts => _raidLockouts.AsReadOnly();
+
+    /// <summary>Gets the ownership claims made on the character.</summary>
+    public IReadOnlyCollection<CharacterClaim> Claims => _claims.AsReadOnly();
     #endregion Properties
 
     #region Factory Methods
@@ -110,18 +118,74 @@ public sealed class Character : AggregateRoot<CharacterId>
     #endregion Factory Methods
 
     #region Domain Behavior
-    /// <summary>Claims the character for a user after trusted ownership verification.</summary>
-    /// <param name="ownerId">The verified owner.</param>
-    public void Claim(UserId ownerId)
+    /// <summary>Records that a user's synchronized data discovered the character, opening or refreshing their claim.</summary>
+    /// <param name="userId">The user whose paired companion uploaded the character.</param>
+    /// <param name="requestedAtUtc">The UTC instant of the discovery.</param>
+    /// <returns>
+    /// The user's claim identifier. A new claim is pending, or a conflict when another user already owns the character.
+    /// An existing claim is returned unchanged: a repeated upload never approves, reopens or transfers ownership.
+    /// </returns>
+    public Result<CharacterClaimId> RequestClaim(UserId userId, DateTimeOffset requestedAtUtc)
     {
-        if (IsOwnershipVerified && OwnerId != ownerId)
+        var existingClaim = FindClaim(userId);
+        if (existingClaim is not null)
         {
-            throw new UnknownDomainException("Character is already claimed by another verified user.");
+            return existingClaim.Id;
         }
 
-        OwnerId = ownerId;
+        var state = IsOwnedByAnotherUser(userId) ? CharacterClaimState.Conflict : CharacterClaimState.Pending;
+        var claim = CharacterClaim.Create(userId, state, requestedAtUtc);
+        _claims.Add(claim);
+        return claim.Id;
+    }
+
+    /// <summary>Approves the user's pending claim, making the user the character's owner.</summary>
+    /// <param name="userId">The user approving their own claim.</param>
+    /// <param name="decidedAtUtc">The UTC instant of the approval.</param>
+    /// <returns>
+    /// Success, or a failure: <see cref="CharacterErrors.ClaimNotFound"/> (<see cref="ResultExceptionType.NotFound"/>),
+    /// <see cref="CharacterErrors.ClaimNotPending"/> or <see cref="CharacterErrors.OwnedByAnotherUser"/>
+    /// (<see cref="ResultExceptionType.Conflict"/>). In the last case the claim moves to conflict review.
+    /// </returns>
+    public Result ApproveClaim(UserId userId, DateTimeOffset decidedAtUtc)
+    {
+        var pendingClaim = FindPendingClaim(userId);
+        if (pendingClaim.IsFailure)
+        {
+            return pendingClaim;
+        }
+
+        var claim = pendingClaim.Value;
+        if (IsOwnedByAnotherUser(userId))
+        {
+            claim.Decide(CharacterClaimState.Conflict, decidedAtUtc);
+            return Result.Failure(CharacterErrors.OwnedByAnotherUser, ResultExceptionType.Conflict);
+        }
+
+        claim.Decide(CharacterClaimState.Approved, decidedAtUtc);
+        OwnerId = userId;
         IsOwnershipVerified = true;
-        RaiseDomainEvent(new CharacterClaimed(Id, ownerId));
+        RaiseDomainEvent(new CharacterClaimed(Id, userId));
+        return Result.Success();
+    }
+
+    /// <summary>Rejects the user's pending claim so the character never appears among their signup choices.</summary>
+    /// <param name="userId">The user rejecting their own claim.</param>
+    /// <param name="decidedAtUtc">The UTC instant of the rejection.</param>
+    /// <returns>
+    /// Success, or <see cref="CharacterErrors.ClaimNotFound"/> (<see cref="ResultExceptionType.NotFound"/>) or
+    /// <see cref="CharacterErrors.ClaimNotPending"/> (<see cref="ResultExceptionType.Conflict"/>).
+    /// </returns>
+    public Result RejectClaim(UserId userId, DateTimeOffset decidedAtUtc)
+    {
+        var pendingClaim = FindPendingClaim(userId);
+        if (pendingClaim.IsFailure)
+        {
+            return pendingClaim;
+        }
+
+        pendingClaim.Value.Decide(CharacterClaimState.Rejected, decidedAtUtc);
+        return Result.Success();
     }
 
     /// <summary>Refreshes public identity data retrieved from the Warmane Armory.</summary>
@@ -250,4 +314,32 @@ public sealed class Character : AggregateRoot<CharacterId>
         }
     }
     #endregion Invariants
+
+    #region Private Helpers
+    /// <summary>Finds the claim made by a user.</summary>
+    /// <param name="userId">The requesting user.</param>
+    /// <returns>The user's claim, or <see langword="null"/> when the user never claimed the character.</returns>
+    private CharacterClaim? FindClaim(UserId userId) => _claims.SingleOrDefault(claim => claim.RequestedByUserId == userId);
+
+    /// <summary>Finds the user's claim and requires it to be pending.</summary>
+    /// <param name="userId">The requesting user.</param>
+    /// <returns>The pending claim, or a not-found or not-pending failure.</returns>
+    private Result<CharacterClaim> FindPendingClaim(UserId userId)
+    {
+        var claim = FindClaim(userId);
+        if (claim is null)
+        {
+            return Result.Failure<CharacterClaim>(CharacterErrors.ClaimNotFound, ResultExceptionType.NotFound);
+        }
+
+        return claim.State == CharacterClaimState.Pending
+            ? claim
+            : Result.Failure<CharacterClaim>(CharacterErrors.ClaimNotPending, ResultExceptionType.Conflict);
+    }
+
+    /// <summary>Determines whether a different user already owns the character.</summary>
+    /// <param name="userId">The requesting user.</param>
+    /// <returns><see langword="true"/> when another user owns the character.</returns>
+    private bool IsOwnedByAnotherUser(UserId userId) => IsOwnershipVerified && OwnerId != userId;
+    #endregion Private Helpers
 }
