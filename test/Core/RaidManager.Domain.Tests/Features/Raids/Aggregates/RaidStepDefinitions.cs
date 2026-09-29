@@ -7,6 +7,7 @@ using RaidManager.Domain.Features.Raids.Aggregates;
 using RaidManager.Domain.Features.Raids.Enums;
 using RaidManager.Domain.Features.Raids.ValueObjects;
 using RaidManager.Domain.Features.Shared.Identifiers;
+using RaidManager.Domain.Tests.Features.Raids.Support;
 
 namespace RaidManager.Domain.Tests.Features.Raids.Aggregates;
 
@@ -66,11 +67,13 @@ public sealed class RaidStepDefinitions
         _firstLoadoutId = new LoadoutId(Guid.NewGuid());
         _secondCharacterId = new CharacterId(Guid.NewGuid());
         _secondLoadoutId = new LoadoutId(Guid.NewGuid());
+        SignupOption[] options = [new SignupOption(_firstCharacterId, _firstLoadoutId), new SignupOption(_secondCharacterId, _secondLoadoutId)];
         _raid.SubmitSignup(
             _userId,
             RaidAvailability.Confirmed,
             null,
-            [new SignupOption(_firstCharacterId, _firstLoadoutId), new SignupOption(_secondCharacterId, _secondLoadoutId)],
+            options,
+            ReadinessAssessments.AvailableFor(_raid, options),
             null,
             DateTimeOffset.UtcNow);
     }
@@ -78,19 +81,19 @@ public sealed class RaidStepDefinitions
     /// <summary>Selects the first loadout before the tested replacement operation.</summary>
     [Given("the participant first offered loadout is selected for group 1 position 1")]
     public void GivenTheParticipantFirstOfferedLoadoutIsSelectedForGroup1Position1() =>
-        _raid.SelectRosterOption(_userId, _firstCharacterId, _firstLoadoutId, 1, 1);
+        _raid.SelectRosterOption(_userId, _firstCharacterId, _firstLoadoutId, ReadinessAssessments.Available(_raid, _firstCharacterId), 1, 1);
     #endregion Given Steps
 
     #region When Steps
     /// <summary>Selects the first offered loadout.</summary>
     [When("the raid leader selects the participant first offered loadout for group 1 position 1")]
     public void WhenTheRaidLeaderSelectsTheParticipantFirstOfferedLoadoutForGroup1Position1() =>
-        _raid.SelectRosterOption(_userId, _firstCharacterId, _firstLoadoutId, 1, 1);
+        _raid.SelectRosterOption(_userId, _firstCharacterId, _firstLoadoutId, ReadinessAssessments.Available(_raid, _firstCharacterId), 1, 1);
 
     /// <summary>Selects the second offered loadout.</summary>
     [When("the raid leader selects the participant second offered loadout for group 2 position 1")]
     public void WhenTheRaidLeaderSelectsTheParticipantSecondOfferedLoadoutForGroup2Position1() =>
-        _raid.SelectRosterOption(_userId, _secondCharacterId, _secondLoadoutId, 2, 1);
+        _raid.SelectRosterOption(_userId, _secondCharacterId, _secondLoadoutId, ReadinessAssessments.Available(_raid, _secondCharacterId), 2, 1);
     #endregion When Steps
 
     #region Then Steps
