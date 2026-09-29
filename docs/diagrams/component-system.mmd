@@ -1,0 +1,32 @@
+flowchart TB
+    subgraph device[Player device]
+        game[WoW 3.3.5a<br/>Runs the addon]
+        addon[Addon<br/>Captures visited characters]
+        files[(SavedVariables<br/>Written on reload or logout)]
+        companion[Desktop companion<br/>Pairs, watches, uploads, retries]
+    end
+
+    subgraph platform[RaidManager - intended v1 responsibilities]
+        web[Website<br/>Approval, signup and officer workspace]
+        api[Shared application API<br/>Identity, characters, communities, raids]
+        bot[Discord bot<br/>Interactions, posts and reminders]
+        store[(Persistent state<br/>SQL Server target)]
+    end
+
+    discord[Discord platform<br/>Sign-in and community interactions]
+    armory[Warmane Armory<br/>Public character facts]
+    game -->|exposes in-game data| addon
+    addon -->|provides variables for game flush| files
+    files -->|completed file read| companion
+    companion -->|authenticated snapshots<br/>HTTPS| api
+    web -->|commands and queries<br/>HTTPS| api
+    bot -->|shared commands and queries<br/>HTTPS| api
+    api -->|reads and writes| store
+    bot -->|posts and receives interactions| discord
+    web -->|Discord sign-in| discord
+    api -->|reads public facts<br/>HTTPS| armory
+
+    classDef internal fill:#cfe2f3,stroke:#2c5aa0,stroke-width:1px,color:#000
+    classDef external fill:#e8e8e8,stroke:#666,stroke-width:1px,color:#000
+    class addon,companion,web,api,bot,store internal
+    class game,files,discord,armory external

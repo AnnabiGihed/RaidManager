@@ -1,0 +1,8 @@
+stateDiagram-v2
+    [*] --> Pending: New character discovery
+    Pending --> Approved: Player approves and claim checks pass
+    Pending --> Rejected: Player rejects
+    Pending --> Conflict: Another identity owns character
+    Conflict --> Pending: Reviewed evidence permits another approval attempt
+    Rejected --> Rejected: Repeated upload does not approve claim
+    Approved --> Approved: New snapshots refresh facts without transferring owner

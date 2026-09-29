@@ -1,0 +1,21 @@
+sequenceDiagram
+    autonumber
+    participant S as Scheduled reminder or saved change
+    participant N as Delivery coordination
+    participant R as Current raid state
+    participant D as Discord adapter
+    participant P as Player or officer
+    S->>N: Request reminder, post update or material-change alert
+    N->>R: Read current schedule, assignment and recipient permissions
+    alt Obsolete request or already delivered
+        N->>N: Suppress duplicate or outdated message
+    else Current and authorized
+        N->>D: Send using stable delivery identity
+        alt Discord rejects or transport fails
+            D-->>N: Failure with retry or permission information
+            N->>N: Retain delivery state and expose actionable failure
+        else Delivery succeeds
+            D-->>P: Show reminder or change
+            D-->>N: Record message reference and delivery outcome
+        end
+    end

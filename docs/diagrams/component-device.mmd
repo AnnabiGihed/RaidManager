@@ -1,0 +1,31 @@
+flowchart TB
+    game[WoW client<br/>Owns disk flush timing]
+    subgraph addon[RaidManager addon - intended components]
+        capture[Character and loadout capture]
+        saves[Saved-instance capture<br/>Completeness and reset data]
+        export[SavedVariables snapshot<br/>Version and observation time]
+        importer[Roster importer<br/>Selected characters and revision]
+        invites[Invitation controls<br/>Officer action in game]
+    end
+    subgraph companion[Desktop companion - intended components]
+        watcher[Installation and account watcher<br/>Only player-selected folders]
+        parser[Snapshot parser<br/>Validate data without executing Lua]
+        pending[Retry buffer<br/>Stable snapshot identity]
+        uploader[Authenticated uploader<br/>Pairing revocation and sync status]
+    end
+    api[RaidManager API]
+    game -->|in-game observations| capture
+    game -->|saved-instance observations| saves
+    capture -->|observed fields| export
+    saves -->|complete or incomplete scan| export
+    export -->|game flushes file| watcher
+    watcher -->|completed file| parser
+    parser -->|valid snapshot| pending
+    pending -->|retry until acknowledged| uploader
+    uploader -->|HTTPS| api
+    importer -->|current roster| invites
+
+    classDef internal fill:#cfe2f3,stroke:#2c5aa0,stroke-width:1px,color:#000
+    classDef external fill:#e8e8e8,stroke:#666,stroke-width:1px,color:#000
+    class capture,saves,export,importer,invites,watcher,parser,pending,uploader internal
+    class game,api external

@@ -1,0 +1,21 @@
+flowchart LR
+    addon[Addon snapshot<br/>Visited character, save completeness, observed time]
+    armory[Warmane Armory<br/>Public facts with observation time]
+    manual[Player edits<br/>Reported labels, notes and save claims]
+    merge[Character information<br/>Keep source and freshness per fact]
+    lockout[Lockout evaluation<br/>Require complete and fresh game evidence]
+    gear[Gear readiness<br/>Inspect loadout; warn on missing data]
+    view[Website and Discord<br/>Same facts and explanations]
+
+    addon -->|captured evidence| merge
+    armory -->|public fields only| merge
+    manual -->|reported fields never replace synced evidence| merge
+    merge -->|character-wide saves| lockout
+    merge -->|loadout-specific gear| gear
+    lockout -->|verdict, reason, reset and freshness| view
+    gear -->|advisory warnings| view
+
+    classDef internal fill:#cfe2f3,stroke:#2c5aa0,stroke-width:1px,color:#000
+    classDef external fill:#e8e8e8,stroke:#666,stroke-width:1px,color:#000
+    class merge,lockout,gear,view internal
+    class addon,armory,manual external

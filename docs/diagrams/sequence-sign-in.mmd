@@ -1,0 +1,26 @@
+sequenceDiagram
+    autonumber
+    participant P as Player
+    participant W as Website
+    participant API as Identity workflow
+    participant D as Discord
+    P->>W: Sign in
+    W->>API: Begin Discord authorization
+    API-->>W: Authorization redirect with request correlation
+    W->>D: Request player consent
+    D-->>W: Return authorization result
+    W->>API: Complete correlated sign-in
+    API->>D: Validate authorization and obtain Discord identity
+    alt Denied or invalid authorization
+        API-->>W: Sign-in failed with retry guidance
+        W-->>P: Show failure
+    else Authorized
+        API->>API: Resolve local user and community permissions
+        API-->>W: Establish authenticated application session
+        W->>API: Query pending character claims
+        alt Pending claims exist
+            API-->>W: Open mandatory approval page
+        else No pending claims
+            API-->>W: Open community raid view
+        end
+    end

@@ -3,6 +3,15 @@ nav:
   - Home: index.md
   - Product scope: explanation/product.md
   - Architecture: explanation/architecture.md
+  - Visual guide:
+      - Overview: explanation/visual-guide.md
+      - Use cases: explanation/use-cases.md
+      - Domain model: explanation/domain-model.md
+      - Components: explanation/components.md
+      - Account and character sequences: explanation/sequence-identity.md
+      - Raid sequences: explanation/sequence-raids.md
+      - States and readiness: explanation/state-models.md
+  - Diagram maintenance: how-to/diagrams.md
   - Glossary: glossary.md
   - API contracts: reference/api-contracts.md
   - Decisions:
@@ -11,3 +20,12 @@ nav:
       - Character synchronization: adr/0002-use-desktop-companion-for-character-sync.md
 theme:
   name: material
+markdown_extensions:
+  - pymdownx.snippets:
+      base_path: .
+      check_paths: true
+  - pymdownx.superfences:
+      custom_fences:
+        - name: mermaid
+          class: mermaid
+          format: !!python/name:pymdownx.superfences.fence_code_format

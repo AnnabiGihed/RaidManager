@@ -1,0 +1,53 @@
+@startuml
+!pragma layout smetana
+left to right direction
+skinparam backgroundColor white
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam usecaseBackgroundColor #cfe2f3
+skinparam usecaseBorderColor #2c5aa0
+title RaidManager v1 - Player use cases
+actor Player
+rectangle "Account and characters" {
+  usecase "Sign in with Discord" as Login
+  usecase "Pair or revoke companion" as Pair
+  usecase "Choose installations and accounts;\npause or resume sync" as Folders
+  usecase "Review sync status and failures" as Sync
+  usecase "Approve or reject discovered characters" as Approve
+  usecase "Surface an ownership conflict" as Conflict
+  usecase "Inspect profiles, loadouts and gear warnings" as Profile
+  usecase "Manage visibility, labels and notes" as Edit
+  usecase "Inspect saved raids and reset times" as Saves
+}
+rectangle "Raid participation" {
+  usecase "Browse upcoming and historical raids" as Browse
+  usecase "Offer characters for a raid\nthrough web or Discord" as Signup
+  usecase "Select characters, specs, favorite and notes" as Options
+  usecase "Check raid-start eligibility" as Eligibility
+  usecase "Save or reuse signup presets" as Preset
+  usecase "Set confirmed, tentative, late or declined" as Availability
+  usecase "Withdraw response" as Withdraw
+  usecase "View roster, bench and boss assignments" as Roster
+  usecase "Receive reminders and material changes" as Notify
+}
+Player -- Login
+Player -- Pair
+Player -- Folders
+Player -- Sync
+Player -- Approve
+Conflict ..> Approve : <<extend>>\nexisting owner differs
+Player -- Profile
+Player -- Edit
+Player -- Saves
+Player -- Browse
+Player -- Signup
+Signup ..> Options : <<include>>
+Signup ..> Eligibility : <<include>>
+Player -- Preset
+Player -- Availability
+Player -- Withdraw
+Player -- Roster
+Player -- Notify
+@enduml

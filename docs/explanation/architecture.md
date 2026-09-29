@@ -6,6 +6,9 @@ The first [Architecture Decision Record (ADR)](../adr/README.md) records Discord
 Warmane-first data sources. The [companion ADR](../adr/0002-use-desktop-companion-for-character-sync.md) records
 the upload path.
 
+The [version 1 visual guide](visual-guide.md) contains the complete use-case, domain, component, sequence,
+state, and readiness diagrams. The views below provide the starting context.
+
 ## Current scaffold
 
 The application programming interface (API) exposes only a foundation endpoint and development OpenAPI document.
@@ -14,8 +17,22 @@ The Aspire AppHost starts the API, web app, bot host, and a local SQL Server res
 The Domain project contains initial aggregates and value objects. Application workflows and persistence are not wired.
 There is no addon or companion project yet.
 
-The [context diagram](../diagrams/context.mmd) and [container diagram](../diagrams/container.mmd) show the
-**current local development scaffold**. They do not describe a production deployment.
+## System context
+
+This is the intended version 1 product boundary. Players and officers use RaidManager through the website and
+Discord; WoW and Warmane Armory supply character facts. These connections are planned, not implemented.
+[Mermaid source](../diagrams/context.mmd).
+
+[![Intended RaidManager system context](../diagrams/context.svg)](../diagrams/context.svg)
+
+## Current local containers
+
+The current local setup runs placeholder web, API, and bot processes under Aspire.
+The arrows labeled as service references are configuration only: they do not imply working product calls or
+database persistence. This is a local-development view, not a deployed production topology.
+[Mermaid source](../diagrams/container.mmd).
+
+[![Current local development containers and configuration references](../diagrams/container.svg)](../diagrams/container.svg)
 
 ## Intended data flow
 
@@ -53,3 +70,19 @@ not accepted on the other. Exact API requests and event contracts will be docume
 The same application state also owns recurring raids, signup availability, roster publication, attendance,
 and notifications. Re-evaluate impacted signups and rosters after snapshots or raid schedule changes.
 The addon roster export uses the current published composition, not a separate officer-maintained list.
+
+## Planned character synchronization
+
+The planned addon saves a visited character's data when WoW writes its SavedVariables file.
+The companion uploads a complete snapshot; the player approves newly discovered characters before signup.
+[Mermaid source](../diagrams/character-sync.mmd).
+
+[![Planned character synchronization and retry sequence](../diagrams/character-sync.svg)](../diagrams/character-sync.svg)
+
+## Planned raid decision
+
+The website and bot use one signup and one readiness decision for each raid target.
+The officer publishes a roster only after reviewing candidates, then exports it for the addon on raid night.
+[Mermaid source](../diagrams/raid-readiness.mmd).
+
+[![Planned shared signup and readiness sequence](../diagrams/raid-readiness.svg)](../diagrams/raid-readiness.svg)

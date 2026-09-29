@@ -1,0 +1,22 @@
+sequenceDiagram
+    autonumber
+    participant G as WoW and addon
+    participant F as SavedVariables file
+    participant C as Companion
+    participant API as Character workflow
+    participant R as Readiness workflow
+    G->>G: Capture visited character and save-scan completeness
+    G->>F: Flush snapshot on reload, logout or exit
+    C->>F: Read completed file without executing Lua
+    C->>C: Validate format and retain stable snapshot identity
+    C->>API: Upload with paired identity and observation time
+    alt Network failure or unavailable service
+        C->>C: Retain snapshot and retry with same identity
+    else Duplicate or older snapshot
+        API-->>C: Acknowledge without regressing current facts
+    else New valid snapshot
+        API->>API: Store provenance and observed character facts
+        API->>API: Queue new claim or preserve existing ownership
+        API->>R: Re-evaluate affected future signups and rosters
+        API-->>C: Acknowledge successful sync
+    end

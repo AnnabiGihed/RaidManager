@@ -1,0 +1,23 @@
+sequenceDiagram
+    autonumber
+    participant O as Officer
+    participant W as Website
+    participant R as Raid workflow
+    participant S as Schedule runner
+    participant D as Discord delivery
+    O->>W: Save raid template, time zone and weekly schedule
+    W->>R: Check officer permissions and schedule
+    R->>R: Store targets, deadline and recurrence rule
+    S->>R: Materialize due occurrence
+    R->>R: Resolve local schedule to UTC and check occurrence identity
+    alt Occurrence already exists
+        R-->>S: Return existing raid
+    else New occurrence
+        R->>R: Create raid from template
+        R->>D: Request initial raid post
+        D-->>R: Record Discord post reference or retry state
+    end
+    O->>W: Change raid start or target
+    W->>R: Validate and save change
+    R->>R: Re-evaluate affected readiness and assignments
+    R->>D: Update existing post and notify affected participants

@@ -1,0 +1,44 @@
+classDiagram
+    User "1" --> "0..*" CompanionPairing : authorizes
+    CompanionPairing "1" --> "0..*" CharacterSnapshot : submits
+    Character "1" --> "0..*" CharacterSnapshot : observation history
+    CharacterSnapshot "1" *-- "1" ObservationMetadata : provenance
+    Character "1" *-- "0..*" Loadout : configurations
+    Loadout "1" *-- "0..*" GearItem : equipment
+    Loadout "1" *-- "1" TalentConfiguration : talents and glyphs
+    Loadout "1" *-- "1" CombatStats : observed stats
+    Character "1" *-- "0..*" RaidLockout : saved instances
+    Character "1" --> "0..*" CharacterClaim : ownership review
+    CharacterSnapshot "1" --> "0..*" CharacterClaim : discovers
+    CharacterSnapshot --> Loadout : refreshes observed fields
+    CharacterSnapshot --> RaidLockout : refreshes complete save set
+    class CompanionPairing {
+        UserId UserId
+        PairingState State
+    }
+    class CharacterSnapshot {
+        SnapshotId Id
+        CharacterId CharacterId
+        bool IsLockoutScanComplete
+    }
+    class ObservationMetadata {
+        CharacterDataSource Source
+        DateTimeOffset ObservedAtUtc
+        DateTimeOffset ReceivedAtUtc
+    }
+    class CharacterClaim {
+        UserId RequestedBy
+        ClaimState State
+    }
+    class Loadout {
+        LoadoutId Id
+        CharacterRole Role
+        GearScore GearScore
+    }
+    class RaidLockout {
+        RaidInstance Instance
+        RaidDifficulty Difficulty
+        string LockoutId
+        DateTimeOffset ResetsAtUtc
+        bool IsExtended
+    }

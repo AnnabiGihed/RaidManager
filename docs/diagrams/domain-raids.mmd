@@ -1,0 +1,47 @@
+classDiagram
+    Community "1" --> "0..*" RaidTemplate : reusable setup
+    RaidTemplate "1" --> "0..1" RecurrenceRule : optional schedule
+    RaidTemplate "0..1" --> "0..*" Raid : generates
+    Raid *-- "1..*" RaidTarget : required instances
+    Raid *-- "0..*" RaidSignup : participants
+    RaidSignup "1" *-- "0..*" SignupOption : offered loadouts
+    User "1" --> "0..*" SignupPreset : owns
+    SignupPreset "1" *-- "0..*" PresetOption : preferred choices
+    Raid *-- "0..*" RaidComposition : alternatives
+    RaidComposition "1" *-- "0..*" RosterSelection : selected
+    RaidComposition "1" *-- "0..*" BenchEntry : substitutes
+    RosterSelection --> SignupOption : chosen option
+    BenchEntry --> RaidSignup : available participant
+    RaidComposition "1" *-- "0..*" BossAssignment : encounter plan
+    BossAssignment --> RosterSelection : assigned participant
+    Raid "1" --> "0..*" AttendanceRecord : raid night
+    AttendanceRecord --> User : one participant
+    RaidTarget "1" --> "0..*" EligibilityAssessment : at scheduled start
+    EligibilityAssessment "1" --> "0..1" OfficerException : unknown data only
+    RosterSelection --> EligibilityAssessment : validates against
+    class RaidSignup {
+        UserId UserId
+        Availability Availability
+        DateTimeOffset LateArrivalUtc
+    }
+    class RaidComposition {
+        CompositionId Id
+        PublicationState State
+        int Revision
+    }
+    class RosterSelection {
+        UserId UserId
+        CharacterId CharacterId
+        LoadoutId LoadoutId
+        int GroupNumber
+        int Position
+    }
+    class EligibilityAssessment {
+        CharacterId CharacterId
+        ReadinessVerdict Verdict
+        DateTimeOffset EvaluatedForUtc
+    }
+    class OfficerException {
+        UserId OfficerId
+        string Reason
+    }

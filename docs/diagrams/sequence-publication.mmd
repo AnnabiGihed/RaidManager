@@ -1,0 +1,32 @@
+sequenceDiagram
+    autonumber
+    participant O as Officer
+    participant W as Officer workspace
+    participant R as Roster workflow
+    participant V as Validation policy
+    participant D as Discord delivery
+    O->>W: Prepare composition, bench and boss assignments
+    W->>R: Save draft and request publication preview
+    R->>V: Check selected options and current readiness
+    V->>V: Check one player per roster, slots and community permissions
+    alt Confirmed lock or invalid ownership or duplicate player
+        V-->>R: Blocking conflicts
+        R-->>W: Require correction before publication
+    else Unknown readiness without an exception
+        V-->>R: Fresh sync or reasoned officer exception required
+        O->>W: Record reason for specific unknown assessment
+        W->>R: Attach exception and request validation again
+    else Valid composition
+        V-->>R: Return warnings and assignment changes
+        R-->>W: Show publication preview
+        O->>W: Confirm publication
+        W->>R: Publish reviewed revision
+        R->>V: Recheck revision and current constraints
+        alt Revision or readiness changed since preview
+            R-->>W: Refresh preview before confirming again
+        else Reviewed revision is still valid
+            R->>R: Commit published roster and delivery work
+            R->>D: Update raid post and notify changed assignments
+            D-->>R: Acknowledge or retain failed delivery for retry
+        end
+    end

@@ -1,0 +1,31 @@
+classDiagram
+    User "0..1" <-- "0..*" Character : approved owner
+    Character "1" *-- "0..*" Loadout : configurations
+    Character "1" *-- "0..*" RaidLockout : observed saves
+    Community "1" --> "0..*" Raid : organizes
+    Raid "1" *-- "1..*" RaidTarget : required targets
+    Raid "1" *-- "0..*" RaidSignup : one per user
+    User "1" --> "0..*" RaidSignup : responds
+    RaidSignup "1" *-- "0..*" SignupOption : offered choices
+    SignupOption --> Character : references
+    SignupOption --> Loadout : references
+    Raid "1" *-- "0..*" RaidComposition : alternatives
+    RaidComposition "1" *-- "0..*" RosterSelection : participants
+    RosterSelection --> SignupOption : chooses
+    class User {
+        UserId Id
+        DiscordUserId DiscordUserId
+    }
+    class Character {
+        CharacterId Id
+        WarmaneRealm Realm
+        CharacterName Name
+    }
+    class Raid {
+        RaidId Id
+        DateTimeOffset StartsAtUtc
+    }
+    class RaidTarget {
+        RaidInstance Instance
+        RaidDifficulty Difficulty
+    }

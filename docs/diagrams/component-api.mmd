@@ -1,0 +1,29 @@
+flowchart TB
+    clients[Website, bot and companion<br/>Authenticated requests]
+
+    subgraph api[RaidManager API - intended v1 components]
+        entry[Transport and authorization<br/>Identity, community scope, validation]
+        identity[Identity and communities<br/>Sessions, pairing, membership]
+        characters[Character workflows<br/>Snapshots, claims, loadouts]
+        raids[Raid workflows<br/>Schedules, signups, compositions]
+        readiness[Readiness policy<br/>Realm rules, freshness, lockouts]
+        delivery[Delivery coordination<br/>Reminders, post updates, retries]
+        ports[Infrastructure contracts<br/>Persistence and external adapters]
+    end
+
+    clients -->|commands and queries<br/>HTTPS| entry
+    entry -->|account operations| identity
+    entry -->|character operations| characters
+    entry -->|raid operations| raids
+    characters -->|changed observations| readiness
+    raids -->|evaluate at raid start| readiness
+    raids -->|record material changes| delivery
+    identity -->|load and save| ports
+    characters -->|load and save| ports
+    raids -->|load and save| ports
+    delivery -->|track and dispatch| ports
+
+    classDef internal fill:#cfe2f3,stroke:#2c5aa0,stroke-width:1px,color:#000
+    classDef external fill:#e8e8e8,stroke:#666,stroke-width:1px,color:#000
+    class clients external
+    class entry,identity,characters,raids,readiness,delivery,ports internal

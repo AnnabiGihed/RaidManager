@@ -1,0 +1,10 @@
+stateDiagram-v2
+    [*] --> Draft
+    Draft --> Review: Officer requests publication preview
+    Review --> Draft: Correct blocking conflicts or edit composition
+    Review --> Published: Confirm current revision after validation
+    Published --> DraftRevision: Officer edits assignments
+    DraftRevision --> Review: Preview changes
+    Published --> NeedsReview: Snapshot or schedule invalidates readiness
+    NeedsReview --> DraftRevision: Officer revises selection
+    NeedsReview --> Review: Resync resolves issue or valid unknown-data exception
