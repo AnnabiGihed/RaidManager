@@ -21,8 +21,8 @@ file as viewed.
 
 - The `review` workflow's required `review-files-viewed` check reads the reviewer's viewed marks and latest review
   with the reviewer's own fine-grained, read-only token, stored as the `REVIEW_GATE_TOKEN` repository secret. It fails
-  on any unviewed file, any file changed since it was viewed, and an approval of an older commit. It fails closed when
-  the secret is missing.
+  on any file not marked as viewed, any file changed since it was viewed, and an approval of an older commit. It
+  fails closed when the secret is missing.
 - The check runs on pull-request updates and on review submission, edit, or dismissal. Viewing a file raises no
   event, so the reviewer submits the approval after viewing every file, or re-submits it to re-run the check.
 - The workflow always runs the gate script from `main`, so a pull request cannot change the code that reads the

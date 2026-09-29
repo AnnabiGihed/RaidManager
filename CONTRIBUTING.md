@@ -38,7 +38,7 @@ and whether behavior changes have matching documentation. The published site is 
 
 Reviewers mark each file as **Viewed** in the **Files changed** tab, then submit the approval. Viewing a file does not
 re-run `review-files-viewed`; submit or re-submit the approval after the last file is viewed. A new push dismisses
-the approval and any file it changes returns to unviewed, as described in
+the approval, and any file it changes loses its Viewed mark, as described in
 [ADR-0005](docs/adr/0005-require-viewed-files-before-approval.md).
 
 GitHub permits squash merges only. Once a pull request is ready and its latest checks pass, the task owner queues
