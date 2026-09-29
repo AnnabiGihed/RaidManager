@@ -5,7 +5,11 @@ and copyright notices. Keep this spelling consistent in future edits.
 
 ## Skills
 
-Project skills live in `.agents/skills/`.
+Project skills live in `.agents/skills/` and, identically, in `.claude/skills/` (for Claude Code).
+
+- Every change to a skill (add, edit, rename, delete) is applied by hand to both trees in the same commit.
+  Before committing, confirm the two trees are identical (for example `git diff --no-index .agents/skills
+  .claude/skills` prints nothing).
 
 - Start every task with `.agents/skills/raidmanager-conventions/SKILL.md`. It states which imported house and
   Pivot.Framework rules apply to RaidManager, which accepted ADRs replace (for example Discord instead of
