@@ -81,8 +81,8 @@ Never scaffold hand-rolled Result/command/aggregate/repository/controller bases 
     </packageSourceMapping>
     <packageSourceCredentials>
       <pivot>
-        <add key="Username" value="%PACKAGES_READ_USER%" />
-        <add key="ClearTextPassword" value="%PACKAGES_READ_TOKEN%" />
+        <add key="Username" value="%PIVOT_PACKAGES_USER%" />
+        <add key="ClearTextPassword" value="%PIVOT_PACKAGES_TOKEN%" />
       </pivot>
     </packageSourceCredentials>
   </configuration>

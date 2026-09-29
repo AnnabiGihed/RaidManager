@@ -24,7 +24,8 @@ The **functional analyst** owns and delivers as input: the business analysis and
 
 ## The mandatory frame (given, not argued)
 
-Design inside it and do not re-argue it; "follows the house standard" is still not a justification for decisions that *were* yours:
+In RaidManager, accepted ADRs override parts of this frame (Discord instead of Keycloak, no broker yet) — see
+`raidmanager-conventions`. Design inside it and do not re-argue it; "follows the house standard" is still not a justification for decisions that *were* yours:
 
 - .NET 10 LTS, Clean Architecture, the house solution structure and feature-first folders (`dotnet-solution-scaffolding`, `dotnet-ddd-cqrs-conventions`).
 - **Pivot.Framework** as the foundation of every layer (`pivot-framework`): Domain primitives and `Result`, MediatR dispatch through Pivot's `ICommand`/`IQuery`, `ValidationPipelineBehavior`, `UnitOfWork` with transactional outbox, `ApiController`/middleware or the gRPC interceptors. No hand-rolled equivalents, no third-party replacements for what Pivot provides.

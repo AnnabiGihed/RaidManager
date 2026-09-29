@@ -23,11 +23,11 @@ If `readiness: strict` is set in `CLAUDE.md` or `.github/copilot-instructions.md
 
 | Precondition | Detect | Fixer | Gates |
 |---|---|---|---|
-| **Skills kit installed** | `.claude/skills/` (Claude Code) or `.github/skills/` (Copilot) with the `pivot-*` and house skills | Human (sync) | Convention fidelity on everything |
+| **Skills kit installed** | `.agents/skills/` in RaidManager (elsewhere `.claude/skills/` or `.github/skills/`) with the `pivot-*` and house skills | Human (sync) | Convention fidelity on everything |
 | **Repository instructions** | `CLAUDE.md` / `.github/copilot-instructions.md` exists | Human (sync) or agent | House rules |
 | **Build props** | `Directory.Build.props` (net10.0, nullable, analyzers, doc generation) + `Directory.Packages.props` (CPM, Pivot packages pinned together) | Agent | Any .NET build |
-| **NuGet config** | `nuget.config` declares `https://nuget.pkg.github.com/AnnabiGihed/index.json` with package source mapping `Pivot.Framework.*` → that feed and `%PACKAGES_READ_USER%`/`%PACKAGES_READ_TOKEN%` credentials — no committed token | Agent | Pivot restore |
-| **Package read access** | env/secret `PACKAGES_READ_TOKEN` (GitHub PAT, `read:packages`) + `PACKAGES_READ_USER` available to the agent | Human | Restore — `401` if missing |
+| **NuGet config** | `nuget.config` declares `https://nuget.pkg.github.com/AnnabiGihed/index.json` with package source mapping `Pivot.Framework.*` → that feed and `%PIVOT_PACKAGES_USER%`/`%PIVOT_PACKAGES_TOKEN%` credentials — no committed token | Agent | Pivot restore |
+| **Package read access** | env/secret `PIVOT_PACKAGES_TOKEN` (GitHub PAT, `read:packages`) + `PIVOT_PACKAGES_USER` available to the agent | Human | Restore — `401` if missing |
 | **Registry allowlisted** | `nuget.pkg.github.com` (and `api.nuget.org`) reachable from the agent sandbox/firewall | Human | Restore — DNS/timeout if blocked |
 | **Pivot source access** | agent can read `github.com/AnnabiGihed/Pivot.Framework` (checkout, MCP GitHub server, or the `pivot-*` skills present) | Human | Verifying signatures instead of guessing |
 | **Local dependencies** | Aspire AppHost orchestrates the database (SQL Server/PostgreSQL), RabbitMQ, Redis (if used) and a **Keycloak** container with a realm import | Agent (add AppHost resources + realm JSON) | Running/E2E-testing auth, messaging, persistence |
@@ -57,10 +57,10 @@ Work item <ID> could not be completed: <one line naming the blocked precondition
 <what it did / nothing> and stopped rather than shipping a workaround.
 
 **Setup checklist** (each item done by a human with the stated rights)
-- [ ] Create a GitHub PAT (classic, `read:packages`) from a service account with access to the AnnabiGihed packages, and expose it to the agent as `PACKAGES_READ_TOKEN`, with `PACKAGES_READ_USER` set to the account name. A `401` on `nuget.pkg.github.com` means this is missing.
+- [ ] Create a GitHub PAT (classic, `read:packages`) from a service account with access to the AnnabiGihed packages, and expose it to the agent as `PIVOT_PACKAGES_TOKEN`, with `PIVOT_PACKAGES_USER` set to the account name. A `401` on `nuget.pkg.github.com` means this is missing.
 - [ ] Allow outbound access from the agent environment to `nuget.pkg.github.com` and `api.nuget.org`.
 - [ ] Give the agent read access to `AnnabiGihed/Pivot.Framework` (checkout or GitHub MCP token with Contents: Read).
-- [ ] Sync the skills kit (`pivot-*` + house skills) into `.claude/skills/` (and/or `.github/skills/`) and merge it to the default branch.
+- [ ] Sync the skills kit (`pivot-*` + house skills) into `.agents/skills/` (RaidManager) or `.claude/skills/` / `.github/skills/` and merge it to the default branch.
 - [ ] Make Docker and the Aspire workload available on the agent image (only for tasks that run the app or E2E tests).
 
 **Acceptance criteria**
