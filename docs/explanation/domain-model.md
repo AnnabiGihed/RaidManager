@@ -88,7 +88,7 @@ A diagram concept is not an implemented class merely because it appears there.
 | Current foundation | Version 1 design extension |
 | --- | --- |
 | `Identity/Aggregates/User.cs` and `Communities/Aggregates/Community.cs` exist. | Discord sign-in, sessions, pairing and permission workflows need implementation. |
-| `Characters/Aggregates/Character.cs` has an owner and ownership flag. | Explicit claim lifecycle, evidence, conflict handling and mandatory approval page are planned. |
+| `Characters/Aggregates/Character.cs` owns `CharacterClaim` entries with the pending, approved, rejected and conflict lifecycle; uploads never transfer ownership. | Ownership evidence, conflict resolution and the mandatory approval page are planned. |
 | `Characters/Aggregates/Loadout.cs` and raid lockouts exist. | Complete-scan evidence, snapshot history, source-specific freshness and manual-source handling are planned. |
 | `Raids/Aggregates/Raid.cs` has one instance and difficulty. | Multiple targets, recurrence, composition revisions and re-evaluation are planned. |
 | `Raids/Aggregates/RaidSignup.cs` stores options and a confirmed, tentative, late or declined availability; selection no longer changes it. | Withdrawal, presets, preferred option, notes and bench entries are planned. |
