@@ -79,6 +79,8 @@ An exception is a recorded decision to roster despite unknown data, not a new re
 
 The exact reset boundary and extension semantics must follow validated realm rules.
 Do not infer free access from a generic calendar when actual save evidence contradicts it.
+The [Warmane lockout evidence matrix](../reference/warmane-lockout-rules.md) lists confirmed, reported,
+and unknown combinations that still need realm observations.
 
 ## Data provenance
 

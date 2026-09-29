@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- Warmane lockout evidence matrix with explicit unknown reset, difficulty, extension, and encounter rules (#40).
 - Version 1 visual guide with UML use cases, domain models, components, sequences, state transitions,
   readiness decisions, editable sources, and rendered diagrams.
 - Initial Clean Architecture solution skeleton.
