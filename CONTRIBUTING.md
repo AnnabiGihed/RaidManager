@@ -9,29 +9,44 @@ or implementation. Complete the task through its own issue-linked pull request.
 ## Branching
 
 Create short-lived `feature/<task-number>-<slug>` or `fix/<task-number>-<slug>` branches from `main`.
-Keep each pull request focused on one vertical slice or one architectural change.
+Keep each pull request focused on one task. Do not push directly to `main`.
 
-## Commits
+## Commit messages
 
-Use imperative, intention-revealing commit messages.
+Use [Conventional Commits](https://www.conventionalcommits.org/) with the task number in each title, for example
+`docs(ci): enforce documentation checks (#44)`.
 Do not combine unrelated refactors and feature behavior in one commit.
 
 ## Pull requests
 
 Every pull request must:
 
+- target `main`, link its task, and include the required five-section description and author checklist;
+- receive one approval from someone other than the author before a squash merge;
 - preserve inward-only project dependencies;
 - include tests for business behavior and changed UI behavior;
-- update documentation and the glossary when new domain terminology is introduced;
+- update documentation, API contracts, diagrams, and the glossary when affected;
+- add a human-readable entry under `CHANGELOG.md` `[Unreleased]` for observable changes;
 - contain no credentials or environment-specific secrets;
-- pass formatting, analyzers, tests and documentation validation.
+- pass the required `build-test` and `validate` checks, including format, analyzers, tests, Markdown lint, prose,
+  internal links, and a strict documentation build.
+
+The checks catch mechanical defects; reviewers still verify technical accuracy, acceptance criteria, terminology,
+and whether behavior changes have matching documentation. The published site is updated automatically after merge.
 
 ## Local setup
 
-Configure the Pivot.Framework GitHub Packages credentials described in `README.md`, then run restore, build and tests
-from the solution root.
+Install the .NET 10 SDK and configure the Pivot.Framework GitHub Packages credentials described in `README.md`.
+From the solution root, run `dotnet restore RaidManager.sln`, `dotnet build RaidManager.sln --no-restore`, and
+`dotnet test RaidManager.sln --no-build`.
+
+## Releases
+
+The `v1.0` milestone tracks the first usable release; it is not a release by itself. After its stories and checks
+pass, the owner approves a release, assigns a Semantic Versioning number, dates the changelog section, and tags it.
+Documentation publishes from `main` after every merge, independently of application releases.
 
 ## Security
 
 Do not report security vulnerabilities in public issues.
-Contact the repository owner privately until a dedicated security reporting channel is configured.
+Use [GitHub private vulnerability reporting](./SECURITY.md) to send a report to Gihed Annabi.

@@ -1,0 +1,9 @@
+extends: existence
+message: "Remove '%s'; state the requirement directly."
+level: error
+scope: text
+ignorecase: true
+tokens:
+  - just
+  - simply
+  - obviously

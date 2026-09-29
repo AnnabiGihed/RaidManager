@@ -5,21 +5,98 @@ on:
     branches: [main]
   push:
     branches: [main]
-    paths: ['docs/**', 'mkdocs.yml', 'README.md', 'CHANGELOG.md']
+  schedule:
+    - cron: '0 5 * * 1'
+
+permissions:
+  contents: read
 
 jobs:
   validate:
+    if: github.event_name != 'schedule'
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      checks: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
         with:
           node-version: '20'
-      - name: Required root files
-        run: for f in README.md CHANGELOG.md LICENSE; do test -f "$f" || { echo "::error::Missing $f"; exit 1; }; done
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Documentation validator tests
+        run: python -m unittest discover -s scripts/tests -v
+      - name: Pull-request description
+        if: github.event_name == 'pull_request'
+        env:
+          PR_BODY: ${{ github.event.pull_request.body }}
+        run: python scripts/validate_pr.py
+      - name: Root documents and diagram sources
+        run: python scripts/validate_docs.py
+      - name: Mirrored skills
+        run: diff -qr .agents/skills .claude/skills
       - name: Markdown lint
-        run: npx markdownlint-cli2 "**/*.md" "#node_modules"
+        run: npx --yes markdownlint-cli2@0.18.1 "**/*.md" "#node_modules"
+      - name: Prose lint
+        uses: vale-cli/vale-action@v3
+        with:
+          version: 3.23.0
+          files: '["README.md","CHANGELOG.md","CONTRIBUTING.md","SECURITY.md","docs"]'
+          filter_mode: nofilter
+          fail_level: error
+          sync: false
       - name: Internal link check
         uses: lycheeverse/lychee-action@v2
         with:
-          args: --offline --include-verbatim docs README.md
+          args: --offline --include-verbatim --no-progress docs README.md CHANGELOG.md CONTRIBUTING.md SECURITY.md
+      - name: OpenAPI contract lint
+        shell: bash
+        run: |
+          contracts=()
+          for contract in openapi.yaml openapi.json docs/api/openapi.yaml docs/api/openapi.json; do
+            if test -f "$contract"; then contracts+=("$contract"); fi
+          done
+          if ((${#contracts[@]})); then
+            npx --yes @redocly/cli@2.55.0 lint "${contracts[@]}"
+          fi
+      - name: Build documentation
+        run: |
+          python -m pip install mkdocs-material==9.6.22
+          python -m mkdocs build --strict --site-dir site
+      - name: Upload GitHub Pages artifact
+        if: github.event_name == 'push'
+        uses: actions/upload-pages-artifact@v4
+        with:
+          path: site
+
+  deploy:
+    if: github.event_name == 'push'
+    needs: validate
+    runs-on: ubuntu-latest
+    concurrency:
+      group: github-pages
+      cancel-in-progress: false
+    permissions:
+      pages: write
+      id-token: write
+    environment:
+      name: github-pages
+      url: ${{ steps.deployment.outputs.page_url }}
+    steps:
+      - name: Configure GitHub Pages
+        uses: actions/configure-pages@v5
+      - name: Publish documentation
+        id: deployment
+        uses: actions/deploy-pages@v4
+
+  external-links:
+    if: github.event_name == 'schedule'
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check external links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --no-progress --max-retries 2 docs README.md CHANGELOG.md CONTRIBUTING.md SECURITY.md

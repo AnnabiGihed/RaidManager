@@ -2,7 +2,8 @@
 
 All notable changes to this project will be documented in this file.
 
-The format is based on Keep a Changelog, and this project follows Semantic Versioning.
+The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/), and this project follows
+[Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
 ## [Unreleased]
 
@@ -15,3 +16,7 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 - Initial Identity, Characters, Communities and Raids domain model.
 - Domain events and repository contracts for aggregate roots.
 - Architecture decision record for Discord-only authentication and Warmane-first integration.
+
+### Changed
+
+- Documentation contributions now pass root-file, style, link, diagram, and rendered-site checks before merging (#44).
