@@ -58,8 +58,12 @@ tests, documentation, and skill edits for a story may not.
    parent with `Refs #<story-number>`. Map each task criterion to evidence and include the five required sections
    and completed author checklist from `pr-and-branching-standards`. Do not describe a skipped or failing check as
    passed.
-6. Do not mark the PR ready or merge until required CI is green on its latest commit and review comments are
-   resolved. Do not self-merge or force-push. After merge, verify the task is closed and `Done`; mark a story `Done`
+6. Mark the PR ready only when required CI is green on its latest commit and review comments are resolved. Queue
+   every ready PR with `gh pr merge --auto --squash`; never use `--admin`, self-merge, or force-push. GitHub must
+   wait for the independent approval, required checks, and resolved conversations. The repository deletes the
+   source branch after merge. If auto-merge cannot be queued, leave the PR open and report the reason; never merge
+   manually to bypass a gate. After merge, verify the source branch was deleted and the task is closed and `Done`;
+   mark a story `Done`
    only when every acceptance criterion is evidenced and all required child work is merged. Mark an epic `Done`
    only when all child stories satisfy their exit criteria.
 
