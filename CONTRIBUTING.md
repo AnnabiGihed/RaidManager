@@ -1,8 +1,14 @@
 # Contributing
 
+## Work items
+
+Follow the mandatory [GitHub Project workflow](.agents/skills/raidmanager-github-project-workflow/SKILL.md).
+Story development requires an accepted story and a child task with measurable acceptance criteria before branching
+or implementation. Complete the task through its own issue-linked pull request.
+
 ## Branching
 
-Create short-lived feature branches from `main`.
+Create short-lived `feature/<task-number>-<slug>` or `fix/<task-number>-<slug>` branches from `main`.
 Keep each pull request focused on one vertical slice or one architectural change.
 
 ## Commits
