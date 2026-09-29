@@ -1,6 +1,6 @@
 # ADR-0007: Queue auto-merge when the operator marks a pull request ready
 
-- Status: Proposed
+- Status: Superseded by [ADR-0008](0008-merge-with-the-workflow-token.md)
 - Date: 2026-09-29
 - Deciders: Gihed Annabi
 

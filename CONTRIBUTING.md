@@ -47,11 +47,11 @@ read-only `REVIEW_TOKEN_<LOGIN>` secret. See [ADR-0005](docs/adr/0005-require-vi
 [ADR-0006](docs/adr/0006-review-by-operator-before-peer.md). The agent never marks files as viewed or a pull request
 as ready.
 
-GitHub permits squash merges only. When the operator marks a pull request ready, the `review` workflow queues a
-squash auto-merge ([ADR-0007](docs/adr/0007-queue-auto-merge-when-ready.md)). GitHub merges only after an independent
-approval, the required `build-test`, `validate`, and `review-files-viewed` checks, and resolution of review
-conversations. Do not use administrator bypass or merge your own pull request. GitHub deletes the source branch after
-merge; confirm the linked task is closed and its project status is `Done`.
+GitHub permits squash merges only. The `review` workflow merges a pull request as soon as the operator's review, the
+peer approval, the required `build-test`, `validate`, and `review-files-viewed` checks, and resolution of review
+conversations are all in place ([ADR-0008](docs/adr/0008-merge-with-the-workflow-token.md)). Branch protection still
+decides, and nobody queues or clicks the merge. Do not use administrator bypass or merge your own pull request. GitHub
+deletes the source branch after merge; confirm the linked task is closed and its project status is `Done`.
 
 ## Local setup
 
