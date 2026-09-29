@@ -1,0 +1,54 @@
+@startuml
+!pragma layout smetana
+left to right direction
+skinparam backgroundColor white
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam usecaseBackgroundColor #cfe2f3
+skinparam usecaseBorderColor #2c5aa0
+title RaidManager v1 - Officer and administration use cases
+actor "Raid officer" as Officer
+actor "Community administrator" as Admin
+Admin --|> Officer
+rectangle "Planning and communication" {
+  usecase "Create or edit raid targets and schedule" as Schedule
+  usecase "Reuse templates and weekly recurrence" as Repeat
+  usecase "Set deadline; close or reopen signups" as Deadline
+  usecase "Review candidates, availability and notes" as Candidates
+  usecase "Create, compare and duplicate compositions" as Compose
+  usecase "Inspect roles, buffs, debuffs and gear warnings" as Coverage
+  usecase "Validate readiness and roster conflicts" as Validate
+  usecase "Record an unknown-data exception" as Exception
+  usecase "Review changes and publish roster" as Publish
+  usecase "Keep Discord post and notifications current" as Notify
+}
+rectangle "Raid night and community" {
+  usecase "Manage bench and substitute swaps" as Bench
+  usecase "Prepare or copy boss assignments" as Boss
+  usecase "Record check-in, late arrivals and attendance" as Attend
+  usecase "Export current roster for addon invitations" as Export
+  usecase "Review attendance history" as History
+  usecase "Manage membership and officer permissions" as Permissions
+}
+Officer -- Schedule
+Officer -- Repeat
+Officer -- Deadline
+Officer -- Candidates
+Officer -- Compose
+Officer -- Coverage
+Officer -- Publish
+Publish ..> Validate : <<include>>
+Exception ..> Validate : <<extend>>\nunknown data only
+Publish ..> Notify : <<include>>
+Officer -- Bench
+Officer -- Boss
+Officer -- Attend
+Officer -- Export
+Officer -- History
+Admin -- Permissions
+note bottom of Exception
+  A confirmed lock at raid start cannot be overridden.
+end note
+@enduml

@@ -1,0 +1,23 @@
+sequenceDiagram
+    autonumber
+    participant P as Player
+    participant C as Companion
+    participant W as Website
+    participant API as Pairing workflow
+    C->>API: Begin short-lived pairing request
+    API-->>C: Request reference for website confirmation
+    C-->>P: Show pairing request
+    P->>W: Sign in and confirm this companion
+    W->>API: Authorize pairing for current Discord user
+    alt Expired or rejected request
+        API-->>C: Pairing denied - begin again
+    else Authorized request
+        API-->>C: Issue revocable upload authorization
+        C->>C: Store authorization outside addon files
+        P->>C: Choose installations and account folders
+        C->>API: Upload only snapshots from selected folders
+    end
+    P->>W: Revoke this companion
+    W->>API: Revoke pairing
+    C->>API: Attempt next upload
+    API-->>C: Authorization revoked - require pairing again

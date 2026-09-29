@@ -1,26 +1,26 @@
-flowchart LR
+flowchart TB
     developer([Developer])
 
-    subgraph local[RaidManager local development scaffold]
+    subgraph local[Current local development environment]
         apphost[AppHost<br/>Aspire orchestration]
-        web[Web<br/>Blazor placeholder]
+        web[Web<br/>Blazor placeholder page]
         api[API<br/>ASP.NET Core foundation endpoint]
-        bot[Discord bot<br/>Worker placeholder]
-        sql[(SQL Server<br/>Local resource)]
+        bot[Discord bot host<br/>Worker logs startup only]
+        sql[(SQL Server<br/>Local development resource)]
     end
 
-    developer -->|starts<br/>dotnet run| apphost
-    developer -->|views placeholder<br/>browser| web
-    apphost -->|starts| web
-    apphost -->|starts| api
-    apphost -->|starts| bot
-    apphost -->|provisions| sql
-    web -->|receives API reference<br/>Aspire| api
-    bot -->|receives API reference<br/>Aspire| api
-    api -->|receives database reference<br/>Aspire| sql
+    developer -->|starts local environment<br/>dotnet run| apphost
+    developer -->|opens placeholder<br/>browser| web
+    developer -->|checks foundation endpoint<br/>HTTP| api
+    apphost -->|starts process| web
+    apphost -->|starts process| api
+    apphost -->|starts process| bot
+    apphost -->|provisions resource| sql
+    web -->|receives API service reference<br/>Aspire configuration only| api
+    bot -->|receives API service reference<br/>Aspire configuration only| api
+    api -->|receives database reference<br/>Aspire configuration only| sql
 
     classDef person   fill:#fce5cd,stroke:#b45f06,stroke-width:1px,color:#000
     classDef internal fill:#cfe2f3,stroke:#2c5aa0,stroke-width:1px,color:#000
-
     class developer person
     class apphost,web,api,bot,sql internal

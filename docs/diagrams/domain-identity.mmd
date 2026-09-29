@@ -1,0 +1,26 @@
+classDiagram
+    Community "1" *-- "0..*" CommunityMember : scoped membership
+    CommunityMember "0..*" --> "1" User : identifies
+    User "1" --> "0..*" CompanionPairing : authorizes
+    User "1" --> "0..*" CharacterClaim : requests
+    class Community {
+        CommunityId Id
+        string DiscordGuildId
+        WarmaneRealm Realm
+    }
+    class CommunityMember {
+        UserId UserId
+        CommunityMemberRole Role
+    }
+    class User {
+        UserId Id
+        DiscordUserId DiscordUserId
+        string TimeZoneId
+    }
+    class CompanionPairing {
+        PairingState State
+    }
+    class CharacterClaim {
+        CharacterId CharacterId
+        ClaimState State
+    }

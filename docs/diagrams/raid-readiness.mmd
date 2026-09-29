@@ -1,0 +1,23 @@
+sequenceDiagram
+    autonumber
+    participant P as Player
+    participant UI as Website or Discord bot
+    participant API as Signup workflow
+    participant R as Readiness policy
+    P->>UI: Choose raid, availability and character options
+    UI->>API: Submit shared signup for authenticated user
+    API->>API: Check community access, deadline and character ownership
+    API->>R: Evaluate every offered option against every raid target
+    alt Any offered character remains locked
+        R-->>API: Locked with target and reset evidence
+        API-->>UI: Explain conflict so player can change the option
+    else Some observations are unknown or stale
+        R-->>API: Needs fresh sync
+        API->>API: Save response with unresolved readiness
+        API-->>UI: Request sync or an explicit officer exception before rostering
+    else All offered characters are eligible at raid start
+        R-->>API: Available or resets before raid
+        API->>API: Create or update one signup for user and raid
+        API-->>UI: Confirm saved response and verdicts
+    end
+    UI-->>P: Show current response on either channel

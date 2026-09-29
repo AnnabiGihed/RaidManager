@@ -1,0 +1,13 @@
+stateDiagram-v2
+    [*] --> Draft
+    Draft --> Open: Officer opens signups
+    Open --> Closed: Deadline reached or officer closes signups
+    Closed --> Open: Officer reopens before raid start
+    Open --> InProgress: Raid begins
+    Closed --> InProgress: Raid begins
+    InProgress --> Completed: Officer finalizes attendance
+    Draft --> Cancelled: Officer cancels
+    Open --> Cancelled: Officer cancels
+    Closed --> Cancelled: Officer cancels
+    Completed --> [*]
+    Cancelled --> [*]

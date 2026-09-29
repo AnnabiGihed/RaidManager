@@ -45,6 +45,7 @@ All workflows in that scope document belong to version 1, not a later feature ph
 
 - [Documentation index](./docs/index.md)
 - [Product scope and workflows](./docs/explanation/product.md)
+- [Version 1 visual guide](./docs/explanation/visual-guide.md)
 - [Architecture and implementation status](./docs/explanation/architecture.md)
 - [Architecture decisions](./docs/adr/README.md)
 - [Contributing](./CONTRIBUTING.md)

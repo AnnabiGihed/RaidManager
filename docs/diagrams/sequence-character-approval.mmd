@@ -1,0 +1,26 @@
+sequenceDiagram
+    autonumber
+    participant P as Player
+    participant W as Website
+    participant API as Claim workflow
+    participant C as Character state
+    P->>W: Sign in after character discovery
+    W->>API: Query this user's pending claims
+    API-->>W: Pending characters with realm, source and sync time
+    W-->>P: Review before continuing to raid planning
+    alt Player rejects a claim
+        P->>W: Reject character
+        W->>API: Record rejected claim
+        API-->>W: Exclude character from player's signup choices
+    else Player approves a claim
+        P->>W: Approve character
+        W->>API: Submit claim approval
+        API->>C: Check current owner and claim evidence
+        alt Another identity owns the character
+            C-->>API: Ownership conflict
+            API-->>W: Keep claim unresolved without transferring ownership
+        else Claim can be approved
+            API->>C: Record owner and approved claim together
+            API-->>W: Character becomes selectable
+        end
+    end

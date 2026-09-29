@@ -8,6 +8,8 @@ The format is based on Keep a Changelog, and this project follows Semantic Versi
 
 ### Added
 
+- Version 1 visual guide with UML use cases, domain models, components, sequences, state transitions,
+  readiness decisions, editable sources, and rendered diagrams.
 - Initial Clean Architecture solution skeleton.
 - Pivot.Framework package-source configuration.
 - Initial Identity, Characters, Communities and Raids domain model.

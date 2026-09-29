@@ -1,11 +1,20 @@
 flowchart LR
-    developer([Developer])
-    raidmanager(RaidManager<br/>Local development scaffold)
+    player([Player])
+    officer([Raid officer])
+    raidmanager(RaidManager<br/>Plans raids using synchronized characters<br/>and raid-start lockout decisions)
+    discord[Discord<br/>Identity, guild membership, raid interactions]
+    wow[WoW 3.3.5a client<br/>Character and saved-instance data]
+    armory[Warmane Armory<br/>Public character information]
 
-    developer -->|starts and inspects<br/>local application| raidmanager
+    player -->|reviews characters and signs up<br/>website or Discord| raidmanager
+    officer -->|schedules raids and publishes rosters<br/>website or Discord| raidmanager
+    raidmanager -->|authenticates and posts raid updates<br/>HTTPS| discord
+    wow -->|provides saved character snapshots<br/>addon and companion| raidmanager
+    raidmanager -->|reads public character facts<br/>HTTPS| armory
 
     classDef person   fill:#fce5cd,stroke:#b45f06,stroke-width:1px,color:#000
     classDef system   fill:#cfe2f3,stroke:#2c5aa0,stroke-width:2px,color:#000
-
-    class developer person
+    classDef external fill:#e8e8e8,stroke:#666,stroke-width:1px,color:#000
+    class player,officer person
     class raidmanager system
+    class discord,wow,armory external

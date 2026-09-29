@@ -1,0 +1,5 @@
+stateDiagram-v2
+    [*] --> NoResponse
+    NoResponse --> Responded: Save response
+    Responded --> Withdrawn: Withdraw
+    Withdrawn --> Responded: Resubmit

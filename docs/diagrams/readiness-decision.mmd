@@ -1,0 +1,31 @@
+flowchart TB
+    start[Approved character and one raid target<br/>Evaluate at the scheduled start]
+    match[Resolve realm, instance and shared difficulty rules]
+    evidence[Check observation freshness and save-scan completeness]
+    active[Check matching save at raid start<br/>Including extension and reset evidence]
+    unknown[Needs fresh sync<br/>Never report confirmed availability]
+    locked[Locked through raid<br/>Block signup and roster selection]
+    reset[Resets before raid<br/>Eligible with visible reset time]
+    free[Available<br/>Fresh data confirms no active matching save]
+    combined[Combined raid verdict<br/>Locked wins; otherwise unknown wins]
+    exception[Officer exception<br/>Unknown only, reason visible, verdict unchanged]
+
+    start -->|identity matches raid realm| match
+    match -->|resolved| evidence
+    match -->|mapping uncertain| unknown
+    evidence -->|fresh and complete| active
+    evidence -->|stale, missing or incomplete| unknown
+    active -->|confirmed active at start| locked
+    active -->|observed save expires before start| reset
+    active -->|confirmed no matching active save| free
+    active -->|extension or reset uncertain| unknown
+    locked -->|any required target| combined
+    unknown -->|any required target and none locked| combined
+    reset -->|all required targets eligible| combined
+    free -->|all required targets eligible| combined
+    unknown -->|officer records scoped reason| exception
+
+    classDef internal fill:#cfe2f3,stroke:#2c5aa0,stroke-width:1px,color:#000
+    classDef external fill:#e8e8e8,stroke:#666,stroke-width:1px,color:#000
+    class start,match,evidence,active,combined internal
+    class unknown,locked,reset,free,exception external

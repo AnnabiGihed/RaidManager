@@ -1,0 +1,19 @@
+sequenceDiagram
+    autonumber
+    participant E as Snapshot, reset or schedule change
+    participant R as Readiness workflow
+    participant S as Raid and roster state
+    participant D as Notification delivery
+    participant P as Player and officer
+    E->>R: Re-evaluate affected raid targets
+    R->>S: Load current observations, schedule and selected options
+    R->>R: Compute verdict for each target at raid start
+    alt Verdict and assignment remain unchanged
+        R->>S: Refresh evaluation evidence without duplicate alerts
+    else Affected selection is no longer ready
+        R->>S: Record new verdict and flag published roster for review
+        R->>D: Request one material-change notification
+        D-->>P: Explain target, reset, freshness and required action
+        P->>S: Resync or officer revises affected composition
+    end
+    D->>D: Retry failed transport delivery using same change identity

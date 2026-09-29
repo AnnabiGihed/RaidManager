@@ -1,0 +1,26 @@
+sequenceDiagram
+    autonumber
+    participant O as Officer
+    participant W as Website
+    participant R as Raid workflow
+    participant A as WoW addon
+    participant G as WoW client
+    O->>W: Record check-in and late arrivals
+    W->>R: Store attendance for raid and player
+    O->>W: Replace absent participant with bench candidate
+    W->>R: Validate replacement readiness and ownership
+    R-->>W: Return conflicts or replacement preview
+    O->>W: Publish validated replacement
+    W->>R: Save new roster revision and notify affected players
+    O->>W: Export current published roster
+    W->>R: Check current verdicts and reviewed roster revision
+    alt Confirmed locked or unresolved selection
+        R-->>W: Require roster correction before export
+    else Exportable composition
+        R-->>W: Provide roster with raid identity and revision
+        W-->>O: Download or copy roster export
+        O->>A: Import exported roster
+        A-->>O: Show raid, revision and selected characters
+        O->>A: Initiate invitations
+        A->>G: Request supported in-game invitations
+    end

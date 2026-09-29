@@ -1,0 +1,52 @@
+@startuml
+!pragma layout smetana
+left to right direction
+skinparam backgroundColor white
+skinparam defaultFontName Arial
+skinparam defaultFontSize 14
+skinparam shadowing false
+skinparam packageStyle rectangle
+skinparam usecaseBackgroundColor #cfe2f3
+skinparam usecaseBorderColor #2c5aa0
+skinparam actorBackgroundColor #fce5cd
+skinparam actorBorderColor #b45f06
+title RaidManager v1 - Use-case overview
+actor Player
+actor "Raid officer" as Officer
+actor "Community administrator" as Admin
+actor Discord <<external>>
+actor "WoW client" as WoW <<external>>
+actor "Warmane Armory" as Armory <<external>>
+Officer --|> Player
+Admin --|> Officer
+rectangle "RaidManager v1" {
+  usecase "Access a community\nUC-01" as Access
+  usecase "Connect game data\nUC-02" as Connect
+  usecase "Approve and manage characters\nUC-03" as Characters
+  usecase "Inspect raid readiness\nUC-04" as Ready
+  usecase "Respond to a raid\nUC-05" as Signup
+  usecase "Follow raid updates\nUC-06" as Updates
+  usecase "Schedule raids\nUC-07" as Schedule
+  usecase "Build compositions\nUC-08" as Compose
+  usecase "Publish and revise rosters\nUC-09" as Publish
+  usecase "Run raid night\nUC-10" as Run
+  usecase "Review attendance\nUC-11" as History
+  usecase "Manage community permissions\nUC-12" as Permissions
+}
+Player -- Access
+Player -- Connect
+Player -- Characters
+Player -- Ready
+Player -- Signup
+Player -- Updates
+Officer -- Schedule
+Officer -- Compose
+Officer -- Publish
+Officer -- Run
+Officer -- History
+Admin -- Permissions
+Access -- Discord
+Updates -- Discord
+Connect -- WoW
+Characters -- Armory
+@enduml
