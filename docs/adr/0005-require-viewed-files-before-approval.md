@@ -20,9 +20,14 @@ An approval counts only when the designated reviewer approved the current head c
 file as viewed.
 
 - The `review` workflow's required `review-files-viewed` check reads the reviewer's viewed marks and latest review
-  with the reviewer's own fine-grained, read-only token, stored as the `REVIEW_GATE_TOKEN` repository secret. It fails
+  with the reviewer's own token, stored as the `REVIEW_GATE_TOKEN` repository secret. It fails
   on any file not marked as viewed, any file changed since it was viewed, and an approval of an older commit. It
   fails closed when the secret is missing.
+- The token is a fine-grained token owned by the reviewer with read-only access to public repositories and no
+  other permission. A fine-grained token cannot select a repository owned by another user, even for a collaborator,
+  so it cannot be limited to this repository alone. If this repository becomes private, only a classic token with
+  the broad `repo` scope can read it, and that trade-off needs a new decision.
+- Runs of the check never cancel each other, so a superseded run does not appear as a failure.
 - The check runs on pull-request updates and on review submission, edit, or dismissal. Viewing a file raises no
   event, so the reviewer submits the approval after viewing every file, or re-submits it to re-run the check.
 - The workflow always runs the gate script from `main`, so a pull request cannot change the code that reads the
@@ -51,8 +56,7 @@ file as viewed.
 
 - A pull request can still edit `.github/workflows/review.yml`. On `pull_request` events GitHub runs the workflow
   definition from the pull request, which could skip the check or expose the reviewer token. The reviewer must view
-  that file like any other before approving. Scoping the token to this repository with read-only pull-request access
-  limits the harm.
+  that file like any other before approving. The token's read-only, public-repository access limits the harm.
 
 ## Alternatives considered
 
