@@ -127,13 +127,13 @@ class GateResultTests(unittest.TestCase):
         self.assertEqual(FAILURE, gate_result(pull_request([operator_review(), approval(body="")]))[0])
 
     def test_a_generic_inline_comment_fails_and_names_the_file(self) -> None:
-        comments = [InlineComment(PEER, "CHANGELOG.md", "nit")]
+        comments = [InlineComment(PEER, "CHANGELOG.md", "nit", READY_AT)]
         state, messages = gate_result(pull_request([operator_review(), approval()], comments=comments))
         self.assertEqual(FAILURE, state)
         self.assertEqual("edit @anthermook's comment on CHANGELOG.md: it only contains generic praise such as LGTM or looks good", messages[0])
 
     def test_bot_comments_are_ignored(self) -> None:
-        comments = [InlineComment("github-actions[bot]", "CHANGELOG.md", "ok")]
+        comments = [InlineComment("github-actions[bot]", "CHANGELOG.md", "ok", READY_AT)]
         self.assertEqual(SUCCESS, gate_result(pull_request([operator_review(), approval()], comments=comments))[0])
 
     def test_an_approval_before_the_sign_off_fails(self) -> None:
@@ -151,6 +151,30 @@ class GateResultTests(unittest.TestCase):
     def test_changes_requested_fails(self) -> None:
         request = review(PEER, "CHANGES_REQUESTED", "Please make EnsureNotLocked in Raid.cs report every locked target, not only the first.", 5)
         self.assertEqual((FAILURE, ["@anthermook requested changes"]), gate_result(pull_request([operator_review(), request])))
+
+    def test_an_approval_copying_the_operator_comment_fails(self) -> None:
+        state, messages = gate_result(pull_request([operator_review(), approval(body=OPERATOR_SUMMARY)]))
+        self.assertEqual(FAILURE, state)
+        self.assertEqual(["edit @anthermook's approval comment: it repeats @AnnabiGihed's review comment"], messages)
+
+    def test_a_lightly_edited_copy_fails(self) -> None:
+        edited = OPERATOR_SUMMARY.replace("I checked", "I verified").replace("is accurate", "looks accurate")
+        self.assertEqual(FAILURE, gate_result(pull_request([operator_review(), approval(body=edited)]))[0])
+
+    def test_a_different_comment_on_the_same_topic_passes(self) -> None:
+        self.assertEqual(SUCCESS, gate_result(pull_request([operator_review(), approval(body=PEER_SUMMARY)]))[0])
+
+    def test_repeating_your_own_comment_is_not_a_copy(self) -> None:
+        first = approval(minutes=5)
+        again = approval(minutes=8)
+        self.assertEqual(SUCCESS, gate_result(pull_request([operator_review(), first, again]))[0])
+
+    def test_an_inline_comment_copying_another_persons_fails(self) -> None:
+        text = "Please make the rejection message name every locked target"
+        comments = [InlineComment(OPERATOR, "CHANGELOG.md", text, READY_AT), InlineComment(PEER, "CHANGELOG.md", text, READY_AT + timedelta(minutes=1))]
+        state, messages = gate_result(pull_request([operator_review(), approval()], comments=comments))
+        self.assertEqual(FAILURE, state)
+        self.assertIn("it repeats @AnnabiGihed's comment on CHANGELOG.md", messages[0])
 
     def test_a_later_approval_replaces_a_change_request(self) -> None:
         request = review(PEER, "CHANGES_REQUESTED", "Please make EnsureNotLocked in Raid.cs report every locked target, not only the first.", 5)

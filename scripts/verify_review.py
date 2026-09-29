@@ -18,6 +18,7 @@ import re
 import sys
 import urllib.request
 from dataclasses import dataclass
+from difflib import SequenceMatcher
 from datetime import datetime
 
 
@@ -25,6 +26,8 @@ SUCCESS, PENDING, FAILURE = "success", "pending", "failure"
 EXIT_CODES = {SUCCESS: 0, FAILURE: 1, PENDING: 3}
 
 SUMMARY_MINIMUM_WORDS = 10
+# A comment sharing this share of its word sequence with another person's comment is a copy, even lightly edited.
+DUPLICATE_SIMILARITY = 0.8
 INLINE_MINIMUM_WORDS = 5
 
 # Praise and filler that say nothing about what was reviewed. They are removed before counting words.
@@ -53,6 +56,7 @@ class InlineComment:
     author: str
     path: str
     body: str
+    created_at: datetime
 
 
 @dataclass(frozen=True)
@@ -153,23 +157,54 @@ def is_person(login: str) -> bool:
     return not login.endswith(BOT_SUFFIX)
 
 
-def invalid_comment_messages(pull_request: PullRequest) -> list[str]:
-    """Return a fix request for every human review comment that is not meaningful."""
-    messages: list[str] = []
+@dataclass(frozen=True)
+class WrittenComment:
+    """A human review comment in the form the rules check: who wrote it, where, and when."""
+
+    author: str
+    label: str
+    body: str
+    written_at: datetime
+    summary: bool
+
+
+def written_comments(pull_request: PullRequest) -> list[WrittenComment]:
+    """Return every human review comment that must be meaningful, oldest first."""
+    comments: list[WrittenComment] = []
     for review in pull_request.reviews:
         required = review.state in ("APPROVED", "CHANGES_REQUESTED") or review.author.lower() == pull_request.author.lower()
         if not is_person(review.author) or review.state in ("PENDING", "DISMISSED") or (not review.body.strip() and not required):
             continue
-        problems = comment_problems(review.body, pull_request.change, summary=True)
-        if problems:
-            kind = "approval" if review.state == "APPROVED" else "review"
-            messages.append(f"edit @{review.author}'s {kind} comment: {'; '.join(problems)}")
+        kind = "approval" if review.state == "APPROVED" else "review"
+        comments.append(WrittenComment(review.author, f"{kind} comment", review.body, review.submitted_at, True))
     for comment in pull_request.comments:
-        if not is_person(comment.author):
-            continue
-        problems = comment_problems(comment.body, pull_request.change, summary=False)
+        if is_person(comment.author):
+            comments.append(WrittenComment(comment.author, f"comment on {comment.path}", comment.body, comment.created_at, False))
+    return sorted(comments, key=lambda comment: comment.written_at)
+
+
+def is_copy(text: str, original: str) -> bool:
+    """Return whether a comment repeats another one word for word, allowing small edits."""
+    words = [word.lower() for word in words_of(without_quotes_and_links(text))]
+    original_words = [word.lower() for word in words_of(without_quotes_and_links(original))]
+    return bool(words) and SequenceMatcher(None, words, original_words).ratio() >= DUPLICATE_SIMILARITY
+
+
+def invalid_comment_messages(pull_request: PullRequest) -> list[str]:
+    """Return a fix request for every human review comment that is not meaningful or copies someone else's."""
+    messages: list[str] = []
+    comments = written_comments(pull_request)
+    for index, comment in enumerate(comments):
+        problems = comment_problems(comment.body, pull_request.change, summary=comment.summary)
+        original = next(
+            (earlier for earlier in comments[:index]
+             if earlier.author.lower() != comment.author.lower() and is_copy(comment.body, earlier.body)),
+            None,
+        )
+        if original:
+            problems.append(f"it repeats @{original.author}'s {original.label}")
         if problems:
-            messages.append(f"edit @{comment.author}'s comment on {comment.path}: {'; '.join(problems)}")
+            messages.append(f"edit @{comment.author}'s {comment.label}: {'; '.join(problems)}")
     return messages
 
 
@@ -280,7 +315,8 @@ def fetch_pull_request(repository: str, number: int) -> PullRequest:
             if review.get("user") and review.get("submitted_at")
         ],
         comments=[
-            InlineComment(comment["user"]["login"], comment["path"], comment.get("body") or "")
+            InlineComment(comment["user"]["login"], comment["path"], comment.get("body") or "",
+                          parse_time(comment["created_at"]))
             for comment in api(f"{base}/pulls/{number}/comments")
             if comment.get("user")
         ],

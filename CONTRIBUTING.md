@@ -43,10 +43,10 @@ you checked and names a changed file or identifier, then click **Ready for revie
 request returns to draft with the reason; otherwise the other reviewers are requested. A new commit returns the pull
 request to draft for another operator pass. The peer then approves with a comment of their own. Every review comment,
 summary or inline, must be meaningful: at least 10 words for a summary or 5 for an inline comment, not only generic
-praise such as LGTM, not random text, and a summary must name a changed file or an identifier from the diff. A failing
-comment turns `review-gate` red and names the fix; editing the comment re-checks it. [Review a pull
-request](docs/how-to/review-a-pull-request.md) walks through both reviews with examples. See
-[ADR-0009](docs/adr/0009-prove-reviews-with-meaningful-comments.md) and
+praise such as LGTM, not random text, a summary must name a changed file or an identifier from the diff, and no
+comment may copy another person's. A failing comment turns `review-gate` red and names the fix; editing the comment
+re-checks it. [Review a pull request](docs/how-to/review-a-pull-request.md) walks through both reviews with examples.
+See [ADR-0009](docs/adr/0009-prove-reviews-with-meaningful-comments.md) and
 [ADR-0006](docs/adr/0006-review-by-operator-before-peer.md). The agent never writes the operator's review comments and
 never marks a pull request ready.
 
