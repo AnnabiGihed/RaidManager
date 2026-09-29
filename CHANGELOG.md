@@ -33,5 +33,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 - Pull requests now need the reviewer to mark every changed file as viewed before approving the latest commit;
   a new push dismisses approval, and unchecked author self-review items fail the description check (#59).
+- The `review-files-viewed` check is now required on `main`, and its runs no longer cancel each other (#61).
 - Pull requests now use protected automatic squash merging and delete their source branches after merge (#46).
 - Documentation contributions now pass root-file, style, link, diagram, and rendered-site checks before merging (#44).
