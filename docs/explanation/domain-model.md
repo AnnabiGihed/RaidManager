@@ -91,7 +91,7 @@ A diagram concept is not an implemented class merely because it appears there.
 | `Characters/Aggregates/Character.cs` owns `CharacterClaim` entries with the pending, approved, rejected and conflict lifecycle; uploads never transfer ownership. | Ownership evidence, conflict resolution and the mandatory approval page are planned. |
 | `Characters/Aggregates/Loadout.cs` and raid lockouts exist. | Complete-scan evidence, snapshot history, source-specific freshness and manual-source handling are planned. |
 | `Raids/Aggregates/Raid.cs` has one instance and difficulty. | Multiple targets, recurrence, composition revisions and re-evaluation are planned. |
-| `Raids/Aggregates/RaidSignup.cs` stores options and a status. | Availability and assignment must become independent; the current enum includes Selected and Bench. |
+| `Raids/Aggregates/RaidSignup.cs` stores options and a confirmed, tentative, late or declined availability; selection no longer changes it. | Withdrawal, presets, preferred option, notes and bench entries are planned. |
 | `Raids/Aggregates/RosterSelection.cs` supports one selection per user. | Multiple draft compositions, publication review, boss assignments and attendance are planned. |
 
 No relational schema is asserted here because persistence mappings are not implemented.
