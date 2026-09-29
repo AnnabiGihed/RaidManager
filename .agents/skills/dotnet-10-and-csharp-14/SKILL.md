@@ -81,7 +81,7 @@ House rules still override: these features never justify putting logic in a `.ra
 ## SDK and tooling
 
 - **`.slnx`** replaces the legacy `.sln` format; migrate with `dotnet solution migrate`. Adopt it deliberately — confirm the CI agents and Visual Studio versions in use support it before converting.
-- **File-based apps** (`dotnet run app.cs`) run a single `.cs` file without a project, compiled with Native AOT. Fine for throwaway scripts and spikes; **never** for a delivered application — the house structure applies to everything shipped.
+- **File-based apps** (`dotnet run app.cs`) run a single `.cs` file without a project (and `dotnet publish app.cs` produces a Native AOT binary by default). Fine for throwaway scripts and spikes; **never** for a delivered application — the house structure applies to everything shipped.
 - Aspire ships out-of-band from .NET, with its own versioning; check the Aspire release notes separately when upgrading, and keep the workload installed in the agent setup steps.
 
 ## Completion criteria

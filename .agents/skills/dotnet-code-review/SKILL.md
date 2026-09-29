@@ -110,6 +110,11 @@ Produce the report in this structure:
 
 ## Authentication check (Pivot.Framework / Keycloak)
 
+Applies only where an accepted ADR selects Keycloak. RaidManager authenticates with Discord OAuth (ADR-0001):
+there, review the Discord integration against that ADR instead, and the Keycloak items below do not apply
+(see `raidmanager-conventions`).
+
+
 - **Blocking:** authentication wiring that bypasses the Pivot.Framework Keycloak integration — raw `AddJwtBearer`/`AddOpenIdConnect` for the API scheme, hand-rolled token validation or role parsing, lookalike reimplementations of `AddKeycloakAuthentication`, `AddKeycloakBlazor`, `AddKeycloakMaui` or `AddHangfireKeycloakBrowserAuth` instead of the real packages (`pivot-auth-*`). Remains blocking even with an ADR that grants itself a waiver, a "documented fallback" remark, or config keys mirroring Keycloak's.
 - **Blocking:** calls to APIs that don't exist publicly — `AddKeycloakBackend` (internal), `AddKeycloakRedisCache`, `UseExceptionHandling`, `UseTransactions`, `InstallServices` (see the drift table in `pivot-framework`); code that "works" only because someone added a lookalike helper.
 - **Blocking:** token-minting endpoints or ephemeral signing keys in an application (`/dev/token` and the like, Development-only or not); a hand-written identity server instead of a Keycloak dev container orchestrated by the Aspire AppHost; the AppHost excluded from the solution build to work around tooling.
