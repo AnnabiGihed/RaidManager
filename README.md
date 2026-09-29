@@ -1,64 +1,49 @@
-# Warmane Raid Manager
+# RaidManager
 
-Warmane Raid Manager is a Discord-authenticated raid-planning platform for Warmane realms.
-Its differentiator is that raid leaders build rosters from synchronized World of Warcraft character data instead of
-manually maintained GearScore, talent, gear and lockout fields.
+RaidManager is a Discord-authenticated raid-planning platform for Warmane players, built around synchronized
+World of Warcraft (WoW) 3.3.5a character data.
 
 ## Status
 
-Foundation and initial Domain layer are scaffolded. Application, persistence, Discord OAuth, Warmane integration,
-addon sync, raid planning UI and Discord bot behavior will be implemented as vertical slices on top of this foundation.
+**Experimental.** Owned by Gihed Annabi. The solution builds and the initial domain model has tests, but the
+website, Discord bot, addon synchronization, and raid workflows are not yet usable product features.
 
-## Product direction
+## Build locally
 
-- Discord is the only user authentication provider.
-- Warmane is the initial game platform, with WotLK 3.3.5a as the first supported client.
-- Warmane Armory supplies public character data where reliable.
-- The WoW addon supplies data the Armory cannot reliably model, especially raid lockouts and multiple gear/loadout sets.
-- GearScore, gear, talents and stats are loadout-specific. Raid lockouts are character-specific.
-- Raid signups offer one or more verified character loadouts; a roster selects at most one option per user.
-
-## Architecture
-
-The repository follows Clean Architecture with feature-first DDD/CQRS slices. Dependencies point inward:
-
-```text
-Containers -> Application -> Domain
-     |             ^
-     v             |
-Infrastructure ----+
-```
-
-The solution uses .NET 10, C# 14, Blazor, ASP.NET Core, SQL Server, .NET Aspire and Pivot.Framework. Pivot's Keycloak
-packages are intentionally excluded because authentication is Discord OAuth only.
-
-See the [architecture documentation](docs/architecture/overview.md) and
-[ADR-0001](docs/adr/0001-foundation-and-authentication.md).
-
-## Local prerequisites
-
-- .NET 10 SDK
-- Docker Desktop or another Docker-compatible runtime
-- GitHub Packages credentials able to read `AnnabiGihed/Pivot.Framework`
-- Discord application credentials (required once the authentication slice is implemented)
-
-Set these environment variables before restore:
-
-```bash
-export PIVOT_PACKAGES_USER="your-github-user"
-export PIVOT_PACKAGES_TOKEN="your-github-package-token"
-```
-
-Then restore and build:
+You need the .NET 10 software development kit (SDK) and GitHub Packages read access for
+`AnnabiGihed/Pivot.Framework`.
+Set `PIVOT_PACKAGES_USER` and `PIVOT_PACKAGES_TOKEN` in your environment before restore.
+Docker is needed when running the Aspire host with its local SQL Server resource.
 
 ```bash
 dotnet restore RaidManager.sln
 dotnet build RaidManager.sln --no-restore
+dotnet test RaidManager.sln --no-build
 ```
 
-> The initial generated skeleton deliberately uses floating package ranges where a stable version could not be verified
-> in this execution environment. Pin all entries in `Directory.Packages.props` before the first production deployment.
+Most test projects are placeholders; the current executable tests cover the Domain project.
 
-## Ownership
+## Product direction
 
-Owner: Gihed Annabi
+The target product combines a raid-planning website, a Discord bot, a WoW addon, and a desktop companion.
+Players sign in through Discord and approve characters discovered across their WoW accounts.
+The addon captures character loadouts and raid lockouts; the companion uploads saved data when the game writes it
+to disk. Raid leaders schedule raids and select from players' offered characters and specializations.
+Eligibility depends on whether each character's matching lockout has expired by the scheduled raid start.
+
+The raid list, signup, roster, character, raid-save, and preset workflows use
+[raiding.site](https://raiding.site/) as a product reference. The [product scope](./docs/explanation/product.md)
+records the observed reference screens and the planned improvements; it does not claim feature parity today.
+
+## Documentation
+
+- [Documentation index](./docs/index.md)
+- [Product scope and workflows](./docs/explanation/product.md)
+- [Architecture and implementation status](./docs/explanation/architecture.md)
+- [Architecture decisions](./docs/adr/README.md)
+- [Contributing](./CONTRIBUTING.md)
+- [Changelog](./CHANGELOG.md)
+
+## License
+
+Proprietary. See [LICENSE](./LICENSE).

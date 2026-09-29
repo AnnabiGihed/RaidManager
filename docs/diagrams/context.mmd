@@ -1,0 +1,11 @@
+flowchart LR
+    developer([Developer])
+    raidmanager(RaidManager<br/>Local development scaffold)
+
+    developer -->|starts and inspects<br/>local application| raidmanager
+
+    classDef person   fill:#fce5cd,stroke:#b45f06,stroke-width:1px,color:#000
+    classDef system   fill:#cfe2f3,stroke:#2c5aa0,stroke-width:2px,color:#000
+
+    class developer person
+    class raidmanager system

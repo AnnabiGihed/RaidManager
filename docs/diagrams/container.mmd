@@ -1,0 +1,26 @@
+flowchart LR
+    developer([Developer])
+
+    subgraph local[RaidManager local development scaffold]
+        apphost[AppHost<br/>Aspire orchestration]
+        web[Web<br/>Blazor placeholder]
+        api[API<br/>ASP.NET Core foundation endpoint]
+        bot[Discord bot<br/>Worker placeholder]
+        sql[(SQL Server<br/>Local resource)]
+    end
+
+    developer -->|starts<br/>dotnet run| apphost
+    developer -->|views placeholder<br/>browser| web
+    apphost -->|starts| web
+    apphost -->|starts| api
+    apphost -->|starts| bot
+    apphost -->|provisions| sql
+    web -->|receives API reference<br/>Aspire| api
+    bot -->|receives API reference<br/>Aspire| api
+    api -->|receives database reference<br/>Aspire| sql
+
+    classDef person   fill:#fce5cd,stroke:#b45f06,stroke-width:1px,color:#000
+    classDef internal fill:#cfe2f3,stroke:#2c5aa0,stroke-width:1px,color:#000
+
+    class developer person
+    class apphost,web,api,bot,sql internal
