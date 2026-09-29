@@ -127,7 +127,7 @@ namespace RaidManager.Domain.Tests.Features.Raids.Services
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Raids/Services/RaidReadiness.feature.ndjson", 14);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Raids/Services/RaidReadiness.feature.ndjson", 17);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -435,18 +435,98 @@ namespace RaidManager.Domain.Tests.Features.Raids.Services
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="A locked target outweighs an unknown target")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Only incomplete scans need a fresh sync")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Raid-start readiness")]
-        [global::Xunit.TraitAttribute("Description", "A locked target outweighs an unknown target")]
-        public async global::System.Threading.Tasks.Task ALockedTargetOutweighsAnUnknownTarget()
+        [global::Xunit.TraitAttribute("Description", "Only incomplete scans need a fresh sync")]
+        public async global::System.Threading.Tasks.Task OnlyIncompleteScansNeedAFreshSync()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "6";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A locked target outweighs an unknown target", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Only incomplete scans need a fresh sync", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A combined raid takes the most restrictive target", null, tagsOfRule);
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("Missing or stale evidence needs a fresh sync, never Available", null, tagsOfRule);
+#line 62
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 63
+      await testRunner.GivenAsync("the character \"Frostmourne\" recorded an incomplete raid-save scan 1 hours ago", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
 #line 64
+      await testRunner.WhenAsync("the character \"Frostmourne\" is assessed", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 65
+      await testRunner.ThenAsync("the IcecrownCitadel TwentyFivePlayer verdict is NeedsFreshSync", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 66
+      await testRunner.AndAsync("the RubySanctum TwentyFivePlayer verdict is NeedsFreshSync", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="A newer loadout sync does not refresh old raid-save evidence")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Raid-start readiness")]
+        [global::Xunit.TraitAttribute("Description", "A newer loadout sync does not refresh old raid-save evidence")]
+        public async global::System.Threading.Tasks.Task ANewerLoadoutSyncDoesNotRefreshOldRaid_SaveEvidence()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "7";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A newer loadout sync does not refresh old raid-save evidence", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("Missing or stale evidence needs a fresh sync, never Available", null, tagsOfRule);
+#line 68
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 69
+      await testRunner.GivenAsync("the character \"Frostmourne\" synchronized 30 hours ago without saves", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 70
+      await testRunner.AndAsync("the character \"Frostmourne\" synchronized a loadout 1 hours ago", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 71
+      await testRunner.WhenAsync("the character \"Frostmourne\" is assessed", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 72
+      await testRunner.ThenAsync("the overall verdict is NeedsFreshSync", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="An incomplete scan keeps a fresh lock blocking")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Raid-start readiness")]
+        [global::Xunit.TraitAttribute("Description", "An incomplete scan keeps a fresh lock blocking")]
+        public async global::System.Threading.Tasks.Task AnIncompleteScanKeepsAFreshLockBlocking()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "8";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("An incomplete scan keeps a fresh lock blocking", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("Missing or stale evidence needs a fresh sync, never Available", null, tagsOfRule);
+#line 74
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -465,40 +545,41 @@ namespace RaidManager.Domain.Tests.Features.Raids.Services
                             "resetsHoursFromRaidStart",
                             "extended"});
                 table7.AddRow(new string[] {
-                            "IcecrownCitadel",
-                            "TwentyFivePlayer",
-                            "-12",
-                            "true"});
-                table7.AddRow(new string[] {
                             "RubySanctum",
                             "TwentyFivePlayer",
                             "24",
                             "false"});
-#line 65
-      await testRunner.GivenAsync("the character \"Frostmourne\" synchronized 1 hours ago with these saves", ((string)(null)), table7, "Given ");
+#line 75
+      await testRunner.GivenAsync("the character \"Frostmourne\" synchronized 2 hours ago with these saves", ((string)(null)), table7, "Given ");
 #line hidden
-#line 69
+#line 78
+      await testRunner.AndAsync("the character \"Frostmourne\" recorded an incomplete raid-save scan 1 hours ago", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 79
       await testRunner.WhenAsync("the character \"Frostmourne\" is assessed", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 70
-      await testRunner.ThenAsync("the overall verdict is LockedThroughRaid", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line 80
+      await testRunner.ThenAsync("the RubySanctum TwentyFivePlayer verdict is LockedThroughRaid", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 81
+      await testRunner.AndAsync("the overall verdict is LockedThroughRaid", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="An unknown target outweighs a save that resets before the raid")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="A locked target outweighs an unknown target")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Raid-start readiness")]
-        [global::Xunit.TraitAttribute("Description", "An unknown target outweighs a save that resets before the raid")]
-        public async global::System.Threading.Tasks.Task AnUnknownTargetOutweighsASaveThatResetsBeforeTheRaid()
+        [global::Xunit.TraitAttribute("Description", "A locked target outweighs an unknown target")]
+        public async global::System.Threading.Tasks.Task ALockedTargetOutweighsAnUnknownTarget()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "7";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("An unknown target outweighs a save that resets before the raid", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string pickleIndex = "9";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A locked target outweighs an unknown target", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A combined raid takes the most restrictive target", null, tagsOfRule);
-#line 72
+#line 85
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -520,37 +601,37 @@ namespace RaidManager.Domain.Tests.Features.Raids.Services
                             "IcecrownCitadel",
                             "TwentyFivePlayer",
                             "-12",
-                            "false"});
+                            "true"});
                 table8.AddRow(new string[] {
                             "RubySanctum",
                             "TwentyFivePlayer",
-                            "-12",
-                            "true"});
-#line 73
+                            "24",
+                            "false"});
+#line 86
       await testRunner.GivenAsync("the character \"Frostmourne\" synchronized 1 hours ago with these saves", ((string)(null)), table8, "Given ");
 #line hidden
-#line 77
+#line 90
       await testRunner.WhenAsync("the character \"Frostmourne\" is assessed", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 78
-      await testRunner.ThenAsync("the overall verdict is NeedsFreshSync", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line 91
+      await testRunner.ThenAsync("the overall verdict is LockedThroughRaid", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="A player cannot offer a character locked through the raid")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="An unknown target outweighs a save that resets before the raid")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Raid-start readiness")]
-        [global::Xunit.TraitAttribute("Description", "A player cannot offer a character locked through the raid")]
-        public async global::System.Threading.Tasks.Task APlayerCannotOfferACharacterLockedThroughTheRaid()
+        [global::Xunit.TraitAttribute("Description", "An unknown target outweighs a save that resets before the raid")]
+        public async global::System.Threading.Tasks.Task AnUnknownTargetOutweighsASaveThatResetsBeforeTheRaid()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "8";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A player cannot offer a character locked through the raid", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string pickleIndex = "10";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("An unknown target outweighs a save that resets before the raid", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A confirmed active lock blocks signup and roster assignment", null, tagsOfRule);
-#line 82
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A combined raid takes the most restrictive target", null, tagsOfRule);
+#line 93
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -569,35 +650,40 @@ namespace RaidManager.Domain.Tests.Features.Raids.Services
                             "resetsHoursFromRaidStart",
                             "extended"});
                 table9.AddRow(new string[] {
+                            "IcecrownCitadel",
+                            "TwentyFivePlayer",
+                            "-12",
+                            "false"});
+                table9.AddRow(new string[] {
                             "RubySanctum",
                             "TwentyFivePlayer",
-                            "24",
-                            "false"});
-#line 83
+                            "-12",
+                            "true"});
+#line 94
       await testRunner.GivenAsync("the character \"Frostmourne\" synchronized 1 hours ago with these saves", ((string)(null)), table9, "Given ");
 #line hidden
-#line 86
-      await testRunner.WhenAsync("\"Arthas\" signs up offering \"Frostmourne\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line 98
+      await testRunner.WhenAsync("the character \"Frostmourne\" is assessed", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 87
-      await testRunner.ThenAsync("the signup is rejected", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line 99
+      await testRunner.ThenAsync("the overall verdict is NeedsFreshSync", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="A player can offer a different eligible character instead")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="A player cannot offer a character locked through the raid")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Raid-start readiness")]
-        [global::Xunit.TraitAttribute("Description", "A player can offer a different eligible character instead")]
-        public async global::System.Threading.Tasks.Task APlayerCanOfferADifferentEligibleCharacterInstead()
+        [global::Xunit.TraitAttribute("Description", "A player cannot offer a character locked through the raid")]
+        public async global::System.Threading.Tasks.Task APlayerCannotOfferACharacterLockedThroughTheRaid()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "9";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A player can offer a different eligible character instead", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string pickleIndex = "11";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A player cannot offer a character locked through the raid", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A confirmed active lock blocks signup and roster assignment", null, tagsOfRule);
-#line 89
+#line 103
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -620,16 +706,63 @@ namespace RaidManager.Domain.Tests.Features.Raids.Services
                             "TwentyFivePlayer",
                             "24",
                             "false"});
-#line 90
+#line 104
       await testRunner.GivenAsync("the character \"Frostmourne\" synchronized 1 hours ago with these saves", ((string)(null)), table10, "Given ");
 #line hidden
-#line 93
+#line 107
+      await testRunner.WhenAsync("\"Arthas\" signs up offering \"Frostmourne\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 108
+      await testRunner.ThenAsync("the signup is rejected", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="A player can offer a different eligible character instead")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Raid-start readiness")]
+        [global::Xunit.TraitAttribute("Description", "A player can offer a different eligible character instead")]
+        public async global::System.Threading.Tasks.Task APlayerCanOfferADifferentEligibleCharacterInstead()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "12";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A player can offer a different eligible character instead", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A confirmed active lock blocks signup and roster assignment", null, tagsOfRule);
+#line 110
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+                global::Reqnroll.Table table11 = new global::Reqnroll.Table(new string[] {
+                            "instance",
+                            "difficulty",
+                            "resetsHoursFromRaidStart",
+                            "extended"});
+                table11.AddRow(new string[] {
+                            "RubySanctum",
+                            "TwentyFivePlayer",
+                            "24",
+                            "false"});
+#line 111
+      await testRunner.GivenAsync("the character \"Frostmourne\" synchronized 1 hours ago with these saves", ((string)(null)), table11, "Given ");
+#line hidden
+#line 114
       await testRunner.AndAsync("the character \"Shadowmourne\" synchronized 1 hours ago without saves", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 94
+#line 115
       await testRunner.WhenAsync("\"Arthas\" signs up offering \"Shadowmourne\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 95
+#line 116
       await testRunner.ThenAsync("\"Arthas\" has signed up offering \"Shadowmourne\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
@@ -643,11 +776,11 @@ namespace RaidManager.Domain.Tests.Features.Raids.Services
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "10";
+            string pickleIndex = "13";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A signup without a current assessment is rejected", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A confirmed active lock blocks signup and roster assignment", null, tagsOfRule);
-#line 97
+#line 118
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -660,13 +793,13 @@ namespace RaidManager.Domain.Tests.Features.Raids.Services
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-#line 98
+#line 119
       await testRunner.GivenAsync("the character \"Shadowmourne\" synchronized 1 hours ago without saves", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 99
+#line 120
       await testRunner.WhenAsync("\"Arthas\" signs up offering \"Shadowmourne\" assessed for a different start time", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 100
+#line 121
       await testRunner.ThenAsync("the signup is rejected", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
@@ -680,11 +813,11 @@ namespace RaidManager.Domain.Tests.Features.Raids.Services
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "11";
+            string pickleIndex = "14";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("An officer cannot roster a character that became locked", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A confirmed active lock blocks signup and roster assignment", null, tagsOfRule);
-#line 102
+#line 123
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -697,32 +830,32 @@ namespace RaidManager.Domain.Tests.Features.Raids.Services
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-#line 103
+#line 124
       await testRunner.GivenAsync("the character \"Shadowmourne\" synchronized 1 hours ago without saves", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 104
+#line 125
       await testRunner.AndAsync("\"Arthas\" signed up offering \"Shadowmourne\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-                global::Reqnroll.Table table11 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table12 = new global::Reqnroll.Table(new string[] {
                             "instance",
                             "difficulty",
                             "resetsHoursFromRaidStart",
                             "extended"});
-                table11.AddRow(new string[] {
+                table12.AddRow(new string[] {
                             "IcecrownCitadel",
                             "TwentyFivePlayer",
                             "24",
                             "false"});
-#line 105
-      await testRunner.AndAsync("the character \"Shadowmourne\" synchronized 0 hours ago with these saves", ((string)(null)), table11, "And ");
+#line 126
+      await testRunner.AndAsync("the character \"Shadowmourne\" synchronized 0 hours ago with these saves", ((string)(null)), table12, "And ");
 #line hidden
-#line 108
+#line 129
       await testRunner.WhenAsync("the officer selects \"Shadowmourne\" of \"Arthas\" for group 1 position 1", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 109
+#line 130
       await testRunner.ThenAsync("the roster assignment is rejected", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
-#line 110
+#line 131
       await testRunner.AndAsync("the roster contains no selection for \"Arthas\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }

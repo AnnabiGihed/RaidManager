@@ -95,7 +95,7 @@ public sealed class RaidReadinessStepDefinitions
     /// <param name="hours">Hours since the snapshot was observed.</param>
     [Given("the character {string} synchronized {int} hours ago without saves")]
     public void GivenTheCharacterSynchronizedHoursAgoWithoutSaves(string character, int hours) =>
-        CharacterNamed(character).SynchronizeRaidLockouts([], _nowUtc.AddHours(-hours));
+        CharacterNamed(character).RecordCompleteRaidSaveScan([], _nowUtc.AddHours(-hours)).IsSuccess.ShouldBeTrue();
 
     /// <summary>Synchronizes a snapshot holding the saves listed in the table.</summary>
     /// <param name="character">The character name.</param>
@@ -103,13 +103,37 @@ public sealed class RaidReadinessStepDefinitions
     /// <param name="saves">Table with the columns <c>instance</c>, <c>difficulty</c>, <c>resetsHoursFromRaidStart</c> and <c>extended</c>.</param>
     [Given("the character {string} synchronized {int} hours ago with these saves")]
     public void GivenTheCharacterSynchronizedHoursAgoWithTheseSaves(string character, int hours, DataTable saves) =>
-        CharacterNamed(character).SynchronizeRaidLockouts(
+        CharacterNamed(character).RecordCompleteRaidSaveScan(
             saves.Rows.Select(row => new RaidLockout(
                 Enum.Parse<RaidInstance>(row["instance"]),
                 Enum.Parse<RaidDifficulty>(row["difficulty"]),
                 null,
                 _startsAtUtc.AddHours(int.Parse(row["resetsHoursFromRaidStart"], System.Globalization.CultureInfo.InvariantCulture)),
                 bool.Parse(row["extended"]))),
+            _nowUtc.AddHours(-hours)).IsSuccess.ShouldBeTrue();
+
+    /// <summary>Records a saved-instance scan that could not read every save.</summary>
+    /// <param name="character">The character name.</param>
+    /// <param name="hours">Hours since the scan was attempted.</param>
+    [Given("the character {string} recorded an incomplete raid-save scan {int} hours ago")]
+    public void GivenTheCharacterRecordedAnIncompleteRaidSaveScanHoursAgo(string character, int hours) =>
+        CharacterNamed(character).RecordIncompleteRaidSaveScan(_nowUtc.AddHours(-hours));
+
+    /// <summary>Synchronizes an addon loadout, which is not raid-save evidence.</summary>
+    /// <param name="character">The character name.</param>
+    /// <param name="hours">Hours since the loadout was observed.</param>
+    [Given("the character {string} synchronized a loadout {int} hours ago")]
+    public void GivenTheCharacterSynchronizedALoadoutHoursAgo(string character, int hours) =>
+        CharacterNamed(character).SynchronizeLoadout(
+            null,
+            "Frost",
+            CharacterRole.Tank,
+            true,
+            new GearScore(5800),
+            new TalentConfiguration("Frost", 0, 53, 18, "0-53-18", [], []),
+            new CombatStats(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0),
+            [],
+            CharacterDataSource.WowAddon,
             _nowUtc.AddHours(-hours));
 
     /// <summary>Imports a character that has no addon snapshot.</summary>

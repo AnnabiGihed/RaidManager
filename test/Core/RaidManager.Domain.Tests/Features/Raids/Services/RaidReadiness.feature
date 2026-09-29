@@ -59,6 +59,27 @@ Feature: Raid-start readiness
       When the character "Frostmourne" is assessed
       Then the overall verdict is NeedsFreshSync
 
+    Scenario: Only incomplete scans need a fresh sync
+      Given the character "Frostmourne" recorded an incomplete raid-save scan 1 hours ago
+      When the character "Frostmourne" is assessed
+      Then the IcecrownCitadel TwentyFivePlayer verdict is NeedsFreshSync
+      And the RubySanctum TwentyFivePlayer verdict is NeedsFreshSync
+
+    Scenario: A newer loadout sync does not refresh old raid-save evidence
+      Given the character "Frostmourne" synchronized 30 hours ago without saves
+      And the character "Frostmourne" synchronized a loadout 1 hours ago
+      When the character "Frostmourne" is assessed
+      Then the overall verdict is NeedsFreshSync
+
+    Scenario: An incomplete scan keeps a fresh lock blocking
+      Given the character "Frostmourne" synchronized 2 hours ago with these saves
+        | instance    | difficulty       | resetsHoursFromRaidStart | extended |
+        | RubySanctum | TwentyFivePlayer | 24                       | false    |
+      And the character "Frostmourne" recorded an incomplete raid-save scan 1 hours ago
+      When the character "Frostmourne" is assessed
+      Then the RubySanctum TwentyFivePlayer verdict is LockedThroughRaid
+      And the overall verdict is LockedThroughRaid
+
   Rule: A combined raid takes the most restrictive target
 
     Scenario: A locked target outweighs an unknown target

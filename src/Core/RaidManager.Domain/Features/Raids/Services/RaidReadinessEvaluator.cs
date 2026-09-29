@@ -70,12 +70,13 @@ public static class RaidReadinessEvaluator
         return lockout.IsExtended ? ReadinessVerdict.NeedsFreshSync : ReadinessVerdict.ResetsBeforeRaid;
     }
 
-    /// <summary>Determines whether the character's addon lockout snapshot exists and is recent enough to trust.</summary>
+    /// <summary>Determines whether the character's latest complete saved-instance scan exists and is recent enough to trust.</summary>
     /// <param name="character">The assessed character.</param>
     /// <param name="maximumDataAge">The raid's maximum accepted evidence age.</param>
     /// <param name="nowUtc">The UTC instant of the assessment.</param>
-    /// <returns><see langword="true"/> when the latest addon snapshot is within the accepted age.</returns>
+    /// <returns><see langword="true"/> when the latest complete scan is within the accepted age.</returns>
+    /// <remarks>Incomplete scans and loadout synchronizations are ignored: neither proves which saves exist.</remarks>
     private static bool HasFreshLockoutEvidence(Character character, TimeSpan maximumDataAge, DateTimeOffset nowUtc) =>
-        character.LastAddonSynchronizedAtUtc is { } observedAtUtc && nowUtc - observedAtUtc <= maximumDataAge;
+        character.LastCompleteRaidSaveScanAtUtc is { } observedAtUtc && nowUtc - observedAtUtc <= maximumDataAge;
     #endregion Private Helpers
 }

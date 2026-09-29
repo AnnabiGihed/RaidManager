@@ -25,6 +25,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Raid-start readiness in the domain: each raid target gets an available, resets-before-raid, needs-fresh-sync,
   or locked-through-raid verdict, a combined raid takes the most restrictive, and a locked character cannot
   sign up or be rostered (#54).
+- Raid-save scan evidence in the domain: only a complete scan replaces a character's raid saves, even when it
+  finds none; incomplete and out-of-order scans keep the newer saves, and readiness uses the latest complete
+  scan rather than any addon upload (#57).
 
 ### Changed
 

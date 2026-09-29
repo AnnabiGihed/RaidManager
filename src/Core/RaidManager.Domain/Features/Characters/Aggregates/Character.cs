@@ -89,6 +89,12 @@ public sealed class Character : AggregateRoot<CharacterId>
     /// <summary>Gets the UTC timestamp of the latest successful WoW addon synchronization.</summary>
     public DateTimeOffset? LastAddonSynchronizedAtUtc { get; private set; }
 
+    /// <summary>Gets the UTC observation instant of the latest accepted complete saved-instance scan, the only evidence for raid saves.</summary>
+    public DateTimeOffset? LastCompleteRaidSaveScanAtUtc { get; private set; }
+
+    /// <summary>Gets the UTC instant of the latest saved-instance scan that could not read every save.</summary>
+    public DateTimeOffset? LastIncompleteRaidSaveScanAtUtc { get; private set; }
+
     /// <summary>Gets the synchronized raid-capable loadouts.</summary>
     public IReadOnlyCollection<Loadout> Loadouts => _loadouts.AsReadOnly();
 
@@ -268,16 +274,36 @@ public sealed class Character : AggregateRoot<CharacterId>
         return loadout.Id;
     }
 
-    /// <summary>Replaces the character's current raid-lockout snapshot with addon-synchronized values.</summary>
-    /// <param name="raidLockouts">The complete current set of saved raid instances.</param>
-    /// <param name="synchronizedAtUtc">The synchronization timestamp.</param>
-    public void SynchronizeRaidLockouts(IEnumerable<RaidLockout> raidLockouts, DateTimeOffset synchronizedAtUtc)
+    /// <summary>Replaces the character's raid saves with a complete addon saved-instance scan.</summary>
+    /// <param name="raidLockouts">Every save the scan found; an empty set is a verified absence of saves.</param>
+    /// <param name="observedAtUtc">The UTC instant the game data was observed.</param>
+    /// <returns>
+    /// Success, or <see cref="CharacterErrors.RaidSaveScanOutdated"/> (<see cref="ResultExceptionType.Conflict"/>) when a
+    /// newer complete scan was already accepted; the newer raid saves are then kept.
+    /// </returns>
+    public Result RecordCompleteRaidSaveScan(IEnumerable<RaidLockout> raidLockouts, DateTimeOffset observedAtUtc)
     {
-        EnsureTimestamp(synchronizedAtUtc);
+        EnsureTimestamp(observedAtUtc);
+        if (observedAtUtc < LastCompleteRaidSaveScanAtUtc)
+        {
+            return Result.Failure(CharacterErrors.RaidSaveScanOutdated, ResultExceptionType.Conflict);
+        }
+
         _raidLockouts.Clear();
         _raidLockouts.AddRange(raidLockouts.OrderBy(lockout => lockout.Instance).ThenBy(lockout => lockout.Difficulty));
-        LastAddonSynchronizedAtUtc = synchronizedAtUtc;
-        RaiseDomainEvent(new RaidLockoutsSynchronized(Id, synchronizedAtUtc));
+        LastCompleteRaidSaveScanAtUtc = observedAtUtc;
+        LastAddonSynchronizedAtUtc = Latest(LastAddonSynchronizedAtUtc, observedAtUtc);
+        RaiseDomainEvent(new RaidLockoutsSynchronized(Id, observedAtUtc));
+        return Result.Success();
+    }
+
+    /// <summary>Records an addon saved-instance scan that could not read every save.</summary>
+    /// <param name="observedAtUtc">The UTC instant the scan was attempted.</param>
+    /// <remarks>The last complete raid saves are kept: a partial list is never evidence that a save is gone.</remarks>
+    public void RecordIncompleteRaidSaveScan(DateTimeOffset observedAtUtc)
+    {
+        EnsureTimestamp(observedAtUtc);
+        LastIncompleteRaidSaveScanAtUtc = Latest(LastIncompleteRaidSaveScanAtUtc, observedAtUtc);
     }
 
     /// <summary>Determines whether the character is currently saved to the requested raid and difficulty.</summary>
@@ -316,6 +342,13 @@ public sealed class Character : AggregateRoot<CharacterId>
     #endregion Invariants
 
     #region Private Helpers
+    /// <summary>Returns the later of a recorded instant and a new observation.</summary>
+    /// <param name="recordedAtUtc">The recorded instant, if any.</param>
+    /// <param name="observedAtUtc">The new observation.</param>
+    /// <returns>The later instant.</returns>
+    private static DateTimeOffset Latest(DateTimeOffset? recordedAtUtc, DateTimeOffset observedAtUtc) =>
+        recordedAtUtc > observedAtUtc ? recordedAtUtc.Value : observedAtUtc;
+
     /// <summary>Finds the claim made by a user.</summary>
     /// <param name="userId">The requesting user.</param>
     /// <returns>The user's claim, or <see langword="null"/> when the user never claimed the character.</returns>
