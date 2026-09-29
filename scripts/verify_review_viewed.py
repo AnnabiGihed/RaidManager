@@ -140,7 +140,7 @@ def gate_result(pull_request: PullRequest, files_by_login: dict[str, dict[str, s
     """Classify the gate: pending while a review is outstanding, failure only for a problem someone must fix."""
     errors = operator_errors(pull_request, files_by_login.get(pull_request.author.lower()))
     if errors:
-        # The operator is still reviewing; operator-signoff returns a ready pull request with unviewed files to draft.
+        # The operator is still reviewing; the review job returns a ready pull request with unviewed files to draft.
         missing_token = any(error.startswith(MISSING_TOKEN) for error in errors)
         return (FAILURE if missing_token else PENDING), errors
     errors = peer_errors(pull_request, files_by_login)

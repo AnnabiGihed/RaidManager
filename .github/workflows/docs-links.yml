@@ -1,0 +1,20 @@
+name: docs-links
+
+# External links change without any commit, so they are checked weekly rather than on every pull request.
+on:
+  schedule:
+    - cron: '0 5 * * 1'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  external-links:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v4
+      - name: Check external links
+        uses: lycheeverse/lychee-action@v2
+        with:
+          args: --no-progress --max-retries 2 docs README.md CHANGELOG.md CONTRIBUTING.md SECURITY.md

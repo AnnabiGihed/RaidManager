@@ -41,6 +41,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - The review workflow no longer carries code for the retired single-reviewer gate (#69).
 - The review gate now shows as a pending status while a review is outstanding, and fails only for a real
   problem, instead of failing until both reviews are done (#73).
+- Pull requests now show only `build-test`, `validate`, and one `review` line: the review jobs and auto-merge
+  are one job, and documentation publishing and the weekly link check run in their own workflows (#75).
 - Pull requests now use protected automatic squash merging and delete their source branches after merge (#46).
 - Documentation contributions now pass root-file, style, link, diagram, and rendered-site checks before merging (#44).
 
