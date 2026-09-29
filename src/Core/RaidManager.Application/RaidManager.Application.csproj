@@ -11,4 +11,7 @@
     <PackageReference Include="Pivot.Framework.Application" />
     <PackageReference Include="Pivot.Framework.Infrastructure.Abstraction" />
   </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="RaidManager.Application.Tests" />
+  </ItemGroup>
 </Project>
