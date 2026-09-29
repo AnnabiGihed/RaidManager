@@ -37,5 +37,6 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Submitting or dismissing a review now re-evaluates the required `review-files-viewed` check automatically (#63).
 - The operator who ran the agent now reviews every file and marks the draft ready before a peer is requested, and
   a peer approval counts only after that review; new commits return the pull request to draft (#65).
+- Marking a pull request ready now queues its squash auto-merge automatically (#67).
 - Pull requests now use protected automatic squash merging and delete their source branches after merge (#46).
 - Documentation contributions now pass root-file, style, link, diagram, and rendered-site checks before merging (#44).

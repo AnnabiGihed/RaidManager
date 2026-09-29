@@ -1,6 +1,6 @@
 # ADR-0004: Use protected automatic squash merges
 
-- Status: Proposed
+- Status: Proposed; the manual queue step is replaced by [ADR-0007](0007-queue-auto-merge-when-ready.md)
 - Date: 2026-09-29
 - Deciders: Gihed Annabi
 
