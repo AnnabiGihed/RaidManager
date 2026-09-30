@@ -25,7 +25,7 @@ REPOSITORY = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPOSITORY / "scripts"))
 
 from penpot_components import (  # noqa: E402
-    BOARD_GAP, PLAYER, TITLE_BAR_H, WINDOW_PADDING, badge, button, card, companion_window, notice,
+    BOARD_GAP, PLAYER, TITLE_BAR_H, WINDOW_PADDING, badge, button, card, checkbox, companion_window, notice,
 )
 from penpot_scene import HOUSE_PALETTE, Board, Circle, Click, Group, Item, Rect, text, write_mockup  # noqa: E402
 
@@ -71,13 +71,6 @@ def footer() -> Group:
         Circle("Dot", X + 4, y + 22, 4, ACCENT),
         text("Label", X + 16, y + 27, f"Paired with {PLAYER.name} \u00b7 {COMPUTER}", 12, 400, SECONDARY),
     ])
-
-
-def checkbox(x: float, y: float, checked: bool) -> list[Item]:
-    if checked:
-        return [Rect("Checkbox", x, y, 18, 18, ACCENT, 1, 4),
-                text("Check mark", x, y + 14, "\u2713", 12, 800, P["Brand/on accent"], 18, "center", icon=True)]
-    return [Rect("Checkbox", x, y, 18, 18, P["Surface/card"], 1, 4, SECONDARY)]
 
 
 def installation(index: int, y: float, path: str, accounts: list[tuple[str, int, bool]]) -> Group:

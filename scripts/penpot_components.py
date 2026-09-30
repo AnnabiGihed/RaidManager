@@ -28,6 +28,7 @@ BLUE = P["Accent/blue"]
 DANGER_TEXT = P["Status/danger text"]
 PAGE_BACKGROUND = P["Surface/page"]
 RAISED = P["Surface/raised"]
+CARD = P["Surface/card"]
 BOARD_W, BOARD_H = 1440, 900
 SIDEBAR_W, TOP_BAR_H = 240, 64
 CONTENT_X, CONTENT_TOP = SIDEBAR_W + 40, TOP_BAR_H + 40
@@ -117,7 +118,7 @@ def navigation_item(label: str, y: float, active: bool, target: str | None) -> G
 
 def community_card(community: Community | None, target: str | None) -> Group:
     """The sidebar's community card; `None` is a signed-in user who hasn't joined or linked a community yet."""
-    items: list[Item] = [Rect("Background", 16, 68, SIDEBAR_W - 32, 60, P["Surface/card"], 1, 10,
+    items: list[Item] = [Rect("Background", 16, 68, SIDEBAR_W - 32, 60, CARD, 1, 10,
                               P["Line/card border"])]
     if community is None:
         items += [Rect("Icon", 28, 82, 32, 32, RAISED, 1, 8, DIVIDER),
@@ -211,7 +212,7 @@ def page_header(eyebrow: str, title: str, subtitle: str, x: float = CONTENT_X, y
 
 def card(x: float, y: float, w: float, h: float, accent: str | None = None, fill: str | None = None) -> list[Item]:
     """A card's background with its outline, and an optional coloured bar on its left edge."""
-    items: list[Item] = [Rect("Card", x, y, w, h, fill or P["Surface/card"], 1, 12, P["Line/card border"])]
+    items: list[Item] = [Rect("Card", x, y, w, h, fill or CARD, 1, 12, P["Line/card border"])]
     if accent:
         items.append(Rect("Accent", x, y + 12, 4, h - 24, accent, 1, 2))
     return items
@@ -283,3 +284,11 @@ def form_field(name: str, x: float, y: float, width: float, title: str, value: s
     if dropdown:
         items.append(text("Chevron", x + width - 30, y + 35, "▾", 16, 800, SECONDARY, 16, "center", icon=True))
     return Group(name, items)
+
+
+def checkbox(x: float, y: float, checked: bool) -> list[Item]:
+    """An 18 px checkbox: teal with a check mark when checked, outlined otherwise."""
+    if checked:
+        return [Rect("Checkbox", x, y, 18, 18, ACCENT, 1, 4),
+                text("Check mark", x, y + 14, "✓", 12, 800, P["Brand/on accent"], 18, "center", icon=True)]
+    return [Rect("Checkbox", x, y, 18, 18, CARD, 1, 4, SECONDARY)]
