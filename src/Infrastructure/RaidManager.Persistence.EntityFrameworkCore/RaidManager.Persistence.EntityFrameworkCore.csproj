@@ -10,6 +10,7 @@
     <ProjectReference Include="../../Core/RaidManager.Application/RaidManager.Application.csproj" />
     <ProjectReference Include="../../Core/RaidManager.Domain/RaidManager.Domain.csproj" />
     <PackageReference Include="Pivot.Framework.Infrastructure.Persistence.EntityFrameworkCore" />
+    <PackageReference Include="Pivot.Framework.Infrastructure.Messaging.EntityFrameworkCore" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.SqlServer" />
     <PackageReference Include="Microsoft.EntityFrameworkCore.Design">
       <PrivateAssets>all</PrivateAssets>

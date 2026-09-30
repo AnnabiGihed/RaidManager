@@ -14,7 +14,9 @@ state, and readiness diagrams. The views below provide the starting context.
 The application programming interface (API) exposes only a foundation endpoint and development OpenAPI document.
 The web app renders a placeholder page. The Discord worker logs its startup and waits; it has no interaction gateway.
 The Aspire AppHost starts the API, web app, bot host, and a local SQL Server resource.
-The Domain project contains initial aggregates and value objects. Application workflows and persistence are not wired.
+The Domain project contains initial aggregates and value objects. The Application project has the first commands, to
+approve or reject a character claim. The Entity Framework Core project persists the `Character` aggregate on SQL
+Server and records domain events in an outbox table; nothing delivers them yet. No host sends commands yet.
 There is no addon or companion project yet.
 
 ## System context

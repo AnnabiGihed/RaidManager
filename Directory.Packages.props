@@ -11,6 +11,7 @@
     <PackageVersion Include="Pivot.Framework.Application" Version="$(PivotFrameworkVersion)" />
     <PackageVersion Include="Pivot.Framework.Infrastructure.Abstraction" Version="$(PivotFrameworkVersion)" />
     <PackageVersion Include="Pivot.Framework.Infrastructure.Persistence.EntityFrameworkCore" Version="$(PivotFrameworkVersion)" />
+    <PackageVersion Include="Pivot.Framework.Infrastructure.Messaging.EntityFrameworkCore" Version="$(PivotFrameworkVersion)" />
     <PackageVersion Include="Pivot.Framework.Tools.DependencyInjection" Version="$(PivotFrameworkVersion)" />
     <PackageVersion Include="Pivot.Framework.Containers.API" Version="$(PivotFrameworkVersion)" />
     <PackageVersion Include="Microsoft.CodeAnalysis.NetAnalyzers" Version="10.0.100" />
@@ -31,6 +32,7 @@
     <PackageVersion Include="Reqnroll.xUnit" Version="3.*" />
     <PackageVersion Include="Shouldly" Version="4.*" />
     <PackageVersion Include="Moq" Version="4.*" />
+    <PackageVersion Include="Testcontainers.MsSql" Version="4.*" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.*" />
     <PackageVersion Include="xunit" Version="2.*" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.*" />

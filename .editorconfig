@@ -22,3 +22,7 @@ dotnet_diagnostic.SA1623.severity = error
 
 [*.{g.cs,Designer.cs,feature.cs}]
 generated_code = true
+
+# EF Core writes migrations and the model snapshot; they are regenerated, not edited by hand.
+[**/Migrations/*.cs]
+generated_code = true
