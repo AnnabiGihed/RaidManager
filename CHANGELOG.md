@@ -50,6 +50,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - A dark design system from the owner's reference design: named colors, Open Sans text styles, and an app shell on
   every website screen with the Player and Officer navigation, community, breadcrumb, realm status and user. Mockups
   are generated with it, and the website will be re-themed to match (ADR-0019) (#202).
+- The character profile mockup in `docs/mockups/`: the player's characters with sync freshness, a profile with
+  sources, professions, loadouts, raid saves and equipment, and editing visibility, note, loadout labels and
+  player-reported data (#219).
 - The companion sync mockup in `docs/mockups/`: watched installations and account folders with exclude, sync
   status with the upload queue, paused, offline, and an incomplete SavedVariables write with its fix (#217).
 - The companion pairing mockup in `docs/mockups/`: the companion's code while waiting, paired, expired and revoked,
