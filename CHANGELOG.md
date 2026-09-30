@@ -50,6 +50,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - A dark design system from the owner's reference design: named colors, Open Sans text styles, and an app shell on
   every website screen with the Player and Officer navigation, community, breadcrumb, realm status and user. Mockups
   are generated with it, and the website will be re-themed to match (ADR-0019) (#202).
+- The raid signup mockup in `docs/mockups/`: offering several characters and specs with one preferred, a note,
+  presets and the readiness of each option, availability including late with an arrival time, and editing or
+  withdrawing a signup (#225).
 - The raid templates mockup in `docs/mockups/`: a template with weekly recurrence, reviewing the generated raids
   with an existing week skipped, and copying a previous raid into a draft whose readiness is checked again (#223).
 - The raid list and editor mockup in `docs/mockups/`: upcoming and past raids with local and UTC times, status and
