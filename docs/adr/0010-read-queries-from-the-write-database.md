@@ -16,7 +16,7 @@ by handlers reacting to domain events. RaidManager records domain events in an o
 Queries read the write database directly, through no-tracking queries, until a query needs something more.
 
 - The Application layer defines a small reader interface per feature, such as `ICharacterClaimReader`. Query
-  handlers depend on it, never on a command repository or the DbContext.
+  handlers depend on it, never on a command repository or the `DbContext`.
 - Persistence implements each reader with no-tracking Entity Framework Core queries against the existing tables,
   projecting straight to the query's response. It is registered in `AddRaidManagerPersistence`.
 - Readers use the write `RaidManagerDbContext` with `AsNoTracking`, not a second read context with its own
@@ -41,5 +41,5 @@ Queries read the write database directly, through no-tracking queries, until a q
 
 - **Projected read models:** can be rebuilt from events and are fast to read, but they need event delivery first
   and add eventual consistency.
-- **Separate read DbContext (Pivot's read/write split):** adds a second context and mapping over the same database,
+- **Separate read `DbContext` (Pivot's read/write split):** adds a second context and mapping over the same database,
   with no benefit until reads move elsewhere.

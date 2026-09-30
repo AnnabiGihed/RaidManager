@@ -9,7 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
-- Players sign in to the website with Discord and sign out; a cancelled or failed sign-in explains why and offers a
+- Players sign in to the website with Discord and sign out; a canceled or failed sign-in explains why and offers a
   retry. The website runs in Interactive Server mode with Radzen (ADR-0012) (#99).
 - The API resolves a Discord sign-in to exactly one local user for the website, refreshing a changed Discord profile.
   Only the website can call it, with a key the Aspire AppHost generates (ADR-0011) (#92, #95).
@@ -43,7 +43,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   that it builds. The site navigation lists every decision record (ADR-0014) (#119).
 - Penpot is the UI design tool. Every item and pull request that changes what users see shows its mockup from
   `docs/mockups/`, and issue forms ask about user-interface impact (ADR-0017) (#165).
-- UI mockups are generated in the repository as native Penpot files with editable text, shared colours and text
+- UI mockups are generated in the repository as native Penpot files with editable text, shared colors and text
   styles, a clickable prototype and WCAG AA contrast. Each mockup's SVG is rendered from its `.penpot` file, and the
   docs check fails on a stale SVG or on a mockup outside `docs/mockups/`. The `penpot-mockups` skill holds the
   workflow (ADR-0018) (#169).
@@ -61,6 +61,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- Documentation spelling is checked as strictly as the editor: US English plus one project word list that CI, Vale
+  and Visual Studio share. British spellings and code names written as prose are fixed (#173).
 - The repository scripts and their tests pass a type check. CI runs `mypy`, and a Pyright configuration lets editors
   resolve the scripts' imports (#165).
 - The review workflow no longer leaves a ready pull request open without a sign. It retries a refused merge for about

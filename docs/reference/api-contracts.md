@@ -2,7 +2,7 @@
 
 The RaidManager application programming interface (API) publishes its operations in an OpenAPI document at
 `/openapi/v1.json`, which is the source of truth for request shapes, response codes, and security.
-Failures are returned as ProblemDetails; validation failures list each field under `errors`.
+Failures are returned as `ProblemDetails`; validation failures list each field under `errors`.
 
 In Development, the interactive reference page at `https://localhost:55366/scalar` renders that document and lets you
 try each operation ([ADR-0013](../adr/0013-scalar-api-reference.md)). The Aspire dashboard links to it as

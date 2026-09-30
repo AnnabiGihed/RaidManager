@@ -16,7 +16,7 @@ personal token or repository secret.
 | Task | `type:task` | a story, improvement or bug | none |
 | Spike | `type:spike` | a story, improvement or bug | none |
 
-- A **story** adds a capability for a user. An **improvement** makes existing behaviour or tooling better. A **bug**
+- A **story** adds a capability for a user. An **improvement** makes existing behavior or tooling better. A **bug**
   fixes something that doesn't work as specified.
 - A **task** is one bounded piece of work, delivered by one pull request. A **spike** is time-boxed research; it
   counts as a task.
