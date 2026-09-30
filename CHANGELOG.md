@@ -50,6 +50,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - A dark design system from the owner's reference design: named colors, Open Sans text styles, and an app shell on
   every website screen with the Player and Officer navigation, community, breadcrumb, realm status and user. Mockups
   are generated with it, and the website will be re-themed to match (ADR-0019) (#202).
+- The character review mockup in `docs/mockups/`: pending claims with a conflict, the reject confirmation, the
+  all-reviewed state with its notification, and the load error, linked as a clickable prototype (#167).
 - A how-to page on reviewing a pull request, with comments that pass and fail the review gate (#81).
 
 ### Changed
