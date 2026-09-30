@@ -43,10 +43,12 @@
 <text x="280" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">CITADEL VANGUARD</text>
 <text x="414.3" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">/</text>
 <text x="430.3" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#eff5fa" text-anchor="start" letter-spacing="1.2">REVIEW NEW CHARACTERS</text>
-<ellipse cx="1244" cy="32" rx="4" ry="4" fill="#5de0c1"/>
-<text x="1256" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.2">REALM ONLINE</text>
-<ellipse cx="1384" cy="32" rx="16" ry="16" fill="#293d58"/>
-<text x="1384" y="36" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#8fb3f6" text-anchor="middle">BV</text>
+<ellipse cx="1124" cy="32" rx="4" ry="4" fill="#5de0c1"/>
+<text x="1136" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.2">REALM ONLINE</text>
+<ellipse cx="1272" cy="32" rx="16" ry="16" fill="#293d58"/>
+<text x="1272" y="36" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#8fb3f6" text-anchor="middle">BV</text>
+<rect x="1304.5" y="12.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="1352" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Sign out</text>
 <text x="280" y="118" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.5">NEW CHARACTERS</text>
 <text x="280" y="160" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#eff5fa" text-anchor="start">Review your new characters</text>
 <text x="280" y="190" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="400" fill="#9eadc1" text-anchor="start">Your companion found these characters on your WoW accounts. Only the ones you approve can sign up for raids.</text>
@@ -162,10 +164,12 @@
 <text x="1800" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">CITADEL VANGUARD</text>
 <text x="1934.3" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">/</text>
 <text x="1950.3" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#eff5fa" text-anchor="start" letter-spacing="1.2">REVIEW NEW CHARACTERS</text>
-<ellipse cx="2764" cy="32" rx="4" ry="4" fill="#5de0c1"/>
-<text x="2776" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.2">REALM ONLINE</text>
-<ellipse cx="2904" cy="32" rx="16" ry="16" fill="#293d58"/>
-<text x="2904" y="36" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#8fb3f6" text-anchor="middle">BV</text>
+<ellipse cx="2644" cy="32" rx="4" ry="4" fill="#5de0c1"/>
+<text x="2656" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.2">REALM ONLINE</text>
+<ellipse cx="2792" cy="32" rx="16" ry="16" fill="#293d58"/>
+<text x="2792" y="36" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#8fb3f6" text-anchor="middle">BV</text>
+<rect x="2824.5" y="12.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2872" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Sign out</text>
 <text x="1800" y="118" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.5">NEW CHARACTERS</text>
 <text x="1800" y="160" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#eff5fa" text-anchor="start">Review your new characters</text>
 <text x="1800" y="190" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="400" fill="#9eadc1" text-anchor="start">Your companion found these characters on your WoW accounts. Only the ones you approve can sign up for raids.</text>
@@ -291,10 +295,12 @@
 <text x="280" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">CITADEL VANGUARD</text>
 <text x="414.3" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">/</text>
 <text x="430.3" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#eff5fa" text-anchor="start" letter-spacing="1.2">REVIEW NEW CHARACTERS</text>
-<ellipse cx="1244" cy="1012" rx="4" ry="4" fill="#5de0c1"/>
-<text x="1256" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.2">REALM ONLINE</text>
-<ellipse cx="1384" cy="1012" rx="16" ry="16" fill="#293d58"/>
-<text x="1384" y="1016" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#8fb3f6" text-anchor="middle">BV</text>
+<ellipse cx="1124" cy="1012" rx="4" ry="4" fill="#5de0c1"/>
+<text x="1136" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.2">REALM ONLINE</text>
+<ellipse cx="1272" cy="1012" rx="16" ry="16" fill="#293d58"/>
+<text x="1272" y="1016" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#8fb3f6" text-anchor="middle">BV</text>
+<rect x="1304.5" y="992.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="1352" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Sign out</text>
 <text x="280" y="1098" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.5">NEW CHARACTERS</text>
 <text x="280" y="1140" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#eff5fa" text-anchor="start">Review your new characters</text>
 <text x="280" y="1170" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="400" fill="#9eadc1" text-anchor="start">Your companion found these characters on your WoW accounts. Only the ones you approve can sign up for raids.</text>
@@ -353,10 +359,12 @@
 <text x="1800" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">CITADEL VANGUARD</text>
 <text x="1934.3" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">/</text>
 <text x="1950.3" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#eff5fa" text-anchor="start" letter-spacing="1.2">REVIEW NEW CHARACTERS</text>
-<ellipse cx="2764" cy="1012" rx="4" ry="4" fill="#5de0c1"/>
-<text x="2776" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.2">REALM ONLINE</text>
-<ellipse cx="2904" cy="1012" rx="16" ry="16" fill="#293d58"/>
-<text x="2904" y="1016" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#8fb3f6" text-anchor="middle">BV</text>
+<ellipse cx="2644" cy="1012" rx="4" ry="4" fill="#5de0c1"/>
+<text x="2656" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.2">REALM ONLINE</text>
+<ellipse cx="2792" cy="1012" rx="16" ry="16" fill="#293d58"/>
+<text x="2792" y="1016" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#8fb3f6" text-anchor="middle">BV</text>
+<rect x="2824.5" y="992.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2872" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Sign out</text>
 <text x="1800" y="1098" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.5">NEW CHARACTERS</text>
 <text x="1800" y="1140" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#eff5fa" text-anchor="start">Review your new characters</text>
 <text x="1800" y="1170" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="400" fill="#9eadc1" text-anchor="start">Your companion found these characters on your WoW accounts. Only the ones you approve can sign up for raids.</text>

@@ -36,8 +36,11 @@ Its text is set in Segoe UI, which isn't a free font and isn't available in Penp
   - the sidebar holds the logo, the community card, the Player section (Overview, Raids, My characters, Readiness,
     Companion & sync), the Officer section (Schedule, Roster builder, Raid night) shown only to officers, and the user
     card at the bottom;
-  - the top bar holds the breadcrumb (community / page), the realm status and the user's avatar;
+  - the top bar holds the breadcrumb (community / page), the realm status, the user's avatar and Sign out;
   - the page's content starts 40 pixels from the sidebar and the top bar.
+- **Signed-out pages have no shell** (owner decision, 2026-09-30): the sign-in page and its failure pages show the
+  logo above a centered 480-pixel column, drawn by `public_screen`. There's no user or community to show, and
+  nothing to navigate to before signing in.
 - **Shared components:** page header, card with an optional accent bar, 40-pixel buttons with an 8-pixel radius
   (primary, secondary, danger), badges that always carry a word, notices, and avatars. Mockups use them instead of
   drawing their own.
