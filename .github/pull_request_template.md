@@ -1,6 +1,6 @@
 # Pull request
 
-Closes #<task-number>
+Closes #TASK_NUMBER
 
 ## What changed
 
@@ -8,7 +8,7 @@ Describe the user or maintainer-visible outcome.
 
 ## Why it changed
 
-Explain why the task matters. Reference the parent story with `Refs #<story-number>` when applicable.
+Explain why the task matters. Reference the parent story with `Refs #STORY_NUMBER` when applicable.
 
 ## How it was tested
 
