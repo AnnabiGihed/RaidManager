@@ -67,7 +67,8 @@ The generator turns the design into a small design system that a designer keeps 
   shared component there when two screens need it.
 - **Layout:** 24 px card padding, 16 px between cards, 40 px margins around the content. Keep positions and sizes on
   a 4 px grid (8 px for spacing between blocks). Companion windows, addon frames and Discord messages don't use the
-  website shell; they use the palette and type scale.
+  website shell; they use the palette and type scale. Draw a desktop companion screen with
+  `companion_window(name, x, y, content)`: a 480 x 600 window with its title bar, content from `WINDOW_PADDING`.
 
 ## Structure and naming
 

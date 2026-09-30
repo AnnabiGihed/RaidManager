@@ -12,7 +12,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from penpot_components import (  # noqa: E402
     AVATAR_TONES, BADGE_TONES, BOARD_H, BOARD_W, BUTTON_STYLES, NOTICE_TONES, OFFICER_PAGES, PLAYER, PLAYER_PAGES,
-    PUBLIC_W, PUBLIC_X, app_screen, badge, button, notice, page_header, public_screen,
+    PUBLIC_W, PUBLIC_X, WINDOW_H, WINDOW_W, app_screen, companion_window, badge, button, notice, page_header, public_screen,
 )
 from penpot_render import is_current, render  # noqa: E402
 from penpot_scene import (  # noqa: E402
@@ -317,6 +317,14 @@ class ComponentTests(unittest.TestCase):
     def test_the_community_card_links_where_asked(self) -> None:
         board = app_screen("1 · A", 0, 0, "Raids", [], links={"Community": "2 · Settings"})
         self.assertEqual(find(board.children, "Community card").on_click, Click("navigate", "2 · Settings"))
+
+    def test_companion_windows_have_a_title_bar_but_no_website_shell(self) -> None:
+        board = companion_window("1 · Waiting", 0, 0, [text("Code", 32, 120, "K7M-4QX", 32, 700)])
+        self.assertEqual((board.w, board.h), (WINDOW_W, WINDOW_H))
+        names = layer_names(board.children)
+        self.assertIn("Title bar", names)
+        self.assertNotIn("Sidebar", names)
+        write_penpot(self.path, "window", "Window", [board])
 
     def test_signed_out_pages_have_the_logo_but_no_shell(self) -> None:
         board = public_screen("1 · Signed out", 0, 0, [text("Title", PUBLIC_X, 240, "Sign in", 18, 700)])
