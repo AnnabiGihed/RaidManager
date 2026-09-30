@@ -50,6 +50,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - A dark design system from the owner's reference design: named colors, Open Sans text styles, and an app shell on
   every website screen with the Player and Officer navigation, community, breadcrumb, realm status and user. Mockups
   are generated with it, and the website will be re-themed to match (ADR-0019) (#202).
+- The roster composer mockup in `docs/mockups/`: unpublished drafts in five groups with the bench, one copied from a
+  prior raid, swapping with the bench, placeholders, one character per player, and role and class balance (#235).
 - The candidate workspace mockup in `docs/mockups/`: every candidate with preferred option, offered loadouts,
   response, note, readiness, data freshness and assignment, role counts, search and filters, an empty result, and
   data still syncing (#233).

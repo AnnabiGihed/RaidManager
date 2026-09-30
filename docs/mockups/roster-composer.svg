@@ -1,0 +1,521 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3120" height="2040" viewBox="-80 -80 3120 2040">
+<title>Roster composer (rendered from roster-composer.penpot)</title>
+<rect x="-80" y="-80" width="3120" height="2040" fill="#e8e8e8"/>
+<text x="0" y="-14" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">1 · Draft A</text>
+<clipPath id="clip1"><rect x="0" y="0" width="1440" height="900"/></clipPath>
+<rect x="0" y="0" width="1440" height="900" fill="#0b111c"/>
+<g clip-path="url(#clip1)">
+<rect x="0" y="0" width="240" height="900" fill="#0f1825"/>
+<rect x="239" y="0" width="1" height="900" fill="#2b3b50"/>
+<rect x="20" y="16" width="32" height="32" rx="8" fill="#0c2931"/>
+<rect x="28" y="24" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="62" y="38" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#eff5fa" text-anchor="start" letter-spacing="0.5">RAID</text>
+<text x="104" y="38" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#5de0c1" text-anchor="start" letter-spacing="0.5">MANAGER</text>
+<rect x="16.5" y="68.5" width="207" height="59" rx="10" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<rect x="28" y="82" width="32" height="32" rx="8" fill="#9077b3"/>
+<text x="44" y="102" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#0b111c" text-anchor="middle">CV</text>
+<text x="70" y="95" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Citadel Vanguard</text>
+<text x="70" y="114" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Icecrown · Community</text>
+<text x="24" y="164" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">PLAYER</text>
+<rect x="12" y="176" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="194" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="199" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Overview</text>
+<rect x="12" y="216" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="234" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="239" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Raids</text>
+<rect x="12" y="256" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="274" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="279" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">My characters</text>
+<rect x="12" y="296" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="314" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="319" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Readiness</text>
+<rect x="12" y="336" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="354" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="359" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Companion &amp; sync</text>
+<text x="24" y="404" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">OFFICER</text>
+<rect x="12" y="416" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="434" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="439" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Schedule</text>
+<rect x="12" y="456" width="216" height="36" rx="8" fill="#1b4548"/>
+<rect x="12" y="464" width="3" height="20" rx="2" fill="#5de0c1"/>
+<ellipse cx="34" cy="474" rx="4" ry="4" fill="#5de0c1"/>
+<text x="50" y="479" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#5de0c1" text-anchor="start">Roster builder</text>
+<rect x="12" y="496" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="514" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="519" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Raid night</text>
+<rect x="0" y="828" width="239" height="1" fill="#2b3b50"/>
+<ellipse cx="36" cy="864" rx="16" ry="16" fill="#604c80"/>
+<text x="36" y="868" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#f2e8ff" text-anchor="middle">GA</text>
+<text x="62" y="860" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Gihed Annabi</text>
+<text x="62" y="879" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Community officer</text>
+<rect x="240" y="0" width="1200" height="64" fill="#111c2a"/>
+<rect x="240" y="63" width="1200" height="1" fill="#2b3b50"/>
+<text x="280" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">CITADEL VANGUARD</text>
+<text x="420.3" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">/</text>
+<text x="436.3" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#eff5fa" text-anchor="start" letter-spacing="1.2">DRAFTS</text>
+<ellipse cx="1124" cy="32" rx="4" ry="4" fill="#5de0c1"/>
+<text x="1136" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.2">REALM ONLINE</text>
+<ellipse cx="1272" cy="32" rx="16" ry="16" fill="#604c80"/>
+<text x="1272" y="36" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#f2e8ff" text-anchor="middle">GA</text>
+<rect x="1304.5" y="12.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="1352" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Sign out</text>
+<text x="280" y="118" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.5">ROSTER BUILDER</text>
+<text x="280" y="160" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#eff5fa" text-anchor="start">Icecrown Citadel drafts</text>
+<text x="280" y="190" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="400" fill="#9eadc1" text-anchor="start">Fri 9 Oct, 21:00 · 19:00 UTC · Icecrown Citadel 25 heroic + Ruby Sanctum 25</text>
+<rect x="280" y="260" width="1120" height="1" fill="#2b3b50"/>
+<rect x="280" y="224" width="83.8" height="36" fill="#0b111c"/>
+<text x="321.9" y="246" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#5de0c1" text-anchor="middle">Draft A</text>
+<rect x="280" y="258" width="83.8" height="3" rx="2" fill="#5de0c1"/>
+<rect x="371.8" y="224" width="268.8" height="36" fill="#0b111c"/>
+<text x="506.2" y="246" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="middle">Draft B · copied from Fri 25 Sep</text>
+<text x="664.6" y="246" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#5de0c1" text-anchor="start">+ New draft</text>
+<text x="778.6" y="246" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#5de0c1" text-anchor="start">Copy a past raid</text>
+<text x="1400" y="246" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end">Drafts stay unpublished until you choose one.</text>
+<rect x="280.5" y="280.5" width="169" height="283" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="292" y="306" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#9eadc1" text-anchor="start">Group 1</text>
+<rect x="288" y="320" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="300" cy="334" rx="4" ry="4" fill="#c69b6d"/>
+<text x="310" y="338" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Stonebrow</text>
+<text x="300" y="355" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Protection · Tank</text>
+<rect x="288" y="368" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="300" cy="382" rx="4" ry="4" fill="#c41e3a"/>
+<text x="310" y="386" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Tomasdk</text>
+<text x="300" y="403" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Blood · Tank</text>
+<rect x="288" y="416" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="300" cy="430" rx="4" ry="4" fill="#c41e3a"/>
+<text x="310" y="434" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Arthasdk</text>
+<text x="300" y="451" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Frost · Melee</text>
+<rect x="288" y="464" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="300" cy="478" rx="4" ry="4" fill="#fff468"/>
+<text x="310" y="482" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Shadestep</text>
+<text x="300" y="499" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Combat · Melee</text>
+<rect x="288" y="512" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="300" cy="526" rx="4" ry="4" fill="#ff7c0a"/>
+<text x="310" y="530" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Brookpaw</text>
+<text x="300" y="547" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Feral · Melee</text>
+<rect x="462.5" y="280.5" width="169" height="283" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="474" y="306" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#9eadc1" text-anchor="start">Group 2</text>
+<rect x="470" y="320" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="482" cy="334" rx="4" ry="4" fill="#ff7c0a"/>
+<text x="492" y="338" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Moonveil</text>
+<text x="482" y="355" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Restoration · Heal</text>
+<rect x="470" y="368" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="482" cy="382" rx="4" ry="4" fill="#f48cba"/>
+<text x="492" y="386" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Lightwarden</text>
+<text x="482" y="403" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Holy · Heal</text>
+<rect x="470" y="416" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="482" cy="430" rx="4" ry="4" fill="#0070dd"/>
+<text x="492" y="434" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Stormcall</text>
+<text x="482" y="451" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Restoration · Heal</text>
+<rect x="470.5" y="464.5" width="153" height="41" rx="6" fill="#172333" stroke="#2b3b50" stroke-width="1"/>
+<text x="482" y="482" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#9eadc1" text-anchor="start">Healer placeholder</text>
+<text x="482" y="499" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#5de0c1" text-anchor="start">Fill from candidates</text>
+<rect x="470" y="512" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="482" cy="526" rx="4" ry="4" fill="#c69b6d"/>
+<text x="492" y="530" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Bladewind</text>
+<text x="482" y="547" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Fury · Melee</text>
+<rect x="644.5" y="280.5" width="169" height="283" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="656" y="306" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#9eadc1" text-anchor="start">Group 3</text>
+<rect x="652" y="320" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="664" cy="334" rx="4" ry="4" fill="#3fc7eb"/>
+<text x="674" y="338" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Frostweave</text>
+<text x="664" y="355" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Arcane · Ranged</text>
+<rect x="652" y="368" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="664" cy="382" rx="4" ry="4" fill="#8788ee"/>
+<text x="674" y="386" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Emberlock</text>
+<text x="664" y="403" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Destruction · Ranged</text>
+<rect x="652" y="416" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="664" cy="430" rx="4" ry="4" fill="#aad372"/>
+<text x="674" y="434" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Swiftshot</text>
+<text x="664" y="451" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Marksmanship · Ranged</text>
+<rect x="652" y="464" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="664" cy="478" rx="4" ry="4" fill="#ffffff"/>
+<text x="674" y="482" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Voidcaller</text>
+<text x="664" y="499" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Shadow · Ranged</text>
+<rect x="652" y="512" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="664" cy="526" rx="4" ry="4" fill="#ff7c0a"/>
+<text x="674" y="530" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Starfall</text>
+<text x="664" y="547" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Balance · Ranged</text>
+<rect x="826.5" y="280.5" width="169" height="283" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="838" y="306" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#9eadc1" text-anchor="start">Group 4</text>
+<rect x="834" y="320" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="846" cy="334" rx="4" ry="4" fill="#f48cba"/>
+<text x="856" y="338" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Crusader</text>
+<text x="846" y="355" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Retribution · Melee</text>
+<rect x="834" y="368" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="846" cy="382" rx="4" ry="4" fill="#0070dd"/>
+<text x="856" y="386" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Tidefist</text>
+<text x="846" y="403" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Enhancement · Melee</text>
+<rect x="834" y="416" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="846" cy="430" rx="4" ry="4" fill="#fff468"/>
+<text x="856" y="434" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Nightshade</text>
+<text x="846" y="451" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Assassination · Melee</text>
+<rect x="834" y="464" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="846" cy="478" rx="4" ry="4" fill="#c41e3a"/>
+<text x="856" y="482" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Wintergrave</text>
+<text x="846" y="499" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Unholy · Melee</text>
+<rect x="834.5" y="512.5" width="153" height="41" rx="6" fill="#172333" stroke="#2b3b50" stroke-width="1"/>
+<text x="846" y="530" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#9eadc1" text-anchor="start">Melee damage placeholder</text>
+<text x="846" y="547" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#5de0c1" text-anchor="start">Fill from candidates</text>
+<rect x="1008.5" y="280.5" width="169" height="283" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="1020" y="306" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#9eadc1" text-anchor="start">Group 5</text>
+<rect x="1016" y="320" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="1028" cy="334" rx="4" ry="4" fill="#3fc7eb"/>
+<text x="1038" y="338" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Pyrelight</text>
+<text x="1028" y="355" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Fire · Ranged</text>
+<rect x="1016" y="368" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="1028" cy="382" rx="4" ry="4" fill="#8788ee"/>
+<text x="1038" y="386" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Soulreaver</text>
+<text x="1028" y="403" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Affliction · Ranged</text>
+<rect x="1016" y="416" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="1028" cy="430" rx="4" ry="4" fill="#aad372"/>
+<text x="1038" y="434" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Longstride</text>
+<text x="1028" y="451" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Survival · Ranged</text>
+<rect x="1016" y="464" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="1028" cy="478" rx="4" ry="4" fill="#f48cba"/>
+<text x="1038" y="482" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Brightvow</text>
+<text x="1028" y="499" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Holy · Heal</text>
+<rect x="1016" y="512" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="1028" cy="526" rx="4" ry="4" fill="#0070dd"/>
+<text x="1038" y="530" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Sparkcaller</text>
+<text x="1028" y="547" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Elemental · Ranged</text>
+<rect x="1198.5" y="280.5" width="201" height="199" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="1210" y="306" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#9eadc1" text-anchor="start">Bench · 2</text>
+<rect x="1206" y="320" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="1218" cy="334" rx="4" ry="4" fill="#ffffff"/>
+<text x="1228" y="338" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Kirilight</text>
+<text x="1218" y="355" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Holy · Heal</text>
+<rect x="1206" y="368" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="1218" cy="382" rx="4" ry="4" fill="#c69b6d"/>
+<text x="1228" y="386" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Ironhide</text>
+<text x="1218" y="403" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Protection · Tank</text>
+<text x="1210" y="438" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Benched players are told</text>
+<text x="1210" y="454" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">when you publish.</text>
+<text x="280" y="592" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">23 players and 2 placeholders · one character per player · 25 places</text>
+<rect x="1216" y="132" width="184" height="40" rx="8" fill="#5de0c1"/>
+<text x="1308" y="157" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#102830" text-anchor="middle">Review and publish</text>
+</g>
+<text x="1520" y="-14" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">2 · Swap and placeholders</text>
+<clipPath id="clip2"><rect x="1520" y="0" width="1440" height="900"/></clipPath>
+<rect x="1520" y="0" width="1440" height="900" fill="#0b111c"/>
+<g clip-path="url(#clip2)">
+<rect x="1520" y="0" width="240" height="900" fill="#0f1825"/>
+<rect x="1759" y="0" width="1" height="900" fill="#2b3b50"/>
+<rect x="1540" y="16" width="32" height="32" rx="8" fill="#0c2931"/>
+<rect x="1548" y="24" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="1582" y="38" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#eff5fa" text-anchor="start" letter-spacing="0.5">RAID</text>
+<text x="1624" y="38" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#5de0c1" text-anchor="start" letter-spacing="0.5">MANAGER</text>
+<rect x="1536.5" y="68.5" width="207" height="59" rx="10" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<rect x="1548" y="82" width="32" height="32" rx="8" fill="#9077b3"/>
+<text x="1564" y="102" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#0b111c" text-anchor="middle">CV</text>
+<text x="1590" y="95" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Citadel Vanguard</text>
+<text x="1590" y="114" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Icecrown · Community</text>
+<text x="1544" y="164" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">PLAYER</text>
+<rect x="1532" y="176" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="194" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="199" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Overview</text>
+<rect x="1532" y="216" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="234" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="239" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Raids</text>
+<rect x="1532" y="256" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="274" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="279" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">My characters</text>
+<rect x="1532" y="296" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="314" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="319" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Readiness</text>
+<rect x="1532" y="336" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="354" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="359" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Companion &amp; sync</text>
+<text x="1544" y="404" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">OFFICER</text>
+<rect x="1532" y="416" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="434" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="439" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Schedule</text>
+<rect x="1532" y="456" width="216" height="36" rx="8" fill="#1b4548"/>
+<rect x="1532" y="464" width="3" height="20" rx="2" fill="#5de0c1"/>
+<ellipse cx="1554" cy="474" rx="4" ry="4" fill="#5de0c1"/>
+<text x="1570" y="479" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#5de0c1" text-anchor="start">Roster builder</text>
+<rect x="1532" y="496" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="514" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="519" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Raid night</text>
+<rect x="1520" y="828" width="239" height="1" fill="#2b3b50"/>
+<ellipse cx="1556" cy="864" rx="16" ry="16" fill="#604c80"/>
+<text x="1556" y="868" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#f2e8ff" text-anchor="middle">GA</text>
+<text x="1582" y="860" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Gihed Annabi</text>
+<text x="1582" y="879" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Community officer</text>
+<rect x="1760" y="0" width="1200" height="64" fill="#111c2a"/>
+<rect x="1760" y="63" width="1200" height="1" fill="#2b3b50"/>
+<text x="1800" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">CITADEL VANGUARD</text>
+<text x="1940.3" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">/</text>
+<text x="1956.3" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#eff5fa" text-anchor="start" letter-spacing="1.2">DRAFTS</text>
+<ellipse cx="2644" cy="32" rx="4" ry="4" fill="#5de0c1"/>
+<text x="2656" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.2">REALM ONLINE</text>
+<ellipse cx="2792" cy="32" rx="16" ry="16" fill="#604c80"/>
+<text x="2792" y="36" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#f2e8ff" text-anchor="middle">GA</text>
+<rect x="2824.5" y="12.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2872" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Sign out</text>
+<text x="1800" y="118" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.5">ROSTER BUILDER</text>
+<text x="1800" y="160" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#eff5fa" text-anchor="start">Icecrown Citadel drafts</text>
+<text x="1800" y="190" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="400" fill="#9eadc1" text-anchor="start">Fri 9 Oct, 21:00 · 19:00 UTC · Icecrown Citadel 25 heroic + Ruby Sanctum 25</text>
+<rect x="1800" y="260" width="1120" height="1" fill="#2b3b50"/>
+<rect x="1800" y="224" width="83.8" height="36" fill="#0b111c"/>
+<text x="1841.9" y="246" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#5de0c1" text-anchor="middle">Draft A</text>
+<rect x="1800" y="258" width="83.8" height="3" rx="2" fill="#5de0c1"/>
+<rect x="1891.8" y="224" width="268.8" height="36" fill="#0b111c"/>
+<text x="2026.2" y="246" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="middle">Draft B · copied from Fri 25 Sep</text>
+<text x="2184.6" y="246" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#5de0c1" text-anchor="start">+ New draft</text>
+<text x="2298.6" y="246" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#5de0c1" text-anchor="start">Copy a past raid</text>
+<text x="2920" y="246" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end">Drafts stay unpublished until you choose one.</text>
+<rect x="1800.5" y="280.5" width="169" height="283" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="1812" y="306" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#9eadc1" text-anchor="start">Group 1</text>
+<rect x="1808" y="320" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="1820" cy="334" rx="4" ry="4" fill="#c69b6d"/>
+<text x="1830" y="338" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Stonebrow</text>
+<text x="1820" y="355" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Protection · Tank</text>
+<rect x="1808" y="368" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="1820" cy="382" rx="4" ry="4" fill="#c41e3a"/>
+<text x="1830" y="386" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Tomasdk</text>
+<text x="1820" y="403" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Blood · Tank</text>
+<rect x="1808" y="416" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="1820" cy="430" rx="4" ry="4" fill="#c41e3a"/>
+<text x="1830" y="434" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Arthasdk</text>
+<text x="1820" y="451" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Frost · Melee</text>
+<rect x="1808.5" y="464.5" width="153" height="41" rx="6" fill="#1b4548" stroke="#5de0c1" stroke-width="1"/>
+<ellipse cx="1820" cy="478" rx="4" ry="4" fill="#fff468"/>
+<text x="1830" y="482" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Shadestep</text>
+<text x="1820" y="499" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#9eadc1" text-anchor="start">Combat · Melee</text>
+<rect x="1808" y="512" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="1820" cy="526" rx="4" ry="4" fill="#ff7c0a"/>
+<text x="1830" y="530" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Brookpaw</text>
+<text x="1820" y="547" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Feral · Melee</text>
+<rect x="1982.5" y="280.5" width="169" height="283" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="1994" y="306" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#9eadc1" text-anchor="start">Group 2</text>
+<rect x="1990" y="320" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="2002" cy="334" rx="4" ry="4" fill="#ff7c0a"/>
+<text x="2012" y="338" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Moonveil</text>
+<text x="2002" y="355" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Restoration · Heal</text>
+<rect x="1990" y="368" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="2002" cy="382" rx="4" ry="4" fill="#f48cba"/>
+<text x="2012" y="386" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Lightwarden</text>
+<text x="2002" y="403" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Holy · Heal</text>
+<rect x="1990" y="416" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="2002" cy="430" rx="4" ry="4" fill="#0070dd"/>
+<text x="2012" y="434" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Stormcall</text>
+<text x="2002" y="451" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Restoration · Heal</text>
+<rect x="1990.5" y="464.5" width="153" height="41" rx="6" fill="#172333" stroke="#2b3b50" stroke-width="1"/>
+<text x="2002" y="482" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#9eadc1" text-anchor="start">Healer placeholder</text>
+<text x="2002" y="499" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#5de0c1" text-anchor="start">Fill from candidates</text>
+<rect x="1990" y="512" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="2002" cy="526" rx="4" ry="4" fill="#c69b6d"/>
+<text x="2012" y="530" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Bladewind</text>
+<text x="2002" y="547" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Fury · Melee</text>
+<rect x="2164.5" y="280.5" width="169" height="283" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="2176" y="306" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#9eadc1" text-anchor="start">Group 3</text>
+<rect x="2172" y="320" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="2184" cy="334" rx="4" ry="4" fill="#3fc7eb"/>
+<text x="2194" y="338" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Frostweave</text>
+<text x="2184" y="355" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Arcane · Ranged</text>
+<rect x="2172" y="368" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="2184" cy="382" rx="4" ry="4" fill="#8788ee"/>
+<text x="2194" y="386" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Emberlock</text>
+<text x="2184" y="403" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Destruction · Ranged</text>
+<rect x="2172" y="416" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="2184" cy="430" rx="4" ry="4" fill="#aad372"/>
+<text x="2194" y="434" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Swiftshot</text>
+<text x="2184" y="451" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Marksmanship · Ranged</text>
+<rect x="2172" y="464" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="2184" cy="478" rx="4" ry="4" fill="#ffffff"/>
+<text x="2194" y="482" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Voidcaller</text>
+<text x="2184" y="499" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Shadow · Ranged</text>
+<rect x="2172" y="512" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="2184" cy="526" rx="4" ry="4" fill="#ff7c0a"/>
+<text x="2194" y="530" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Starfall</text>
+<text x="2184" y="547" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Balance · Ranged</text>
+<rect x="2346.5" y="280.5" width="169" height="283" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="2358" y="306" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#9eadc1" text-anchor="start">Group 4</text>
+<rect x="2354" y="320" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="2366" cy="334" rx="4" ry="4" fill="#f48cba"/>
+<text x="2376" y="338" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Crusader</text>
+<text x="2366" y="355" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Retribution · Melee</text>
+<rect x="2354" y="368" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="2366" cy="382" rx="4" ry="4" fill="#0070dd"/>
+<text x="2376" y="386" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Tidefist</text>
+<text x="2366" y="403" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Enhancement · Melee</text>
+<rect x="2354" y="416" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="2366" cy="430" rx="4" ry="4" fill="#fff468"/>
+<text x="2376" y="434" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Nightshade</text>
+<text x="2366" y="451" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Assassination · Melee</text>
+<rect x="2354" y="464" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="2366" cy="478" rx="4" ry="4" fill="#c41e3a"/>
+<text x="2376" y="482" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Wintergrave</text>
+<text x="2366" y="499" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Unholy · Melee</text>
+<rect x="2354.5" y="512.5" width="153" height="41" rx="6" fill="#172333" stroke="#2b3b50" stroke-width="1"/>
+<text x="2366" y="530" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#9eadc1" text-anchor="start">Melee damage placeholder</text>
+<text x="2366" y="547" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#5de0c1" text-anchor="start">Fill from candidates</text>
+<rect x="2528.5" y="280.5" width="169" height="283" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="2540" y="306" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#9eadc1" text-anchor="start">Group 5</text>
+<rect x="2536" y="320" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="2548" cy="334" rx="4" ry="4" fill="#3fc7eb"/>
+<text x="2558" y="338" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Pyrelight</text>
+<text x="2548" y="355" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Fire · Ranged</text>
+<rect x="2536" y="368" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="2548" cy="382" rx="4" ry="4" fill="#8788ee"/>
+<text x="2558" y="386" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Soulreaver</text>
+<text x="2548" y="403" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Affliction · Ranged</text>
+<rect x="2536" y="416" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="2548" cy="430" rx="4" ry="4" fill="#aad372"/>
+<text x="2558" y="434" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Longstride</text>
+<text x="2548" y="451" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Survival · Ranged</text>
+<rect x="2536" y="464" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="2548" cy="478" rx="4" ry="4" fill="#f48cba"/>
+<text x="2558" y="482" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Brightvow</text>
+<text x="2548" y="499" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Holy · Heal</text>
+<rect x="2536" y="512" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="2548" cy="526" rx="4" ry="4" fill="#0070dd"/>
+<text x="2558" y="530" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Sparkcaller</text>
+<text x="2548" y="547" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Elemental · Ranged</text>
+<rect x="2718.5" y="280.5" width="201" height="199" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="2730" y="306" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#9eadc1" text-anchor="start">Bench · 2</text>
+<rect x="2726.5" y="320.5" width="153" height="41" rx="6" fill="#1b4548" stroke="#5de0c1" stroke-width="1"/>
+<ellipse cx="2738" cy="334" rx="4" ry="4" fill="#ffffff"/>
+<text x="2748" y="338" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Kirilight</text>
+<text x="2738" y="355" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#9eadc1" text-anchor="start">Holy · Heal</text>
+<rect x="2726" y="368" width="154" height="42" rx="6" fill="#1c2b3e"/>
+<ellipse cx="2738" cy="382" rx="4" ry="4" fill="#c69b6d"/>
+<text x="2748" y="386" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">Ironhide</text>
+<text x="2738" y="403" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Protection · Tank</text>
+<text x="2730" y="438" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">Benched players are told</text>
+<text x="2730" y="454" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="400" fill="#8394aa" text-anchor="start">when you publish.</text>
+<rect x="1800.5" y="580.5" width="1119" height="63" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<rect x="1800" y="592" width="4" height="40" rx="2" fill="#5de0c1"/>
+<text x="1824" y="618" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Swap Shadestep (Selm Voss, group 1) with Kirilight (Kiri Dawn, bench)?</text>
+<rect x="2696.5" y="592.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2744" y="617" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Cancel</text>
+<rect x="2800" y="592" width="96" height="40" rx="8" fill="#5de0c1"/>
+<text x="2848" y="617" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#102830" text-anchor="middle">Swap</text>
+<rect x="1800.5" y="660.5" width="1119" height="71" rx="10" fill="#4b382a" stroke="#5e4631" stroke-width="1"/>
+<ellipse cx="1832" cy="696" rx="12" ry="12" fill="#f3be75"/>
+<text x="1832" y="702" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#102830" text-anchor="middle">!</text>
+<text x="1860" y="691" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#f9d7a7" text-anchor="start">Jainaice can&#x27;t join this draft</text>
+<text x="1860" y="713" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#e2ba87" text-anchor="start">Bryn Valewood is already in it with Arthasdk. A draft takes one character per player; swap them instead.</text>
+</g>
+<text x="0" y="966" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">3 · Draft B balance</text>
+<clipPath id="clip3"><rect x="0" y="980" width="1440" height="900"/></clipPath>
+<rect x="0" y="980" width="1440" height="900" fill="#0b111c"/>
+<g clip-path="url(#clip3)">
+<rect x="0" y="980" width="240" height="900" fill="#0f1825"/>
+<rect x="239" y="980" width="1" height="900" fill="#2b3b50"/>
+<rect x="20" y="996" width="32" height="32" rx="8" fill="#0c2931"/>
+<rect x="28" y="1004" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="62" y="1018" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#eff5fa" text-anchor="start" letter-spacing="0.5">RAID</text>
+<text x="104" y="1018" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#5de0c1" text-anchor="start" letter-spacing="0.5">MANAGER</text>
+<rect x="16.5" y="1048.5" width="207" height="59" rx="10" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<rect x="28" y="1062" width="32" height="32" rx="8" fill="#9077b3"/>
+<text x="44" y="1082" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#0b111c" text-anchor="middle">CV</text>
+<text x="70" y="1075" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Citadel Vanguard</text>
+<text x="70" y="1094" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Icecrown · Community</text>
+<text x="24" y="1144" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">PLAYER</text>
+<rect x="12" y="1156" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="1174" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="1179" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Overview</text>
+<rect x="12" y="1196" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="1214" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="1219" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Raids</text>
+<rect x="12" y="1236" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="1254" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="1259" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">My characters</text>
+<rect x="12" y="1276" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="1294" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="1299" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Readiness</text>
+<rect x="12" y="1316" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="1334" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="1339" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Companion &amp; sync</text>
+<text x="24" y="1384" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">OFFICER</text>
+<rect x="12" y="1396" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="1414" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="1419" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Schedule</text>
+<rect x="12" y="1436" width="216" height="36" rx="8" fill="#1b4548"/>
+<rect x="12" y="1444" width="3" height="20" rx="2" fill="#5de0c1"/>
+<ellipse cx="34" cy="1454" rx="4" ry="4" fill="#5de0c1"/>
+<text x="50" y="1459" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#5de0c1" text-anchor="start">Roster builder</text>
+<rect x="12" y="1476" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="1494" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="1499" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Raid night</text>
+<rect x="0" y="1808" width="239" height="1" fill="#2b3b50"/>
+<ellipse cx="36" cy="1844" rx="16" ry="16" fill="#604c80"/>
+<text x="36" y="1848" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#f2e8ff" text-anchor="middle">GA</text>
+<text x="62" y="1840" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Gihed Annabi</text>
+<text x="62" y="1859" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Community officer</text>
+<rect x="240" y="980" width="1200" height="64" fill="#111c2a"/>
+<rect x="240" y="1043" width="1200" height="1" fill="#2b3b50"/>
+<text x="280" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">CITADEL VANGUARD</text>
+<text x="420.3" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">/</text>
+<text x="436.3" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#eff5fa" text-anchor="start" letter-spacing="1.2">DRAFTS</text>
+<ellipse cx="1124" cy="1012" rx="4" ry="4" fill="#5de0c1"/>
+<text x="1136" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.2">REALM ONLINE</text>
+<ellipse cx="1272" cy="1012" rx="16" ry="16" fill="#604c80"/>
+<text x="1272" y="1016" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#f2e8ff" text-anchor="middle">GA</text>
+<rect x="1304.5" y="992.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="1352" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Sign out</text>
+<text x="280" y="1098" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.5">ROSTER BUILDER</text>
+<text x="280" y="1140" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#eff5fa" text-anchor="start">Icecrown Citadel drafts</text>
+<text x="280" y="1170" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="400" fill="#9eadc1" text-anchor="start">Fri 9 Oct, 21:00 · 19:00 UTC · Icecrown Citadel 25 heroic + Ruby Sanctum 25</text>
+<rect x="280" y="1240" width="1120" height="1" fill="#2b3b50"/>
+<rect x="280" y="1204" width="83.8" height="36" fill="#0b111c"/>
+<text x="321.9" y="1226" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="middle">Draft A</text>
+<rect x="371.8" y="1204" width="268.8" height="36" fill="#0b111c"/>
+<text x="506.2" y="1226" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#5de0c1" text-anchor="middle">Draft B · copied from Fri 25 Sep</text>
+<rect x="371.8" y="1238" width="268.8" height="3" rx="2" fill="#5de0c1"/>
+<text x="664.6" y="1226" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#5de0c1" text-anchor="start">+ New draft</text>
+<text x="778.6" y="1226" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#5de0c1" text-anchor="start">Copy a past raid</text>
+<text x="1400" y="1226" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end">Drafts stay unpublished until you choose one.</text>
+<rect x="280.5" y="1260.5" width="267" height="83" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="300" y="1288" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">TANK</text>
+<text x="300" y="1320" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="28" font-weight="700" fill="#eff5fa" text-anchor="start">2</text>
+<text x="344" y="1318" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#9eadc1" text-anchor="start"></text>
+<rect x="564.5" y="1260.5" width="267" height="83" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="584" y="1288" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">HEALER</text>
+<text x="584" y="1320" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="28" font-weight="700" fill="#eff5fa" text-anchor="start">4</text>
+<text x="628" y="1318" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#9eadc1" text-anchor="start"> + 1 placeholder</text>
+<rect x="848.5" y="1260.5" width="267" height="83" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="868" y="1288" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">MELEE DAMAGE</text>
+<text x="868" y="1320" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="28" font-weight="700" fill="#eff5fa" text-anchor="start">8</text>
+<text x="912" y="1318" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#9eadc1" text-anchor="start"> + 1 placeholder</text>
+<rect x="1132.5" y="1260.5" width="267" height="83" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="1152" y="1288" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">RANGED DAMAGE</text>
+<text x="1152" y="1320" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="28" font-weight="700" fill="#eff5fa" text-anchor="start">9</text>
+<text x="1196" y="1318" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#9eadc1" text-anchor="start"></text>
+<rect x="280.5" y="1364.5" width="1119" height="237" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="300" y="1400" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#eff5fa" text-anchor="start">Classes and specs</text>
+<ellipse cx="305" cy="1436" rx="5" ry="5" fill="#c41e3a"/>
+<text x="318" y="1441" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Death Knight 3</text>
+<text x="450" y="1441" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Blood 1, Frost 1, Unholy 1</text>
+<ellipse cx="865" cy="1436" rx="5" ry="5" fill="#ff7c0a"/>
+<text x="878" y="1441" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Druid 3</text>
+<text x="1010" y="1441" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Balance 1, Feral 1, Restoration 1</text>
+<ellipse cx="305" cy="1470" rx="5" ry="5" fill="#f48cba"/>
+<text x="318" y="1475" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Paladin 3</text>
+<text x="450" y="1475" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Holy 2, Retribution 1</text>
+<ellipse cx="865" cy="1470" rx="5" ry="5" fill="#0070dd"/>
+<text x="878" y="1475" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Shaman 3</text>
+<text x="1010" y="1475" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Elemental 1, Enhancement 1, Restoration 1</text>
+<ellipse cx="305" cy="1504" rx="5" ry="5" fill="#aad372"/>
+<text x="318" y="1509" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Hunter 2</text>
+<text x="450" y="1509" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Marksmanship 1, Survival 1</text>
+<ellipse cx="865" cy="1504" rx="5" ry="5" fill="#3fc7eb"/>
+<text x="878" y="1509" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Mage 2</text>
+<text x="1010" y="1509" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Arcane 1, Fire 1</text>
+<ellipse cx="305" cy="1538" rx="5" ry="5" fill="#fff468"/>
+<text x="318" y="1543" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Rogue 2</text>
+<text x="450" y="1543" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Assassination 1, Combat 1</text>
+<ellipse cx="865" cy="1538" rx="5" ry="5" fill="#8788ee"/>
+<text x="878" y="1543" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Warlock 2</text>
+<text x="1010" y="1543" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Affliction 1, Destruction 1</text>
+<ellipse cx="305" cy="1572" rx="5" ry="5" fill="#c69b6d"/>
+<text x="318" y="1577" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Warrior 2</text>
+<text x="450" y="1577" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Fury 1, Protection 1</text>
+<ellipse cx="865" cy="1572" rx="5" ry="5" fill="#ffffff"/>
+<text x="878" y="1577" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Priest 1</text>
+<text x="1010" y="1577" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Shadow 1</text>
+<text x="280" y="1840" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Copied from the raid on Fri 25 Sep; readiness is checked again for this raid.</text>
+</g>
+</svg>
