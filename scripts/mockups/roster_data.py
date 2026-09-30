@@ -13,7 +13,8 @@ RAID = "Icecrown Citadel"
 WHEN = "Fri 9 Oct, 21:00 · 19:00 UTC · Icecrown Citadel 25 heroic + Ruby Sanctum 25"
 
 CLASS_COLOURS = {"Death Knight": "#C41E3A", "Paladin": "#F48CBA", "Priest": "#FFFFFF", "Druid": "#FF7C0A",
-                 "Rogue": "#FFF468", "Mage": "#3FC7EB", "Warrior": "#C69B6D", "Shaman": "#0070DD"}
+                 "Rogue": "#FFF468", "Mage": "#3FC7EB", "Warrior": "#C69B6D", "Shaman": "#0070DD",
+                 "Hunter": "#AAD372", "Warlock": "#8788EE"}
 PALETTE_ADDITIONS = {f"WoW class/{name}": colour for name, colour in CLASS_COLOURS.items()}
 
 AVAILABLE, RESETS, STALE, LOCKED = "Available", "Resets before raid", "Needs fresh sync", "Locked through raid"
@@ -76,3 +77,50 @@ CANDIDATES = [
 TOTAL_PLAYERS, TOTAL_OPTIONS = 27, 41
 # Offered options per role across all 27 players, and how many players prefer that role.
 ROLE_COUNTS = {TANK: (6, 3), HEALER: (9, 7), MELEE: (12, 8), RANGED: (14, 9)}
+
+
+@dataclass(frozen=True)
+class Slot:
+    """One roster place: a character and its loadout, or a placeholder for a role (`character` empty)."""
+
+    player: str
+    character: str
+    wow_class: str
+    spec: str
+    role: str
+
+
+def placeholder(role: str) -> Slot:
+    return Slot("", "", "", "", role)
+
+
+# Draft A for the raid: five groups of five, in group order. Two places are placeholders.
+DRAFT_A: list[list[Slot]] = [
+    [Slot("Doran Pike", "Stonebrow", "Warrior", "Protection", TANK),
+     Slot("Tomas Hale", "Tomasdk", DEATH_KNIGHT, "Blood", TANK),
+     Slot("Bryn Valewood", "Arthasdk", DEATH_KNIGHT, "Frost", MELEE),
+     Slot("Selm Voss", "Shadestep", "Rogue", "Combat", MELEE),
+     Slot("Hale Brook", "Brookpaw", "Druid", "Feral", MELEE)],
+    [Slot("Arvel Moss", "Moonveil", "Druid", "Restoration", HEALER),
+     Slot("Nell Ashby", "Lightwarden", PALADIN, "Holy", HEALER),
+     Slot("Oren Tull", "Stormcall", "Shaman", "Restoration", HEALER),
+     placeholder(HEALER),
+     Slot("Ivo Marsh", "Bladewind", "Warrior", "Fury", MELEE)],
+    [Slot("Ilsa Brand", "Frostweave", "Mage", "Arcane", RANGED),
+     Slot("Pell Carrow", "Emberlock", "Warlock", "Destruction", RANGED),
+     Slot("Wren Halden", "Swiftshot", "Hunter", "Marksmanship", RANGED),
+     Slot("Tavi Orm", "Voidcaller", "Priest", "Shadow", RANGED),
+     Slot("Cass Rowe", "Starfall", "Druid", "Balance", RANGED)],
+    [Slot("Juno Fell", "Crusader", PALADIN, "Retribution", MELEE),
+     Slot("Bram Oakes", "Tidefist", "Shaman", "Enhancement", MELEE),
+     Slot("Lark Venn", "Nightshade", "Rogue", "Assassination", MELEE),
+     Slot("Rook Dale", "Wintergrave", DEATH_KNIGHT, "Unholy", MELEE),
+     placeholder(MELEE)],
+    [Slot("Faye Lorn", "Pyrelight", "Mage", "Fire", RANGED),
+     Slot("Gus Teller", "Soulreaver", "Warlock", "Affliction", RANGED),
+     Slot("Hedda Voss", "Longstride", "Hunter", "Survival", RANGED),
+     Slot("Sera Winn", "Brightvow", PALADIN, "Holy", HEALER),
+     Slot("Quin Yarrow", "Sparkcaller", "Shaman", "Elemental", RANGED)],
+]
+BENCH = [Slot("Kiri Dawn", "Kirilight", "Priest", "Holy", HEALER),
+         Slot("Eli Brant", "Ironhide", "Warrior", "Protection", TANK)]
