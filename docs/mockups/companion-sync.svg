@@ -1,0 +1,181 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3280" height="840" viewBox="-80 -80 3280 840">
+<title>Companion sync (rendered from companion-sync.penpot)</title>
+<rect x="-80" y="-80" width="3280" height="840" fill="#e8e8e8"/>
+<text x="0" y="-14" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">1 · Watched folders</text>
+<clipPath id="clip1"><rect x="0" y="0" width="560" height="680"/></clipPath>
+<rect x="0" y="0" width="560" height="680" fill="#0b111c"/>
+<g clip-path="url(#clip1)">
+<rect x="0" y="0" width="560" height="44" fill="#111c2a"/>
+<rect x="0" y="43" width="560" height="1" fill="#2b3b50"/>
+<rect x="16" y="14" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="42" y="28" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">RaidManager Companion</text>
+<text x="32" y="96" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#eff5fa" text-anchor="start">Watched folders</text>
+<text x="32" y="124" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">RaidManager found these World of Warcraft folders. Clear</text>
+<text x="32" y="144" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">an account to keep its characters out of RaidManager.</text>
+<rect x="32.5" y="156.5" width="495" height="203" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="52" y="184" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">INSTALLATION</text>
+<text x="52" y="206" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">C:\Games\Warmane\World of Warcraft</text>
+<rect x="32" y="220" width="496" height="1" fill="#2b3b50"/>
+<rect x="52" y="233" width="18" height="18" rx="4" fill="#5de0c1"/>
+<text x="61" y="247" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#102830" text-anchor="middle">✓</text>
+<text x="82" y="247" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">ARTHASACC</text>
+<text x="508" y="247" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end">3 characters</text>
+<rect x="32" y="264" width="496" height="1" fill="#2b3b50"/>
+<rect x="52" y="277" width="18" height="18" rx="4" fill="#5de0c1"/>
+<text x="61" y="291" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#102830" text-anchor="middle">✓</text>
+<text x="82" y="291" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">JAINAACC</text>
+<text x="508" y="291" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end">2 characters</text>
+<rect x="32" y="308" width="496" height="1" fill="#2b3b50"/>
+<rect x="52.5" y="321.5" width="17" height="17" rx="4" fill="#172333" stroke="#9eadc1" stroke-width="1"/>
+<text x="82" y="335" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#8394aa" text-anchor="start">ALTACC</text>
+<text x="508" y="335" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end">Excluded · 4 characters</text>
+<rect x="32.5" y="376.5" width="495" height="115" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="52" y="404" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">INSTALLATION</text>
+<text x="52" y="426" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">D:\WoW\Warmane</text>
+<rect x="32" y="440" width="496" height="1" fill="#2b3b50"/>
+<rect x="52" y="453" width="18" height="18" rx="4" fill="#5de0c1"/>
+<text x="61" y="467" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#102830" text-anchor="middle">✓</text>
+<text x="82" y="467" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">THRALLACC</text>
+<text x="508" y="467" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end">1 character</text>
+<rect x="32" y="516" width="180" height="40" rx="8" fill="#5de0c1"/>
+<text x="122" y="541" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#102830" text-anchor="middle">Save and sync</text>
+<rect x="220.5" y="516.5" width="179" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="310" y="541" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Find folders again</text>
+<rect x="0" y="636" width="560" height="1" fill="#2b3b50"/>
+<ellipse cx="36" cy="658" rx="4" ry="4" fill="#5de0c1"/>
+<text x="48" y="663" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#9eadc1" text-anchor="start">Paired with Bryn Valewood · BRYN-DESKTOP</text>
+</g>
+<text x="640" y="-14" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">2 · Syncing</text>
+<clipPath id="clip2"><rect x="640" y="0" width="560" height="680"/></clipPath>
+<rect x="640" y="0" width="560" height="680" fill="#0b111c"/>
+<g clip-path="url(#clip2)">
+<rect x="640" y="0" width="560" height="44" fill="#111c2a"/>
+<rect x="640" y="43" width="560" height="1" fill="#2b3b50"/>
+<rect x="656" y="14" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="682" y="28" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">RaidManager Companion</text>
+<text x="672" y="96" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#eff5fa" text-anchor="start">Sync</text>
+<rect x="1095" y="78" width="73" height="24" rx="12" fill="#173a36"/>
+<text x="1131.5" y="94" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#5de0c1" text-anchor="middle">Syncing</text>
+<text x="672" y="124" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Snapshots upload when WoW finishes writing them.</text>
+<rect x="672.5" y="140.5" width="495" height="83" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="692" y="172" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">LAST SUCCESS</text>
+<text x="692" y="198" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="600" fill="#eff5fa" text-anchor="start">Today, 14:05</text>
+<text x="857.33" y="172" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">QUEUED</text>
+<text x="857.33" y="198" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="600" fill="#eff5fa" text-anchor="start">2 snapshots</text>
+<text x="1022.67" y="172" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">ACCOUNTS</text>
+<text x="1022.67" y="198" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="600" fill="#eff5fa" text-anchor="start">3 of 4 watched</text>
+<rect x="672.5" y="240.5" width="495" height="275" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="692" y="276" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#eff5fa" text-anchor="start">Recent activity</text>
+<rect x="672" y="300" width="496" height="1" fill="#2b3b50"/>
+<text x="692" y="323" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Arthasdk</text>
+<text x="692" y="341" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Icecrown</text>
+<text x="892" y="323" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#5de0c1" text-anchor="start">Uploading</text>
+<rect x="892" y="332" width="240" height="6" rx="3" fill="#314155"/>
+<rect x="892" y="332" width="144" height="6" rx="3" fill="#5de0c1"/>
+<rect x="672" y="352" width="496" height="1" fill="#2b3b50"/>
+<text x="692" y="375" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Jainaice</text>
+<text x="692" y="393" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Lordaeron</text>
+<ellipse cx="896" cy="379" rx="4" ry="4" fill="#f3be75"/>
+<text x="908" y="384" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Waiting for WoW to finish writing</text>
+<rect x="672" y="404" width="496" height="1" fill="#2b3b50"/>
+<text x="692" y="427" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Thrallsham</text>
+<text x="692" y="445" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Icecrown</text>
+<text x="892" y="436" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#8394aa" text-anchor="start">Uploaded today, 14:05</text>
+<rect x="672" y="456" width="496" height="1" fill="#2b3b50"/>
+<text x="692" y="479" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Sylvanash</text>
+<text x="692" y="497" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Icecrown</text>
+<text x="892" y="488" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#8394aa" text-anchor="start">Uploaded today, 14:05</text>
+<rect x="672.5" y="540.5" width="139" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="742" y="565" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Pause sync</text>
+<rect x="820.5" y="540.5" width="159" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="900" y="565" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Watched folders</text>
+<rect x="640" y="636" width="560" height="1" fill="#2b3b50"/>
+<ellipse cx="676" cy="658" rx="4" ry="4" fill="#5de0c1"/>
+<text x="688" y="663" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#9eadc1" text-anchor="start">Paired with Bryn Valewood · BRYN-DESKTOP</text>
+</g>
+<text x="1280" y="-14" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">3 · Paused</text>
+<clipPath id="clip3"><rect x="1280" y="0" width="560" height="680"/></clipPath>
+<rect x="1280" y="0" width="560" height="680" fill="#0b111c"/>
+<g clip-path="url(#clip3)">
+<rect x="1280" y="0" width="560" height="44" fill="#111c2a"/>
+<rect x="1280" y="43" width="560" height="1" fill="#2b3b50"/>
+<rect x="1296" y="14" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="1322" y="28" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">RaidManager Companion</text>
+<text x="1312" y="96" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#eff5fa" text-anchor="start">Sync</text>
+<rect x="1742" y="78" width="66" height="24" rx="12" fill="#1c2b3e"/>
+<text x="1775" y="94" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#9eadc1" text-anchor="middle">Paused</text>
+<text x="1312" y="124" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Nothing uploads until you resume.</text>
+<rect x="1312.5" y="140.5" width="495" height="71" rx="10" fill="#1b2e4a" stroke="#2a4468" stroke-width="1"/>
+<ellipse cx="1344" cy="176" rx="12" ry="12" fill="#8fb3f6"/>
+<text x="1344" y="182" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#102830" text-anchor="middle">i</text>
+<text x="1372" y="171" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Sync is paused</text>
+<text x="1372" y="193" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">New snapshots wait here and upload when you resume.</text>
+<rect x="1312.5" y="228.5" width="495" height="83" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="1332" y="260" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">LAST SUCCESS</text>
+<text x="1332" y="286" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="600" fill="#eff5fa" text-anchor="start">Today, 14:05</text>
+<text x="1497.33" y="260" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">QUEUED</text>
+<text x="1497.33" y="286" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="600" fill="#eff5fa" text-anchor="start">3 snapshots</text>
+<text x="1662.67" y="260" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">ACCOUNTS</text>
+<text x="1662.67" y="286" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="600" fill="#eff5fa" text-anchor="start">3 of 4 watched</text>
+<rect x="1312" y="336" width="160" height="40" rx="8" fill="#5de0c1"/>
+<text x="1392" y="361" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#102830" text-anchor="middle">Resume sync</text>
+<rect x="1280" y="636" width="560" height="1" fill="#2b3b50"/>
+<ellipse cx="1316" cy="658" rx="4" ry="4" fill="#5de0c1"/>
+<text x="1328" y="663" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#9eadc1" text-anchor="start">Paired with Bryn Valewood · BRYN-DESKTOP</text>
+</g>
+<text x="1920" y="-14" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">4 · Offline</text>
+<clipPath id="clip4"><rect x="1920" y="0" width="560" height="680"/></clipPath>
+<rect x="1920" y="0" width="560" height="680" fill="#0b111c"/>
+<g clip-path="url(#clip4)">
+<rect x="1920" y="0" width="560" height="44" fill="#111c2a"/>
+<rect x="1920" y="43" width="560" height="1" fill="#2b3b50"/>
+<rect x="1936" y="14" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="1962" y="28" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">RaidManager Companion</text>
+<text x="1952" y="96" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#eff5fa" text-anchor="start">Sync</text>
+<rect x="2375" y="78" width="73" height="24" rx="12" fill="#3f2329"/>
+<text x="2411.5" y="94" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#f4a7ab" text-anchor="middle">Offline</text>
+<text x="1952" y="124" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Uploads wait in the queue; nothing is lost.</text>
+<rect x="1952.5" y="140.5" width="495" height="71" rx="10" fill="#3f2329" stroke="#6b3740" stroke-width="1"/>
+<ellipse cx="1984" cy="176" rx="12" ry="12" fill="#f2878c"/>
+<text x="1984" y="182" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#2b1115" text-anchor="middle">!</text>
+<text x="2012" y="171" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#f4a7ab" text-anchor="start">Can&#x27;t reach RaidManager</text>
+<text x="2012" y="193" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#f4a7ab" text-anchor="start">You&#x27;re offline, or the service is down. It retries on its own.</text>
+<rect x="1952.5" y="228.5" width="495" height="83" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="1972" y="260" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">LAST SUCCESS</text>
+<text x="1972" y="286" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="600" fill="#eff5fa" text-anchor="start">Today, 14:05</text>
+<text x="2137.33" y="260" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">QUEUED</text>
+<text x="2137.33" y="286" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="600" fill="#eff5fa" text-anchor="start">3 snapshots</text>
+<text x="2302.67" y="260" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">ACCOUNTS</text>
+<text x="2302.67" y="286" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="600" fill="#eff5fa" text-anchor="start">3 of 4 watched</text>
+<rect x="1952" y="336" width="140" height="40" rx="8" fill="#5de0c1"/>
+<text x="2022" y="361" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#102830" text-anchor="middle">Retry now</text>
+<rect x="1920" y="636" width="560" height="1" fill="#2b3b50"/>
+<ellipse cx="1956" cy="658" rx="4" ry="4" fill="#5de0c1"/>
+<text x="1968" y="663" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#9eadc1" text-anchor="start">Paired with Bryn Valewood · BRYN-DESKTOP</text>
+</g>
+<text x="2560" y="-14" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">5 · Incomplete snapshot</text>
+<clipPath id="clip5"><rect x="2560" y="0" width="560" height="680"/></clipPath>
+<rect x="2560" y="0" width="560" height="680" fill="#0b111c"/>
+<g clip-path="url(#clip5)">
+<rect x="2560" y="0" width="560" height="44" fill="#111c2a"/>
+<rect x="2560" y="43" width="560" height="1" fill="#2b3b50"/>
+<rect x="2576" y="14" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="2602" y="28" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">RaidManager Companion</text>
+<text x="2592" y="96" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#eff5fa" text-anchor="start">Sync</text>
+<rect x="2959" y="78" width="129" height="24" rx="12" fill="#4b382a"/>
+<text x="3023.5" y="94" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#f9d7a7" text-anchor="middle">Needs attention</text>
+<text x="2592" y="124" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">One snapshot needs your help.</text>
+<rect x="2592.5" y="140.5" width="495" height="71" rx="10" fill="#4b382a" stroke="#5e4631" stroke-width="1"/>
+<ellipse cx="2624" cy="176" rx="12" ry="12" fill="#f3be75"/>
+<text x="2624" y="182" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#102830" text-anchor="middle">!</text>
+<text x="2652" y="171" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#f9d7a7" text-anchor="start">Jainaice&#x27;s snapshot is incomplete</text>
+<text x="2652" y="193" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#e2ba87" text-anchor="start">WoW didn&#x27;t finish writing it, perhaps after a crash.</text>
+<text x="2592" y="248" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">To fix it, log in with Jainaice in WoW and type /reload, or</text>
+<text x="2592" y="268" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">log out. Then retry. Your other characters keep syncing.</text>
+<rect x="2592" y="292" width="160" height="40" rx="8" fill="#5de0c1"/>
+<text x="2672" y="317" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#102830" text-anchor="middle">Retry Jainaice</text>
+<rect x="2560" y="636" width="560" height="1" fill="#2b3b50"/>
+<ellipse cx="2596" cy="658" rx="4" ry="4" fill="#5de0c1"/>
+<text x="2608" y="663" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#9eadc1" text-anchor="start">Paired with Bryn Valewood · BRYN-DESKTOP</text>
+</g>
+</svg>
