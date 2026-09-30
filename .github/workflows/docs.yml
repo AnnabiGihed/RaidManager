@@ -73,6 +73,8 @@ jobs:
           files: '["README.md","CHANGELOG.md","CONTRIBUTING.md","SECURITY.md","docs"]'
           filter_mode: nofilter
           fail_level: error
+          # Without this, reviewdog only annotates Vale's errors and the check still passes.
+          fail_on_error: true
           sync: false
       - name: Internal link check
         uses: lycheeverse/lychee-action@v2

@@ -12,6 +12,7 @@ binfile
 Blackrock
 Blazor
 boolean
+booleans
 bot
 bUnit
 changelog
@@ -23,6 +24,7 @@ CQRS
 DDD
 debuff
 deduplication
+dialogs
 diff
 EF
 emoji
@@ -58,6 +60,10 @@ MCP
 metadata
 microservice
 MkDocs
+Mockup
+mockup
+Mockups
+mockups
 multi
 npm
 NuGet
@@ -91,6 +97,7 @@ SonarCloud
 SQL
 subcase
 SVG
+SVGs
 Swashbuckle
 timestamp
 TLS

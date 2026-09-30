@@ -76,10 +76,11 @@ class WordListTests(unittest.TestCase):
             self.assertEqual(load_words(path), {"penpot", "github"})
 
     def test_the_repository_word_list_is_sorted_and_unique(self) -> None:
+        # Vale matches entries case-sensitively, so a word may need its capitalized form too ("mockup", "Mockup").
         path = Path(__file__).resolve().parents[2] / WORD_LIST
         words = [line.strip() for line in path.read_text(encoding="utf-8").splitlines() if line.strip()]
-        self.assertEqual(words, sorted(words, key=str.lower))
-        self.assertEqual(len({word.lower() for word in words}), len(words))
+        self.assertEqual(words, sorted(words, key=lambda word: (word.lower(), word)))
+        self.assertEqual(len(set(words)), len(words))
 
 
 if __name__ == "__main__":
