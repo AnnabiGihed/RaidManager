@@ -26,6 +26,7 @@ MUTED = P["Text/muted"]
 DIVIDER = P["Line/divider"]
 BLUE = P["Accent/blue"]
 DANGER_TEXT = P["Status/danger text"]
+PAGE_BACKGROUND = P["Surface/page"]
 BOARD_W, BOARD_H = 1440, 900
 SIDEBAR_W, TOP_BAR_H = 240, 64
 CONTENT_X, CONTENT_TOP = SIDEBAR_W + 40, TOP_BAR_H + 40
@@ -122,7 +123,7 @@ def sidebar(active: str, community: Community, user: User, links: dict[str, str]
         Group("Community card", [
             Rect("Background", 16, 68, SIDEBAR_W - 32, 60, P["Surface/card"], 1, 10, P["Line/card border"]),
             Rect("Icon", 28, 82, 32, 32, P["Community/icon"], 1, 8),
-            text("Initials", 28, 102, community.initials, 12, 800, P["Surface/page"], 32, "center"),
+            text("Initials", 28, 102, community.initials, 12, 800, PAGE_BACKGROUND, 32, "center"),
             text("Name", 70, 95, community.name, 14, 600),
             text("Realm", 70, 114, f"{community.realm} · Community", 12, 400, MUTED),
         ]),
@@ -178,7 +179,7 @@ def app_screen(name: str, x: float, y: float, page: str, content: list[Item], *,
     sign_out_click = Click("navigate", sign_out) if sign_out else None
     shell: list[Item] = [sidebar(page, community, user, links or {}),
                          top_bar(community, section or page, user, sign_out_click)]
-    return Board(name, x, y, BOARD_W, BOARD_H, P["Surface/page"], shell + content)
+    return Board(name, x, y, BOARD_W, BOARD_H, PAGE_BACKGROUND, shell + content)
 
 
 def page_header(eyebrow: str, title: str, subtitle: str, x: float = CONTENT_X, y: float = CONTENT_TOP) -> Group:
@@ -238,4 +239,4 @@ def public_screen(name: str, x: float, y: float, content: list[Item]) -> Board:
                           Rect("Mark", logo_x + 8, 128, 16, 16, ACCENT, 1, 4),
                           text("Raid", logo_x + 42, 142, "RAID", 16, 800, TEXT, None, "left", 0.5),
                           text("Manager", logo_x + 84, 142, "MANAGER", 16, 800, ACCENT, None, "left", 0.5)])
-    return Board(name, x, y, BOARD_W, BOARD_H, P["Surface/page"], [logo, *content])
+    return Board(name, x, y, BOARD_W, BOARD_H, PAGE_BACKGROUND, [logo, *content])
