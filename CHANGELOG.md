@@ -47,6 +47,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   styles, a clickable prototype and WCAG AA contrast. Each mockup's SVG is rendered from its `.penpot` file, and the
   docs check fails on a stale SVG or on a mockup outside `docs/mockups/`. The `penpot-mockups` skill holds the
   workflow (ADR-0018) (#169).
+- A dark design system from the owner's reference design: named colors, Open Sans text styles, and an app shell on
+  every website screen with the Player and Officer navigation, community, breadcrumb, realm status and user. Mockups
+  are generated with it, and the website will be re-themed to match (ADR-0019) (#202).
 - A how-to page on reviewing a pull request, with comments that pass and fail the review gate (#81).
 
 ### Changed

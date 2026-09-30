@@ -21,6 +21,7 @@ codebase
 Codecov
 config
 CQRS
+CSS
 DDD
 debuff
 deduplication
@@ -65,6 +66,7 @@ mockup
 Mockups
 mockups
 multi
+Noto
 npm
 NuGet
 OAuth
@@ -90,6 +92,7 @@ SavedVariables
 Scalar
 screenshot
 SDK
+Segoe
 SignalR
 signup
 signups

@@ -39,6 +39,7 @@ nav:
       - Work item hierarchy: adr/0016-epic-feature-story-task-hierarchy.md
       - Penpot mockups: adr/0017-penpot-mockups-for-ui-work.md
       - Generated Penpot mockups: adr/0018-generate-penpot-mockups-in-the-repository.md
+      - Dark design system: adr/0019-dark-design-system-with-an-app-shell.md
 theme:
   name: material
 markdown_extensions:
