@@ -27,6 +27,7 @@ DIVIDER = P["Line/divider"]
 BLUE = P["Accent/blue"]
 DANGER_TEXT = P["Status/danger text"]
 PAGE_BACKGROUND = P["Surface/page"]
+RAISED = P["Surface/raised"]
 BOARD_W, BOARD_H = 1440, 900
 SIDEBAR_W, TOP_BAR_H = 240, 64
 CONTENT_X, CONTENT_TOP = SIDEBAR_W + 40, TOP_BAR_H + 40
@@ -45,7 +46,7 @@ BADGE_TONES = {
     "danger": (P["Status/danger background"], DANGER_TEXT),
     "success": (P["Status/success background"], ACCENT),
     "info": (P["Status/info background"], BLUE),
-    "neutral": (P["Surface/raised"], SECONDARY),
+    "neutral": (RAISED, SECONDARY),
 }
 # (background, border, title, body, icon, icon mark) per tone.
 NOTICE_TONES = {
@@ -66,7 +67,7 @@ AVATAR_TONES = {
 # (fill, border, text) per button style.
 BUTTON_STYLES = {
     "primary": (ACCENT, None, ON_ACCENT),
-    "secondary": (P["Surface/raised"], DIVIDER, TEXT),
+    "secondary": (RAISED, DIVIDER, TEXT),
     "danger": (P["Status/danger"], None, P["Status/on danger"]),
 }
 
@@ -111,8 +112,28 @@ def navigation_item(label: str, y: float, active: bool, target: str | None) -> G
     return Group(f"{label} link", items, Click("navigate", target) if target else None)
 
 
-def sidebar(active: str, community: Community, user: User, links: dict[str, str]) -> Group:
-    """The left sidebar: logo, community card, navigation by role, and the signed-in user at the bottom."""
+def community_card(community: Community | None, target: str | None) -> Group:
+    """The sidebar's community card; `None` is a signed-in user who hasn't joined or linked a community yet."""
+    items: list[Item] = [Rect("Background", 16, 68, SIDEBAR_W - 32, 60, P["Surface/card"], 1, 10,
+                              P["Line/card border"])]
+    if community is None:
+        items += [Rect("Icon", 28, 82, 32, 32, RAISED, 1, 8, DIVIDER),
+                  text("Icon mark", 28, 104, "+", 16, 800, SECONDARY, 32, "center", icon=True),
+                  text("Name", 70, 95, "No community yet", 14, 600),
+                  text("Realm", 70, 114, "Link a Discord server", 12, 400, MUTED)]
+    else:
+        items += [Rect("Icon", 28, 82, 32, 32, P["Community/icon"], 1, 8),
+                  text("Initials", 28, 102, community.initials, 12, 800, PAGE_BACKGROUND, 32, "center"),
+                  text("Name", 70, 95, community.name, 14, 600),
+                  text("Realm", 70, 114, f"{community.realm} · Community", 12, 400, MUTED)]
+    return Group("Community card", items, Click("navigate", target) if target else None)
+
+
+def sidebar(active: str, community: Community | None, user: User, links: dict[str, str]) -> Group:
+    """The left sidebar: logo, community card, navigation by role, and the signed-in user at the bottom.
+
+    `links` maps navigation entries, and "Community" for the community card, to the boards they open.
+    """
     items: list[Item] = [
         Rect("Background", 0, 0, SIDEBAR_W, BOARD_H, P["Surface/sidebar"]),
         Rect("Edge", SIDEBAR_W - 1, 0, 1, BOARD_H, DIVIDER),
@@ -120,13 +141,7 @@ def sidebar(active: str, community: Community, user: User, links: dict[str, str]
                        Rect("Mark", 28, 24, 16, 16, ACCENT, 1, 4),
                        text("Raid", 62, 38, "RAID", 16, 800, TEXT, None, "left", 0.5),
                        text("Manager", 104, 38, "MANAGER", 16, 800, ACCENT, None, "left", 0.5)]),
-        Group("Community card", [
-            Rect("Background", 16, 68, SIDEBAR_W - 32, 60, P["Surface/card"], 1, 10, P["Line/card border"]),
-            Rect("Icon", 28, 82, 32, 32, P["Community/icon"], 1, 8),
-            text("Initials", 28, 102, community.initials, 12, 800, PAGE_BACKGROUND, 32, "center"),
-            text("Name", 70, 95, community.name, 14, 600),
-            text("Realm", 70, 114, f"{community.realm} · Community", 12, 400, MUTED),
-        ]),
+        community_card(community, links.get("Community")),
     ]
     sections = [("Player", PLAYER_PAGES)] + ([("Officer", OFFICER_PAGES)] if user.officer else [])
     y = NAV_TOP - 12
@@ -147,11 +162,11 @@ def sidebar(active: str, community: Community, user: User, links: dict[str, str]
     return Group("Sidebar", items)
 
 
-def top_bar(community: Community, page: str, user: User, sign_out: Click | None = None) -> Group:
+def top_bar(community: Community | None, page: str, user: User, sign_out: Click | None = None) -> Group:
     """The top bar: breadcrumb (community / page), realm status, the user's avatar and Sign out."""
     width = BOARD_W - SIDEBAR_W
-    crumb = text("Community", CONTENT_X, 37, community.name.upper(), 11, 700, MUTED, None, "left", 1.2)
-    slash = text("Separator", CONTENT_X + text_width(crumb) + 4, 37, "/", 11, 700, MUTED, None, "left", 1.2)
+    crumb = text("Community", CONTENT_X, 37, (community.name if community else "RaidManager").upper(), 11, 700, MUTED, None, "left", 1.2)
+    slash = text("Separator", CONTENT_X + text_width(crumb) + 10, 37, "/", 11, 700, MUTED, None, "left", 1.2)
     current = text("Page", slash.x + 16, 37, page.upper(), 11, 700, TEXT, None, "left", 1.2)
     sign_out_x = BOARD_W - 40 - SIGN_OUT_W
     avatar_x = sign_out_x - 16 - 16
@@ -169,12 +184,12 @@ def top_bar(community: Community, page: str, user: User, sign_out: Click | None 
 
 
 def app_screen(name: str, x: float, y: float, page: str, content: list[Item], *, section: str | None = None,
-               community: Community = Community(), user: User = OFFICER,
+               community: Community | None = Community(), user: User = OFFICER,
                links: dict[str, str] | None = None, sign_out: str | None = None) -> Board:
     """A website screen: the app shell with `page` active in the navigation, and `content` in the content area.
 
-    `section` names the page in the breadcrumb when it differs from the navigation entry; `links` maps navigation
-    entries to boards, and `sign_out` names the board Sign out leads to, for the prototype.
+    `section` names the page in the breadcrumb when it differs from the navigation entry; `community=None` is a user
+    without a community; `links` maps navigation entries (and "Community" for the community card) to boards, and `sign_out` names the board Sign out leads to, for the prototype.
     """
     sign_out_click = Click("navigate", sign_out) if sign_out else None
     shell: list[Item] = [sidebar(page, community, user, links or {}),

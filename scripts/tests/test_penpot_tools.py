@@ -306,6 +306,18 @@ class ComponentTests(unittest.TestCase):
         self.assertEqual(linked.on_click, Click("navigate", "2 · Signed out"))
         self.assertIsNone(find(app_screen("1 · A", 0, 0, "Raids", []).children, "Sign out button").on_click)
 
+    def test_a_user_without_a_community_sees_an_empty_community_card(self) -> None:
+        board = app_screen("1 · New", 0, 0, "Overview", [], community=None, user=PLAYER)
+        card = find(board.children, "Community card")
+        self.assertIn("No community yet", [item.text for item in card.children if hasattr(item, "text")])
+        breadcrumb = [item.text for item in find(board.children, "Breadcrumb").children if hasattr(item, "text")]
+        self.assertEqual(breadcrumb[0], "RAIDMANAGER")
+        write_penpot(self.path, "new", "New", [board])
+
+    def test_the_community_card_links_where_asked(self) -> None:
+        board = app_screen("1 · A", 0, 0, "Raids", [], links={"Community": "2 · Settings"})
+        self.assertEqual(find(board.children, "Community card").on_click, Click("navigate", "2 · Settings"))
+
     def test_signed_out_pages_have_the_logo_but_no_shell(self) -> None:
         board = public_screen("1 · Signed out", 0, 0, [text("Title", PUBLIC_X, 240, "Sign in", 18, 700)])
         names = layer_names(board.children)
