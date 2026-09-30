@@ -2,7 +2,9 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Pivot.Framework.Infrastructure.Abstraction.UnitOfWork;
 using Pivot.Framework.Infrastructure.Messaging.EntityFrameworkCore.Extensions;
+using RaidManager.Application.Features.Characters.Abstractions;
 using RaidManager.Domain.Features.Characters.Repositories;
+using RaidManager.Persistence.EntityFrameworkCore.Features.Characters.Queries;
 using RaidManager.Persistence.EntityFrameworkCore.Features.Characters.Repositories;
 using DomainUnitOfWork = Pivot.Framework.Domain.Repositories.IUnitOfWork;
 
@@ -17,7 +19,7 @@ namespace RaidManager.Persistence.EntityFrameworkCore;
 public static class PersistenceServiceCollectionExtensions
 {
     #region Public Methods
-    /// <summary>Adds the RaidManager database context, unit of work, outbox writing and aggregate repositories.</summary>
+    /// <summary>Adds the RaidManager database context, unit of work, outbox writing, aggregate repositories and query readers.</summary>
     /// <param name="services">The service collection.</param>
     /// <param name="connectionString">The SQL Server connection string.</param>
     /// <returns>The same service collection.</returns>
@@ -31,6 +33,7 @@ public static class PersistenceServiceCollectionExtensions
         // Application handlers depend on the domain IUnitOfWork, so it resolves to the same scoped unit of work.
         services.AddScoped<DomainUnitOfWork>(provider => (RaidManagerUnitOfWork)provider.GetRequiredService<IUnitOfWork<RaidManagerDbContext>>());
         services.AddScoped<ICharacterRepository, CharacterRepository>();
+        services.AddScoped<ICharacterClaimReader, CharacterClaimReader>();
         return services;
     }
     #endregion Public Methods

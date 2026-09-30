@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- A query listing a player's pending and conflicted character claims, read with no-tracking queries on the write
+  database (ADR-0010) (#89).
 - SQL Server persistence for characters with EF Core: claims, loadouts and raid saves, an initial migration,
   domain events recorded in an outbox table, and integration tests against a SQL Server container (#87).
 - Application commands to approve or reject a character claim, with validation and handler tests; the domain
