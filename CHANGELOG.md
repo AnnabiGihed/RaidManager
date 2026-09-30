@@ -72,6 +72,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- The completion guard now re-checks a parent and grandparent when a child is reopened or its labels change, and
+  requires at least one completed child. A parent closed as not planned stays closed. A parent marked `Done` early
+  returns to `In Progress` through the Project's built-in workflows, with no manual status correction (#116).
 - Pull request examples can no longer close epics or stories when the review workflow merges a change (#111).
 - Starting the Aspire AppHost now opens the dashboard at a fixed address instead of leaving only a console (#105).
 - The review workflow now closes a pull request's tasks even when GitHub does not link its "Closes #N" (#91).

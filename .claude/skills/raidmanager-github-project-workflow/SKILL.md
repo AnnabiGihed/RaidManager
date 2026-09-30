@@ -25,12 +25,13 @@ Use this skill when planning work items or developing a RaidManager user story. 
 
 - **Epic:** State the user or business outcome, boundaries, release milestone, and observable exit criteria. Its
   child stories must cover the outcome; an epic title alone is not a deliverable. Keep it open and out of `Done`
-  until it has at least one native child story, every child story is closed and `Done`, and its exit criteria are met.
+  until it has at least one native child story completed, every child story is closed, and its exit criteria are met.
 - **Story:** State the actor, desired capability, and benefit. Write independently verifiable acceptance criteria,
   including relevant invalid, unavailable, and boundary behavior. Identify affected website, Discord bot, addon,
   companion, and API surfaces, plus dependencies and data/security constraints. Link the parent epic. Keep it open
-  and out of `Done` until it has at least one native child work item, every child work item is closed and `Done`,
-  and all acceptance criteria have evidence. Tasks, bugs, and spikes count as work items; an empty story never closes.
+  and out of `Done` until it has at least one native child work item completed, every child work item is closed,
+  and all acceptance criteria have evidence. Tasks, bugs, and spikes count as work items; an empty story never closes
+  as completed. Close an abandoned story or epic as *not planned* instead; the guard exempts it.
 - **Task:** Before any story-related implementation, create or reuse a dedicated repository task issue and make it
   a native child of the story. Give it one bounded deliverable, concrete acceptance criteria, verification steps,
   dependencies, `type:task`, assignee, Area, Priority, Status, and the story's release milestone. Do not merely copy
@@ -75,9 +76,10 @@ tests, documentation, and skill edits for a story may not.
    deleted and the task is closed and `Done`; mark a story `Done` only when every acceptance criterion is evidenced
    and all required child work is merged. Mark an epic `Done` only when all child stories satisfy their exit
    criteria. Close stories and epics separately after checking the full hierarchy.
-   The repository closure guard reopens a parent closed before its child work is complete. If its Project status
-   still shows `Done`, restore `In Progress` from the
-   [Status exceptions view](https://github.com/users/AnnabiGihed/projects/2/views/5).
+   The `project-hierarchy` workflow reopens a parent closed before its child work is complete, and re-checks the
+   parent and grandparent whenever a child changes. The Project's built-in *Item reopened* workflow then returns it
+   to `In Progress`. Never add a personal token or secret to change Project status: the loop needs none
+   (`docs/reference/project-automation.md`).
 
 The `v1.0` milestone tracks release scope; it does not itself authorize a release. Release or tagging requires
 all included stories accepted, release checks completed, and explicit owner approval.

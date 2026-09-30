@@ -2,10 +2,16 @@ name: project-hierarchy
 
 on:
   issues:
-    types: [closed, labeled, unlabeled]
+    # A reopened or relabeled child can invalidate a completed parent, so every change re-checks the ancestors.
+    types: [closed, reopened, labeled, unlabeled]
   schedule:
     - cron: '7,22,37,52 * * * *'
   workflow_dispatch:
+
+# Runs one at a time, so two events never reopen the same parent twice.
+concurrency:
+  group: project-hierarchy
+  cancel-in-progress: false
 
 permissions:
   contents: read
@@ -24,7 +30,7 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Reopen incomplete epics and stories
+      - name: Reopen incomplete epics and stories and their ancestors
         run: |
           if [ "${{ github.event_name }}" = issues ]; then
             python scripts/project_hierarchy.py --repository "$GITHUB_REPOSITORY" --issue "${{ github.event.issue.number }}"
