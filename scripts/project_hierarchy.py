@@ -301,7 +301,7 @@ def main() -> int:
         return check_pull_request(args.repository, os.environ.get("PR_BODY", ""))
     guard = Guard(args.repository)
     if args.issue:
-        number: int | None = args.issue
+        number: int = args.issue
         for _ in range(ANCESTOR_LEVELS + 1):
             node = fetch_node(args.repository, number)
             guard.check(node)

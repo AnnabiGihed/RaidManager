@@ -36,7 +36,9 @@ def mockup_references(text: str) -> list[str]:
 def ui_requested(body: str) -> bool:
     """Tells whether an issue form answered "Yes" to the User interface question."""
     match = FORM_ANSWER.search(body or "")
-    return bool(match) and match["answer"].strip().lower().startswith("yes")
+    if match is None:
+        return False
+    return match["answer"].strip().lower().startswith("yes")
 
 
 def mockup_problem(labels: frozenset[str], body: str) -> str | None:

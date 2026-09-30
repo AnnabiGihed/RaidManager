@@ -85,6 +85,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- The repository scripts and their tests pass a type check. CI now runs `mypy`, and a Pyright configuration lets
+  editors resolve the scripts' imports (#165).
 - The review workflow no longer leaves a ready pull request open without a sign. It retries a refused merge for
   about five minutes and, if nothing else would retry it, fails the `review` job with GitHub's message (#123).
 - The completion guard now re-checks a parent and grandparent when a child is reopened or its labels change, and

@@ -217,7 +217,9 @@ def operator_review(pull_request: PullRequest) -> Review | None:
         and review.body.strip()
         and not comment_problems(review.body, pull_request.change, summary=True)
     ]
-    return max(candidates, key=lambda review: review.submitted_at, default=None)
+    if not candidates:
+        return None
+    return max(candidates, key=lambda review: review.submitted_at)
 
 
 def operator_errors(pull_request: PullRequest) -> list[str]:
@@ -294,15 +296,31 @@ def api(path: str) -> list | dict:
     return results
 
 
+def api_object(path: str) -> dict:
+    """Read a GitHub REST resource that is a single object."""
+    value = api(path)
+    if not isinstance(value, dict):
+        raise TypeError(f"GitHub returned a list for {path}")
+    return value
+
+
+def api_list(path: str) -> list:
+    """Read every page of a GitHub REST resource that is a list."""
+    value = api(path)
+    if not isinstance(value, list):
+        raise TypeError(f"GitHub returned an object for {path}")
+    return value
+
+
 def parse_time(value: str) -> datetime:
     return datetime.fromisoformat(value.replace("Z", "+00:00"))
 
 
 def fetch_pull_request(repository: str, number: int) -> PullRequest:
     base = f"repos/{repository}"
-    pull = api(f"{base}/pulls/{number}")
-    files = api(f"{base}/pulls/{number}/files")
-    ready_events = [event for event in api(f"{base}/issues/{number}/timeline") if event.get("event") == "ready_for_review"]
+    pull = api_object(f"{base}/pulls/{number}")
+    files = api_list(f"{base}/pulls/{number}/files")
+    ready_events = [event for event in api_list(f"{base}/issues/{number}/timeline") if event.get("event") == "ready_for_review"]
     return PullRequest(
         author=pull["user"]["login"],
         is_draft=pull["draft"],

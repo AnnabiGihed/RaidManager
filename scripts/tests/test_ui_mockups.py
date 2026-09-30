@@ -38,7 +38,7 @@ class ReferenceTests(unittest.TestCase):
 
 class IssueRuleTests(unittest.TestCase):
     def test_ui_item_without_a_mockup_fails(self) -> None:
-        self.assertIn("must link or show its mockup", mockup_problem(frozenset({UI_LABEL}), "No design yet."))
+        self.assertIn("must link or show its mockup", mockup_problem(frozenset({UI_LABEL}), "No design yet.") or "")
 
     def test_ui_item_with_a_mockup_passes(self) -> None:
         self.assertIsNone(mockup_problem(frozenset({UI_LABEL}), "![Review](docs/mockups/character-review.svg)"))
