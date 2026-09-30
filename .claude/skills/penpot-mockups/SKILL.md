@@ -57,7 +57,8 @@ The generator turns the design into a small design system that a designer keeps 
   `app_screen(name, x, y, page, content, section=, user=, links=)` from `scripts/penpot_components.py`: a
   1440 x 900 board with the sidebar (logo, community card, Player navigation, Officer navigation for officers only,
   user card) and the top bar (breadcrumb, realm status, avatar, Sign out; `sign_out=` links it). `page` is the active navigation entry; pass
-  `user=PLAYER` for a player's view. Content starts at `CONTENT_X`, `CONTENT_TOP` and is `CONTENT_W` wide.
+  `user=PLAYER` for a player's view, and `community=None` for a user who has no community yet. `links` also takes
+  `"Community"` to make the community card open a board. Content starts at `CONTENT_X`, `CONTENT_TOP` and is `CONTENT_W` wide.
 - **Signed-out pages have no shell.** Sign-in and its failure pages use `public_screen(name, x, y, content)`: the
   logo above a centred column at `PUBLIC_X`, `PUBLIC_W` wide (ADR-0019).
 - **Use the shared components** instead of drawing your own: `page_header` (teal eyebrow, 32 px title, subtitle),
