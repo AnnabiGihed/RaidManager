@@ -101,9 +101,25 @@ adopt before a dedicated alignment PR.
 - **Smoke test after touching startup:** any change to the AppHost, a host's `Program.cs`, launch settings, or
   configuration keys requires one local run, recorded in the PR:
   1. `dotnet run --project src/Containers/Aspire/Hosting/RaidManager.AppHost --launch-profile https` in the background.
-  2. Wait until `https://localhost:55365/` returns 200, check `https://localhost:55366/` answers, and that
-     `/sign-in` redirects to `https://discord.com/api/oauth2/authorize` with a `client_id` and the
+  2. Wait until `https://localhost:55365/` returns 200, check `https://localhost:55366/` answers and
+     `https://localhost:55366/scalar` returns 200, and that `/sign-in` redirects to `https://discord.com/api/oauth2/authorize` with a `client_id` and the
      `https://localhost:55365/signin-discord` redirect URI (redact the id and state in the PR).
   3. Stop the AppHost and every `RaidManager.*` process it started, then remove any leftover `sql-*` container
      (keep the data volume). Never leave processes or containers running for the owner to collide with.
   Signing in to Discord itself is the owner's step; the agent never enters Discord credentials.
+
+## 6. API reference page (mandatory)
+
+Every RaidManager API host serves an interactive reference page; it is never optional. The choice is Scalar
+([ADR-0013](../../../docs/adr/0013-scalar-api-reference.md)); switching to Swagger UI needs a new ADR, removing the
+page is not allowed.
+
+- **Wiring:** `AddOpenApi()` is the only generator, `app.MapOpenApi()` publishes `/openapi/v1.json` in every
+  environment, and `app.MapScalarApiReference(...)` serves `/scalar` in Development only, with
+  `AddPreferredSecuritySchemes` listing the schemes the host enforces. Source: `RaidManager.ApiService/Program.cs`.
+- **Dashboard:** the AppHost adds an "API reference" link on the host's resource with `WithUrl(...)`.
+- **Tests:** mirror `ApiReferenceTests` (Development, `/scalar` returns 200 with the page title) and
+  `ApiReferenceProductionTests` (Production factory, 404) in `RaidManager.ApiService.Tests`.
+- **Smoke test:** step 2 of §5 checks the page.
+- **New API host:** a second API host copies all of the above in the same PR that creates it, including its
+  dashboard link, tests, README line and an entry in `docs/reference/api-contracts.md`.

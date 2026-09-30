@@ -66,6 +66,7 @@ General dimensions: architecture and layering (SOLID, separation of concerns, do
 - Swallowed exceptions (`catch {}`), catching `Exception` too broadly, or logging-and-rethrowing that loses the stack.
 - `IDisposable` not disposed (missing `using`), and `IAsyncDisposable` ignored.
 - Nullable reference types disabled or annotations ignored where null is reachable.
+- **Blocking:** an API host without an interactive reference page (Scalar or Swagger UI) mapped at least in Development, a page removed or hidden from Development, two OpenAPI generators in one host, or no test asserting the page answers. Also Blocking: a new or renamed host whose AppHost resource has no "API reference" link (`dotnet-solution-scaffolding`).
 
 ## Output format
 

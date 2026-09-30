@@ -74,7 +74,7 @@ A change is **breaking** when it removes or renames an endpoint, field or enum v
 
 ## 5. Rendering and publication
 
-- 🔴 **R16.** A human-readable rendering is published for every released version with **Redoc**, **Swagger UI** or **Scalar**.
+- 🔴 **R16.** Every API host serves an interactive reference page on its own OpenAPI document: **Scalar** by default or **Swagger UI**, at least in Development. It is mandatory, not an option; an API without it is incomplete (`dotnet-solution-scaffolding`). In addition, a human-readable rendering (Redoc, Swagger UI or Scalar) is published for every released version.
 - 🟡 **R17.** Embed it in the project's documentation site, not on an unrelated domain.
 - 🟡 **R18.** "Try it out" targets a sandbox, never production.
 - 🟡 **R19.** Publish the latest specification file at a stable URL so partners can generate clients.
@@ -129,6 +129,7 @@ components:
 
 - [ ] Every new or changed endpoint is in the committed specification, with operationId, summary, tags, typed parameters and all responses.
 - [ ] Error responses use Problem Details.
+- [ ] The host serves its interactive reference page (Scalar or Swagger UI) in Development, and a test asserts it (R16).
 - [ ] No endpoint is hidden from the specification.
 - [ ] Breaking changes bump the major version and are in the CHANGELOG.
 - [ ] Event contracts are in `asyncapi.yaml`; `.proto`/SDL files are committed.

@@ -66,6 +66,13 @@ Never scaffold hand-rolled Result/command/aggregate/repository/controller bases 
   - a `<UserSecretsId>` in the `.csproj`, so `dotnet user-secrets` and persisted generated parameters (`AddParameter(name, new GenerateParameterDefault { ... }, secret: true, persist: true)`) have somewhere to live.
   - every secret declared as `builder.AddParameter("name", secret: true)` and passed to hosts with `WithEnvironment(...)`/`WithReference(...)`. Values live in the AppHost's user secrets (`dotnet user-secrets set "Parameters:name" "<value>" --project <AppHost>`), never in `appsettings*.json` — not even as empty keys or placeholder passwords.
   - README instructions: set the AppHost as the Visual Studio startup project with the `https` profile, the dashboard address, what the first run does (image downloads, migrations), and the exact `user-secrets` commands.
+- **Every API host ships an interactive API reference page. This is not optional.** An API that only publishes a JSON document leaves developers guessing at routes, payloads and auth. Every REST host:
+  - generates its OpenAPI document with exactly one generator (`Microsoft.AspNetCore.OpenApi` `AddOpenApi()`, or Swashbuckle `AddSwaggerGen()` when Pivot's `WithSwagger` already registers it — never both) and maps the document in every environment;
+  - serves a browsable page on that document: **Scalar** (`Scalar.AspNetCore`, `app.MapScalarApiReference()`) by default, or **Swagger UI** (`app.UseSwaggerUI()`) when the host already uses Swashbuckle. Scalar can render Swashbuckle's document too (`WithOpenApiRoutePattern("/swagger/{documentName}/swagger.json")`);
+  - maps the page at least in Development. Exposing it in other environments needs an ADR; hiding it in Development is never allowed;
+  - offers the security schemes the API enforces, so a developer can authorize and call protected operations. Never pre-fill a key or token;
+  - has a link on its AppHost resource (`api.WithUrl(ReferenceExpression.Create($"{api.GetEndpoint("https")}/scalar"), "API reference")`), a README line saying where the page is, and an ADR naming the viewer and where it is exposed;
+  - has a test that starts the host in Development and asserts the page returns 200, and one that asserts the ADR's behavior in Production (404 by default).
 - **Persistence is its own project**, SQL Server via EF Core by default (PostgreSQL via `Pivot.Framework.Infrastructure.Persistence.PostgreSQL` when the work item says so); migrations in that project; no in-memory providers.
 - **Feature-first folders** in every project (`Features/<Feature>/…`, `Features/Shared/`) — see `dotnet-ddd-cqrs-conventions`.
 - **Test tree mirrors src/** — one test project per source project plus one E2E project.
@@ -124,6 +131,11 @@ app.UseMiddleware<ExceptionHandlerMiddleware>();
 app.UseAuthentication();
 app.UseAuthorization();
 app.UseMiddleware<TransactionMiddleware<AppDbContext>>();
+app.UseSwagger();                                              // OpenAPI document, every environment
+if (app.Environment.IsDevelopment())
+{
+	app.UseSwaggerUI(o => o.UseKeycloakOAuth(app.Services));   // mandatory reference page (or Scalar on the same document)
+}
 app.MapControllers();
 app.MapDefaultEndpoints();
 app.Run();
@@ -133,7 +145,7 @@ Details for each call: `pivot-persistence-efcore`, `pivot-messaging-outbox`, `pi
 ## Workflow
 1. Determine containers — API (REST and/or gRPC), Jobs, UI. Aspire always.
 2. Create src/ layers with the Pivot package references above.
-3. Wire references inward only; hosts → ServiceDefaults; register hosts and dev resources (DB, RabbitMQ, Redis, Keycloak) in AppHost; add the AppHost's `launchSettings.json`, `UserSecretsId` and secret parameters, then **run the AppHost** and confirm the dashboard opens and every resource reaches Running.
+3. Wire references inward only; hosts → ServiceDefaults; register hosts and dev resources (DB, RabbitMQ, Redis, Keycloak) in AppHost; add the AppHost's `launchSettings.json`, `UserSecretsId` and secret parameters, then **run the AppHost** and confirm the dashboard opens, every resource reaches Running, and each API's reference page opens from its dashboard link.
 4. Mirror the test/ tree + E2E.
 5. Bootstrap build props, analyzers, `nuget.config`, root files, `docs/`, first ADR.
 6. Hand off features to `dotnet-ddd-cqrs-conventions`, tests to `dotnet-unit-tests` / `dotnet-e2e-tests`.
@@ -144,6 +156,7 @@ Details for each call: `pivot-persistence-efcore`, `pivot-messaging-outbox`, `pi
 ## Completion criteria
 - Tree matches the canonical structure and casing; Aspire AppHost + ServiceDefaults wired to every runnable host.
 - The AppHost has `Properties/launchSettings.json` (`https`/`http`, `launchBrowser`, fixed dashboard/OTLP/resource-service ports), a `UserSecretsId`, secrets as `AddParameter(..., secret: true)` with no values in any `appsettings*.json`, README run instructions, and it was actually started once with every resource Running.
+- Every API host generates one OpenAPI document and serves an interactive reference page (Scalar or Swagger UI) at least in Development, with the API's security schemes, a dashboard link, a README line, an ADR, and tests for the Development and Production behavior.
 - Core has Application, Domain, IntegrationEvents; Persistence separate from Infrastructure; references inward only.
 - Each layer references its Pivot.Framework package; versions pinned together centrally; `nuget.config` maps `Pivot.Framework.*` to GitHub Packages with env-var credentials.
 - `test/` mirrors `src/` plus E2E; every project resolves `net10.0`; no package versions in `.csproj`.
