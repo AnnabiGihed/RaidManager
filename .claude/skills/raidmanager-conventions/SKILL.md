@@ -144,6 +144,11 @@ Rules for every documentation change:
 - Keep documents to GitHub-compatible Markdown: fenced `mermaid` blocks, relative links, no MkDocs-only syntax
   (admonitions, tabs, snippets) until the converter supports it.
 - A new ADR also gets a row in `docs/adr/README.md`.
+- **Spelling is strict and US English.** The docs check runs `python scripts/spell_check.py` (install
+  `pyspellchecker`): every word outside code and links must be a US English word or appear in the one project word
+  list, `.vale/styles/config/vocabularies/RaidManager/accept.txt`, which Vale and Visual Studio (through
+  `.editorconfig`) also use. British spellings fail. Put code names in backticks, add only genuine project or
+  technical terms to the list, keep it sorted, and never add a word to hide a misspelling.
 
 ## 8. Test coverage gate (mandatory)
 

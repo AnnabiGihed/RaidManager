@@ -39,13 +39,13 @@ Source: [Mermaid](../diagrams/domain-characters.mmd).
 | Concept | Responsibility and invariant |
 | --- | --- |
 | User | Local identity linked to Discord. One user may own characters on several WoW accounts. |
-| CompanionPairing | Revocable permission for a companion to upload for one user. Credentials stay outside addon files. |
-| CharacterSnapshot | Versioned observation from a specific source. Duplicate or older input must not regress current facts. |
-| ObservationMetadata | Source, observation time, and receipt time. Freshness uses observation time rather than upload time alone. |
-| CharacterClaim | Pending, approved, rejected, or conflicted request to associate a character with a user. |
+| `CompanionPairing` | Revocable permission for a companion to upload for one user. Credentials stay outside addon files. |
+| `CharacterSnapshot` | Versioned observation from a specific source. Duplicate or older input must not regress current facts. |
+| `ObservationMetadata` | Source, observation time, and receipt time. Freshness uses observation time rather than upload time alone. |
+| `CharacterClaim` | Pending, approved, rejected, or conflicted request to associate a character with a user. |
 | Character | Realm and character identity, approved owner, and character-wide raid saves. |
 | Loadout | Spec, role, gear, GearScore, talents, glyphs, stats, and their provenance. |
-| RaidLockout | Instance, difficulty, lockout identifier, reset, extension, and available progress evidence. |
+| `RaidLockout` | Instance, difficulty, lockout identifier, reset, extension, and available progress evidence. |
 
 An empty lockout collection is meaningful only with evidence of a complete and fresh scan.
 An omitted save list or failed scan remains unknown.
@@ -62,18 +62,18 @@ Source: [Mermaid](../diagrams/domain-raids.mmd).
 
 | Concept | Responsibility and invariant |
 | --- | --- |
-| RaidTemplate and RecurrenceRule | Reusable settings and the local-time rule for creating distinct raid occurrences. |
-| RaidTarget | One required instance and difficulty in a possibly combined raid. |
-| RaidSignup | One response for a raid and user, regardless of whether it was edited on the website or in Discord. |
-| SignupOption | An approved character and loadout offered by that user, with notes and preference where applicable. |
-| SignupPreset | Reusable choices; loading a preset still requires current ownership and readiness checks. |
-| RaidComposition | A draft or published alternative with a revision for reviewing changes. |
-| RosterSelection | One selected option per user in a composition; a roster position cannot be occupied twice. |
-| BenchEntry | A substitute candidate, distinct from a selected participant and from availability. |
-| BossAssignment | Encounter-specific responsibility associated with a selected participant. |
-| EligibilityAssessment | Derived verdict for a character, target, start time, and current evidence. |
-| OfficerException | Visible reason attached to an unknown-data assessment. It cannot authorize a confirmed active lock. |
-| AttendanceRecord | What happened for a player at a raid, distinct from their earlier intended availability. |
+| `RaidTemplate` and `RecurrenceRule` | Reusable settings and the local-time rule for creating distinct raid occurrences. |
+| `RaidTarget` | One required instance and difficulty in a possibly combined raid. |
+| `RaidSignup` | One response for a raid and user, regardless of whether it was edited on the website or in Discord. |
+| `SignupOption` | An approved character and loadout offered by that user, with notes and preference where applicable. |
+| `SignupPreset` | Reusable choices; loading a preset still requires current ownership and readiness checks. |
+| `RaidComposition` | A draft or published alternative with a revision for reviewing changes. |
+| `RosterSelection` | One selected option per user in a composition; a roster position cannot be occupied twice. |
+| `BenchEntry` | A substitute candidate, distinct from a selected participant and from availability. |
+| `BossAssignment` | Encounter-specific responsibility associated with a selected participant. |
+| `EligibilityAssessment` | Derived verdict for a character, target, start time, and current evidence. |
+| `OfficerException` | Visible reason attached to an unknown-data assessment. It cannot authorize a confirmed active lock. |
+| `AttendanceRecord` | What happened for a player at a raid, distinct from their earlier intended availability. |
 
 Publication validates each selected option against all required targets.
 A new observation or changed schedule invalidates the relevance of the old assessment and requires re-evaluation.

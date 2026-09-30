@@ -6,6 +6,10 @@ end_of_line = lf
 insert_final_newline = true
 indent_style = space
 indent_size = 4
+# Visual Studio's spell checker uses US English and the project word list that CI (scripts/spell_check.py) and Vale
+# use, so a word the editor accepts passes CI and the other way round.
+spelling_languages = en-us
+spelling_exclusion_path = .vale/styles/config/vocabularies/RaidManager/accept.txt
 
 [*.cs]
 csharp_style_namespace_declarations = file_scoped:error

@@ -8,7 +8,7 @@ or implementation. Complete the task through its own issue-linked pull request.
 
 Every work item sits in one chain of native sub-issues
 ([ADR-0016](docs/adr/0016-epic-feature-story-task-hierarchy.md)): an **epic** holds **features**; a feature holds
-**stories** (new capabilities), **improvements** (better existing behaviour or tooling) and **bugs**; each of those
+**stories** (new capabilities), **improvements** (better existing behavior or tooling) and **bugs**; each of those
 holds **tasks** or **spikes**. Only an epic has no parent. Create issues with the issue forms, which set the type
 label, and add each new issue as a sub-issue of its parent right away.
 
@@ -83,7 +83,9 @@ Install the .NET 10 SDK and give your machine access to the Pivot.Framework pack
 [`README.md`](README.md#give-your-machine-access-to-the-pivotframework-packages) describes.
 From the solution root, run `dotnet restore RaidManager.sln`, `dotnet build RaidManager.sln --no-restore`, and
 `dotnet test RaidManager.sln --no-build`. For the repository scripts, run
-`python -m unittest discover -s scripts/tests` and `python -m mypy`; CI runs both.
+`python -m unittest discover -s scripts/tests` and `python -m mypy`. For documentation, run
+`python scripts/spell_check.py` after `pip install pyspellchecker`: it accepts US English and the project word list
+in `.vale/styles/config/vocabularies/RaidManager/accept.txt`, which Visual Studio also uses. CI runs all three.
 
 ## Releases
 

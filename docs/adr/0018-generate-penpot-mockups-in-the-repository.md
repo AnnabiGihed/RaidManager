@@ -23,12 +23,12 @@ Penpot 2.18.0's source imported cleanly, with every text as an editable text lay
   `scripts/mockups/<screen_name>.py`, into `docs/mockups/<screen>.penpot`: named boards, groups, rectangles, circles
   and editable Roboto text layers. The format is pinned to Penpot 2.18.0 (file version 67, its persisted features and
   its 82 data migrations) and must be updated when penpot.app upgrades.
-- **Make each file a small design system.** The website's colours become named library colours and its text sizes
+- **Make each file a small design system.** The website's colors become named library colors and its text sizes
   named typographies, which the layers reference. Controls link to the boards they lead to, and named flows make the
-  file a clickable prototype. The generator refuses a colour the palette doesn't name, and text below WCAG AA
+  file a clickable prototype. The generator refuses a color the palette doesn't name, and text below WCAG AA
   contrast.
 - **Render the SVG from the `.penpot` file.** `scripts/penpot_render.py` draws boards, groups, rectangles, circles and
-  text from the file's own data, and marks anything else as a labelled placeholder. The SVG is never drawn or
+  text from the file's own data, and marks anything else as a labeled placeholder. The SVG is never drawn or
   exported by hand. The docs check fails when an SVG isn't the current rendering of its `.penpot` file.
 - **The `.penpot` file stays the source of truth.** The owner imports it in Penpot and confirms it. After an edit in
   Penpot, the downloaded file replaces the generated one, and the SVG is rendered again.

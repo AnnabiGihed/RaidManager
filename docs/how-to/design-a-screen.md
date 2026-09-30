@@ -21,17 +21,17 @@ A screen's first version is generated in the repository, so it arrives in Penpot
 
 - every text is an editable text layer;
 - every layer and group has a function-based name;
-- the website's colours and text styles are shared library assets that the layers use;
+- the website's colors and text styles are shared library assets that the layers use;
 - the buttons are linked into a clickable prototype.
 
 1. Write `scripts/mockups/<screen_name>.py` with the scene model in `scripts/penpot_scene.py`: one board per state
-   (filled, empty, error, dialogs), made of named groups, rectangles, circles and text. Take colours from the house
+   (filled, empty, error, dialogs), made of named groups, rectangles, circles and text. Take colors from the house
    palette and link each control to the board it leads to.
-2. Run `python scripts/mockups/<screen_name>.py`. It checks that every colour is a named palette colour and that text
+2. Run `python scripts/mockups/<screen_name>.py`. It checks that every color is a named palette color and that text
    meets WCAG AA contrast, then writes `docs/mockups/<screen>.penpot` and renders `docs/mockups/<screen>.svg` from it.
    Use lowercase words with hyphens for `<screen>`.
 3. Import the `.penpot` file in Penpot (**Import Penpot files** on the dashboard) and check it: texts are editable,
-   the Assets panel lists the colours and typographies, and View mode plays each flow.
+   the Assets panel lists the colors and typographies, and View mode plays each flow.
 
 ## Design in Penpot
 
@@ -42,7 +42,7 @@ A screen's first version is generated in the repository, so it arrives in Penpot
    `docs/mockups/<screen>.penpot`. From then on, the downloaded file is the source; don't rerun the screen script.
 4. Render its SVG: `python scripts/penpot_render.py docs/mockups/<screen>.penpot`. Never export or edit the SVG by
    hand; the docs check fails when the SVG isn't the current rendering of its `.penpot` file. The renderer draws
-   boards, groups, rectangles, circles and text, and shows anything else as a labelled placeholder.
+   boards, groups, rectangles, circles and text, and shows anything else as a labeled placeholder.
 5. Commit both files together in the pull request of the design task or of the task that implements the screen.
    Never leave a `.penpot` or SVG in the repository root or any other folder; the docs check fails on it.
 6. Show the committed image in the user story, its UI task and the pull request, for example
