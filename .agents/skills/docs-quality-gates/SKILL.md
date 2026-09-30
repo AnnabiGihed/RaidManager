@@ -55,6 +55,14 @@ ignores:
 - 🟡 **R9.** Prose is linted with Vale using the organizational styles.
 - 🟡 **R10.** The styles enforce organizational terminology ("API key", "GitHub", "OpenAPI", "REST API"), discourage "simply", "just", "obviously", require inclusive language, and warn on passive voice in guides and tutorials.
 - 🟢 **R11.** The configuration may extend the Microsoft or Google Vale styles.
+- 🔴 **R11a.** Vale errors fail the pull request; annotations alone are not a gate. `vale-action` reports through
+  reviewdog, which only annotates the diff and still passes unless `fail_on_error: true` is set. Always set
+  `fail_on_error: true` with `fail_level: error` and `filter_mode: nofilter`, so errors anywhere in the checked files
+  fail the job. The CLI (`vale docs/`) fails on errors by itself. After adding or changing the step, prove it can
+  fail: the run log shows `fail_on_error: true`, or a deliberate misspelling on a branch fails the check.
+- 🔴 **R11b.** Vocabulary entries (`.vale/styles/config/vocabularies/<Name>/accept.txt`) are case-sensitive regular
+  expressions. Add the capitalized form of a term that starts sentences (`mockup` and `Mockup`), and plurals Vale
+  doesn't infer (`SVGs`). Add only genuine terms; never add a word to hide a misspelling.
 
 ```ini
 # .vale.ini
@@ -217,8 +225,13 @@ jobs:
       - name: Markdown lint
         run: npx markdownlint-cli2 "**/*.md" "#node_modules"
       - name: Prose lint (Vale)
-        uses: errata-ai/vale-action@reviewdog
-        with: { files: docs }
+        uses: vale-cli/vale-action@v3
+        with:
+          files: docs
+          filter_mode: nofilter
+          fail_level: error
+          # Without this, reviewdog only annotates Vale's errors and the job passes (R11a).
+          fail_on_error: true
       - name: Internal link check
         uses: lycheeverse/lychee-action@v2
         with: { args: --offline --include-verbatim docs README.md }
@@ -234,4 +247,7 @@ Pin action and tool versions according to the organization's supply-chain policy
 - "Ask Alice to run `./deploy-docs.sh`" or any manual publication step.
 - A PR changing `docs/**` where CI runs only code tests.
 - Documentation hosted on a personal subdomain.
+- A lint or check step that reports problems without failing: reviewdog or SARIF annotations with
+  `fail_on_error: false`, `continue-on-error: true`, `|| true`, or a tool run with its exit code ignored (R11a). A green
+  check with red annotations is a broken gate.
 - A hand-written or hand-edited wiki page, a wiki that differs from `/docs`, or an enabled wiki left empty (R23a).

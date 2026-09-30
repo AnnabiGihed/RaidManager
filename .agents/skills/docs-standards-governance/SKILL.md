@@ -120,7 +120,7 @@ API surface (if applicable)
 
 CI and publication
 - [ ] markdownlint runs on every PR
-- [ ] Vale runs on every PR
+- [ ] Vale runs on every PR and fails it on errors (`fail_on_error: true` with `vale-action`)
 - [ ] Internal link check runs on every PR
 - [ ] OpenAPI spec validated on every PR
 - [ ] Docs published automatically on merge to main

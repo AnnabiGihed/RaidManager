@@ -66,6 +66,10 @@ General dimensions: architecture and layering (SOLID, separation of concerns, do
 - Swallowed exceptions (`catch {}`), catching `Exception` too broadly, or logging-and-rethrowing that loses the stack.
 - `IDisposable` not disposed (missing `using`), and `IAsyncDisposable` ignored.
 - Nullable reference types disabled or annotations ignored where null is reachable.
+- **Blocking:** a CI step that reports findings without failing the job: `fail_on_error: false` (the reviewdog
+  default in `vale-action` and similar actions), `continue-on-error: true`, `|| true`, or an ignored exit code. Ask for
+  proof that a new or changed check fails when it should, such as a run log showing the failing setting or a run that
+  failed on a deliberate error.
 - **Blocking:** an API host without an interactive reference page (Scalar or Swagger UI) mapped at least in Development, a page removed or hidden from Development, two OpenAPI generators in one host, or no test asserting the page answers. Also Blocking: a new or renamed host whose AppHost resource has no "API reference" link (`dotnet-solution-scaffolding`).
 
 ## Output format
