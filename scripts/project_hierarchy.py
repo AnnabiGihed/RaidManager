@@ -1,12 +1,14 @@
 """Keep RaidManager's work items in one Epic -> Feature -> Story/Improvement/Bug -> Task/Spike hierarchy (ADR-0016).
 
-Three rules, all checked with the built-in GITHUB_TOKEN:
+Four rules, all checked with the built-in GITHUB_TOKEN:
 
 - Parent: every item except an epic has a parent of the level above; an epic has none. A violation adds the
   needs-parent label and one explanatory comment; fixing the item removes the label.
 - Completion: an epic, feature, story, improvement or bug closed as completed is reopened unless at least one child
   of the level below is completed and every child is closed.
 - Pull requests: each "Closes #N" names a task or spike whose chain reaches an epic.
+- Mockups (ADR-0017): an item labelled `ui`, or whose issue form says it changes a user interface, links or shows its
+  mockup; otherwise it gets the needs-mockup label and one comment.
 """
 
 from __future__ import annotations
@@ -20,6 +22,8 @@ import sys
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
 from typing import Callable
+
+from ui_mockups import NEEDS_MOCKUP, UI_LABEL, mockup_problem, ui_requested
 
 
 NEEDS_PARENT = "needs-parent"
@@ -49,7 +53,7 @@ DEPTH = {"type:task": 0, "type:spike": 0, "type:story": 1, "type:improvement": 1
 ANCESTOR_LEVELS = 3
 CLOSING_LINE = re.compile(r"^Closes #(\d+)[ \t]*$", re.IGNORECASE)
 FIELDS = "number state stateReason createdAt labels(first: 20) { nodes { name } }"
-NODE = f"{FIELDS} parent {{ {FIELDS} }} subIssues(first: 100) {{ nodes {{ {FIELDS} }} }}"
+NODE = f"{FIELDS} body parent {{ {FIELDS} }} subIssues(first: 100) {{ nodes {{ {FIELDS} }} }}"
 
 
 @dataclass(frozen=True)
@@ -59,6 +63,7 @@ class Issue:
     labels: frozenset[str]
     state_reason: str | None = None
     created_at: datetime | None = None
+    body: str = ""
 
     @classmethod
     def from_api(cls, value: dict) -> Issue:
@@ -69,7 +74,8 @@ class Issue:
         created = value.get("created_at") or value.get("createdAt")
         return cls(value["number"], value["state"].lower(), frozenset(label["name"] for label in names),
                    reason.lower() or None,
-                   datetime.fromisoformat(created.replace("Z", "+00:00")) if created else None)
+                   datetime.fromisoformat(created.replace("Z", "+00:00")) if created else None,
+                   value.get("body") or "")
 
     @property
     def kinds(self) -> list[str]:
@@ -230,21 +236,35 @@ class Guard:
         self.reopened: set[int] = set()
 
     def current(self, issue: Issue) -> Issue:
-        return Issue(issue.number, "open", issue.labels, None, issue.created_at) if issue.number in self.reopened else issue
+        if issue.number not in self.reopened:
+            return issue
+        return Issue(issue.number, "open", issue.labels, None, issue.created_at, issue.body)
 
-    def check_parent(self, node: Node) -> None:
-        issue = node.issue
-        problem = parent_problem(issue, node.parent)
+    def flag(self, issue: Issue, label: str, problem: str | None, rule: str) -> None:
+        """Adds the label with one explanatory comment while the problem lasts, and removes it once it is fixed."""
         if problem and issue.created_at and self.now - issue.created_at < GRACE:
             return
-        if problem and NEEDS_PARENT not in issue.labels:
-            gh("issue", "edit", str(issue.number), "--repo", self.repository, "--add-label", NEEDS_PARENT)
+        if problem and label not in issue.labels:
+            gh("issue", "edit", str(issue.number), "--repo", self.repository, "--add-label", label)
             gh("issue", "comment", str(issue.number), "--repo", self.repository, "--body",
-               f"Hierarchy rule: {problem} The `{NEEDS_PARENT}` label goes away once it is fixed (ADR-0016).")
-            print(f"Flagged #{issue.number}: {problem}")
-        elif not problem and NEEDS_PARENT in issue.labels:
-            gh("issue", "edit", str(issue.number), "--repo", self.repository, "--remove-label", NEEDS_PARENT)
-            print(f"Cleared #{issue.number}")
+               f"{rule}: {problem} The `{label}` label goes away once it is fixed.")
+            print(f"Flagged #{issue.number} {label}: {problem}")
+        elif not problem and label in issue.labels:
+            gh("issue", "edit", str(issue.number), "--repo", self.repository, "--remove-label", label)
+            print(f"Cleared #{issue.number} {label}")
+
+    def check_parent(self, node: Node) -> None:
+        self.flag(node.issue, NEEDS_PARENT, parent_problem(node.issue, node.parent), "Hierarchy rule (ADR-0016)")
+
+    def check_mockup(self, node: Node) -> None:
+        issue = node.issue
+        labels = issue.labels
+        if UI_LABEL not in labels and ui_requested(issue.body):
+            gh("issue", "edit", str(issue.number), "--repo", self.repository, "--add-label", UI_LABEL)
+            labels = labels | {UI_LABEL}
+            print(f"Labelled #{issue.number} {UI_LABEL}: its issue form says it changes a user interface")
+        problem = None if issue.abandoned else mockup_problem(labels, issue.body)
+        self.flag(issue, NEEDS_MOCKUP, problem, "Mockup rule (ADR-0017)")
 
     def check_completion(self, node: Node) -> None:
         issue = self.current(node.issue)
@@ -257,6 +277,7 @@ class Guard:
 
     def check(self, node: Node) -> None:
         self.check_parent(node)
+        self.check_mockup(node)
         self.check_completion(node)
 
 
@@ -280,7 +301,7 @@ def main() -> int:
         return check_pull_request(args.repository, os.environ.get("PR_BODY", ""))
     guard = Guard(args.repository)
     if args.issue:
-        number: int | None = args.issue
+        number: int = args.issue
         for _ in range(ANCESTOR_LEVELS + 1):
             node = fetch_node(args.repository, number)
             guard.check(node)

@@ -20,6 +20,8 @@ jobs:
       checks: write
       # Reads the parent chain of the work items a pull request closes.
       issues: read
+      # Lists the files a pull request changes, for the mockup rule.
+      pull-requests: read
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-node@v4
@@ -30,6 +32,10 @@ jobs:
           python-version: '3.12'
       - name: Documentation validator tests
         run: python -m unittest discover -s scripts/tests -v
+      - name: Script type check
+        run: |
+          python -m pip install --quiet mypy==1.11.2
+          python -m mypy
       - name: Pull-request description
         if: github.event_name == 'pull_request'
         env:
@@ -41,6 +47,13 @@ jobs:
           GH_TOKEN: ${{ github.token }}
           PR_BODY: ${{ github.event.pull_request.body }}
         run: python scripts/project_hierarchy.py --repository "$GITHUB_REPOSITORY" --pull-request
+      - name: UI mockups
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_BODY: ${{ github.event.pull_request.body }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: python scripts/ui_mockups.py --pull-request
       - name: Root documents and diagram sources
         run: python scripts/validate_docs.py
       - name: GitHub Wiki build

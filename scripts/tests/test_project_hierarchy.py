@@ -24,7 +24,7 @@ def issue(number: int, kind: str, state: str = "open", reason: str | None = None
 class ParentRuleTests(unittest.TestCase):
     def test_epic_has_no_parent(self) -> None:
         self.assertIsNone(parent_problem(issue(7, "epic"), None))
-        self.assertIn("An epic has no parent", parent_problem(issue(7, "epic"), issue(1, "epic")))
+        self.assertIn("An epic has no parent", parent_problem(issue(7, "epic"), issue(1, "epic")) or "")
 
     def test_each_level_needs_the_level_above(self) -> None:
         cases = [("feature", "epic"), ("story", "feature"), ("improvement", "feature"), ("bug", "feature"),
@@ -57,7 +57,7 @@ class CompletionRuleTests(unittest.TestCase):
     def test_each_parent_level_needs_a_completed_child(self) -> None:
         for kind in ("epic", "feature", "story", "improvement", "bug"):
             with self.subTest(kind=kind):
-                self.assertIn("At least one child", completion_problem(issue(1, kind, "closed"), []))
+                self.assertIn("At least one child", completion_problem(issue(1, kind, "closed"), []) or "")
 
     def test_bug_closes_with_a_completed_task(self) -> None:
         self.assertIsNone(completion_problem(issue(146, "bug", "closed"), [issue(123, "task", "closed")]))
@@ -76,7 +76,7 @@ class CompletionRuleTests(unittest.TestCase):
 
     def test_abandoned_children_do_not_count_as_completed(self) -> None:
         children = [issue(57, "task", "closed", "not_planned")]
-        self.assertIn("must be completed", completion_problem(issue(13, "story", "closed"), children))
+        self.assertIn("must be completed", completion_problem(issue(13, "story", "closed"), children) or "")
 
     def test_abandoned_child_next_to_a_completed_one_passes(self) -> None:
         children = [issue(57, "task", "closed"), issue(58, "task", "closed", "not_planned")]
@@ -112,16 +112,16 @@ class PullRequestTests(unittest.TestCase):
         self.assertIsNone(chain_problem(99, self.board(*self.chain())))
 
     def test_story_cannot_be_closed_by_a_pull_request(self) -> None:
-        self.assertIn("#13 is a story", chain_problem(13, self.board(*self.chain())))
+        self.assertIn("#13 is a story", chain_problem(13, self.board(*self.chain())) or "")
 
     def test_orphan_task_fails(self) -> None:
         self.assertIn("#100 needs a parent story, improvement or bug",
-                      chain_problem(100, self.board(Node(issue(100, "task")))))
+                      chain_problem(100, self.board(Node(issue(100, "task")))) or "")
 
     def test_story_without_feature_fails(self) -> None:
         epic, story = issue(7, "epic"), issue(13, "story")
         board = self.board(Node(epic), Node(story, epic), Node(issue(99, "task"), story))
-        self.assertIn("#13 needs a parent feature", chain_problem(99, board))
+        self.assertIn("#13 needs a parent feature", chain_problem(99, board) or "")
 
     def test_reads_closing_lines_before_the_first_heading_only(self) -> None:
         body = "Closes #159\r\ncloses #160  \nRefs #158\n\n## What changed\nCloses #999\n"

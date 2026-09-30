@@ -8,6 +8,7 @@ pull-request comment.
 from __future__ import annotations
 
 import argparse
+import io
 import re
 import subprocess
 import sys
@@ -188,7 +189,8 @@ def git_diff(base: str, root: Path) -> str:
 
 def main() -> int:
     # The summary uses status symbols that some Windows consoles can't encode by default.
-    sys.stdout.reconfigure(encoding="utf-8", errors="replace")
+    if isinstance(sys.stdout, io.TextIOWrapper):
+        sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--reports", type=Path, required=True, help="folder searched for coverage.cobertura.xml")
     parser.add_argument("--root", type=Path, default=Path.cwd())

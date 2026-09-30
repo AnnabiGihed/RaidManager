@@ -105,6 +105,10 @@ These govern the UI layer as a whole, not a single component. Every one of them 
 
 ## Workflow
 
+0. **Start from the approved mockup.** Where the repository keeps UI designs (RaidManager: Penpot exports in
+   `docs/mockups/`, ADR-0017), open the screen's mockup before writing markup and build to it: layout, states
+   (empty, loading, error, filled) and wording. No mockup means no screen: ask for it. A deliberate deviation updates
+   the mockup in the same PR, and the PR shows it.
 1. **Determine the render mode and TFM.** This gates every other decision. State it explicitly, apply it (`@rendermode`), verify an interactive feature works under it, and record it in the ADR on first UI delivery.
 2. **Place state in the right lifecycle method.** One-time vs parameter-driven vs after-render.
 3. **Get re-render correctness right.** `@key` in loops, `EventCallback` for callbacks, `StateHasChanged` only where needed, `ShouldRender` on hot paths.
@@ -172,6 +176,7 @@ These govern the UI layer as a whole, not a single component. Every one of them 
 - The chosen render mode is actually applied and verified (no registered-but-unused interactivity), and recorded in an ADR.
 - Every component is a `.razor` (markup only) + `.razor.cs` pair — zero `@code` blocks anywhere; logic lives in view models with wiring-only code-behinds; no `IHttpContextAccessor` on circuit-reachable paths; no `CancellationToken.None` from components; `ErrorBoundary` wraps page content; shared `@using` in `_Imports.razor`.
 - The mirrored bUnit/view-model test projects exist and cover the delivered behavior in the same PR.
+- The screen matches its approved mockup (every state it shows), and the PR shows that mockup.
 - UI uses Radzen components, layout (`RadzenStack`/`RadzenRow`/`RadzenColumn`) and one theme only — no Bootstrap CSS/JS or classes, no DIFA or other component libraries; `AddRadzenComponents()`, theme, script and `<RadzenComponents />` are wired once; lists use server-side `RadzenDataGrid` `LoadData`.
 
 ## Example prompts

@@ -5,7 +5,7 @@ labels: ["type:task"]
 body:
   - type: markdown
     attributes:
-      value: "Every item sits in one chain: Epic → Feature → Story, Improvement or Bug → Task or Spike (ADR-0016). After creating this issue, add it as a sub-issue of its parent; an item without the right parent gets the `needs-parent` label."
+      value: "Every item sits in one chain: Epic → Feature → Story, Improvement or Bug → Task or Spike (ADR-0016). After creating this issue, add it as a sub-issue of its parent; an item without the right parent gets the `needs-parent` label. Work that changes what users see must link or show its Penpot mockup (ADR-0017)."
   - type: input
     id: parent
     attributes:
@@ -14,6 +14,24 @@ body:
       placeholder: "#"
     validations:
       required: true
+  - type: dropdown
+    id: user-interface
+    attributes:
+      label: User interface
+      description: "Does this change what users see: a website page, companion window, addon frame or Discord message? Yes adds the ui label."
+      options:
+        - No, nothing users see changes
+        - Yes, it changes what users see
+    validations:
+      required: true
+  - type: input
+    id: mockup
+    attributes:
+      label: Mockup
+      description: "Required when the answer above is yes: docs/mockups/<screen>.svg or a Penpot share link. You can add it later by editing the issue."
+      placeholder: docs/mockups/<screen>.svg
+    validations:
+      required: false
   - type: textarea
     id: deliverable
     attributes:

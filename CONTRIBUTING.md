@@ -38,6 +38,8 @@ Every pull request must:
 - target `main`, link its task, and include the required five-section description and author checklist;
 - put `Closes #<task-number>` on its own line before the first heading; it closes only a task or spike whose chain
   reaches an epic through a story, improvement or bug and a feature. Use `Refs` for those parents;
+- show the Penpot mockup it implements when it changes what users see, or state `No visual change: <reason>`
+  ([ADR-0017](docs/adr/0017-penpot-mockups-for-ui-work.md), [Design a screen](docs/how-to/design-a-screen.md));
 - pass the coverage gate: tests cover at least 80% of the changed source lines, and total line coverage stays at or
   above 60% ([ADR-0015](docs/adr/0015-gate-pull-requests-on-test-coverage.md)). The coverage comment on the pull
   request lists any uncovered changed line;
@@ -80,7 +82,8 @@ deletes the source branch after merge; confirm the linked task is closed and its
 Install the .NET 10 SDK and give your machine access to the Pivot.Framework packages as
 [`README.md`](README.md#give-your-machine-access-to-the-pivotframework-packages) describes.
 From the solution root, run `dotnet restore RaidManager.sln`, `dotnet build RaidManager.sln --no-restore`, and
-`dotnet test RaidManager.sln --no-build`.
+`dotnet test RaidManager.sln --no-build`. For the repository scripts, run
+`python -m unittest discover -s scripts/tests` and `python -m mypy`; CI runs both.
 
 ## Releases
 

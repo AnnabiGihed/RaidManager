@@ -7,6 +7,8 @@ import datetime as dt
 import re
 from pathlib import Path
 
+from ui_mockups import folder_problems
+
 
 REQUIRED_FILES = ("README.md", "CHANGELOG.md", "CONTRIBUTING.md", "LICENSE", "SECURITY.md")
 CHANGELOG_SECTIONS = {"Added", "Changed", "Deprecated", "Removed", "Fixed", "Security", "Breaking changes"}
@@ -92,6 +94,7 @@ def validate(root: Path) -> list[str]:
         if not re.search(r"Copyright \(c\) \d{4} Gihed Annabi", content) or "proprietary" not in content.lower():
             errors.append("LICENSE must contain Gihed Annabi's proprietary license text")
     errors.extend(validate_diagrams(root))
+    errors.extend(folder_problems(root))
     return errors
 
 

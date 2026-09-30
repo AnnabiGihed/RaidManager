@@ -29,6 +29,8 @@ uploads the snapshot. Read `docs/adr/0002-use-desktop-companion-for-character-sy
   and authentication belong to the companion (architecture: "must not place authentication secrets in addon files").
 - **No hidden automation.** The addon never invites, kicks or changes loot on its own. Every group action is the
   direct result of a player click or slash command, and never in combat (`InCombatLockdown()`).
+- **Frames follow a mockup.** Any visible frame, button, tooltip text or chat output is user interface: design it in
+  Penpot first and show `docs/mockups/<screen>.svg` in the PR (ADR-0017, `raidmanager-conventions` §10).
 - **Missing is not negative.** The product requires the snapshot to distinguish an unavailable field from an
   observed empty value. Lua drops `nil` table fields, so encode status explicitly (section 4).
 

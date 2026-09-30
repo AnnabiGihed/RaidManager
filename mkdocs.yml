@@ -14,6 +14,7 @@ nav:
       - States and readiness: explanation/state-models.md
   - Diagram maintenance: how-to/diagrams.md
   - Review a pull request: how-to/review-a-pull-request.md
+  - Design a screen: how-to/design-a-screen.md
   - Glossary: glossary.md
   - API contracts: reference/api-contracts.md
   - Project automation: reference/project-automation.md
@@ -36,6 +37,7 @@ nav:
       - GitHub Wiki mirror: adr/0014-mirror-documentation-to-the-github-wiki.md
       - Coverage gate: adr/0015-gate-pull-requests-on-test-coverage.md
       - Work item hierarchy: adr/0016-epic-feature-story-task-hierarchy.md
+      - Penpot mockups: adr/0017-penpot-mockups-for-ui-work.md
 theme:
   name: material
 markdown_extensions:

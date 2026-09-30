@@ -137,6 +137,9 @@ there, review the Discord integration against that ADR instead, and the Keycloak
 
 ## Blazor UI findings
 
+- **Blocking:** a user-interface change without the mockup it implements (RaidManager: `docs/mockups/<screen>.svg`
+  or a Penpot link in the PR, ADR-0017), a screen that departs from its mockup without updating it, or a
+  `No visual change:` claim that the diff contradicts.
 - Registered-but-unapplied interactivity (interactive services registered, no `@rendermode` anywhere) — the decision must be applied, verified, and recorded in an ADR.
 - `IHttpContextAccessor` used on paths reachable from an interactive circuit — note that `KeycloakAuthService` (Pivot Blazor auth) reads its session cookie through `IHttpContextAccessor`, so `InitialiseFromCookieAsync` must run during prerender/static render.
 - A second `/auth/callback` page, or none: Pivot's `KeycloakCallback.razor` is **not** compiled into the package, so exactly one app-owned callback page must exist.
