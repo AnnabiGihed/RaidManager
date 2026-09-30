@@ -10,9 +10,11 @@ An epic stays open and outside `Done` until it has at least one native child sto
 and `Done`, and its exit criteria are met. A story stays open and outside `Done` until it has at least one native
 child work item, all child work items are closed and `Done`, and its acceptance criteria are evidenced. Tasks,
 bugs, and spikes count as work items. The [hierarchy workflow](.github/workflows/project-hierarchy.yml) reopens
-invalid closures and audits them every 15 minutes. Direct Project `Done` changes are also reconciled when the
-`RAID_MANAGER_PROJECT_TOKEN` repository secret contains a classic personal access token with `project` and `repo`
-scopes. Fine-grained tokens cannot access user-owned Projects.
+invalid closures and audits them every 15 minutes using GitHub Actions' built-in repository permissions. No
+personal token or repository secret is required. The Project's built-in workflows cannot verify child completion
+or reset a manually changed `Done` status. If an invalid parent remains `Done` after its issue is reopened,
+find it in the [Status exceptions](https://github.com/users/AnnabiGihed/projects/2/views/5) view and move its
+Project status back to `In Progress`.
 
 ## Branching
 

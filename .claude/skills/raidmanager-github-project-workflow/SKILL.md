@@ -75,6 +75,9 @@ tests, documentation, and skill edits for a story may not.
    deleted and the task is closed and `Done`; mark a story `Done` only when every acceptance criterion is evidenced
    and all required child work is merged. Mark an epic `Done` only when all child stories satisfy their exit
    criteria. Close stories and epics separately after checking the full hierarchy.
+   The repository closure guard reopens a parent closed before its child work is complete. If its Project status
+   still shows `Done`, restore `In Progress` from the
+   [Status exceptions view](https://github.com/users/AnnabiGihed/projects/2/views/5).
 
 The `v1.0` milestone tracks release scope; it does not itself authorize a release. Release or tagging requires
 all included stories accepted, release checks completed, and explicit owner approval.
