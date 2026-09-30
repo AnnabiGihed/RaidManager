@@ -47,6 +47,7 @@ SETTINGS = "4 · Community settings"
 MEMBERS = "5 · Members and roles"
 REFUSED = "6 · Change refused after role loss"
 SECTION = "Community settings"
+ADD_SECTION = "Add RaidManager"
 
 
 def section_title(name: str, x: float, y: float, value: str, caption: str | None = None) -> list[Item]:
@@ -123,7 +124,7 @@ def choose_realm() -> list[Item]:
 def already_linked() -> list[Item]:
     top = CONTENT_TOP + 120
     return [
-        page_header("Add RaidManager", f"{SERVER} is already linked",
+        page_header(ADD_SECTION, f"{SERVER} is already linked",
                     "Each Discord server links to one RaidManager community."),
         notice("Linked notice", CONTENT_X, top, 720, "You're a member of this community",
                f"Its Administrator, {OWNER}, manages the realm and the officer roles.", "info"),
@@ -233,9 +234,9 @@ def boards() -> list[Board]:
     column, row = BOARD_W + BOARD_GAP, BOARD_H + BOARD_GAP
     return [
         app_screen(NO_COMMUNITY, 0, 0, "Overview", no_community(), community=None, user=NEWCOMER),
-        app_screen(CHOOSE_REALM, column, 0, "Overview", choose_realm(), section="Add RaidManager", community=None,
+        app_screen(CHOOSE_REALM, column, 0, "Overview", choose_realm(), section=ADD_SECTION, community=None,
                    user=NEWCOMER),
-        app_screen(ALREADY_LINKED, 2 * column, 0, "Overview", already_linked(), section="Add RaidManager", user=PLAYER),
+        app_screen(ALREADY_LINKED, 2 * column, 0, "Overview", already_linked(), section=ADD_SECTION, user=PLAYER),
         app_screen(SETTINGS, 0, row, SECTION, settings(), user=ADMINISTRATOR),
         app_screen(MEMBERS, column, row, SECTION, members(), section="Members", user=ADMINISTRATOR,
                    links={"Community": SETTINGS}),

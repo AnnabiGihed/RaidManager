@@ -27,6 +27,7 @@ DIVIDER = P["Line/divider"]
 BLUE = P["Accent/blue"]
 DANGER_TEXT = P["Status/danger text"]
 PAGE_BACKGROUND = P["Surface/page"]
+RAISED = P["Surface/raised"]
 BOARD_W, BOARD_H = 1440, 900
 SIDEBAR_W, TOP_BAR_H = 240, 64
 CONTENT_X, CONTENT_TOP = SIDEBAR_W + 40, TOP_BAR_H + 40
@@ -45,7 +46,7 @@ BADGE_TONES = {
     "danger": (P["Status/danger background"], DANGER_TEXT),
     "success": (P["Status/success background"], ACCENT),
     "info": (P["Status/info background"], BLUE),
-    "neutral": (P["Surface/raised"], SECONDARY),
+    "neutral": (RAISED, SECONDARY),
 }
 # (background, border, title, body, icon, icon mark) per tone.
 NOTICE_TONES = {
@@ -66,7 +67,7 @@ AVATAR_TONES = {
 # (fill, border, text) per button style.
 BUTTON_STYLES = {
     "primary": (ACCENT, None, ON_ACCENT),
-    "secondary": (P["Surface/raised"], DIVIDER, TEXT),
+    "secondary": (RAISED, DIVIDER, TEXT),
     "danger": (P["Status/danger"], None, P["Status/on danger"]),
 }
 
@@ -116,7 +117,7 @@ def community_card(community: Community | None, target: str | None) -> Group:
     items: list[Item] = [Rect("Background", 16, 68, SIDEBAR_W - 32, 60, P["Surface/card"], 1, 10,
                               P["Line/card border"])]
     if community is None:
-        items += [Rect("Icon", 28, 82, 32, 32, P["Surface/raised"], 1, 8, DIVIDER),
+        items += [Rect("Icon", 28, 82, 32, 32, RAISED, 1, 8, DIVIDER),
                   text("Icon mark", 28, 104, "+", 16, 800, SECONDARY, 32, "center", icon=True),
                   text("Name", 70, 95, "No community yet", 14, 600),
                   text("Realm", 70, 114, "Link a Discord server", 12, 400, MUTED)]
