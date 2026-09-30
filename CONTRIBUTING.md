@@ -58,7 +58,8 @@ deletes the source branch after merge; confirm the linked task is closed and its
 
 ## Local setup
 
-Install the .NET 10 SDK and configure the Pivot.Framework GitHub Packages credentials described in `README.md`.
+Install the .NET 10 SDK and give your machine access to the Pivot.Framework packages as
+[`README.md`](README.md#give-your-machine-access-to-the-pivotframework-packages) describes.
 From the solution root, run `dotnet restore RaidManager.sln`, `dotnet build RaidManager.sln --no-restore`, and
 `dotnet test RaidManager.sln --no-build`.
 
