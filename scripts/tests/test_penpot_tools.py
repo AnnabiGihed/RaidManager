@@ -11,12 +11,14 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from penpot_components import (  # noqa: E402
+    DISCORD_BUTTONS, DISCORD_PALETTE, DISCORD_W, DISCORD_WHITE, discord_button, discord_embed, discord_message,
+    discord_screen,
     AVATAR_TONES, BADGE_TONES, BOARD_H, BOARD_W, BUTTON_STYLES, NOTICE_TONES, OFFICER_PAGES, PLAYER, PLAYER_PAGES,
     PUBLIC_W, PUBLIC_X, WINDOW_H, WINDOW_W, app_screen, checkbox, companion_window, form_field, badge, button, notice, page_header, public_screen,
 )
 from penpot_render import is_current, render  # noqa: E402
 from penpot_scene import (  # noqa: E402
-    FILE_VERSION, MIGRATIONS, ROOT_ID, Board, Circle, Click, Group, Rect, contrast_ratio, text, write_mockup,
+    HOUSE_PALETTE, FILE_VERSION, MIGRATIONS, ROOT_ID, Board, Circle, Click, Group, Rect, contrast_ratio, text, write_mockup,
     write_penpot,
 )
 
@@ -341,6 +343,18 @@ class ComponentTests(unittest.TestCase):
         write_penpot(self.path, "boxes", "Boxes",
                      [app_screen("1 · Boxes", 0, 0, "Schedule", [Group("On", checkbox(300, 200, True)),
                                                                    Group("Off", checkbox(300, 240, False))])])
+
+    def test_discord_buttons_pass_contrast_and_messages_render(self) -> None:
+        for style, colour in DISCORD_BUTTONS.items():
+            self.assertGreaterEqual(contrast_ratio(DISCORD_WHITE, colour), 4.5, style)
+        post = discord_message("Post", 72, "Today at 12:00", [*discord_embed(72, 128, 600, 120),
+                                                              discord_button("Sign up", 72, 260, "Sign up", "success")],
+                               private=True)
+        self.assertIn("Private note", layer_names(post.children))
+        board = discord_screen("1 · Post", 0, 0, [post])
+        self.assertEqual(board.w, DISCORD_W)
+        self.assertIn("Channel header", layer_names(board.children))
+        write_penpot(self.path, "discord", "Discord", [board], palette={**HOUSE_PALETTE, **DISCORD_PALETTE})
 
     def test_signed_out_pages_have_the_logo_but_no_shell(self) -> None:
         board = public_screen("1 · Signed out", 0, 0, [text("Title", PUBLIC_X, 240, "Sign in", 18, 700)])

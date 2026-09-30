@@ -1,0 +1,228 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3200" height="1680" viewBox="-80 -80 3200 1680">
+<title>Discord signup (rendered from discord-signup.penpot)</title>
+<rect x="-80" y="-80" width="3200" height="1680" fill="#e8e8e8"/>
+<text x="0" y="-14" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">1 · Raid post</text>
+<clipPath id="clip1"><rect x="0" y="0" width="960" height="720"/></clipPath>
+<rect x="0" y="0" width="960" height="720" fill="#313338"/>
+<g clip-path="url(#clip1)">
+<rect x="0" y="0" width="960" height="48" fill="#313338"/>
+<rect x="0" y="47" width="960" height="1" fill="#1e1f22"/>
+<text x="26" y="31" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="20" font-weight="800" fill="#949ba4" text-anchor="middle">#</text>
+<text x="44" y="30" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#f2f3f5" text-anchor="start">raid-signups</text>
+<rect x="16" y="72" width="40" height="40" rx="20" fill="#0c2931"/>
+<rect x="28" y="84" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="72" y="89" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#ffffff" text-anchor="start">RaidManager</text>
+<rect x="186" y="75" width="32" height="16" rx="3" fill="#4752c4"/>
+<text x="202" y="87" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">APP</text>
+<text x="228" y="88" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#949ba4" text-anchor="start">Today at 12:00</text>
+<text x="72" y="112" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#dbdee1" text-anchor="start">@Raiders Signups are open for this week&#x27;s Icecrown Citadel.</text>
+<rect x="72" y="128" width="600" height="250" rx="4" fill="#2b2d31"/>
+<rect x="72" y="128" width="4" height="250" rx="2" fill="#5de0c1"/>
+<text x="88" y="158" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="start">Icecrown Citadel</text>
+<text x="88" y="182" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#dbdee1" text-anchor="start">Weekly progression, then Halion if time allows.</text>
+<text x="88" y="218" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#ffffff" text-anchor="start">Targets</text>
+<text x="88" y="238" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#dbdee1" text-anchor="start">Icecrown Citadel 25 heroic · Ruby Sanctum 25</text>
+<text x="88" y="266" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#ffffff" text-anchor="start">Starts</text>
+<text x="88" y="286" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#dbdee1" text-anchor="start">Friday 9 October 2026 20:00 (in 2 days)</text>
+<text x="388" y="266" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#ffffff" text-anchor="start">Signups close</text>
+<text x="388" y="286" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#dbdee1" text-anchor="start">Friday 9 October 2026 18:00</text>
+<text x="88" y="314" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#ffffff" text-anchor="start">Signups</text>
+<text x="88" y="334" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#dbdee1" text-anchor="start">18 confirmed · 4 tentative · 2 late · 3 declined</text>
+<text x="88" y="366" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#949ba4" text-anchor="start">Times show in your time zone · Citadel Vanguard</text>
+<rect x="72" y="390" width="86" height="32" rx="3" fill="#248046"/>
+<text x="115" y="411" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Sign up</text>
+<rect x="176" y="390" width="86" height="32" rx="3" fill="#4e5058"/>
+<text x="219" y="411" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Decline</text>
+<rect x="272" y="390" width="93" height="32" rx="3" fill="#4e5058"/>
+<text x="318.5" y="411" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Withdraw</text>
+<rect x="378" y="390" width="190" height="32" rx="3" fill="#4e5058"/>
+<text x="473" y="411" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Open on the website ↗</text>
+</g>
+<text x="1040" y="-14" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">2 · Choose characters and availability</text>
+<clipPath id="clip2"><rect x="1040" y="0" width="960" height="720"/></clipPath>
+<rect x="1040" y="0" width="960" height="720" fill="#313338"/>
+<g clip-path="url(#clip2)">
+<rect x="1040" y="0" width="960" height="48" fill="#313338"/>
+<rect x="1040" y="47" width="960" height="1" fill="#1e1f22"/>
+<text x="1066" y="31" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="20" font-weight="800" fill="#949ba4" text-anchor="middle">#</text>
+<text x="1084" y="30" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#f2f3f5" text-anchor="start">raid-signups</text>
+<rect x="1056" y="72" width="40" height="40" rx="20" fill="#0c2931"/>
+<rect x="1068" y="84" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="1112" y="89" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#ffffff" text-anchor="start">RaidManager</text>
+<rect x="1226" y="75" width="32" height="16" rx="3" fill="#4752c4"/>
+<text x="1242" y="87" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">APP</text>
+<text x="1268" y="88" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#949ba4" text-anchor="start">Today at 18:40</text>
+<text x="1112" y="112" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="start">Sign up for Icecrown Citadel · Friday 9 October 2026 20:00</text>
+<text x="1112" y="134" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#dbdee1" text-anchor="start">Choose the characters and specs you&#x27;d play, then your availability.</text>
+<rect x="1112.5" y="148.5" width="519" height="39" rx="4" fill="#1e1f22" stroke="#3f4147" stroke-width="1"/>
+<text x="1124" y="173" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#dbdee1" text-anchor="start">Arthasdk · Frost DPS, Arthasdk · Blood Tank</text>
+<rect x="1112" y="192" width="520" height="52" fill="#1e1f22"/>
+<text x="1128" y="214" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="start">Arthasdk · Frost DPS</text>
+<text x="1128" y="233" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#949ba4" text-anchor="start">Available · GS 5,712</text>
+<rect x="1600" y="209" width="18" height="18" rx="4" fill="#5865f2"/>
+<text x="1609" y="223" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">✓</text>
+<rect x="1112" y="244" width="520" height="52" fill="#1e1f22"/>
+<text x="1128" y="266" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="start">Arthasdk · Blood Tank</text>
+<text x="1128" y="285" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#949ba4" text-anchor="start">Available · GS 5,480</text>
+<rect x="1600" y="261" width="18" height="18" rx="4" fill="#5865f2"/>
+<text x="1609" y="275" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">✓</text>
+<rect x="1112" y="296" width="520" height="52" fill="#1e1f22"/>
+<text x="1128" y="318" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="start">Jainaice · Fire DPS</text>
+<text x="1128" y="337" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#949ba4" text-anchor="start">Needs fresh sync · GS 5,340</text>
+<rect x="1600.5" y="313.5" width="17" height="17" rx="4" fill="#1e1f22" stroke="#949ba4" stroke-width="1"/>
+<rect x="1112" y="348" width="520" height="52" fill="#1e1f22"/>
+<text x="1128" y="370" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="start">Thrallsham · Restoration</text>
+<text x="1128" y="389" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#949ba4" text-anchor="start">Resets before raid · GS 4,120</text>
+<rect x="1600.5" y="365.5" width="17" height="17" rx="4" fill="#1e1f22" stroke="#949ba4" stroke-width="1"/>
+<text x="1128" y="422" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#949ba4" text-anchor="start">Lothar isn&#x27;t listed: it&#x27;s locked through the raid.</text>
+<rect x="1112.5" y="448.5" width="519" height="39" rx="4" fill="#1e1f22" stroke="#3f4147" stroke-width="1"/>
+<text x="1124" y="473" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#dbdee1" text-anchor="start">Preferred: Arthasdk · Frost DPS</text>
+<rect x="1112" y="504" width="101" height="32" rx="3" fill="#248046"/>
+<text x="1162.5" y="525" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Confirmed</text>
+<rect x="1232" y="504" width="101" height="32" rx="3" fill="#4e5058"/>
+<text x="1282.5" y="525" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Tentative</text>
+<rect x="1344" y="504" width="71" height="32" rx="3" fill="#4e5058"/>
+<text x="1379.5" y="525" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Late…</text>
+<rect x="1428" y="504" width="93" height="32" rx="3" fill="#4e5058"/>
+<text x="1474.5" y="525" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Declined</text>
+<rect x="1536" y="504" width="227" height="32" rx="3" fill="#4e5058"/>
+<text x="1649.5" y="525" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Full form on the website ↗</text>
+<text x="1112" y="558" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#949ba4" text-anchor="start">Only you can see this · Dismiss message</text>
+</g>
+<text x="2080" y="-14" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">3 · Late: arrival time</text>
+<clipPath id="clip3"><rect x="2080" y="0" width="960" height="720"/></clipPath>
+<rect x="2080" y="0" width="960" height="720" fill="#313338"/>
+<g clip-path="url(#clip3)">
+<rect x="2080" y="0" width="960" height="48" fill="#313338"/>
+<rect x="2080" y="47" width="960" height="1" fill="#1e1f22"/>
+<text x="2106" y="31" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="20" font-weight="800" fill="#949ba4" text-anchor="middle">#</text>
+<text x="2124" y="30" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#f2f3f5" text-anchor="start">raid-signups</text>
+<rect x="2096" y="72" width="40" height="40" rx="20" fill="#0c2931"/>
+<rect x="2108" y="84" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="2152" y="89" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#ffffff" text-anchor="start">RaidManager</text>
+<rect x="2266" y="75" width="32" height="16" rx="3" fill="#4752c4"/>
+<text x="2282" y="87" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">APP</text>
+<text x="2308" y="88" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#949ba4" text-anchor="start">Today at 18:40</text>
+<text x="2152" y="112" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="start">Sign up for Icecrown Citadel · Friday 9 October 2026 20:00</text>
+<text x="2152" y="134" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#dbdee1" text-anchor="start">Choose the characters and specs you&#x27;d play, then your availability.</text>
+<rect x="2152.5" y="148.5" width="519" height="39" rx="4" fill="#1e1f22" stroke="#3f4147" stroke-width="1"/>
+<text x="2164" y="173" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#dbdee1" text-anchor="start">Arthasdk · Frost DPS, Arthasdk · Blood Tank</text>
+<rect x="2152" y="192" width="520" height="52" fill="#1e1f22"/>
+<text x="2168" y="214" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="start">Arthasdk · Frost DPS</text>
+<text x="2168" y="233" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#949ba4" text-anchor="start">Available · GS 5,712</text>
+<rect x="2640" y="209" width="18" height="18" rx="4" fill="#5865f2"/>
+<text x="2649" y="223" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">✓</text>
+<rect x="2152" y="244" width="520" height="52" fill="#1e1f22"/>
+<text x="2168" y="266" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="start">Arthasdk · Blood Tank</text>
+<text x="2168" y="285" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#949ba4" text-anchor="start">Available · GS 5,480</text>
+<rect x="2640" y="261" width="18" height="18" rx="4" fill="#5865f2"/>
+<text x="2649" y="275" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#ffffff" text-anchor="middle">✓</text>
+<rect x="2152" y="296" width="520" height="52" fill="#1e1f22"/>
+<text x="2168" y="318" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="start">Jainaice · Fire DPS</text>
+<text x="2168" y="337" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#949ba4" text-anchor="start">Needs fresh sync · GS 5,340</text>
+<rect x="2640.5" y="313.5" width="17" height="17" rx="4" fill="#1e1f22" stroke="#949ba4" stroke-width="1"/>
+<rect x="2152" y="348" width="520" height="52" fill="#1e1f22"/>
+<text x="2168" y="370" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="start">Thrallsham · Restoration</text>
+<text x="2168" y="389" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#949ba4" text-anchor="start">Resets before raid · GS 4,120</text>
+<rect x="2640.5" y="365.5" width="17" height="17" rx="4" fill="#1e1f22" stroke="#949ba4" stroke-width="1"/>
+<text x="2168" y="422" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#949ba4" text-anchor="start">Lothar isn&#x27;t listed: it&#x27;s locked through the raid.</text>
+<rect x="2152.5" y="448.5" width="519" height="39" rx="4" fill="#1e1f22" stroke="#3f4147" stroke-width="1"/>
+<text x="2164" y="473" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#dbdee1" text-anchor="start">Preferred: Arthasdk · Frost DPS</text>
+<rect x="2152" y="504" width="101" height="32" rx="3" fill="#248046"/>
+<text x="2202.5" y="525" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Confirmed</text>
+<rect x="2272" y="504" width="101" height="32" rx="3" fill="#4e5058"/>
+<text x="2322.5" y="525" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Tentative</text>
+<rect x="2384" y="504" width="71" height="32" rx="3" fill="#4e5058"/>
+<text x="2419.5" y="525" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Late…</text>
+<rect x="2468" y="504" width="93" height="32" rx="3" fill="#4e5058"/>
+<text x="2514.5" y="525" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Declined</text>
+<rect x="2576" y="504" width="227" height="32" rx="3" fill="#4e5058"/>
+<text x="2689.5" y="525" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Full form on the website ↗</text>
+<text x="2152" y="558" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#949ba4" text-anchor="start">Only you can see this · Dismiss message</text>
+<rect x="2080" y="0" width="960" height="720" fill="#1e1f22" fill-opacity="0.85"/>
+<rect x="2340" y="140" width="440" height="260" rx="8" fill="#313338"/>
+<text x="2356" y="180" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="20" font-weight="700" fill="#ffffff" text-anchor="start">Arriving late</text>
+<text x="2356" y="224" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#dbdee1" text-anchor="start">ARRIVAL TIME, IN YOUR TIME ZONE</text>
+<rect x="2356" y="234" width="408" height="40" rx="4" fill="#1e1f22"/>
+<text x="2368" y="259" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#dbdee1" text-anchor="start">20:30</text>
+<text x="2356" y="296" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#949ba4" text-anchor="start">Officers see it in their own time zone.</text>
+<rect x="2340" y="336" width="440" height="64" fill="#2b2d31"/>
+<text x="2608" y="373" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Cancel</text>
+<rect x="2660" y="352" width="104" height="32" rx="3" fill="#5865f2"/>
+<text x="2712" y="373" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Submit</text>
+</g>
+<text x="0" y="786" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">4 · Signed up</text>
+<clipPath id="clip4"><rect x="0" y="800" width="960" height="720"/></clipPath>
+<rect x="0" y="800" width="960" height="720" fill="#313338"/>
+<g clip-path="url(#clip4)">
+<rect x="0" y="800" width="960" height="48" fill="#313338"/>
+<rect x="0" y="847" width="960" height="1" fill="#1e1f22"/>
+<text x="26" y="831" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="20" font-weight="800" fill="#949ba4" text-anchor="middle">#</text>
+<text x="44" y="830" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#f2f3f5" text-anchor="start">raid-signups</text>
+<rect x="16" y="872" width="40" height="40" rx="20" fill="#0c2931"/>
+<rect x="28" y="884" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="72" y="889" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#ffffff" text-anchor="start">RaidManager</text>
+<rect x="186" y="875" width="32" height="16" rx="3" fill="#4752c4"/>
+<text x="202" y="887" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">APP</text>
+<text x="228" y="888" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#949ba4" text-anchor="start">Today at 18:40</text>
+<rect x="72" y="904" width="600" height="184" rx="4" fill="#2b2d31"/>
+<rect x="72" y="904" width="4" height="184" rx="2" fill="#5de0c1"/>
+<text x="88" y="934" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="start">You&#x27;re signed up for Icecrown Citadel · Confirmed</text>
+<text x="88" y="960" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#dbdee1" text-anchor="start">Arthasdk · Frost DPS (preferred): Available</text>
+<text x="88" y="982" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#dbdee1" text-anchor="start">Arthasdk · Blood Tank: Available</text>
+<text x="88" y="1004" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#dbdee1" text-anchor="start"></text>
+<text x="88" y="1026" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#dbdee1" text-anchor="start">Edit or withdraw until Friday 9 October 2026 18:00.</text>
+<text x="88" y="1048" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#dbdee1" text-anchor="start">Pressing a button again updates this signup; it never adds a second one.</text>
+<rect x="72" y="1100" width="93" height="32" rx="3" fill="#da373c"/>
+<text x="118.5" y="1121" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Withdraw</text>
+<rect x="176" y="1100" width="227" height="32" rx="3" fill="#4e5058"/>
+<text x="289.5" y="1121" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Full form on the website ↗</text>
+<text x="72" y="1154" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#949ba4" text-anchor="start">Only you can see this · Dismiss message</text>
+</g>
+<text x="1040" y="786" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">5 · Refused: signups closed</text>
+<clipPath id="clip5"><rect x="1040" y="800" width="960" height="720"/></clipPath>
+<rect x="1040" y="800" width="960" height="720" fill="#313338"/>
+<g clip-path="url(#clip5)">
+<rect x="1040" y="800" width="960" height="48" fill="#313338"/>
+<rect x="1040" y="847" width="960" height="1" fill="#1e1f22"/>
+<text x="1066" y="831" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="20" font-weight="800" fill="#949ba4" text-anchor="middle">#</text>
+<text x="1084" y="830" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#f2f3f5" text-anchor="start">raid-signups</text>
+<rect x="1056" y="872" width="40" height="40" rx="20" fill="#0c2931"/>
+<rect x="1068" y="884" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="1112" y="889" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#ffffff" text-anchor="start">RaidManager</text>
+<rect x="1226" y="875" width="32" height="16" rx="3" fill="#4752c4"/>
+<text x="1242" y="887" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">APP</text>
+<text x="1268" y="888" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#949ba4" text-anchor="start">Today at 18:40</text>
+<rect x="1112" y="904" width="600" height="118" rx="4" fill="#2b2d31"/>
+<rect x="1112" y="904" width="4" height="118" rx="2" fill="#da373c"/>
+<text x="1128" y="934" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="start">Signups are closed</text>
+<text x="1128" y="960" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#dbdee1" text-anchor="start">Signups for Icecrown Citadel closed on Friday 9 October 2026 18:00.</text>
+<text x="1128" y="982" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#dbdee1" text-anchor="start">Ask an officer if you still need a place.</text>
+<rect x="1112" y="1034" width="145" height="32" rx="3" fill="#4e5058"/>
+<text x="1184.5" y="1055" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Open the raid ↗</text>
+<text x="1112" y="1088" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#949ba4" text-anchor="start">Only you can see this · Dismiss message</text>
+</g>
+<text x="2080" y="786" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">6 · Refused: character locked</text>
+<clipPath id="clip6"><rect x="2080" y="800" width="960" height="720"/></clipPath>
+<rect x="2080" y="800" width="960" height="720" fill="#313338"/>
+<g clip-path="url(#clip6)">
+<rect x="2080" y="800" width="960" height="48" fill="#313338"/>
+<rect x="2080" y="847" width="960" height="1" fill="#1e1f22"/>
+<text x="2106" y="831" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="20" font-weight="800" fill="#949ba4" text-anchor="middle">#</text>
+<text x="2124" y="830" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#f2f3f5" text-anchor="start">raid-signups</text>
+<rect x="2096" y="872" width="40" height="40" rx="20" fill="#0c2931"/>
+<rect x="2108" y="884" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="2152" y="889" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#ffffff" text-anchor="start">RaidManager</text>
+<rect x="2266" y="875" width="32" height="16" rx="3" fill="#4752c4"/>
+<text x="2282" y="887" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#ffffff" text-anchor="middle">APP</text>
+<text x="2308" y="888" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#949ba4" text-anchor="start">Today at 18:40</text>
+<rect x="2152" y="904" width="600" height="118" rx="4" fill="#2b2d31"/>
+<rect x="2152" y="904" width="4" height="118" rx="2" fill="#da373c"/>
+<text x="2168" y="934" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="700" fill="#ffffff" text-anchor="start">Jainaice can&#x27;t be offered</text>
+<text x="2168" y="960" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#dbdee1" text-anchor="start">Jainaice was saved to Icecrown Citadel 25 heroic this evening,</text>
+<text x="2168" y="982" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#dbdee1" text-anchor="start">so it&#x27;s locked through the raid. Your other choices were saved.</text>
+<rect x="2152" y="1034" width="160" height="32" rx="3" fill="#4e5058"/>
+<text x="2232" y="1055" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#ffffff" text-anchor="middle">Change characters</text>
+<text x="2152" y="1088" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#949ba4" text-anchor="start">Only you can see this · Dismiss message</text>
+</g>
+</svg>

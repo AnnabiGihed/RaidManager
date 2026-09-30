@@ -14,7 +14,7 @@ from __future__ import annotations
 
 from dataclasses import dataclass
 
-from penpot_scene import HOUSE_PALETTE, Board, Circle, Click, Group, Item, Rect, text, text_width
+from penpot_scene import bounds, HOUSE_PALETTE, Board, Circle, Click, Group, Item, Rect, text, text_width
 
 P = HOUSE_PALETTE
 # The palette colours the shell and components use most, named once.
@@ -29,6 +29,7 @@ DANGER_TEXT = P["Status/danger text"]
 PAGE_BACKGROUND = P["Surface/page"]
 RAISED = P["Surface/raised"]
 CARD = P["Surface/card"]
+LOGO_TILE = P["Brand/logo tile"]
 BOARD_W, BOARD_H = 1440, 900
 SIDEBAR_W, TOP_BAR_H = 240, 64
 CONTENT_X, CONTENT_TOP = SIDEBAR_W + 40, TOP_BAR_H + 40
@@ -141,7 +142,7 @@ def sidebar(active: str, community: Community | None, user: User, links: dict[st
     items: list[Item] = [
         Rect("Background", 0, 0, SIDEBAR_W, BOARD_H, P["Surface/sidebar"]),
         Rect("Edge", SIDEBAR_W - 1, 0, 1, BOARD_H, DIVIDER),
-        Group("Logo", [Rect("Tile", 20, 16, 32, 32, P["Brand/logo tile"], 1, 8),
+        Group("Logo", [Rect("Tile", 20, 16, 32, 32, LOGO_TILE, 1, 8),
                        Rect("Mark", 28, 24, 16, 16, ACCENT, 1, 4),
                        text("Raid", 62, 38, "RAID", 16, 800, TEXT, None, "left", 0.5),
                        text("Manager", 104, 38, "MANAGER", 16, 800, ACCENT, None, "left", 0.5)]),
@@ -254,7 +255,7 @@ def public_screen(name: str, x: float, y: float, content: list[Item]) -> Board:
     `content` is placed from `PUBLIC_X` and 200 px down, at most `PUBLIC_W` wide.
     """
     logo_x = (BOARD_W - 184) / 2
-    logo = Group("Logo", [Rect("Tile", logo_x, 120, 32, 32, P["Brand/logo tile"], 1, 8),
+    logo = Group("Logo", [Rect("Tile", logo_x, 120, 32, 32, LOGO_TILE, 1, 8),
                           Rect("Mark", logo_x + 8, 128, 16, 16, ACCENT, 1, 4),
                           text("Raid", logo_x + 42, 142, "RAID", 16, 800, TEXT, None, "left", 0.5),
                           text("Manager", logo_x + 84, 142, "MANAGER", 16, 800, ACCENT, None, "left", 0.5)])
@@ -292,3 +293,81 @@ def checkbox(x: float, y: float, checked: bool) -> list[Item]:
         return [Rect("Checkbox", x, y, 18, 18, ACCENT, 1, 4),
                 text("Check mark", x, y + 14, "✓", 12, 800, P["Brand/on accent"], 18, "center", icon=True)]
     return [Rect("Checkbox", x, y, 18, 18, CARD, 1, 4, SECONDARY)]
+
+
+# Discord's dark theme, for mockups of the bot's messages. Screens pass {**HOUSE_PALETTE, **DISCORD_PALETTE}. Only
+# button styles whose white label passes WCAG AA are listed: success, secondary, danger and primary.
+DISCORD_PALETTE: dict[str, str] = {
+    "Discord/chat": "#313338",
+    "Discord/embed": "#2B2D31",
+    "Discord/input": "#1E1F22",
+    "Discord/divider": "#3F4147",
+    "Discord/text": "#DBDEE1",
+    "Discord/muted": "#949BA4",
+    "Discord/header text": "#F2F3F5",
+    "Discord/white": "#FFFFFF",
+    "Discord/app tag": "#4752C4",
+    "Discord/primary button": "#5865F2",
+    "Discord/success button": "#248046",
+    "Discord/secondary button": "#4E5058",
+    "Discord/danger button": "#DA373C",
+}
+DISCORD_W = 960
+DISCORD_TEXT, DISCORD_MUTED = DISCORD_PALETTE["Discord/text"], DISCORD_PALETTE["Discord/muted"]
+DISCORD_WHITE = DISCORD_PALETTE["Discord/white"]
+DISCORD_CHAT = DISCORD_PALETTE["Discord/chat"]
+DISCORD_BUTTONS = {style: DISCORD_PALETTE[f"Discord/{style} button"]
+                   for style in ("primary", "success", "secondary", "danger")}
+
+
+def discord_screen(name: str, x: float, y: float, content: list[Item], *, height: float = 640,
+                   channel: str = "raid-signups") -> Board:
+    """A Discord channel in the dark theme: the channel header, then the messages in `content`."""
+    header = Group("Channel header", [
+        Rect("Background", 0, 0, DISCORD_W, 48, DISCORD_CHAT),
+        Rect("Divider", 0, 47, DISCORD_W, 1, DISCORD_PALETTE["Discord/input"]),
+        text("Hash", 16, 31, "#", 20, 800, DISCORD_MUTED, 20, "center", icon=True),
+        text("Channel", 44, 30, channel, 16, 600, DISCORD_PALETTE["Discord/header text"]),
+    ])
+    return Board(name, x, y, DISCORD_W, height, DISCORD_CHAT, [header, *content])
+
+
+def discord_message(name: str, y: float, when: str, content: list[Item], *, private: bool = False) -> Group:
+    """A message from the RaidManager app: avatar, name, APP tag and time, then `content` from x = 72.
+
+    `private` adds Discord's "Only you can see this" line of an ephemeral reply under the content.
+    """
+    items: list[Item] = [
+        Rect("Avatar", 16, y, 40, 40, LOGO_TILE, 1, 20),
+        Rect("Avatar mark", 28, y + 12, 16, 16, ACCENT, 1, 4),
+        text("Author", 72, y + 17, "RaidManager", 16, 600, DISCORD_WHITE),
+        Rect("App tag", 186, y + 3, 32, 16, DISCORD_PALETTE["Discord/app tag"], 1, 3),
+        text("App tag label", 186, y + 15, "APP", 11, 700, DISCORD_WHITE, 32, "center"),
+        text("Time", 228, y + 16, when, 12, 400, DISCORD_MUTED),
+        *content,
+    ]
+    if private:
+        bottom = max(bounds_bottom(item) for item in content) if content else y + 40
+        items.append(text("Private note", 72, bottom + 22, "Only you can see this · Dismiss message", 12, 400,
+                          DISCORD_MUTED))
+    return Group(name, items)
+
+
+def bounds_bottom(item: Item) -> float:
+    _, y, _, h = bounds(item)
+    return y + h
+
+
+def discord_embed(x: float, y: float, w: float, h: float, accent: str = ACCENT) -> list[Item]:
+    """An embed's background with its coloured bar on the left."""
+    return [Rect("Embed", x, y, w, h, DISCORD_PALETTE["Discord/embed"], 1, 4),
+            Rect("Embed bar", x, y, 4, h, accent, 1, 2)]
+
+
+def discord_button(name: str, x: float, y: float, label: str, style: str = "secondary", width: float | None = None,
+                   on_click: Click | None = None) -> Group:
+    """A Discord message button: 32 px high, white label, in one of Discord's button styles."""
+    label_layer = text("Label", x, y + 21, label, 14, 600, DISCORD_WHITE)
+    width = width or round(text_width(label_layer) + 32)
+    label_layer.width, label_layer.align = width, "center"
+    return Group(name, [Rect("Background", x, y, width, 32, DISCORD_BUTTONS[style], 1, 3), label_layer], on_click)
