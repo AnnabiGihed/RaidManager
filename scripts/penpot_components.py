@@ -321,12 +321,15 @@ DISCORD_BUTTONS = {style: DISCORD_PALETTE[f"Discord/{style} button"]
 
 
 def discord_screen(name: str, x: float, y: float, content: list[Item], *, height: float = 640,
-                   channel: str = "raid-signups") -> Board:
-    """A Discord channel in the dark theme: the channel header, then the messages in `content`."""
+                   channel: str = "raid-signups", icon: str = "#") -> Board:
+    """A Discord channel in the dark theme: the channel header, then the messages in `content`.
+
+    For a direct message, pass the other person's name as `channel` and `icon="@"`.
+    """
     header = Group("Channel header", [
         Rect("Background", 0, 0, DISCORD_W, 48, DISCORD_CHAT),
         Rect("Divider", 0, 47, DISCORD_W, 1, DISCORD_PALETTE["Discord/input"]),
-        text("Hash", 16, 31, "#", 20, 800, DISCORD_MUTED, 20, "center", icon=True),
+        text("Hash", 16, 31, icon, 20, 800, DISCORD_MUTED, 20, "center", icon=True),
         text("Channel", 44, 30, channel, 16, 600, DISCORD_PALETTE["Discord/header text"]),
     ])
     return Board(name, x, y, DISCORD_W, height, DISCORD_CHAT, [header, *content])
