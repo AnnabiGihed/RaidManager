@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- The API lets the website list a player's character claims awaiting a decision and approve or reject one. Approving
+  a character another player owns keeps the claim in conflict review (#161).
 - Every work item now sits in one Epic, Feature, Story, Improvement or Bug, Task or Spike hierarchy. Issue forms ask
   for the parent. The hierarchy workflow labels misplaced items and reopens a parent closed without a completed child,
   and pull requests can only close tasks and spikes whose chain reaches an epic. The board was migrated (ADR-0016)
