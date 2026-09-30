@@ -50,6 +50,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - A dark design system from the owner's reference design: named colors, Open Sans text styles, and an app shell on
   every website screen with the Player and Officer navigation, community, breadcrumb, realm status and user. Mockups
   are generated with it, and the website will be re-themed to match (ADR-0019) (#202).
+- The readiness review mockup in `docs/mockups/`: signups and roster places checked again with verdicts per target
+  and their evidence, a published place made ineligible with nothing replaced, and an officer's exception for Needs
+  fresh sync with its reason (#231).
 - The raid notifications mockup in `docs/mockups/`: reminders and material changes as Discord direct messages, the
   website's notification settings, and the banner with Retry when a direct message can't be delivered (#229).
 - The Discord signup mockup in `docs/mockups/`: the raid post with its buttons, choosing characters, the preferred
