@@ -69,6 +69,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- Starting the Aspire AppHost now opens the dashboard at a fixed address instead of leaving only a console (#105).
 - The review workflow now closes a pull request's tasks even when GitHub does not link its "Closes #N" (#91).
 - Two reviews in quick succession no longer leave the required review check stale: the refresh waits for a
   running check and re-runs it after the latest review (#71).
