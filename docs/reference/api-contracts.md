@@ -4,6 +4,12 @@ The RaidManager application programming interface (API) publishes its operations
 `/openapi/v1.json`, which is the source of truth for request shapes, response codes, and security.
 Failures are returned as ProblemDetails; validation failures list each field under `errors`.
 
+In Development, the interactive reference page at `https://localhost:55366/scalar` renders that document and lets you
+try each operation ([ADR-0013](../adr/0013-scalar-api-reference.md)). The Aspire dashboard links to it as
+"API reference" on the `api` resource. To call a website-only operation, enter the website key in the page's
+authentication panel; `dotnet user-secrets list --project src/Containers/Aspire/Hosting/RaidManager.AppHost` shows it
+as `Parameters:website-service-key` in your own terminal.
+
 ## Implemented operations
 
 | Operation | Caller | Purpose |

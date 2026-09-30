@@ -5,6 +5,7 @@ using RaidManager.ApiService.Features.Identity;
 using RaidManager.ApiService.Features.Shared.Authentication;
 using RaidManager.ApiService.Features.Shared.OpenApi;
 using RaidManager.Persistence.EntityFrameworkCore;
+using Scalar.AspNetCore;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
@@ -40,6 +41,15 @@ if (app.Environment.IsDevelopment())
 }
 
 app.MapOpenApi();
+
+// The interactive reference is a developer tool; other environments publish only the OpenAPI document (ADR-0013).
+if (app.Environment.IsDevelopment())
+{
+    app.MapScalarApiReference(options => options
+        .WithTitle("RaidManager API")
+        .AddPreferredSecuritySchemes(WebsiteServiceDefaults.Scheme));
+}
+
 app.MapGet("/", () => Results.Ok(new { service = "RaidManager.ApiService", status = "foundation" }));
 app.MapIdentityEndpoints();
 app.MapDefaultEndpoints();

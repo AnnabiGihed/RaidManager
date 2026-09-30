@@ -11,7 +11,7 @@ namespace RaidManager.ApiService.Tests.Support;
 /// Date: 2026-09-30<br/>
 /// Purpose: Tests the API as the website calls it: real authentication, real MediatR pipeline and a real database.
 /// </remarks>
-public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
+public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
 {
     #region Constants
     /// <summary>Defines the website key the tests present; long enough to pass the startup check.</summary>
@@ -25,6 +25,11 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
     /// <summary>Stores the SQL Server container.</summary>
     private readonly MsSqlContainer _database = new MsSqlBuilder(SqlServerImage).Build();
     #endregion Fields
+
+    #region Properties
+    /// <summary>Gets the hosting environment the API runs in; Development applies the migrations at startup.</summary>
+    protected virtual string EnvironmentName => "Development";
+    #endregion Properties
 
     #region Public Methods
     /// <inheritdoc />
@@ -42,8 +47,7 @@ public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
     /// <inheritdoc />
     protected override void ConfigureWebHost(IWebHostBuilder builder)
     {
-        // Development applies the migrations at startup, as a local run does.
-        builder.UseEnvironment("Development");
+        builder.UseEnvironment(EnvironmentName);
         builder.UseSetting("ConnectionStrings:Database", _database.GetConnectionString());
         builder.UseSetting("Website:ServiceKey", WebsiteServiceKey);
     }

@@ -14,3 +14,4 @@
 | 0010 | [Read queries from the write database](0010-read-queries-from-the-write-database.md) | Proposed |
 | 0011 | [Website session and API trust](0011-website-session-and-api-trust.md) | Proposed |
 | 0012 | [Interactive Server rendering with Radzen](0012-interactive-server-rendering-with-radzen.md) | Proposed |
+| 0013 | [Scalar as the API reference page](0013-scalar-api-reference.md) | Proposed |

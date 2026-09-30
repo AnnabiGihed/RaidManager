@@ -26,9 +26,11 @@ Onyxia
 prerendering
 Radzen
 rostered
+Scalar
 signup
 signups
 subcase
+Swashbuckle
 unpair
 Warband
 Warcraft
