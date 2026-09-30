@@ -11,7 +11,8 @@ and `Done`, and its exit criteria are met. A story stays open and outside `Done`
 child work item, all child work items are closed and `Done`, and its acceptance criteria are evidenced. Tasks,
 bugs, and spikes count as work items. The [hierarchy workflow](.github/workflows/project-hierarchy.yml) reopens
 invalid closures and audits them every 15 minutes. Direct Project `Done` changes are also reconciled when the
-`RAID_MANAGER_PROJECT_TOKEN` repository secret has Projects write and Issues write access.
+`RAID_MANAGER_PROJECT_TOKEN` repository secret contains a classic personal access token with `project` and `repo`
+scopes. Fine-grained tokens cannot access user-owned Projects.
 
 ## Branching
 

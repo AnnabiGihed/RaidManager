@@ -37,7 +37,7 @@ jobs:
           GH_TOKEN: ${{ secrets.RAID_MANAGER_PROJECT_TOKEN }}
         run: |
           if [ -z "$GH_TOKEN" ]; then
-            echo '::warning::Set RAID_MANAGER_PROJECT_TOKEN with Projects write and Issues write access to enforce Project Done statuses.'
+            echo '::warning::Set RAID_MANAGER_PROJECT_TOKEN to a classic personal access token with project and repo scopes to enforce Project Done statuses.'
             exit 0
           fi
           python scripts/project_hierarchy.py --repository "$GITHUB_REPOSITORY" \
