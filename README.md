@@ -11,13 +11,48 @@ website, Discord bot, addon synchronization, and raid workflows are not yet usab
 
 ## Build locally
 
-You need the .NET 10 software development kit (SDK) and GitHub Packages read access for
-`AnnabiGihed/Pivot.Framework`.
-Set `PIVOT_PACKAGES_USER` and `PIVOT_PACKAGES_TOKEN` in your environment before restore.
-Docker is needed when running the Aspire host with its local SQL Server resource, and for the persistence and API
-integration tests, which start a SQL Server container. Run the product through the Aspire AppHost: it generates the
-shared website key that the API requires (`Website:ServiceKey`, at least 32 characters) and passes it to the API and
-the website.
+You need the .NET 10 software development kit (SDK), and Docker for the Aspire host's local SQL Server and for the
+persistence and API integration tests, which start a SQL Server container.
+
+### Give your machine access to the Pivot.Framework packages
+
+The `Pivot.Framework.*` packages come from the GitHub Packages feed of `AnnabiGihed/Pivot.Framework`.
+`nuget.config` reads the feed credentials from two environment variables, so no credential is ever stored in the
+repository:
+
+| Variable | Value |
+| --- | --- |
+| `PIVOT_PACKAGES_USER` | Your GitHub user name. |
+| `PIVOT_PACKAGES_TOKEN` | A GitHub personal access token that can read packages. |
+
+1. On GitHub, open **Settings**, **Developer settings**, **Personal access tokens**, **Tokens (classic)**, then
+   **Generate new token (classic)**. Select only the `read:packages` scope and set an expiration date.
+   Use a classic token: the GitHub Packages NuGet registry does not accept fine-grained tokens.
+2. Store both values as environment variables for your user account.
+
+   On Windows, in PowerShell:
+
+   ```powershell
+   [Environment]::SetEnvironmentVariable("PIVOT_PACKAGES_USER", "<your-github-user>", "User")
+   [Environment]::SetEnvironmentVariable("PIVOT_PACKAGES_TOKEN", "<your-token>", "User")
+   ```
+
+   On macOS or Linux, add them to your shell profile, such as `~/.zshrc` or `~/.bashrc`:
+
+   ```bash
+   export PIVOT_PACKAGES_USER="<your-github-user>"
+   export PIVOT_PACKAGES_TOKEN="<your-token>"
+   ```
+
+3. Restart open terminals, your IDE, and any other tool that builds the solution; running programs do not see new
+   environment variables.
+4. Check the setup with `dotnet restore RaidManager.sln`. A missing or expired token shows as
+   "Your request could not be authenticated by the GitHub Packages service" or as `NU1301` errors.
+
+Continuous integration reads the same two names from the repository secrets, so nothing changes there.
+Renew the token before it expires, and update the variable on each machine that builds the solution.
+
+### Build, test, and run
 
 ```bash
 dotnet restore RaidManager.sln
@@ -26,7 +61,12 @@ dotnet test RaidManager.sln --no-build
 ```
 
 The executable tests cover the Domain and Application projects and, against a SQL Server container, the
-Entity Framework Core persistence. The other test projects are placeholders.
+Entity Framework Core persistence and the API. The other test projects are placeholders.
+
+Run the product through the Aspire AppHost. It generates the shared website key that the API requires
+(`Website:ServiceKey`, at least 32 characters) and passes it to the API and the website.
+
+### Change the database schema
 
 The persistence schema is managed with Entity Framework Core migrations, using the repository's local `dotnet-ef`
 tool. After changing a mapping, add a migration:
