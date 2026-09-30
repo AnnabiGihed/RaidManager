@@ -39,6 +39,8 @@ GitHub
 GraphQL
 Graphviz
 headlessly
+hotspot
+hotspots
 HTML
 HTTP
 HttpOnly

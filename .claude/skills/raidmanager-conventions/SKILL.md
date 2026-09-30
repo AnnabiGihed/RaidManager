@@ -41,7 +41,7 @@ accepted ADRs and enforced configuration win where they differ. Precedence, high
 | Indent C# and Gherkin with tabs (`csharp-regions`, `clean-code-static-analysis` R4, `gherkin-scenarios` §10) | 4 spaces for every file | `.editorconfig` + `dotnet format --verify-no-changes` in CI |
 | `PACKAGES_READ_USER` / `PACKAGES_READ_TOKEN` | `PIVOT_PACKAGES_USER` / `PIVOT_PACKAGES_TOKEN` | `nuget.config`, `ci.yml`, README |
 | Skills kit under `.claude/skills/` or `.github/skills/` | `.agents/skills/` and an identical `.claude/skills/`; apply every change to both in one commit | `AGENTS.md` |
-| SonarAnalyzer.CSharp + Meziantou.Analyzer + SonarCloud gate | .NET analyzers + StyleCop only; no SonarCloud project yet | `Directory.Build.props` (adding the others needs an ADR, `clean-code-static-analysis` R1) |
+| SonarAnalyzer.CSharp + Meziantou.Analyzer + SonarCloud gate | .NET analyzers + StyleCop in the build; SonarCloud automatic analysis, gated by the required `sonar` check (§11) | `Directory.Build.props` (adding analyzers needs an ADR, `clean-code-static-analysis` R1); ADR-0020 |
 | Azure DevOps pipelines and wiki, `::: mermaid` fences | GitHub Actions, MkDocs Material, a GitHub Wiki generated from `docs/`, fenced `mermaid` blocks | `.github/workflows/`, `mkdocs.yml`, `scripts/build_wiki.py` |
 | Keep Mermaid to the Azure DevOps subset | Still keep to that subset: it renders everywhere | `docs-diagrams-as-code` |
 | Swashbuckle via Pivot's Keycloak Swagger setup | `Microsoft.AspNetCore.OpenApi` (`AddOpenApi`), one generator only | `RaidManager.ApiService/Program.cs` |
@@ -215,3 +215,19 @@ A mockup comes before the screen, for every user interface: website, companion, 
   enforces it.
 - **Product decisions stay with the owner.** Draft layouts freely, but when a UI task depends on an open product
   question, ask it on the task instead of designing an answer. Deliberate deviations update the mockup in the same PR.
+
+## 11. SonarCloud findings (mandatory)
+
+SonarCloud analyzes every pull request, and the required `sonar` check fails it on any finding
+([ADR-0020](../../../docs/adr/0020-fail-pull-requests-on-sonarcloud-findings.md)).
+
+- **Rule:** a pull request merges with no open SonarCloud issue (bug, vulnerability or code smell, any severity) and
+  no security hotspot to review. SonarCloud's own `SonarCloud Code Analysis` check follows the default quality gate,
+  which passes code smells: never read its green status as "no findings".
+- **Check before asking for review:** `python scripts/sonar_gate.py --project AnnabiGihed_RaidManager
+  --pull-request <number> --commit <head sha>` prints each finding with its file, line and rule. Common ones in this
+  repository: a string literal repeated three or more times (`python:S1192`, name it once as a constant), and
+  `${{ }}` expressions inside `run:` (pass them through `env:`).
+- **Fix every finding in the same pull request.** Only a finding that is genuinely wrong is marked as a false
+  positive or accepted in SonarCloud, individually, with a reason naming the pull request. Never bulk-resolve.
+- **Evidence:** the `sonar` check is green on the head commit; say so in "How it was tested".
