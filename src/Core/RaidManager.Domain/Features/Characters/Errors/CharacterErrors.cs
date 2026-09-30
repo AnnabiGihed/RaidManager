@@ -11,6 +11,9 @@ namespace RaidManager.Domain.Features.Characters.Errors;
 public static class CharacterErrors
 {
     #region Static Instances
+    /// <summary>Gets the error returned when no character exists with the requested identifier.</summary>
+    public static readonly Error NotFound = new("Character.NotFound", "The character was not found.");
+
     /// <summary>Gets the error returned when the user has no claim on the character.</summary>
     public static readonly Error ClaimNotFound = new("Character.Claim.NotFound", "No claim exists for this user and character.");
 
