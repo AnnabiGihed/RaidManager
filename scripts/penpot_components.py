@@ -273,3 +273,13 @@ def companion_window(name: str, x: float, y: float, content: list[Item], *, widt
         text("App name", 42, 28, "RaidManager Companion", 13, 600),
     ])
     return Board(name, x, y, width, height, PAGE_BACKGROUND, [title_bar, *content])
+
+
+def form_field(name: str, x: float, y: float, width: float, title: str, value: str, dropdown: bool = False) -> Group:
+    """A labelled 40 px input showing its value; `dropdown` adds a chevron. `y` is the label's baseline."""
+    items: list[Item] = [text("Label", x, y, title, 12, 600, SECONDARY),
+                         Rect("Input", x, y + 10, width, 40, RAISED, 1, 8, DIVIDER),
+                         text("Value", x + 14, y + 36, value, 14)]
+    if dropdown:
+        items.append(text("Chevron", x + width - 30, y + 35, "▾", 16, 800, SECONDARY, 16, "center", icon=True))
+    return Group(name, items)

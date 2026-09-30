@@ -27,7 +27,7 @@ sys.path.insert(0, str(REPOSITORY / "scripts"))
 
 from penpot_components import (  # noqa: E402
     BOARD_GAP, BOARD_H, BOARD_W, CONTENT_TOP, CONTENT_W, CONTENT_X, PLAYER, app_screen, badge, button, card,
-    page_header,
+    form_field, page_header,
 )
 from penpot_scene import HOUSE_PALETTE, Board, Circle, Click, Group, Item, Rect, text, write_mockup  # noqa: E402
 
@@ -220,12 +220,6 @@ def profile(edited: bool) -> list[Item]:
 
 
 # 3 · Edit
-def field(name: str, x: float, y: float, width: float, title: str, value: str) -> Group:
-    return Group(name, [text("Label", x, y, title, 12, 600, SECONDARY),
-                        Rect("Input", x, y + 10, width, 40, P["Surface/raised"], 1, 8, DIVIDER),
-                        text("Value", x + 14, y + 36, value, 14)])
-
-
 def radio(name: str, x: float, y: float, title: str, detail: str, selected: bool) -> Group:
     items: list[Item] = [Rect("Area", x, y, 340, 60, P["Surface/selected"] if selected else CARD, 1, 8,
                               ACCENT if selected else DIVIDER)]
@@ -247,17 +241,17 @@ def edit() -> list[Item]:
         radio("Officers option", x1 + 20, TOP + 156, "Officers only", "Officers and raid leaders", True),
         text("Visibility note", x1 + 20, TOP + 240, "Officers always see characters that sign up for their raids.", 12,
              400, MUTED),
-        field("Note field", x1 + 20, TOP + 276, 500, "Note", "Main. Prefers Frost; can tank Blood."),
-        field("Frost label field", x1 + 20, TOP + 356, 500, "Label for loadout 1 (Frost, 0/53/18)", "Frost DPS"),
-        field("Blood label field", x1 + 20, TOP + 436, 500, "Label for loadout 2 (Blood, 51/10/10)", BLOOD),
+        form_field("Note field", x1 + 20, TOP + 276, 500, "Note", "Main. Prefers Frost; can tank Blood."),
+        form_field("Frost label field", x1 + 20, TOP + 356, 500, "Label for loadout 1 (Frost, 0/53/18)", "Frost DPS"),
+        form_field("Blood label field", x1 + 20, TOP + 436, 500, "Label for loadout 2 (Blood, 51/10/10)", BLOOD),
     ]
     right: list[Item] = [
         *card(x2, TOP, 560, 324), *card_title(x2, TOP, "Add what the addon can't see",
                                              "Your additions are marked player-reported."),
-        field("Profession field", x2 + 20, TOP + 92, 360, "Profession", "Jewelcrafting"),
-        field("Skill field", x2 + 396, TOP + 92, 144, "Skill", "450"),
-        field("Instance field", x2 + 20, TOP + 188, 360, "Raid save", "Ruby Sanctum"),
-        field("Difficulty field", x2 + 396, TOP + 188, 144, "Difficulty", TWENTY_FIVE),
+        form_field("Profession field", x2 + 20, TOP + 92, 360, "Profession", "Jewelcrafting"),
+        form_field("Skill field", x2 + 396, TOP + 92, 144, "Skill", "450"),
+        form_field("Instance field", x2 + 20, TOP + 188, 360, "Raid save", "Ruby Sanctum"),
+        form_field("Difficulty field", x2 + 396, TOP + 188, 144, "Difficulty", TWENTY_FIVE),
         text("Save rule line 1", x2 + 20, TOP + 280, "A reported raid save never replaces or removes one the companion", 12,
              400, MUTED),
         text("Save rule line 2", x2 + 20, TOP + 298, "synced, and it doesn't make a character available for a raid.", 12,

@@ -12,7 +12,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from penpot_components import (  # noqa: E402
     AVATAR_TONES, BADGE_TONES, BOARD_H, BOARD_W, BUTTON_STYLES, NOTICE_TONES, OFFICER_PAGES, PLAYER, PLAYER_PAGES,
-    PUBLIC_W, PUBLIC_X, WINDOW_H, WINDOW_W, app_screen, companion_window, badge, button, notice, page_header, public_screen,
+    PUBLIC_W, PUBLIC_X, WINDOW_H, WINDOW_W, app_screen, companion_window, form_field, badge, button, notice, page_header, public_screen,
 )
 from penpot_render import is_current, render  # noqa: E402
 from penpot_scene import (  # noqa: E402
@@ -327,6 +327,13 @@ class ComponentTests(unittest.TestCase):
         write_penpot(self.path, "window", "Window", [board])
         wide = companion_window("2 · Wide", 0, 0, [], width=560, height=680)
         self.assertEqual((wide.w, wide.h), (560, 680))
+
+    def test_form_fields_show_a_label_and_value_and_drop_downs_a_chevron(self) -> None:
+        plain = form_field("Title field", 300, 200, 400, "Title", "Icecrown Citadel")
+        choice = form_field("Size field", 300, 280, 200, "Size", "25 players", dropdown=True)
+        self.assertEqual(layer_names(plain.children), ["Label", "Input", "Value"])
+        self.assertIn("Chevron", layer_names(choice.children))
+        write_penpot(self.path, "fields", "Fields", [app_screen("1 · Form", 0, 0, "Schedule", [plain, choice])])
 
     def test_signed_out_pages_have_the_logo_but_no_shell(self) -> None:
         board = public_screen("1 · Signed out", 0, 0, [text("Title", PUBLIC_X, 240, "Sign in", 18, 700)])
