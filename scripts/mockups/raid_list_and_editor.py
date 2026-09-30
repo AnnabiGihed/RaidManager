@@ -27,8 +27,8 @@ REPOSITORY = Path(__file__).resolve().parents[2]
 sys.path.insert(0, str(REPOSITORY / "scripts"))
 
 from penpot_components import (  # noqa: E402
-    BOARD_GAP, BOARD_H, BOARD_W, CONTENT_TOP, CONTENT_W, CONTENT_X, app_screen, badge, button, card, form_field,
-    notice, page_header,
+    BOARD_GAP, BOARD_H, BOARD_W, CONTENT_TOP, CONTENT_W, CONTENT_X, app_screen, badge, button, card, checkbox,
+    form_field, notice, page_header,
 )
 from penpot_scene import HOUSE_PALETTE, Board, Click, Group, Item, Rect, text, write_mockup  # noqa: E402
 
@@ -162,9 +162,7 @@ def raid_form(top: float, editing: bool) -> list[Item]:
         form_field("Gear score field", right_x + 20, requirements_top + 76, 250, "Minimum GearScore", "5,500"),
         form_field("Data age field", right_x + 290, requirements_top + 76, 250, "Character data no older than", "3 days",
                    True),
-        Rect("Checkbox", right_x + 20, requirements_top + 144, 18, 18, ACCENT, 1, 4),
-        text("Check mark", right_x + 20, requirements_top + 158, "✓", 12, 800, P["Brand/on accent"], 18, "center",
-             icon=True),
+        *checkbox(right_x + 20, requirements_top + 144, True),
         text("Checkbox label", right_x + 48, requirements_top + 158, "Only characters without a save for these targets",
              13),
     ]

@@ -12,7 +12,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from penpot_components import (  # noqa: E402
     AVATAR_TONES, BADGE_TONES, BOARD_H, BOARD_W, BUTTON_STYLES, NOTICE_TONES, OFFICER_PAGES, PLAYER, PLAYER_PAGES,
-    PUBLIC_W, PUBLIC_X, WINDOW_H, WINDOW_W, app_screen, companion_window, form_field, badge, button, notice, page_header, public_screen,
+    PUBLIC_W, PUBLIC_X, WINDOW_H, WINDOW_W, app_screen, checkbox, companion_window, form_field, badge, button, notice, page_header, public_screen,
 )
 from penpot_render import is_current, render  # noqa: E402
 from penpot_scene import (  # noqa: E402
@@ -334,6 +334,13 @@ class ComponentTests(unittest.TestCase):
         self.assertEqual(layer_names(plain.children), ["Label", "Input", "Value"])
         self.assertIn("Chevron", layer_names(choice.children))
         write_penpot(self.path, "fields", "Fields", [app_screen("1 · Form", 0, 0, "Schedule", [plain, choice])])
+
+    def test_checkboxes_show_a_mark_only_when_checked(self) -> None:
+        self.assertEqual([item.name for item in checkbox(300, 200, True)], ["Checkbox", "Check mark"])
+        self.assertEqual([item.name for item in checkbox(300, 240, False)], ["Checkbox"])
+        write_penpot(self.path, "boxes", "Boxes",
+                     [app_screen("1 · Boxes", 0, 0, "Schedule", [Group("On", checkbox(300, 200, True)),
+                                                                   Group("Off", checkbox(300, 240, False))])])
 
     def test_signed_out_pages_have_the_logo_but_no_shell(self) -> None:
         board = public_screen("1 · Signed out", 0, 0, [text("Title", PUBLIC_X, 240, "Sign in", 18, 700)])
