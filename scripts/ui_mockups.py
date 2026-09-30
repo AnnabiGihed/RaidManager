@@ -2,7 +2,8 @@
 
 - Issues: an item labelled `ui` links or shows its mockup. The hierarchy workflow flags it `needs-mockup` otherwise.
 - Pull requests: a pull request that changes UI files shows its mockup, or states "No visual change:" with a reason.
-- Folder: `docs/mockups/` holds each screen's `.penpot` source next to its exported `.svg`.
+- Folder: `docs/mockups/` holds each screen's `.penpot` source next to the SVG rendered from it (ADR-0018), and no
+  `.penpot` or `.svg` file lives anywhere else, such as the repository root.
 """
 
 from __future__ import annotations
@@ -13,6 +14,8 @@ import re
 import subprocess
 import sys
 from pathlib import Path, PurePosixPath
+
+from penpot_render import is_current
 
 
 UI_LABEL = "ui"
@@ -26,6 +29,10 @@ UI_SUFFIXES = (".razor", ".razor.css", ".css", ".html", ".lua", ".toc")
 UI_FOLDERS = ("src/Containers/UI/", "addon/")
 MOCKUP_SUFFIXES = (".penpot", ".svg")
 MAX_LISTED_FILES = 5
+# SVGs belong to the documentation (diagrams and mockups) or a web project's static assets; nothing else.
+SVG_FOLDERS = ("docs/",)
+SVG_ASSET_SEGMENT = "/wwwroot/"
+SKIPPED_FOLDERS = frozenset({".git", "bin", "obj", "node_modules", "TestResults", "site", ".venv", ".vs"})
 
 
 def mockup_references(text: str) -> list[str]:
@@ -75,21 +82,50 @@ def pull_request_problems(body: str, changed: list[str], root: Path) -> list[str
     return [f"The mockup `{path}` isn't in the repository; commit it with its `.penpot` source." for path in missing]
 
 
+def repository_files(root: Path, suffixes: tuple[str, ...]) -> list[Path]:
+    """Lists the working-tree files with the suffixes, skipping build output and tool folders."""
+    found: list[Path] = []
+    if not root.is_dir():
+        return found
+    for path in root.iterdir():
+        if path.name in SKIPPED_FOLDERS:
+            continue
+        if path.is_dir():
+            found += [item for item in path.rglob("*") if item.is_file() and item.name.endswith(suffixes)
+                      and not SKIPPED_FOLDERS.intersection(item.relative_to(root).parts)]
+        elif path.name.endswith(suffixes):
+            found.append(path)
+    return found
+
+
+def placement_problems(root: Path) -> list[str]:
+    """Rejects mockup files outside docs/mockups, and SVG files outside the documentation or web assets."""
+    problems: list[str] = []
+    for path in repository_files(root, MOCKUP_SUFFIXES):
+        relative = path.relative_to(root).as_posix()
+        if path.suffix == ".penpot" and not relative.startswith(f"{MOCKUP_FOLDER}/"):
+            problems.append(f"{relative}: Penpot files live only in {MOCKUP_FOLDER}/")
+        elif path.suffix == ".svg" and not relative.startswith(SVG_FOLDERS) and SVG_ASSET_SEGMENT not in f"/{relative}":
+            problems.append(f"{relative}: SVG files live only in docs/ (mockups and diagrams) or a web project's wwwroot/")
+    return problems
+
+
 def folder_problems(root: Path) -> list[str]:
-    """Checks that every mockup export has its Penpot source and every source its export."""
+    """Checks the mockup folder: each `.penpot` has its SVG, each SVG is the current rendering of its `.penpot`."""
+    problems = placement_problems(root)
     folder = root / MOCKUP_FOLDER
     if not folder.is_dir():
-        return []
-    problems: list[str] = []
-    files = [path for path in folder.rglob("*") if path.is_file()]
-    for path in files:
+        return problems
+    for path in sorted(item for item in folder.rglob("*") if item.is_file()):
         relative = path.relative_to(root).as_posix()
         if not path.name.endswith(MOCKUP_SUFFIXES):
-            problems.append(f"{relative}: {MOCKUP_FOLDER} holds only .penpot sources and their .svg exports")
+            problems.append(f"{relative}: {MOCKUP_FOLDER} holds only .penpot sources and the SVGs rendered from them")
         elif path.suffix == ".svg" and not path.with_suffix(".penpot").is_file():
             problems.append(f"{relative}: missing its Penpot source {path.with_suffix('.penpot').name}")
         elif path.suffix == ".penpot" and not path.with_suffix(".svg").is_file():
-            problems.append(f"{relative}: missing its SVG export {path.with_suffix('.svg').name}")
+            problems.append(f"{relative}: missing its SVG; run python scripts/penpot_render.py {relative}")
+        elif path.suffix == ".penpot" and not is_current(path):
+            problems.append(f"{relative}: its SVG isn't the current rendering; run python scripts/penpot_render.py {relative}")
     return problems
 
 

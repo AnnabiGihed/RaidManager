@@ -38,6 +38,7 @@ nav:
       - Coverage gate: adr/0015-gate-pull-requests-on-test-coverage.md
       - Work item hierarchy: adr/0016-epic-feature-story-task-hierarchy.md
       - Penpot mockups: adr/0017-penpot-mockups-for-ui-work.md
+      - Generated Penpot mockups: adr/0018-generate-penpot-mockups-in-the-repository.md
 theme:
   name: material
 markdown_extensions:

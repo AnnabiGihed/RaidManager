@@ -183,16 +183,23 @@ delivery sequence; these rules override the ticket rules of `pr-and-branching-st
 ## 10. UI mockups in Penpot (mandatory)
 
 Penpot is the only UI design tool ([ADR-0017](../../../docs/adr/0017-penpot-mockups-for-ui-work.md),
-`docs/how-to/design-a-screen.md`). A mockup comes before the screen, for every user interface: website, companion,
-addon and Discord messages.
+[ADR-0018](../../../docs/adr/0018-generate-penpot-mockups-in-the-repository.md), `docs/how-to/design-a-screen.md`).
+A mockup comes before the screen, for every user interface: website, companion, addon and Discord messages. The
+`penpot-mockups` skill holds the full workflow.
 
-- **Files:** each screen is `docs/mockups/<screen>.penpot` (source) plus `docs/mockups/<screen>.svg` (export),
-  committed together; `validate_docs.py` fails on half a pair or any other file in that folder. Never hand-edit the
-  SVG, and never commit a mockup from another tool.
+- **Files:** each screen is `docs/mockups/<screen>.penpot` (source) plus `docs/mockups/<screen>.svg`, rendered from it
+  by `python scripts/penpot_render.py`. Commit them together. `validate_docs.py` fails on half a pair, on an SVG that
+  isn't the current rendering, on any other file in that folder, and on any `.penpot` or `.svg` outside
+  `docs/mockups/` (or `docs/` and `wwwroot/` for other SVGs). **Never put a mockup in the repository root** or any
+  other folder; scratch files stay in your scratchpad.
+- **Generate, then render:** draft a screen as `scripts/mockups/<screen_name>.py` with `scripts/penpot_scene.py`, run
+  it to write the `.penpot` and its SVG, then have the owner import the `.penpot` in Penpot and confirm it. When the
+  owner edits the design in Penpot, their downloaded `.penpot` replaces the generated one; re-render the SVG.
+- **Use it in the story:** show the SVG in the user story (or improvement or bug), its UI task and the pull request.
 - **Work items:** every UI item carries `ui` and links or shows its mockup; `needs-mockup` marks those that don't.
   Epics and features list their stories' mockups.
 - **Pull requests:** a change to `src/Containers/UI/`, `addon/`, `.razor`, `.css`, `.html`, `.lua` or `.toc` files
   shows its mockup or states `No visual change: <reason>`; the docs `validate` check (`scripts/ui_mockups.py`)
   enforces it.
-- **The agent can't design in Penpot** (it needs the owner's account). When a UI task has no mockup, stop and ask the
-  owner for it; don't invent a layout. Deliberate deviations update the mockup in the same PR.
+- **Product decisions stay with the owner.** Draft layouts freely, but when a UI task depends on an open product
+  question, ask it on the task instead of designing an answer. Deliberate deviations update the mockup in the same PR.

@@ -9,6 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- UI mockups are generated in the repository as native Penpot files with editable text, and each mockup's SVG is
+  rendered from its `.penpot` file. The docs check fails on a stale SVG, or on a mockup outside `docs/mockups/`. A new
+  `penpot-mockups` skill holds the workflow (ADR-0018) (#169).
 - Penpot is the UI design tool, and every item or pull request that changes what users see must show its mockup from
   `docs/mockups/`. Issue forms ask about user-interface impact; the hierarchy workflow labels UI items without a
   mockup `needs-mockup`, and the docs check keeps each mockup's source and export together (ADR-0017) (#165).

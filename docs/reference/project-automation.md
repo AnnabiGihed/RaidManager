@@ -38,7 +38,8 @@ personal token or repository secret.
 
 Every item that changes what users see carries the `ui` label and links or shows its Penpot mockup
 ([ADR-0017](../adr/0017-penpot-mockups-for-ui-work.md), [how to design a screen](../how-to/design-a-screen.md)). A
-mockup is an exported `docs/mockups/<screen>.svg` shown as an image or link, or a Penpot share link. The issue forms
+mockup is `docs/mockups/<screen>.svg`, rendered from its `.penpot` file, shown as an image or link, or a Penpot
+share link ([ADR-0018](../adr/0018-generate-penpot-mockups-in-the-repository.md)). The issue forms
 ask **User interface**, and answering yes adds the `ui` label. The hierarchy workflow labels a `ui` item without a
 mockup `needs-mockup`, with one comment, and removes the label once the mockup is linked. A pull request that changes
 user-interface files must show its mockup, or state `No visual change:` with a reason.
