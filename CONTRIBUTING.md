@@ -77,7 +77,11 @@ From the solution root, run `dotnet restore RaidManager.sln`, `dotnet build Raid
 
 The `v1.0` milestone tracks the first usable release; it is not a release by itself. After its stories and checks
 pass, the owner approves a release, assigns a Semantic Versioning number, dates the changelog section, and tags it.
-Documentation publishes from `main` after every merge, independently of application releases.
+Documentation publishes from `main` after every merge, independently of application releases: to the
+[GitHub Pages site](https://annabigihed.github.io/RaidManager/) and to the
+[GitHub Wiki](https://github.com/AnnabiGihed/RaidManager/wiki). Both are generated from `docs/`. Never edit the wiki
+directly; the next merge overwrites it ([ADR-0014](docs/adr/0014-mirror-documentation-to-the-github-wiki.md)). Every
+document starts with its `#` title and appears in the `mkdocs.yml` navigation, which also builds the wiki sidebar.
 
 ## Security
 
