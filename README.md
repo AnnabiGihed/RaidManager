@@ -66,6 +66,16 @@ Entity Framework Core persistence and the API. The other test projects are place
 Run the product through the Aspire AppHost. It generates the shared website key that the API requires
 (`Website:ServiceKey`, at least 32 characters) and passes it to the API and the website.
 
+- **Visual Studio:** set `RaidManager.AppHost` as the startup project (right-click it, then **Set as Startup
+  Project**), choose the `https` profile, and start it. Starting another project on its own fails for lack of the
+  secrets the AppHost provides.
+- **Command line:** `dotnet run --project src/Containers/Aspire/Hosting/RaidManager.AppHost`.
+
+Docker Desktop must be running. The browser opens the Aspire dashboard at `https://localhost:17190`; the console
+window only shows logs. Wait until `sql`, `api`, and `web` show **Running**. The first run downloads the SQL Server
+image, which takes a few minutes, and the API then creates the database schema. The website is at
+`https://localhost:55365`.
+
 ### Sign in with Discord locally
 
 The website signs players in with the Discord application's OAuth2 credentials. Store them in the Aspire AppHost's
