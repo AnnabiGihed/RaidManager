@@ -6,15 +6,14 @@ Follow the mandatory [GitHub Project workflow](.agents/skills/raidmanager-github
 Story development requires an accepted story and a child task with measurable acceptance criteria before branching
 or implementation. Complete the task through its own issue-linked pull request.
 
-An epic stays open and outside `Done` until it has at least one native child story, all child stories are closed
-and `Done`, and its exit criteria are met. A story stays open and outside `Done` until it has at least one native
-child work item, all child work items are closed and `Done`, and its acceptance criteria are evidenced. Tasks,
-bugs, and spikes count as work items. The [hierarchy workflow](.github/workflows/project-hierarchy.yml) reopens
-invalid closures and audits them every 15 minutes using GitHub Actions' built-in repository permissions. No
-personal token or repository secret is required. The Project's built-in workflows cannot verify child completion
-or reset a manually changed `Done` status. If an invalid parent remains `Done` after its issue is reopened,
-find it in the [Status exceptions](https://github.com/users/AnnabiGihed/projects/2/views/5) view and move its
-Project status back to `In Progress`.
+An epic stays open and outside `Done` until it has at least one native child story completed, all child stories
+are closed, and its exit criteria are met. A story stays open and outside `Done` until it has at least one native
+child work item completed, all child work items are closed, and its acceptance criteria are evidenced. Tasks,
+bugs, and spikes count as work items. A parent closed as *not planned* or *duplicate* is abandoned and exempt.
+The [hierarchy workflow](.github/workflows/project-hierarchy.yml) reopens an invalid closure, and its parent and
+grandparent, with GitHub Actions' built-in permissions. The Project's built-in workflows then move the item back to
+`In Progress`. No personal token, repository secret or manual status correction is involved. See
+[Project automation](docs/reference/project-automation.md) for the rule and the one-time Project setting.
 
 ## Branching
 
