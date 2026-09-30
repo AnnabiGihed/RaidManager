@@ -1,0 +1,117 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3120" height="2040" viewBox="-80 -80 3120 2040">
+<title>Sign-in (rendered from sign-in.penpot)</title>
+<rect x="-80" y="-80" width="3120" height="2040" fill="#e8e8e8"/>
+<text x="0" y="-14" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">1 · Signed out</text>
+<clipPath id="clip1"><rect x="0" y="0" width="1440" height="900"/></clipPath>
+<rect x="0" y="0" width="1440" height="900" fill="#0b111c"/>
+<g clip-path="url(#clip1)">
+<rect x="628" y="120" width="32" height="32" rx="8" fill="#0c2931"/>
+<rect x="636" y="128" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="670" y="142" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#eff5fa" text-anchor="start" letter-spacing="0.5">RAID</text>
+<text x="712" y="142" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#5de0c1" text-anchor="start" letter-spacing="0.5">MANAGER</text>
+<text x="720" y="236" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#eff5fa" text-anchor="middle">Plan raids with your characters</text>
+<text x="720" y="268" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="400" fill="#9eadc1" text-anchor="middle">Raid signups, rosters and readiness for your Discord community.</text>
+<rect x="480.5" y="312.5" width="479" height="199" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="504" y="356" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#eff5fa" text-anchor="start">Sign in to continue</text>
+<text x="504" y="388" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">RaidManager uses your Discord account. It gets your Discord</text>
+<text x="504" y="408" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">name and avatar, never your password.</text>
+<rect x="504" y="448" width="432" height="40" rx="8" fill="#5de0c1"/>
+<text x="720" y="473" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#102830" text-anchor="middle">Sign in with Discord</text>
+<text x="720" y="548" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="middle">Your first sign-in creates your RaidManager account.</text>
+</g>
+<text x="1520" y="-14" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">2 · Signed in</text>
+<clipPath id="clip2"><rect x="1520" y="0" width="1440" height="900"/></clipPath>
+<rect x="1520" y="0" width="1440" height="900" fill="#0b111c"/>
+<g clip-path="url(#clip2)">
+<rect x="1520" y="0" width="240" height="900" fill="#0f1825"/>
+<rect x="1759" y="0" width="1" height="900" fill="#2b3b50"/>
+<rect x="1540" y="16" width="32" height="32" rx="8" fill="#0c2931"/>
+<rect x="1548" y="24" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="1582" y="38" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#eff5fa" text-anchor="start" letter-spacing="0.5">RAID</text>
+<text x="1624" y="38" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#5de0c1" text-anchor="start" letter-spacing="0.5">MANAGER</text>
+<rect x="1536.5" y="68.5" width="207" height="59" rx="10" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<rect x="1548" y="82" width="32" height="32" rx="8" fill="#9077b3"/>
+<text x="1564" y="102" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#0b111c" text-anchor="middle">CV</text>
+<text x="1590" y="95" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Citadel Vanguard</text>
+<text x="1590" y="114" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Icecrown · Community</text>
+<text x="1544" y="164" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">PLAYER</text>
+<rect x="1532" y="176" width="216" height="36" rx="8" fill="#1b4548"/>
+<rect x="1532" y="184" width="3" height="20" rx="2" fill="#5de0c1"/>
+<ellipse cx="1554" cy="194" rx="4" ry="4" fill="#5de0c1"/>
+<text x="1570" y="199" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#5de0c1" text-anchor="start">Overview</text>
+<rect x="1532" y="216" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="234" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="239" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Raids</text>
+<rect x="1532" y="256" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="274" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="279" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">My characters</text>
+<rect x="1532" y="296" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="314" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="319" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Readiness</text>
+<rect x="1532" y="336" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="354" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="359" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Companion &amp; sync</text>
+<rect x="1520" y="828" width="239" height="1" fill="#2b3b50"/>
+<ellipse cx="1556" cy="864" rx="16" ry="16" fill="#293d58"/>
+<text x="1556" y="868" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#8fb3f6" text-anchor="middle">BV</text>
+<text x="1582" y="860" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Bryn Valewood</text>
+<text x="1582" y="879" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Player</text>
+<rect x="1760" y="0" width="1200" height="64" fill="#111c2a"/>
+<rect x="1760" y="63" width="1200" height="1" fill="#2b3b50"/>
+<text x="1800" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">CITADEL VANGUARD</text>
+<text x="1934.3" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">/</text>
+<text x="1950.3" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#eff5fa" text-anchor="start" letter-spacing="1.2">OVERVIEW</text>
+<ellipse cx="2644" cy="32" rx="4" ry="4" fill="#5de0c1"/>
+<text x="2656" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.2">REALM ONLINE</text>
+<ellipse cx="2792" cy="32" rx="16" ry="16" fill="#293d58"/>
+<text x="2792" y="36" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#8fb3f6" text-anchor="middle">BV</text>
+<rect x="2824.5" y="12.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2872" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Sign out</text>
+<text x="1800" y="118" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.5">SIGNED IN</text>
+<text x="1800" y="160" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#eff5fa" text-anchor="start">Welcome, Bryn Valewood</text>
+<text x="1800" y="190" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="400" fill="#9eadc1" text-anchor="start">Your characters and raids will appear here.</text>
+<rect x="1800.5" y="224.5" width="479" height="87" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<ellipse cx="1848" cy="268" rx="20" ry="20" fill="#293d58"/>
+<text x="1848" y="272" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#8fb3f6" text-anchor="middle">BV</text>
+<text x="1884" y="264" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#eff5fa" text-anchor="start">Bryn Valewood</text>
+<text x="1884" y="284" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Signed in with Discord</text>
+</g>
+<text x="0" y="966" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">3 · Sign-in cancelled</text>
+<clipPath id="clip3"><rect x="0" y="980" width="1440" height="900"/></clipPath>
+<rect x="0" y="980" width="1440" height="900" fill="#0b111c"/>
+<g clip-path="url(#clip3)">
+<rect x="628" y="1100" width="32" height="32" rx="8" fill="#0c2931"/>
+<rect x="636" y="1108" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="670" y="1122" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#eff5fa" text-anchor="start" letter-spacing="0.5">RAID</text>
+<text x="712" y="1122" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#5de0c1" text-anchor="start" letter-spacing="0.5">MANAGER</text>
+<rect x="480.5" y="1292.5" width="479" height="219" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<rect x="480" y="1304" width="4" height="196" rx="2" fill="#f3be75"/>
+<text x="512" y="1336" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#eff5fa" text-anchor="start">Sign-in cancelled</text>
+<text x="512" y="1368" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Discord did not share your account with RaidManager, so</text>
+<text x="512" y="1388" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">you are not signed in. Sign in again and choose Authorize</text>
+<text x="512" y="1408" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">to continue.</text>
+<rect x="512" y="1448" width="120" height="40" rx="8" fill="#5de0c1"/>
+<text x="572" y="1473" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#102830" text-anchor="middle">Try again</text>
+<rect x="640.5" y="1448.5" width="135" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="708" y="1473" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Back to home</text>
+</g>
+<text x="1520" y="966" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">4 · Sign-in did not complete</text>
+<clipPath id="clip4"><rect x="1520" y="980" width="1440" height="900"/></clipPath>
+<rect x="1520" y="980" width="1440" height="900" fill="#0b111c"/>
+<g clip-path="url(#clip4)">
+<rect x="2148" y="1100" width="32" height="32" rx="8" fill="#0c2931"/>
+<rect x="2156" y="1108" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="2190" y="1122" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#eff5fa" text-anchor="start" letter-spacing="0.5">RAID</text>
+<text x="2232" y="1122" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#5de0c1" text-anchor="start" letter-spacing="0.5">MANAGER</text>
+<rect x="2000.5" y="1292.5" width="479" height="219" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<rect x="2000" y="1304" width="4" height="196" rx="2" fill="#f2878c"/>
+<text x="2032" y="1336" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#eff5fa" text-anchor="start">Sign-in did not complete</text>
+<text x="2032" y="1368" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Something went wrong while signing you in with Discord,</text>
+<text x="2032" y="1388" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">and you are not signed in. This is usually temporary;</text>
+<text x="2032" y="1408" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">please try again.</text>
+<rect x="2032" y="1448" width="120" height="40" rx="8" fill="#5de0c1"/>
+<text x="2092" y="1473" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#102830" text-anchor="middle">Try again</text>
+<rect x="2160.5" y="1448.5" width="135" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2228" y="1473" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Back to home</text>
+</g>
+</svg>

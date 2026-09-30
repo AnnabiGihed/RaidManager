@@ -12,7 +12,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from penpot_components import (  # noqa: E402
     AVATAR_TONES, BADGE_TONES, BOARD_H, BOARD_W, BUTTON_STYLES, NOTICE_TONES, OFFICER_PAGES, PLAYER, PLAYER_PAGES,
-    app_screen, badge, button, notice, page_header,
+    PUBLIC_W, PUBLIC_X, app_screen, badge, button, notice, page_header, public_screen,
 )
 from penpot_render import is_current, render  # noqa: E402
 from penpot_scene import (  # noqa: E402
@@ -300,6 +300,20 @@ class ComponentTests(unittest.TestCase):
         for background, _, title, body, icon, mark, _ in NOTICE_TONES.values():
             self.assertGreaterEqual(min(contrast_ratio(title, background), contrast_ratio(body, background)), 4.5)
             self.assertGreaterEqual(contrast_ratio(mark, icon), 3)
+
+    def test_sign_out_is_in_the_top_bar_and_links_where_asked(self) -> None:
+        linked = find(app_screen("1 · A", 0, 0, "Raids", [], sign_out="2 · Signed out").children, "Sign out button")
+        self.assertEqual(linked.on_click, Click("navigate", "2 · Signed out"))
+        self.assertIsNone(find(app_screen("1 · A", 0, 0, "Raids", []).children, "Sign out button").on_click)
+
+    def test_signed_out_pages_have_the_logo_but_no_shell(self) -> None:
+        board = public_screen("1 · Signed out", 0, 0, [text("Title", PUBLIC_X, 240, "Sign in", 18, 700)])
+        names = layer_names(board.children)
+        self.assertIn("Logo", names)
+        self.assertNotIn("Sidebar", names)
+        self.assertNotIn("Top bar", names)
+        self.assertEqual(PUBLIC_X * 2 + PUBLIC_W, BOARD_W)
+        write_penpot(self.path, "public", "Public", [board])
 
     def test_buttons_fit_their_label_unless_given_a_width(self) -> None:
         def width(group: Group) -> float:

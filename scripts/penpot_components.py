@@ -1,9 +1,10 @@
 """RaidManager's app shell and shared components for mockups, drawn with the scene model (ADR-0019).
 
 Every website screen is an `app_screen`: a 1440 x 900 board with the sidebar (logo, community card, the Player and
-Officer navigation, the signed-in user), the top bar (breadcrumb, realm status, avatar) and the screen's own content
-in the content area. The components (`page_header`, `card`, `button`, `badge`, `avatar`, `notice`) draw the same
-parts the same way on every screen. All colours come from `HOUSE_PALETTE`.
+Officer navigation, the signed-in user), the top bar (breadcrumb, realm status, avatar, Sign out) and the screen's
+own content in the content area. Signed-out pages (sign-in and its failures) are a `public_screen` instead: the logo
+above a centred column, without the shell. The components (`page_header`, `card`, `button`, `badge`, `avatar`,
+`notice`) draw the same parts the same way on every screen. All colours come from `HOUSE_PALETTE`.
 
     from penpot_components import CONTENT_X, CONTENT_TOP, app_screen, button, page_header
     board = app_screen("1 · Filled", 0, 0, "My characters", [page_header(...), button(...)])
@@ -25,6 +26,7 @@ MUTED = P["Text/muted"]
 DIVIDER = P["Line/divider"]
 BLUE = P["Accent/blue"]
 DANGER_TEXT = P["Status/danger text"]
+PAGE_BACKGROUND = P["Surface/page"]
 BOARD_W, BOARD_H = 1440, 900
 SIDEBAR_W, TOP_BAR_H = 240, 64
 CONTENT_X, CONTENT_TOP = SIDEBAR_W + 40, TOP_BAR_H + 40
@@ -33,6 +35,10 @@ BOARD_GAP = 80
 PLAYER_PAGES = ("Overview", "Raids", "My characters", "Readiness", "Companion & sync")
 OFFICER_PAGES = ("Schedule", "Roster builder", "Raid night")
 NAV_TOP, NAV_ITEM_H, NAV_ITEM_GAP = 176, 36, 4
+SIGN_OUT_W = 96
+# Signed-out pages (sign-in and its failures) are centred, without the app shell (ADR-0019).
+PUBLIC_W = 480
+PUBLIC_X = (BOARD_W - PUBLIC_W) / 2
 # (fill, text) per tone; the text passes WCAG AA on the fill.
 BADGE_TONES = {
     "warning": (P["Status/warning background"], P["Status/warning title"]),
@@ -117,7 +123,7 @@ def sidebar(active: str, community: Community, user: User, links: dict[str, str]
         Group("Community card", [
             Rect("Background", 16, 68, SIDEBAR_W - 32, 60, P["Surface/card"], 1, 10, P["Line/card border"]),
             Rect("Icon", 28, 82, 32, 32, P["Community/icon"], 1, 8),
-            text("Initials", 28, 102, community.initials, 12, 800, P["Surface/page"], 32, "center"),
+            text("Initials", 28, 102, community.initials, 12, 800, PAGE_BACKGROUND, 32, "center"),
             text("Name", 70, 95, community.name, 14, 600),
             text("Realm", 70, 114, f"{community.realm} · Community", 12, 400, MUTED),
         ]),
@@ -141,13 +147,15 @@ def sidebar(active: str, community: Community, user: User, links: dict[str, str]
     return Group("Sidebar", items)
 
 
-def top_bar(community: Community, page: str, user: User) -> Group:
-    """The top bar: breadcrumb (community / page), realm status and the user's avatar."""
+def top_bar(community: Community, page: str, user: User, sign_out: Click | None = None) -> Group:
+    """The top bar: breadcrumb (community / page), realm status, the user's avatar and Sign out."""
     width = BOARD_W - SIDEBAR_W
     crumb = text("Community", CONTENT_X, 37, community.name.upper(), 11, 700, MUTED, None, "left", 1.2)
     slash = text("Separator", CONTENT_X + text_width(crumb) + 4, 37, "/", 11, 700, MUTED, None, "left", 1.2)
     current = text("Page", slash.x + 16, 37, page.upper(), 11, 700, TEXT, None, "left", 1.2)
-    status_x = BOARD_W - 196
+    sign_out_x = BOARD_W - 40 - SIGN_OUT_W
+    avatar_x = sign_out_x - 16 - 16
+    status_x = avatar_x - 16 - 132
     return Group("Top bar", [
         Rect("Background", SIDEBAR_W, 0, width, TOP_BAR_H, P["Surface/top bar"]),
         Rect("Divider", SIDEBAR_W, TOP_BAR_H - 1, width, 1, DIVIDER),
@@ -155,20 +163,23 @@ def top_bar(community: Community, page: str, user: User) -> Group:
         Group("Realm status", [Circle("Dot", status_x, 32, 4, ACCENT),
                                text("Label", status_x + 12, 37, "REALM ONLINE", 11, 700, ACCENT, None,
                                     "left", 1.2)]),
-        avatar("Avatar", BOARD_W - 56, 32, user.initials, user.tone),
+        avatar("Avatar", avatar_x, 32, user.initials, user.tone),
+        button("Sign out button", sign_out_x, 12, "Sign out", "secondary", SIGN_OUT_W, sign_out),
     ])
 
 
 def app_screen(name: str, x: float, y: float, page: str, content: list[Item], *, section: str | None = None,
                community: Community = Community(), user: User = OFFICER,
-               links: dict[str, str] | None = None) -> Board:
+               links: dict[str, str] | None = None, sign_out: str | None = None) -> Board:
     """A website screen: the app shell with `page` active in the navigation, and `content` in the content area.
 
     `section` names the page in the breadcrumb when it differs from the navigation entry; `links` maps navigation
-    entries to boards, for the prototype.
+    entries to boards, and `sign_out` names the board Sign out leads to, for the prototype.
     """
-    shell: list[Item] = [sidebar(page, community, user, links or {}), top_bar(community, section or page, user)]
-    return Board(name, x, y, BOARD_W, BOARD_H, P["Surface/page"], shell + content)
+    sign_out_click = Click("navigate", sign_out) if sign_out else None
+    shell: list[Item] = [sidebar(page, community, user, links or {}),
+                         top_bar(community, section or page, user, sign_out_click)]
+    return Board(name, x, y, BOARD_W, BOARD_H, PAGE_BACKGROUND, shell + content)
 
 
 def page_header(eyebrow: str, title: str, subtitle: str, x: float = CONTENT_X, y: float = CONTENT_TOP) -> Group:
@@ -216,3 +227,16 @@ def notice(name: str, x: float, y: float, w: float, title: str, body: str, tone:
         text("Title", x + 60, y + 31, title, 14, 600, title_colour),
         text("Body", x + 60, y + 53, body, 13, 400, body_colour),
     ])
+
+
+def public_screen(name: str, x: float, y: float, content: list[Item]) -> Board:
+    """A signed-out page: the logo centred above a 480 px column, without the app shell (ADR-0019).
+
+    `content` is placed from `PUBLIC_X` and 200 px down, at most `PUBLIC_W` wide.
+    """
+    logo_x = (BOARD_W - 184) / 2
+    logo = Group("Logo", [Rect("Tile", logo_x, 120, 32, 32, P["Brand/logo tile"], 1, 8),
+                          Rect("Mark", logo_x + 8, 128, 16, 16, ACCENT, 1, 4),
+                          text("Raid", logo_x + 42, 142, "RAID", 16, 800, TEXT, None, "left", 0.5),
+                          text("Manager", logo_x + 84, 142, "MANAGER", 16, 800, ACCENT, None, "left", 0.5)])
+    return Board(name, x, y, BOARD_W, BOARD_H, PAGE_BACKGROUND, [logo, *content])
