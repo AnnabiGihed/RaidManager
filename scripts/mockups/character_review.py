@@ -34,6 +34,7 @@ from penpot_scene import HOUSE_PALETTE, Board, Circle, Click, Group, Item, Rect,
 from penpot_scene import write_mockup  # noqa: E402
 
 P = HOUSE_PALETTE
+MUTED, SECONDARY = P["Text/muted"], P["Text/secondary"]
 CLASS_COLOURS = {"Death Knight": "#C41E3A", "Mage": "#3FC7EB", "Shaman": "#0070DD", "Hunter": "#AAD372"}
 PALETTE = {**HOUSE_PALETTE, **{f"WoW class/{name}": colour for name, colour in CLASS_COLOURS.items()}}
 
@@ -68,7 +69,7 @@ def header(decide_later: bool = True) -> list[Item]:
 
 
 def character_cell(x: float, y: float, name: str, realm: str) -> list[Item]:
-    return [text("Name", x, y + 32, name, 14, 600), text("Realm", x, y + 52, realm, 12, 400, P["Text/muted"])]
+    return [text("Name", x, y + 32, name, 14, 600), text("Realm", x, y + 52, realm, 12, 400, MUTED)]
 
 
 def row(index: int, claim: tuple, linked: bool) -> Group:
@@ -81,7 +82,7 @@ def row(index: int, claim: tuple, linked: bool) -> Group:
         text("Class", x + COLUMNS["class"] + 18, y + 41, wow_class, 14),
         text("Race", x + COLUMNS["race"], y + 41, race, 14),
         text("Level", x + COLUMNS["level"], y + 41, str(level), 14),
-        text("Found", x + COLUMNS["found"], y + 41, found, 13, 400, P["Text/secondary"]),
+        text("Found", x + COLUMNS["found"], y + 41, found, 13, 400, SECONDARY),
         badge("Status badge", x + COLUMNS["status"], y + 24, state, "warning" if state == "Pending" else "danger"),
     ]
     dx = x + COLUMNS["decision"]
@@ -92,7 +93,7 @@ def row(index: int, claim: tuple, linked: bool) -> Group:
                   button("Reject button", dx + 104, y + 16, "Reject", "secondary", 88, reject)]
     else:
         items += [text("Next step", dx, y + 32, "An officer will review it", 13, 600),
-                  text("Reason", dx, y + 52, "Another player owns it.", 12, 400, P["Text/muted"])]
+                  text("Reason", dx, y + 52, "Another player owns it.", 12, 400, MUTED)]
     return Group(f"Row {name}", items)
 
 
@@ -100,7 +101,7 @@ def review_table(rows: list[tuple], linked: bool) -> Group:
     height = HEAD_H + ROW_H * len(rows) + 8
     items: list[Item] = card(CONTENT_X, TABLE_TOP, CONTENT_W, height)
     items.append(Group("Table header", [
-        text(f"{label.title()} heading", CONTENT_X + COLUMNS[key], TABLE_TOP + 27, label, 11, 700, P["Text/muted"],
+        text(f"{label.title()} heading", CONTENT_X + COLUMNS[key], TABLE_TOP + 27, label, 11, 700, MUTED,
              None, "left", 1.2)
         for key, label in HEADINGS]))
     items += [row(index, claim, linked) for index, claim in enumerate(rows)]
@@ -127,9 +128,9 @@ def reject_dialog() -> list[Item]:
             *card(x, y, w, h),
             text("Title", x + 24, y + 44, "Reject Jainaice?", 18, 700),
             text("Body line 1", x + 24, y + 80, "Jainaice (Lordaeron) won't become one of your characters,", 14, 400,
-                 P["Text/secondary"]),
-            text("Body line 2", x + 24, y + 100, "so you can't sign it up for raids.", 14, 400, P["Text/secondary"]),
-            text("Body line 3", x + 24, y + 128, "Reject it only if it isn't yours.", 14, 400, P["Text/secondary"]),
+                 SECONDARY),
+            text("Body line 2", x + 24, y + 100, "so you can't sign it up for raids.", 14, 400, SECONDARY),
+            text("Body line 3", x + 24, y + 128, "Reject it only if it isn't yours.", 14, 400, SECONDARY),
             button("Cancel button", x + w - 24 - 96 - 8 - 96, y + h - 64, "Cancel", "secondary", 96,
                    Click("navigate", PENDING)),
             button("Confirm reject button", x + w - 24 - 96, y + h - 64, "Reject", "danger", 96,
@@ -150,16 +151,16 @@ def all_set() -> list[Item]:
             text("Success mark", middle - 20, top + 94, "✓", 40, 800, P["Brand/accent"], 40, "center", icon=True),
             text("Title", CONTENT_X, top + 160, "You're all set", 18, 700, P["Text/primary"], CONTENT_W, "center"),
             text("Message", CONTENT_X, top + 188, "No characters are waiting for your decision.", 14, 400,
-                 P["Text/secondary"], CONTENT_W, "center"),
+                 SECONDARY, CONTENT_W, "center"),
             text("Conflict reminder", CONTENT_X, top + 212, "Sylvanash stays in conflict review until an officer decides.",
-                 13, 400, P["Text/muted"], CONTENT_W, "center"),
+                 13, 400, MUTED, CONTENT_W, "center"),
             button("Go to characters button", middle - 80, top + 240, "Go to my characters", "primary", 160),
         ]),
         Group("Approved notification", [
             *card(toast_x, toast_y, toast_w, 72, P["Brand/accent"]),
             text("Title", toast_x + 24, toast_y + 31, "Thrallsham approved", 14, 600),
             text("Message", toast_x + 24, toast_y + 53, "It's now one of your characters and can sign up for raids.", 13,
-                 400, P["Text/secondary"]),
+                 400, SECONDARY),
         ]),
     ]
 
