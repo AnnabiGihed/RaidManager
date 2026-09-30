@@ -17,14 +17,21 @@ the SVG rendered from it, `<screen>.svg`, are kept together in `docs/mockups/` a
 
 ## Generate the first version
 
-A screen's first version is generated in the repository, so it arrives in Penpot with editable, named layers:
+A screen's first version is generated in the repository, so it arrives in Penpot as a small design system:
+
+- every text is an editable text layer;
+- every layer and group has a function-based name;
+- the website's colours and text styles are shared library assets that the layers use;
+- the buttons are linked into a clickable prototype.
 
 1. Write `scripts/mockups/<screen_name>.py` with the scene model in `scripts/penpot_scene.py`: one board per state
-   (filled, empty, error, dialogs), made of named groups, rectangles, circles and text.
-2. Run `python scripts/mockups/<screen_name>.py`. It writes `docs/mockups/<screen>.penpot` and renders
-   `docs/mockups/<screen>.svg` from it. Use lowercase words with hyphens for `<screen>`.
-3. Import the `.penpot` file in Penpot (**Import Penpot files** on the dashboard) and check it: every text is an
-   editable text layer.
+   (filled, empty, error, dialogs), made of named groups, rectangles, circles and text. Take colours from the house
+   palette and link each control to the board it leads to.
+2. Run `python scripts/mockups/<screen_name>.py`. It checks that every colour is a named palette colour and that text
+   meets WCAG AA contrast, then writes `docs/mockups/<screen>.penpot` and renders `docs/mockups/<screen>.svg` from it.
+   Use lowercase words with hyphens for `<screen>`.
+3. Import the `.penpot` file in Penpot (**Import Penpot files** on the dashboard) and check it: texts are editable,
+   the Assets panel lists the colours and typographies, and View mode plays each flow.
 
 ## Design in Penpot
 

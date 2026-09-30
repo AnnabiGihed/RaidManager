@@ -12,7 +12,8 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from penpot_render import is_current, render  # noqa: E402
 from penpot_scene import (  # noqa: E402
-    FILE_VERSION, MIGRATIONS, ROOT_ID, Board, Circle, Group, Rect, text, write_mockup, write_penpot,
+    FILE_VERSION, MIGRATIONS, ROOT_ID, Board, Circle, Click, Group, Rect, contrast_ratio, text, write_mockup,
+    write_penpot,
 )
 
 
@@ -29,6 +30,12 @@ def scene() -> list[Board]:
         ]),
         Board("2 · Empty", 480, 0, 400, 300, "#F5F5F5", [text("Message", 20, 40, "Nothing to review.")]),
     ]
+
+
+def approve_button(boards: list[Board]) -> Group:
+    button = boards[0].children[1]
+    assert isinstance(button, Group)
+    return button
 
 
 class PenpotFileTests(unittest.TestCase):
@@ -53,7 +60,7 @@ class PenpotFileTests(unittest.TestCase):
         self.assertEqual((manifest["type"], manifest["version"]), ("penpot/export-files", 1))
         file = entries[f"files/{file_id}.json"]
         self.assertEqual((file["version"], len(file["migrations"])), (FILE_VERSION, len(MIGRATIONS)))
-        pages = [name for name in entries if name.count("/") == 3]
+        pages = [name for name in entries if name.count("/") == 3 and "/pages/" in name]
         self.assertEqual(len(pages), 1)
 
     def test_texts_are_editable_text_layers_with_their_content(self) -> None:
@@ -81,6 +88,70 @@ class PenpotFileTests(unittest.TestCase):
         penpot = write_mockup(self.folder, "character-review", "Character review", scene())
         self.assertEqual(penpot, self.folder / "docs/mockups/character-review.penpot")
         self.assertTrue(is_current(penpot))
+
+    def test_palette_colours_and_text_styles_become_a_shared_library(self) -> None:
+        entries = self.entries()
+        colours = {entry["path"] + "/" + entry["name"]: entry for name, entry in entries.items() if "/colors/" in name}
+        typographies = {entry["path"] + "/" + entry["name"] for name, entry in entries.items() if "/typographies/" in name}
+        self.assertEqual(colours["Brand/primary"]["color"], "#4340d2")
+        self.assertNotIn("Status/danger", colours, "unused palette colours stay out of the library")
+        self.assertEqual(typographies, {"Label/Button", "Heading/Page title", "Body/Default"})
+        background = self.shapes()["Background:rect"]["fills"][0]
+        self.assertEqual(background["fillColorRefId"], colours["Brand/primary"]["id"])
+        leaf = self.shapes()["Title:text"]["content"]["children"][0]["children"][0]["children"][0]
+        typography = next(entry for name, entry in entries.items() if "/typographies/" in name and entry["name"] == "Page title")
+        self.assertEqual(leaf["typographyRefId"], typography["id"])
+
+    def test_groups_link_to_boards_and_flows_start_the_prototype(self) -> None:
+        boards = scene()
+        approve_button(boards).on_click = Click("navigate", "2 · Empty")
+        boards[1].children.append(Group("Back button", [Rect("Area", 0, 0, 40, 40, "#FFFFFF")], Click("prev-screen")))
+        write_penpot(self.path, "review", "Review", boards, flows={"Review a character": "1 · Review"})
+        shapes = self.shapes()
+        empty_board = shapes["2 · Empty:frame"]["id"]
+        self.assertEqual(shapes["Approve button:group"]["interactions"],
+                         [{"eventType": "click", "actionType": "navigate", "destination": empty_board, "preserveScroll": False}])
+        self.assertEqual(shapes["Back button:group"]["interactions"], [{"eventType": "click", "actionType": "prev-screen"}])
+        page = next(entry for name, entry in self.entries().items() if name.count("/") == 3 and "/pages/" in name)
+        flow = next(iter(page["flows"].values()))
+        self.assertEqual((flow["name"], flow["startingFrame"]), ("Review a character", shapes["1 · Review:frame"]["id"]))
+
+    def test_links_to_missing_boards_fail(self) -> None:
+        boards = scene()
+        approve_button(boards).on_click = Click("open-overlay", "3 · Missing")
+        with self.assertRaisesRegex(ValueError, "no board named '3 · Missing'"):
+            write_penpot(self.path, "review", "Review", boards)
+        with self.assertRaisesRegex(ValueError, "Flow 'Start' starts on a board that doesn't exist"):
+            write_penpot(self.path, "review", "Review", scene(), flows={"Start": "Nowhere"})
+
+    def test_low_contrast_text_stops_the_generation(self) -> None:
+        board = Board("Board", 0, 0, 300, 100, "#FFFFFF", [
+            Rect("Badge", 10, 10, 120, 30, "#FFF0DB"),
+            text("Label", 14, 30, "Pending", 12, 500, "#FF9800"),
+        ])
+        with self.assertRaisesRegex(ValueError, r"'Label' \('Pending'\) has contrast 1\.92:1"):
+            write_penpot(self.path, "bad", "Page", [board])
+
+    def test_unnamed_colours_stop_the_generation(self) -> None:
+        board = Board("Board", 0, 0, 300, 100, "#FFFFFF", [Rect("Badge", 10, 10, 120, 30, "#123456")])
+        with self.assertRaisesRegex(ValueError, "'Badge' uses #123456, which the palette doesn't name"):
+            write_penpot(self.path, "bad", "Page", [board])
+        write_penpot(self.path, "ok", "Page", [board], palette={"Surface/card": "#FFFFFF", "Custom/badge": "#123456"})
+
+    def test_a_colour_has_one_name_in_the_palette(self) -> None:
+        with self.assertRaisesRegex(ValueError, "these have several: #ffffff"):
+            write_penpot(self.path, "dup", "Page", scene(), palette={"A/white": "#FFFFFF", "B/white": "#ffffff"})
+
+    def test_icons_need_graphic_contrast_only(self) -> None:
+        board = Board("Board", 0, 0, 300, 100, "#FFFFFF", [
+            Circle("Icon", 30, 30, 10, "#2196F3"),
+            text("Icon mark", 24, 35, "i", 13, 700, "#FFFFFF", 12, "center", icon=True),
+        ])
+        write_penpot(self.path, "icons", "Page", [board])
+
+    def test_contrast_ratio_matches_the_wcag_formula(self) -> None:
+        self.assertAlmostEqual(contrast_ratio("#000000", "#FFFFFF"), 21, places=2)
+        self.assertAlmostEqual(contrast_ratio("#4340D2", "#FFFFFF"), 7.23, places=2)
 
     def test_sibling_layers_need_distinct_names(self) -> None:
         board = Board("Board", 0, 0, 100, 100, "#FFFFFF", [Rect("Box", 0, 0, 1, 1, "#000000"), Rect("Box", 5, 5, 1, 1, "#000000")])
