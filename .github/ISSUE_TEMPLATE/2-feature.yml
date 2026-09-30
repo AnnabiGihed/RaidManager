@@ -1,0 +1,30 @@
+name: Feature
+description: "A deliverable capability under an epic."
+title: "Feature: "
+labels: ["type:feature"]
+body:
+  - type: markdown
+    attributes:
+      value: "Every item sits in one chain: Epic → Feature → Story, Improvement or Bug → Task or Spike (ADR-0016). After creating this issue, add it as a sub-issue of its parent; an item without the right parent gets the `needs-parent` label."
+  - type: input
+    id: parent
+    attributes:
+      label: Parent
+      description: "The epic this item belongs to, for example #13."
+      placeholder: "#"
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+      description: "The capability users get when this feature is done."
+    validations:
+      required: true
+  - type: textarea
+    id: exit
+    attributes:
+      label: Exit criteria
+      description: "Observable conditions that make this feature done."
+    validations:
+      required: true

@@ -141,8 +141,8 @@ jobs:
             cat merge.txt
             for issue in $closes; do
               labels=$(gh issue view "$issue" --repo "$GITHUB_REPOSITORY" --json labels --jq '.labels[].name')
-              if ! printf '%s\n' "$labels" | grep -Eq '^type:(task|bug|spike)$'; then
-                echo "Skipped #$issue: only work items may close from a pull request."
+              if ! printf '%s\n' "$labels" | grep -Eq '^type:(task|spike)$'; then
+                echo "Skipped #$issue: only tasks and spikes close from a pull request (ADR-0016)."
                 continue
               fi
               if [ "$(gh issue view "$issue" --repo "$GITHUB_REPOSITORY" --json state --jq .state)" = "OPEN" ]; then

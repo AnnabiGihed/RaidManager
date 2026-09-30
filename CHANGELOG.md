@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- Every work item now sits in one Epic, Feature, Story, Improvement or Bug, Task or Spike hierarchy. Issue forms ask
+  for the parent. The hierarchy workflow labels misplaced items and reopens a parent closed without a completed child,
+  and pull requests can only close tasks and spikes whose chain reaches an epic. The board was migrated (ADR-0016)
+  (#159).
 - CI measures test coverage on every run and shows it on each pull request. A pull request fails when its changed
   lines are under 80% covered or total coverage is under 60% (ADR-0015) (#121).
 - The GitHub Wiki now shows the `docs/` documentation, generated and published after every merge, and pull requests
