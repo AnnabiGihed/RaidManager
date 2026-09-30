@@ -1,7 +1,8 @@
 # Project automation
 
 The [Raid Manager Project](https://github.com/users/AnnabiGihed/projects/2) uses native issue sub-issues.
-The [completion workflow](../../.github/workflows/project-hierarchy.yml) checks issue closure immediately and
+The [completion workflow](https://github.com/AnnabiGihed/RaidManager/blob/main/.github/workflows/project-hierarchy.yml)
+checks issue closure immediately and
 audits closed issues every 15 minutes. It reopens an epic without completed child stories or a story without
 completed child work items. Tasks, bugs, and spikes count as work items.
 
