@@ -50,6 +50,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - A dark design system from the owner's reference design: named colors, Open Sans text styles, and an app shell on
   every website screen with the Player and Officer navigation, community, breadcrumb, realm status and user. Mockups
   are generated with it, and the website will be re-themed to match (ADR-0019) (#202).
+- The companion sync mockup in `docs/mockups/`: watched installations and account folders with exclude, sync
+  status with the upload queue, paused, offline, and an incomplete SavedVariables write with its fix (#217).
 - The companion pairing mockup in `docs/mockups/`: the companion's code while waiting, paired, expired and revoked,
   and the website pages to confirm the code, list paired companions and revoke one (#215).
 - The community settings mockup in `docs/mockups/`: linking a Discord server by adding the bot, choosing the realm,

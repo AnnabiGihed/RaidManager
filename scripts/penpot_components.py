@@ -260,15 +260,16 @@ def public_screen(name: str, x: float, y: float, content: list[Item]) -> Board:
     return Board(name, x, y, BOARD_W, BOARD_H, PAGE_BACKGROUND, [logo, *content])
 
 
-def companion_window(name: str, x: float, y: float, content: list[Item]) -> Board:
-    """A desktop companion window: a 480 x 600 board with a title bar holding the logo mark and the app name.
+def companion_window(name: str, x: float, y: float, content: list[Item], *, width: float = WINDOW_W,
+                     height: float = WINDOW_H) -> Board:
+    """A desktop companion window (480 x 600 by default) with a title bar holding the logo mark and the app name.
 
     `content` is placed from `WINDOW_PADDING` and below `TITLE_BAR_H`, in window coordinates.
     """
     title_bar = Group("Title bar", [
-        Rect("Background", 0, 0, WINDOW_W, TITLE_BAR_H, P["Surface/top bar"]),
-        Rect("Divider", 0, TITLE_BAR_H - 1, WINDOW_W, 1, DIVIDER),
+        Rect("Background", 0, 0, width, TITLE_BAR_H, P["Surface/top bar"]),
+        Rect("Divider", 0, TITLE_BAR_H - 1, width, 1, DIVIDER),
         Rect("Mark", 16, 14, 16, 16, ACCENT, 1, 4),
         text("App name", 42, 28, "RaidManager Companion", 13, 600),
     ])
-    return Board(name, x, y, WINDOW_W, WINDOW_H, PAGE_BACKGROUND, [title_bar, *content])
+    return Board(name, x, y, width, height, PAGE_BACKGROUND, [title_bar, *content])

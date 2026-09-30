@@ -325,6 +325,8 @@ class ComponentTests(unittest.TestCase):
         self.assertIn("Title bar", names)
         self.assertNotIn("Sidebar", names)
         write_penpot(self.path, "window", "Window", [board])
+        wide = companion_window("2 · Wide", 0, 0, [], width=560, height=680)
+        self.assertEqual((wide.w, wide.h), (560, 680))
 
     def test_signed_out_pages_have_the_logo_but_no_shell(self) -> None:
         board = public_screen("1 · Signed out", 0, 0, [text("Title", PUBLIC_X, 240, "Sign in", 18, 700)])
