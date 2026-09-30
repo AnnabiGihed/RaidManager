@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- The API now hosts the application and persistence and exposes a website-only endpoint that resolves a Discord
+  sign-in to its user; the Aspire AppHost generates the shared website key (ADR-0011) (#95).
 - A sign-in command that resolves a Discord account to exactly one persisted user, refreshing a changed Discord
   profile, with a unique Discord id in the database (#92).
 - A query listing a player's pending and conflicted character claims, read with no-tracking queries on the write

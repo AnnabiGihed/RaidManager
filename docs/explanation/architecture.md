@@ -11,7 +11,9 @@ state, and readiness diagrams. The views below provide the starting context.
 
 ## Current scaffold
 
-The application programming interface (API) exposes only a foundation endpoint and development OpenAPI document.
+The application programming interface (API) hosts the application and persistence layers and exposes a
+website-only Discord sign-in endpoint, protected by the shared website key of
+[ADR-0011](../adr/0011-website-session-and-api-trust.md).
 The web app renders a placeholder page. The Discord worker logs its startup and waits; it has no interaction gateway.
 The Aspire AppHost starts the API, web app, bot host, and a local SQL Server resource.
 The Domain project contains initial aggregates and value objects. The Application project has the first commands, to

@@ -1,0 +1,51 @@
+using Microsoft.AspNetCore.Hosting;
+using Microsoft.AspNetCore.Mvc.Testing;
+using Testcontainers.MsSql;
+using Xunit;
+
+namespace RaidManager.ApiService.Tests.Support;
+
+/// <summary>Hosts the real API against a SQL Server container with a known website key.</summary>
+/// <remarks>
+/// Author: Gihed Annabi<br/>
+/// Date: 2026-09-30<br/>
+/// Purpose: Tests the API as the website calls it: real authentication, real MediatR pipeline and a real database.
+/// </remarks>
+public sealed class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
+{
+    #region Constants
+    /// <summary>Defines the website key the tests present; long enough to pass the startup check.</summary>
+    public const string WebsiteServiceKey = "test-website-service-key-0123456789abcdefghijkl";
+
+    /// <summary>Defines the SQL Server image, matching the persistence tests.</summary>
+    private const string SqlServerImage = "mcr.microsoft.com/mssql/server:2022-latest";
+    #endregion Constants
+
+    #region Fields
+    /// <summary>Stores the SQL Server container.</summary>
+    private readonly MsSqlContainer _database = new MsSqlBuilder(SqlServerImage).Build();
+    #endregion Fields
+
+    #region Public Methods
+    /// <inheritdoc />
+    public async Task InitializeAsync() => await _database.StartAsync();
+
+    /// <inheritdoc />
+    async Task IAsyncLifetime.DisposeAsync()
+    {
+        await DisposeAsync();
+        await _database.DisposeAsync();
+    }
+    #endregion Public Methods
+
+    #region Overrides
+    /// <inheritdoc />
+    protected override void ConfigureWebHost(IWebHostBuilder builder)
+    {
+        // Development applies the migrations at startup, as a local run does.
+        builder.UseEnvironment("Development");
+        builder.UseSetting("ConnectionStrings:Database", _database.GetConnectionString());
+        builder.UseSetting("Website:ServiceKey", WebsiteServiceKey);
+    }
+    #endregion Overrides
+}
