@@ -1,0 +1,385 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="6160" height="1740" viewBox="-80 -80 6160 1740">
+<title>Companion pairing (rendered from companion-pairing.penpot)</title>
+<rect x="-80" y="-80" width="6160" height="1740" fill="#e8e8e8"/>
+<text x="0" y="-14" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">1 · Website: confirm the code</text>
+<clipPath id="clip1"><rect x="0" y="0" width="1440" height="900"/></clipPath>
+<rect x="0" y="0" width="1440" height="900" fill="#0b111c"/>
+<g clip-path="url(#clip1)">
+<rect x="0" y="0" width="240" height="900" fill="#0f1825"/>
+<rect x="239" y="0" width="1" height="900" fill="#2b3b50"/>
+<rect x="20" y="16" width="32" height="32" rx="8" fill="#0c2931"/>
+<rect x="28" y="24" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="62" y="38" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#eff5fa" text-anchor="start" letter-spacing="0.5">RAID</text>
+<text x="104" y="38" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#5de0c1" text-anchor="start" letter-spacing="0.5">MANAGER</text>
+<rect x="16.5" y="68.5" width="207" height="59" rx="10" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<rect x="28" y="82" width="32" height="32" rx="8" fill="#9077b3"/>
+<text x="44" y="102" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#0b111c" text-anchor="middle">CV</text>
+<text x="70" y="95" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Citadel Vanguard</text>
+<text x="70" y="114" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Icecrown · Community</text>
+<text x="24" y="164" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">PLAYER</text>
+<rect x="12" y="176" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="194" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="199" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Overview</text>
+<rect x="12" y="216" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="234" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="239" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Raids</text>
+<rect x="12" y="256" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="274" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="279" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">My characters</text>
+<rect x="12" y="296" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="314" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="319" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Readiness</text>
+<rect x="12" y="336" width="216" height="36" rx="8" fill="#1b4548"/>
+<rect x="12" y="344" width="3" height="20" rx="2" fill="#5de0c1"/>
+<ellipse cx="34" cy="354" rx="4" ry="4" fill="#5de0c1"/>
+<text x="50" y="359" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#5de0c1" text-anchor="start">Companion &amp; sync</text>
+<rect x="0" y="828" width="239" height="1" fill="#2b3b50"/>
+<ellipse cx="36" cy="864" rx="16" ry="16" fill="#293d58"/>
+<text x="36" y="868" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#8fb3f6" text-anchor="middle">BV</text>
+<text x="62" y="860" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Bryn Valewood</text>
+<text x="62" y="879" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Player</text>
+<rect x="240" y="0" width="1200" height="64" fill="#111c2a"/>
+<rect x="240" y="63" width="1200" height="1" fill="#2b3b50"/>
+<text x="280" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">CITADEL VANGUARD</text>
+<text x="420.3" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">/</text>
+<text x="436.3" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#eff5fa" text-anchor="start" letter-spacing="1.2">COMPANION &amp; SYNC</text>
+<ellipse cx="1124" cy="32" rx="4" ry="4" fill="#5de0c1"/>
+<text x="1136" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.2">REALM ONLINE</text>
+<ellipse cx="1272" cy="32" rx="16" ry="16" fill="#293d58"/>
+<text x="1272" y="36" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#8fb3f6" text-anchor="middle">BV</text>
+<rect x="1304.5" y="12.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="1352" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Sign out</text>
+<text x="280" y="118" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.5">COMPANION</text>
+<text x="280" y="160" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#eff5fa" text-anchor="start">Pair this companion</text>
+<text x="280" y="190" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="400" fill="#9eadc1" text-anchor="start">Check that the code matches the one on your companion, then confirm. Only pair a computer you use.</text>
+<rect x="280.5" y="224.5" width="559" height="299" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="304" y="260" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">PAIRING CODE</text>
+<text x="304" y="308" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="4">K7M-4QX</text>
+<text x="304" y="334" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Expires in 9 minutes</text>
+<text x="304" y="380" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">COMPUTER</text>
+<text x="304" y="404" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#eff5fa" text-anchor="start">BRYN-DESKTOP</text>
+<rect x="304" y="444" width="160" height="40" rx="8" fill="#5de0c1"/>
+<text x="384" y="469" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#102830" text-anchor="middle">Confirm pairing</text>
+<rect x="472.5" y="444.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="520" y="469" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Cancel</text>
+</g>
+<text x="1520" y="-14" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">2 · Website: paired companions</text>
+<clipPath id="clip2"><rect x="1520" y="0" width="1440" height="900"/></clipPath>
+<rect x="1520" y="0" width="1440" height="900" fill="#0b111c"/>
+<g clip-path="url(#clip2)">
+<rect x="1520" y="0" width="240" height="900" fill="#0f1825"/>
+<rect x="1759" y="0" width="1" height="900" fill="#2b3b50"/>
+<rect x="1540" y="16" width="32" height="32" rx="8" fill="#0c2931"/>
+<rect x="1548" y="24" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="1582" y="38" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#eff5fa" text-anchor="start" letter-spacing="0.5">RAID</text>
+<text x="1624" y="38" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#5de0c1" text-anchor="start" letter-spacing="0.5">MANAGER</text>
+<rect x="1536.5" y="68.5" width="207" height="59" rx="10" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<rect x="1548" y="82" width="32" height="32" rx="8" fill="#9077b3"/>
+<text x="1564" y="102" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#0b111c" text-anchor="middle">CV</text>
+<text x="1590" y="95" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Citadel Vanguard</text>
+<text x="1590" y="114" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Icecrown · Community</text>
+<text x="1544" y="164" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">PLAYER</text>
+<rect x="1532" y="176" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="194" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="199" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Overview</text>
+<rect x="1532" y="216" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="234" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="239" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Raids</text>
+<rect x="1532" y="256" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="274" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="279" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">My characters</text>
+<rect x="1532" y="296" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="314" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="319" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Readiness</text>
+<rect x="1532" y="336" width="216" height="36" rx="8" fill="#1b4548"/>
+<rect x="1532" y="344" width="3" height="20" rx="2" fill="#5de0c1"/>
+<ellipse cx="1554" cy="354" rx="4" ry="4" fill="#5de0c1"/>
+<text x="1570" y="359" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#5de0c1" text-anchor="start">Companion &amp; sync</text>
+<rect x="1520" y="828" width="239" height="1" fill="#2b3b50"/>
+<ellipse cx="1556" cy="864" rx="16" ry="16" fill="#293d58"/>
+<text x="1556" y="868" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#8fb3f6" text-anchor="middle">BV</text>
+<text x="1582" y="860" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Bryn Valewood</text>
+<text x="1582" y="879" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Player</text>
+<rect x="1760" y="0" width="1200" height="64" fill="#111c2a"/>
+<rect x="1760" y="63" width="1200" height="1" fill="#2b3b50"/>
+<text x="1800" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">CITADEL VANGUARD</text>
+<text x="1940.3" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">/</text>
+<text x="1956.3" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#eff5fa" text-anchor="start" letter-spacing="1.2">COMPANION &amp; SYNC</text>
+<ellipse cx="2644" cy="32" rx="4" ry="4" fill="#5de0c1"/>
+<text x="2656" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.2">REALM ONLINE</text>
+<ellipse cx="2792" cy="32" rx="16" ry="16" fill="#293d58"/>
+<text x="2792" y="36" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#8fb3f6" text-anchor="middle">BV</text>
+<rect x="2824.5" y="12.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2872" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Sign out</text>
+<text x="1800" y="118" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.5">COMPANION</text>
+<text x="1800" y="160" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#eff5fa" text-anchor="start">Paired companions</text>
+<text x="1800" y="190" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="400" fill="#9eadc1" text-anchor="start">These computers can upload your character data. Revoke one you no longer use.</text>
+<rect x="1800.5" y="224.5" width="1119" height="195" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="1824" y="251" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">COMPUTER</text>
+<text x="2100" y="251" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">PAIRED</text>
+<text x="2320" y="251" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">LAST UPLOAD</text>
+<text x="2560" y="251" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">STATUS</text>
+<rect x="1800" y="268" width="1120" height="1" fill="#2b3b50"/>
+<text x="1824" y="309" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">BRYN-DESKTOP</text>
+<text x="2100" y="309" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Today, 14:02</text>
+<text x="2320" y="309" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Today, 14:05</text>
+<rect x="2560" y="292" width="66" height="24" rx="12" fill="#173a36"/>
+<text x="2593" y="308" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#5de0c1" text-anchor="middle">Active</text>
+<rect x="2700.5" y="284.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2748" y="309" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Revoke</text>
+<rect x="1800" y="340" width="1120" height="1" fill="#2b3b50"/>
+<text x="1824" y="381" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">BRYN-LAPTOP</text>
+<text x="2100" y="381" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">12 September</text>
+<text x="2320" y="381" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">28 September, 21:40</text>
+<rect x="2560" y="364" width="66" height="24" rx="12" fill="#173a36"/>
+<text x="2593" y="380" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#5de0c1" text-anchor="middle">Active</text>
+<rect x="2700.5" y="356.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2748" y="381" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Revoke</text>
+<text x="1800" y="456" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#8394aa" text-anchor="start">To pair another computer, start pairing in its companion.</text>
+<rect x="2540.5" y="80.5" width="379" height="71" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<rect x="2540" y="92" width="4" height="48" rx="2" fill="#5de0c1"/>
+<text x="2564" y="111" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">BRYN-DESKTOP is paired</text>
+<text x="2564" y="133" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">It can upload your character data now.</text>
+</g>
+<text x="3040" y="-14" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">3 · Website: revoke confirmation</text>
+<clipPath id="clip3"><rect x="3040" y="0" width="1440" height="900"/></clipPath>
+<rect x="3040" y="0" width="1440" height="900" fill="#0b111c"/>
+<g clip-path="url(#clip3)">
+<rect x="3040" y="0" width="240" height="900" fill="#0f1825"/>
+<rect x="3279" y="0" width="1" height="900" fill="#2b3b50"/>
+<rect x="3060" y="16" width="32" height="32" rx="8" fill="#0c2931"/>
+<rect x="3068" y="24" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="3102" y="38" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#eff5fa" text-anchor="start" letter-spacing="0.5">RAID</text>
+<text x="3144" y="38" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#5de0c1" text-anchor="start" letter-spacing="0.5">MANAGER</text>
+<rect x="3056.5" y="68.5" width="207" height="59" rx="10" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<rect x="3068" y="82" width="32" height="32" rx="8" fill="#9077b3"/>
+<text x="3084" y="102" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#0b111c" text-anchor="middle">CV</text>
+<text x="3110" y="95" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Citadel Vanguard</text>
+<text x="3110" y="114" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Icecrown · Community</text>
+<text x="3064" y="164" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">PLAYER</text>
+<rect x="3052" y="176" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="3074" cy="194" rx="4" ry="4" fill="#8394aa"/>
+<text x="3090" y="199" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Overview</text>
+<rect x="3052" y="216" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="3074" cy="234" rx="4" ry="4" fill="#8394aa"/>
+<text x="3090" y="239" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Raids</text>
+<rect x="3052" y="256" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="3074" cy="274" rx="4" ry="4" fill="#8394aa"/>
+<text x="3090" y="279" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">My characters</text>
+<rect x="3052" y="296" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="3074" cy="314" rx="4" ry="4" fill="#8394aa"/>
+<text x="3090" y="319" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Readiness</text>
+<rect x="3052" y="336" width="216" height="36" rx="8" fill="#1b4548"/>
+<rect x="3052" y="344" width="3" height="20" rx="2" fill="#5de0c1"/>
+<ellipse cx="3074" cy="354" rx="4" ry="4" fill="#5de0c1"/>
+<text x="3090" y="359" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#5de0c1" text-anchor="start">Companion &amp; sync</text>
+<rect x="3040" y="828" width="239" height="1" fill="#2b3b50"/>
+<ellipse cx="3076" cy="864" rx="16" ry="16" fill="#293d58"/>
+<text x="3076" y="868" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#8fb3f6" text-anchor="middle">BV</text>
+<text x="3102" y="860" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Bryn Valewood</text>
+<text x="3102" y="879" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Player</text>
+<rect x="3280" y="0" width="1200" height="64" fill="#111c2a"/>
+<rect x="3280" y="63" width="1200" height="1" fill="#2b3b50"/>
+<text x="3320" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">CITADEL VANGUARD</text>
+<text x="3460.3" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">/</text>
+<text x="3476.3" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#eff5fa" text-anchor="start" letter-spacing="1.2">COMPANION &amp; SYNC</text>
+<ellipse cx="4164" cy="32" rx="4" ry="4" fill="#5de0c1"/>
+<text x="4176" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.2">REALM ONLINE</text>
+<ellipse cx="4312" cy="32" rx="16" ry="16" fill="#293d58"/>
+<text x="4312" y="36" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#8fb3f6" text-anchor="middle">BV</text>
+<rect x="4344.5" y="12.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="4392" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Sign out</text>
+<text x="3320" y="118" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.5">COMPANION</text>
+<text x="3320" y="160" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#eff5fa" text-anchor="start">Paired companions</text>
+<text x="3320" y="190" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="400" fill="#9eadc1" text-anchor="start">These computers can upload your character data. Revoke one you no longer use.</text>
+<rect x="3320.5" y="224.5" width="1119" height="195" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="3344" y="251" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">COMPUTER</text>
+<text x="3620" y="251" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">PAIRED</text>
+<text x="3840" y="251" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">LAST UPLOAD</text>
+<text x="4080" y="251" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">STATUS</text>
+<rect x="3320" y="268" width="1120" height="1" fill="#2b3b50"/>
+<text x="3344" y="309" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">BRYN-DESKTOP</text>
+<text x="3620" y="309" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Today, 14:02</text>
+<text x="3840" y="309" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Today, 14:05</text>
+<rect x="4080" y="292" width="66" height="24" rx="12" fill="#173a36"/>
+<text x="4113" y="308" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#5de0c1" text-anchor="middle">Active</text>
+<rect x="4220.5" y="284.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="4268" y="309" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Revoke</text>
+<rect x="3320" y="340" width="1120" height="1" fill="#2b3b50"/>
+<text x="3344" y="381" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">BRYN-LAPTOP</text>
+<text x="3620" y="381" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">12 September</text>
+<text x="3840" y="381" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">28 September, 21:40</text>
+<rect x="4080" y="364" width="66" height="24" rx="12" fill="#173a36"/>
+<text x="4113" y="380" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#5de0c1" text-anchor="middle">Active</text>
+<rect x="4220.5" y="356.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="4268" y="381" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Revoke</text>
+<text x="3320" y="456" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#8394aa" text-anchor="start">To pair another computer, start pairing in its companion.</text>
+<rect x="3040" y="0" width="1440" height="900" fill="#000000" fill-opacity="0.6"/>
+<rect x="3520.5" y="332.5" width="479" height="235" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="3544" y="376" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#eff5fa" text-anchor="start">Revoke BRYN-LAPTOP?</text>
+<text x="3544" y="412" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">It stops uploading at once. Characters and snapshots it</text>
+<text x="3544" y="432" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">already uploaded stay in RaidManager.</text>
+<text x="3544" y="452" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Pair it again to resume.</text>
+<rect x="3776.5" y="504.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="3824" y="529" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Cancel</text>
+<rect x="3880" y="504" width="96" height="40" rx="8" fill="#f2878c"/>
+<text x="3928" y="529" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#2b1115" text-anchor="middle">Revoke</text>
+</g>
+<text x="4560" y="-14" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">4 · Website: after revoking</text>
+<clipPath id="clip4"><rect x="4560" y="0" width="1440" height="900"/></clipPath>
+<rect x="4560" y="0" width="1440" height="900" fill="#0b111c"/>
+<g clip-path="url(#clip4)">
+<rect x="4560" y="0" width="240" height="900" fill="#0f1825"/>
+<rect x="4799" y="0" width="1" height="900" fill="#2b3b50"/>
+<rect x="4580" y="16" width="32" height="32" rx="8" fill="#0c2931"/>
+<rect x="4588" y="24" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="4622" y="38" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#eff5fa" text-anchor="start" letter-spacing="0.5">RAID</text>
+<text x="4664" y="38" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#5de0c1" text-anchor="start" letter-spacing="0.5">MANAGER</text>
+<rect x="4576.5" y="68.5" width="207" height="59" rx="10" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<rect x="4588" y="82" width="32" height="32" rx="8" fill="#9077b3"/>
+<text x="4604" y="102" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#0b111c" text-anchor="middle">CV</text>
+<text x="4630" y="95" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Citadel Vanguard</text>
+<text x="4630" y="114" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Icecrown · Community</text>
+<text x="4584" y="164" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">PLAYER</text>
+<rect x="4572" y="176" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="4594" cy="194" rx="4" ry="4" fill="#8394aa"/>
+<text x="4610" y="199" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Overview</text>
+<rect x="4572" y="216" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="4594" cy="234" rx="4" ry="4" fill="#8394aa"/>
+<text x="4610" y="239" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Raids</text>
+<rect x="4572" y="256" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="4594" cy="274" rx="4" ry="4" fill="#8394aa"/>
+<text x="4610" y="279" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">My characters</text>
+<rect x="4572" y="296" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="4594" cy="314" rx="4" ry="4" fill="#8394aa"/>
+<text x="4610" y="319" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Readiness</text>
+<rect x="4572" y="336" width="216" height="36" rx="8" fill="#1b4548"/>
+<rect x="4572" y="344" width="3" height="20" rx="2" fill="#5de0c1"/>
+<ellipse cx="4594" cy="354" rx="4" ry="4" fill="#5de0c1"/>
+<text x="4610" y="359" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#5de0c1" text-anchor="start">Companion &amp; sync</text>
+<rect x="4560" y="828" width="239" height="1" fill="#2b3b50"/>
+<ellipse cx="4596" cy="864" rx="16" ry="16" fill="#293d58"/>
+<text x="4596" y="868" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#8fb3f6" text-anchor="middle">BV</text>
+<text x="4622" y="860" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Bryn Valewood</text>
+<text x="4622" y="879" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Player</text>
+<rect x="4800" y="0" width="1200" height="64" fill="#111c2a"/>
+<rect x="4800" y="63" width="1200" height="1" fill="#2b3b50"/>
+<text x="4840" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">CITADEL VANGUARD</text>
+<text x="4980.3" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">/</text>
+<text x="4996.3" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#eff5fa" text-anchor="start" letter-spacing="1.2">COMPANION &amp; SYNC</text>
+<ellipse cx="5684" cy="32" rx="4" ry="4" fill="#5de0c1"/>
+<text x="5696" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.2">REALM ONLINE</text>
+<ellipse cx="5832" cy="32" rx="16" ry="16" fill="#293d58"/>
+<text x="5832" y="36" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#8fb3f6" text-anchor="middle">BV</text>
+<rect x="5864.5" y="12.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="5912" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Sign out</text>
+<text x="4840" y="118" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.5">COMPANION</text>
+<text x="4840" y="160" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#eff5fa" text-anchor="start">Paired companions</text>
+<text x="4840" y="190" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="400" fill="#9eadc1" text-anchor="start">These computers can upload your character data. Revoke one you no longer use.</text>
+<rect x="4840.5" y="224.5" width="1119" height="195" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="4864" y="251" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">COMPUTER</text>
+<text x="5140" y="251" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">PAIRED</text>
+<text x="5360" y="251" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">LAST UPLOAD</text>
+<text x="5600" y="251" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">STATUS</text>
+<rect x="4840" y="268" width="1120" height="1" fill="#2b3b50"/>
+<text x="4864" y="309" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">BRYN-DESKTOP</text>
+<text x="5140" y="309" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Today, 14:02</text>
+<text x="5360" y="309" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Today, 14:05</text>
+<rect x="5600" y="292" width="66" height="24" rx="12" fill="#173a36"/>
+<text x="5633" y="308" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#5de0c1" text-anchor="middle">Active</text>
+<rect x="5740.5" y="284.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="5788" y="309" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Revoke</text>
+<rect x="4840" y="340" width="1120" height="1" fill="#2b3b50"/>
+<text x="4864" y="381" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">BRYN-LAPTOP</text>
+<text x="5140" y="381" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">12 September</text>
+<text x="5360" y="381" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">28 September, 21:40</text>
+<rect x="5600" y="364" width="73" height="24" rx="12" fill="#1c2b3e"/>
+<text x="5636.5" y="380" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#9eadc1" text-anchor="middle">Revoked</text>
+<text x="5740" y="381" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#8394aa" text-anchor="start">Revoked today, 17:20</text>
+<text x="4840" y="456" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#8394aa" text-anchor="start">To pair another computer, start pairing in its companion.</text>
+<rect x="5580.5" y="80.5" width="379" height="71" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<rect x="5580" y="92" width="4" height="48" rx="2" fill="#5de0c1"/>
+<text x="5604" y="111" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">BRYN-LAPTOP was revoked</text>
+<text x="5604" y="133" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">It can&#x27;t upload until it&#x27;s paired again.</text>
+</g>
+<text x="0" y="966" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">5 · Companion: waiting</text>
+<clipPath id="clip5"><rect x="0" y="980" width="480" height="600"/></clipPath>
+<rect x="0" y="980" width="480" height="600" fill="#0b111c"/>
+<g clip-path="url(#clip5)">
+<rect x="0" y="980" width="480" height="44" fill="#111c2a"/>
+<rect x="0" y="1023" width="480" height="1" fill="#2b3b50"/>
+<rect x="16" y="994" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="42" y="1008" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">RaidManager Companion</text>
+<text x="32" y="1076" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#eff5fa" text-anchor="start">Pair with RaidManager</text>
+<text x="32" y="1106" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Open the website, sign in with Discord, and</text>
+<text x="32" y="1126" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">confirm this code.</text>
+<rect x="32.5" y="1152.5" width="415" height="123" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="56" y="1184" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">PAIRING CODE</text>
+<text x="240" y="1230" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#5de0c1" text-anchor="middle" letter-spacing="4">K7M-4QX</text>
+<text x="240" y="1256" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="middle">Expires in 9:42</text>
+<ellipse cx="37" cy="1321" rx="5" ry="5" fill="#f3be75"/>
+<text x="50" y="1326" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Waiting for confirmation on the website</text>
+<rect x="32" y="1360" width="416" height="40" rx="8" fill="#5de0c1"/>
+<text x="240" y="1385" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#102830" text-anchor="middle">Open the website</text>
+<rect x="32.5" y="1412.5" width="415" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="240" y="1437" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Get a new code</text>
+</g>
+<text x="560" y="966" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">6 · Companion: paired</text>
+<clipPath id="clip6"><rect x="560" y="980" width="480" height="600"/></clipPath>
+<rect x="560" y="980" width="480" height="600" fill="#0b111c"/>
+<g clip-path="url(#clip6)">
+<rect x="560" y="980" width="480" height="44" fill="#111c2a"/>
+<rect x="560" y="1023" width="480" height="1" fill="#2b3b50"/>
+<rect x="576" y="994" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="602" y="1008" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">RaidManager Companion</text>
+<ellipse cx="800" cy="1132" rx="36" ry="36" fill="#173a36"/>
+<text x="800" y="1146" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="40" font-weight="800" fill="#5de0c1" text-anchor="middle">✓</text>
+<text x="800" y="1220" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#eff5fa" text-anchor="middle">Paired with Bryn Valewood</text>
+<text x="800" y="1250" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="middle">This computer can now upload your character data.</text>
+<text x="800" y="1270" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="middle">Next, choose the WoW folders to watch.</text>
+<rect x="592" y="1308" width="416" height="40" rx="8" fill="#5de0c1"/>
+<text x="800" y="1333" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#102830" text-anchor="middle">Choose folders</text>
+<text x="800" y="1384" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="middle">You can revoke it anytime on the website, under Companion &amp; sync.</text>
+</g>
+<text x="1120" y="966" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">7 · Companion: code expired</text>
+<clipPath id="clip7"><rect x="1120" y="980" width="480" height="600"/></clipPath>
+<rect x="1120" y="980" width="480" height="600" fill="#0b111c"/>
+<g clip-path="url(#clip7)">
+<rect x="1120" y="980" width="480" height="44" fill="#111c2a"/>
+<rect x="1120" y="1023" width="480" height="1" fill="#2b3b50"/>
+<rect x="1136" y="994" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="1162" y="1008" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">RaidManager Companion</text>
+<text x="1152" y="1076" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#eff5fa" text-anchor="start">Pair with RaidManager</text>
+<text x="1152" y="1106" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">This code can&#x27;t be confirmed anymore.</text>
+<rect x="1152.5" y="1132.5" width="415" height="123" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="1176" y="1164" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">PAIRING CODE</text>
+<text x="1360" y="1210" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#8394aa" text-anchor="middle" letter-spacing="4">K7M-4QX</text>
+<text x="1360" y="1236" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#8394aa" text-anchor="middle">Expired</text>
+<rect x="1152.5" y="1280.5" width="415" height="71" rx="10" fill="#4b382a" stroke="#5e4631" stroke-width="1"/>
+<ellipse cx="1184" cy="1316" rx="12" ry="12" fill="#f3be75"/>
+<text x="1184" y="1322" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#102830" text-anchor="middle">!</text>
+<text x="1212" y="1311" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#f9d7a7" text-anchor="start">This code expired</text>
+<text x="1212" y="1333" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#e2ba87" text-anchor="start">Codes last 10 minutes. Get a new one to try again.</text>
+<rect x="1152" y="1376" width="416" height="40" rx="8" fill="#5de0c1"/>
+<text x="1360" y="1401" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#102830" text-anchor="middle">Get a new code</text>
+</g>
+<text x="1680" y="966" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">8 · Companion: pairing revoked</text>
+<clipPath id="clip8"><rect x="1680" y="980" width="480" height="600"/></clipPath>
+<rect x="1680" y="980" width="480" height="600" fill="#0b111c"/>
+<g clip-path="url(#clip8)">
+<rect x="1680" y="980" width="480" height="44" fill="#111c2a"/>
+<rect x="1680" y="1023" width="480" height="1" fill="#2b3b50"/>
+<rect x="1696" y="994" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="1722" y="1008" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#eff5fa" text-anchor="start">RaidManager Companion</text>
+<text x="1712" y="1076" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#eff5fa" text-anchor="start">Uploads stopped</text>
+<text x="1712" y="1106" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">BRYN-DESKTOP isn&#x27;t paired with your account anymore.</text>
+<rect x="1712.5" y="1132.5" width="415" height="71" rx="10" fill="#3f2329" stroke="#6b3740" stroke-width="1"/>
+<ellipse cx="1744" cy="1168" rx="12" ry="12" fill="#f2878c"/>
+<text x="1744" y="1174" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#2b1115" text-anchor="middle">!</text>
+<text x="1772" y="1163" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#f4a7ab" text-anchor="start">This companion was revoked</text>
+<text x="1772" y="1185" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#f4a7ab" text-anchor="start">It was revoked on the website, so it can&#x27;t upload.</text>
+<rect x="1712" y="1228" width="416" height="40" rx="8" fill="#5de0c1"/>
+<text x="1920" y="1253" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#102830" text-anchor="middle">Pair again</text>
+<text x="1712" y="1308" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Data it already uploaded stays in RaidManager.</text>
+</g>
+</svg>

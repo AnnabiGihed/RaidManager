@@ -109,6 +109,7 @@ TYPE_SCALE: dict[tuple[float, int, float], str] = {
     (18, 700, 0): "Heading/Section title",
     (16, 600, 0): "Heading/Card title",
     (28, 700, 0): "Display/Stat",
+    (32, 700, 4): "Display/Code",
     (15, 400, 0): "Body/Large",
     (14, 400, 0): "Body/Default",
     (14, 600, 0): "Body/Strong",

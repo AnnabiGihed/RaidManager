@@ -40,6 +40,9 @@ SIGN_OUT_W = 96
 # Signed-out pages (sign-in and its failures) are centred, without the app shell (ADR-0019).
 PUBLIC_W = 480
 PUBLIC_X = (BOARD_W - PUBLIC_W) / 2
+# The desktop companion's window: the palette and type scale, no website shell (ADR-0019).
+WINDOW_W, WINDOW_H, TITLE_BAR_H = 480, 600, 44
+WINDOW_PADDING = 32
 # (fill, text) per tone; the text passes WCAG AA on the fill.
 BADGE_TONES = {
     "warning": (P["Status/warning background"], P["Status/warning title"]),
@@ -255,3 +258,17 @@ def public_screen(name: str, x: float, y: float, content: list[Item]) -> Board:
                           text("Raid", logo_x + 42, 142, "RAID", 16, 800, TEXT, None, "left", 0.5),
                           text("Manager", logo_x + 84, 142, "MANAGER", 16, 800, ACCENT, None, "left", 0.5)])
     return Board(name, x, y, BOARD_W, BOARD_H, PAGE_BACKGROUND, [logo, *content])
+
+
+def companion_window(name: str, x: float, y: float, content: list[Item]) -> Board:
+    """A desktop companion window: a 480 x 600 board with a title bar holding the logo mark and the app name.
+
+    `content` is placed from `WINDOW_PADDING` and below `TITLE_BAR_H`, in window coordinates.
+    """
+    title_bar = Group("Title bar", [
+        Rect("Background", 0, 0, WINDOW_W, TITLE_BAR_H, P["Surface/top bar"]),
+        Rect("Divider", 0, TITLE_BAR_H - 1, WINDOW_W, 1, DIVIDER),
+        Rect("Mark", 16, 14, 16, 16, ACCENT, 1, 4),
+        text("App name", 42, 28, "RaidManager Companion", 13, 600),
+    ])
+    return Board(name, x, y, WINDOW_W, WINDOW_H, PAGE_BACKGROUND, [title_bar, *content])
