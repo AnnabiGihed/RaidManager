@@ -83,7 +83,7 @@ services.AddKeycloakAuthentication(configuration, swaggerTitle: "Orders API", sw
 ```
 (`ServiceInstallers/AddKeycloakAuthenticationServiceInstaller`) = `AddKeycloakAuthentication(config, o => o.WithCurrentUser().WithRedisTokenCaching().WithSwagger(title, version))`
 — JWT bearer + `ICurrentUser` + Redis claims cache/revocation (**needs `ConnectionStrings:Redis`** and `TokenRevocation` section) + SwaggerGen with Keycloak OAuth2.
-For Swagger UI also: `app.UseSwagger(); app.UseSwaggerUI(o => o.UseKeycloakOAuth(app.Services));`. Details: `pivot-auth-aspnetcore`, `pivot-auth-caching`.
+An interactive reference page is mandatory for every API host (`dotnet-solution-scaffolding`). With this Swashbuckle setup map `app.UseSwagger();` in every environment and `app.UseSwaggerUI(o => o.UseKeycloakOAuth(app.Services));` at least in Development, or Scalar on the same document. Details: `pivot-auth-aspnetcore`, `pivot-auth-caching`.
 
 ## 4. BFF helpers (`BFF/*`)
 
