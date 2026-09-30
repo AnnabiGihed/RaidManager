@@ -49,8 +49,8 @@ The existing board was migrated:
 **Negative**
 
 - Every new item needs a parent before its first pull request, and a new capability needs a feature first.
-- GitHub starts no workflow when a sub-issue link changes, so a misplaced item can stay unflagged for up to
-  15 minutes.
+- GitHub starts no workflow when a sub-issue link changes, so the guard may take up to 15 minutes to flag a
+  misplaced item.
 
 ## Alternatives considered
 
