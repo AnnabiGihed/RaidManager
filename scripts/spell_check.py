@@ -30,10 +30,10 @@ REMOVED = [
     re.compile(r"<!--.*?-->", re.DOTALL),              # HTML comments
     re.compile(r"`[^`\n]*`"),                           # inline code
     re.compile(r"\]\([^)]*\)"),                         # link and image targets
-    re.compile(r"^\s*\[[^\]]+\]:\s*\S+.*$", re.MULTILINE),  # reference definitions
+    re.compile(r"^[ \t]*\[[^\]\n]+\]:[^\n]*", re.MULTILINE),  # reference definitions
     re.compile(r"<[^>\n]+>"),                           # HTML tags and autolinks
     re.compile(r"\b(?:https?|mailto):\S+"),             # bare URLs
-    re.compile(r"\S+@\S+\.\w+"),                        # email addresses
+    re.compile(r"[\w.+-]+@[\w-]+(?:\.[\w-]+)+"),        # email addresses
     re.compile(r"\{\{[^}]*\}\}|\$\{[^}]*\}"),           # template placeholders
 ]
 WORD = re.compile(r"[A-Za-z]+(?:['’][A-Za-z]+)*")
