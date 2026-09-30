@@ -32,6 +32,9 @@ Every pull request must:
 
 - target `main`, link its task, and include the required five-section description and author checklist;
 - put `Closes #<work-item-number>` on its own line before the first heading; use `Refs` for parent stories and epics;
+- pass the coverage gate: tests cover at least 80% of the changed source lines, and total line coverage stays at or
+  above 60% ([ADR-0015](docs/adr/0015-gate-pull-requests-on-test-coverage.md)). The coverage comment on the pull
+  request lists any uncovered changed line;
 - be reviewed first by its operator, the author who ran the agent: a meaningful review comment on the latest commit,
   then **Ready for review** on the draft;
 - then receive one approval of the latest commit, with a meaningful comment, from someone other than its author and

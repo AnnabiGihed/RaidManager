@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- CI measures test coverage on every run and shows it on each pull request. A pull request fails when its changed
+  lines are under 80% covered or total coverage is under 60% (ADR-0015) (#121).
 - Project completion rules and a hierarchy audit that reopens epics or stories closed before their native child
   work is complete (#111).
 - An interactive API reference page at `/scalar` in Development, linked from the Aspire dashboard (ADR-0013) (#109).

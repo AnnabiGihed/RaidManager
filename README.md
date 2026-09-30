@@ -63,6 +63,17 @@ dotnet test RaidManager.sln --no-build
 The executable tests cover the Domain and Application projects and, against a SQL Server container, the
 Entity Framework Core persistence and the API. The other test projects are placeholders.
 
+To measure test coverage the way CI does, run the tests with the coverage settings and read the summary:
+
+```bash
+dotnet test RaidManager.sln --no-build --settings coverage.runsettings --results-directory TestResults
+python scripts/coverage_gate.py --reports TestResults --base origin/main
+```
+
+Pull requests must cover at least 80% of the source lines they change, and total coverage must stay at or above
+60% ([ADR-0015](docs/adr/0015-gate-pull-requests-on-test-coverage.md)). Each pull request shows the result in a
+coverage comment.
+
 Run the product through the Aspire AppHost. It generates the shared website key that the API requires
 (`Website:ServiceKey`, at least 32 characters) and passes it to the API and the website.
 

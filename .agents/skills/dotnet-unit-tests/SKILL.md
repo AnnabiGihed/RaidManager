@@ -64,6 +64,13 @@ anything with no business rule to express. If you can't write the scenario in th
 - Structure by bounded context and feature; one feature file per capability; no catch-all classes.
 - Technical xUnit tests are named `Method_Condition_ExpectedResult` and documented with a `<summary>`.
 - Cover the highest-risk paths first.
+- **Coverage is gated, and the gate is mandatory.** Every test project references `coverlet.collector`, and CI runs
+  the tests with the repository's coverage settings (`coverage.runsettings`: tests, migrations and generated code
+  excluded). A pull request must cover at least **80% of its changed coverable lines**, and total line coverage must
+  stay at or above the repository's floor (60% unless its ADR says otherwise). Check it locally before pushing and add
+  tests for every uncovered changed line the summary lists. Never lower a threshold, widen an exclusion, or add
+  `[ExcludeFromCodeCoverage]` to pass the gate; the attribute is only for code that genuinely can't run under test,
+  with a comment saying why.
 
 ## bUnit (Blazor components)
 - Render with a bUnit `TestContext`; assert on markup via `Find`/`FindAll`, not component fields.
@@ -91,6 +98,8 @@ anything with no business rule to express. If you can't write the scenario in th
 - Only owned boundaries mocked, via shared factories; no EF InMemory or database in unit tests.
 - Idempotency, replay-safety and event round-tripping asserted where the code relies on them.
 - UI deliveries come with their mirrored test projects.
+- The coverage gate passes: at least 80% of the changed lines covered and the total at or above the floor, with no
+  new exclusion added to get there.
 
 ## Example prompts
 - "Write the Gherkin scenarios and step definitions for the Product aggregate's creation rules."

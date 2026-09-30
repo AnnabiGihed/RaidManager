@@ -8,9 +8,16 @@ on:
   # The review workflow starts it on main after merging, because its workflow-token merge triggers no push.
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   build-test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
+      # Only for the coverage comment on the pull request.
+      pull-requests: write
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
@@ -26,4 +33,49 @@ jobs:
       - name: Build
         run: dotnet build RaidManager.sln --no-restore --configuration Release
       - name: Test
-        run: dotnet test RaidManager.sln --no-build --configuration Release
+        run: >-
+          dotnet test RaidManager.sln --no-build --configuration Release
+          --settings coverage.runsettings --results-directory TestResults
+      # The gate is measured here and enforced in the last step, so the summary and comment appear even when it fails.
+      - name: Coverage report
+        id: coverage
+        env:
+          BASE_SHA: ${{ github.event.pull_request.base.sha }}
+        run: |
+          if [ -n "$BASE_SHA" ]; then
+            git fetch --quiet --depth=1 origin "$BASE_SHA"
+          fi
+          if python3 scripts/coverage_gate.py --reports TestResults --base "$BASE_SHA" --summary coverage-summary.md; then
+            echo "passed=true" >> "$GITHUB_OUTPUT"
+          else
+            echo "passed=false" >> "$GITHUB_OUTPUT"
+          fi
+          cat coverage-summary.md >> "$GITHUB_STEP_SUMMARY"
+      - name: Upload coverage reports
+        uses: actions/upload-artifact@v4
+        with:
+          name: coverage
+          path: |
+            TestResults/**/coverage.cobertura.xml
+            coverage-summary.md
+          retention-days: 14
+      - name: Coverage comment
+        if: github.event_name == 'pull_request'
+        env:
+          GH_TOKEN: ${{ github.token }}
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+        run: |
+          # One comment per pull request, updated on every push.
+          existing=$(gh api "repos/$GITHUB_REPOSITORY/issues/$PR_NUMBER/comments" --paginate \
+            --jq '.[] | select(.user.login == "github-actions[bot]" and (.body | startswith("<!-- coverage-report -->"))) | .id' \
+            | head -n 1)
+          if [ -n "$existing" ]; then
+            gh api --method PATCH "repos/$GITHUB_REPOSITORY/issues/comments/$existing" -F body=@coverage-summary.md > /dev/null
+          else
+            gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body-file coverage-summary.md
+          fi
+      - name: Coverage gate
+        if: steps.coverage.outputs.passed != 'true'
+        run: |
+          echo "::error::The coverage gate failed (ADR-0015). See the coverage summary for the uncovered changed lines."
+          exit 1

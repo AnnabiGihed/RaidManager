@@ -23,6 +23,7 @@ nav:
       - Foundation and authentication: adr/0001-foundation-and-authentication.md
       - Character synchronization: adr/0002-use-desktop-companion-for-character-sync.md
       - Documentation publication: adr/0003-publish-documentation-through-github-pages.md
+      - Coverage gate: adr/0015-gate-pull-requests-on-test-coverage.md
 theme:
   name: material
 markdown_extensions:

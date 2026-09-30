@@ -123,3 +123,21 @@ page is not allowed.
 - **Smoke test:** step 2 of §5 checks the page.
 - **New API host:** a second API host copies all of the above in the same PR that creates it, including its
   dashboard link, tests, README line and an entry in `docs/reference/api-contracts.md`.
+
+## 7. Test coverage gate (mandatory)
+
+Coverage is measured and enforced on every pull request
+([ADR-0015](../../../docs/adr/0015-gate-pull-requests-on-test-coverage.md)).
+
+- **Rule:** at least 80% of the coverable lines a pull request changes under `src/` are covered, and total line
+  coverage stays at or above 60%. `build-test` fails otherwise, so the PR can't merge.
+- **Measure before pushing:**
+  `dotnet test RaidManager.sln --no-build --settings coverage.runsettings --results-directory TestResults`, then
+  `python scripts/coverage_gate.py --reports TestResults --base origin/main`. The summary lists every uncovered
+  changed line; add tests for them in the same PR.
+- **Evidence:** quote the changed-lines and total percentages from the coverage comment in the PR's "How it was
+  tested" section.
+- **Never** lower the thresholds, widen `coverage.runsettings`, or add `[ExcludeFromCodeCoverage]` to get past the
+  gate. Changing a threshold needs a new ADR and owner approval.
+- **New projects:** a new `src/` project gets its mirrored test project with real tests in the same PR. The summary
+  names every project no test loads, such as `RaidManager.DiscordBot` today.
