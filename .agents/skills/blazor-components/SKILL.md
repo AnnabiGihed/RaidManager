@@ -105,8 +105,8 @@ These govern the UI layer as a whole, not a single component. Every one of them 
 
 ## Workflow
 
-0. **Start from the approved mockup.** Where the repository keeps UI designs (RaidManager: Penpot exports in
-   `docs/mockups/`, ADR-0017), open the screen's mockup before writing markup and build to it: layout, states
+0. **Start from the approved mockup.** Where the repository keeps UI designs (RaidManager: Penpot files and the SVGs
+   rendered from them in `docs/mockups/`, ADR-0017 and ADR-0018, `penpot-mockups` skill), open the screen's mockup before writing markup and build to it: layout, states
    (empty, loading, error, filled) and wording. No mockup means no screen: ask for it. A deliberate deviation updates
    the mockup in the same PR, and the PR shows it.
 1. **Determine the render mode and TFM.** This gates every other decision. State it explicitly, apply it (`@rendermode`), verify an interactive feature works under it, and record it in the ADR on first UI delivery.

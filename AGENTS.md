@@ -19,3 +19,5 @@ Project skills live in `.agents/skills/` and, identically, in `.claude/skills/` 
 - For `.csproj` creation or package metadata changes, use `.agents/skills/raidmanager-project-packaging/SKILL.md`.
 - For the World of Warcraft 3.3.5a addon (Lua, TOC, SavedVariables), use
   `.agents/skills/wow-addon-335a-lua/SKILL.md`.
+- For UI mockups (Penpot files and their SVGs in `docs/mockups/`), use `.agents/skills/penpot-mockups/SKILL.md`.
+  Never put a `.penpot` or mockup `.svg` file in the repository root.

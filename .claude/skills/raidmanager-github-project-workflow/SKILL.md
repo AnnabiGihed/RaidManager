@@ -42,7 +42,8 @@ Every work item sits in exactly one chain of native sub-issues. There are no exc
   label and links or shows its Penpot mockup: `docs/mockups/<screen>.svg` as an image or link, or a Penpot share link
   while the design is in progress. Answer **Yes** to the form's **User interface** question to add the label. Until the
   mockup is linked, the `project-hierarchy` workflow labels the item `needs-mockup`. Never start building a screen
-  whose item is `needs-mockup`: ask the owner for the design first.
+  whose item is `needs-mockup`: create its design task first and generate the mockup with the `penpot-mockups` skill
+  (ADR-0018), then have the owner confirm it in Penpot.
 - Choose the middle level by intent: a **story** adds a capability for a user; an **improvement** makes existing
   behaviour, tooling, documentation or process better; a **bug** fixes behaviour that doesn't match its
   specification. Repository tooling belongs under the **Engineering platform and delivery** epic.

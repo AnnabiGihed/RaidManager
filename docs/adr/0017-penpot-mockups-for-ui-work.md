@@ -1,6 +1,6 @@
 # ADR-0017: Penpot mockups for all user-interface work
 
-- Status: Proposed
+- Status: Proposed, amended by [ADR-0018](0018-generate-penpot-mockups-in-the-repository.md)
 - Date: 2026-09-30
 - Deciders: Gihed Annabi
 

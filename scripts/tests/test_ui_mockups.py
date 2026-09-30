@@ -10,10 +10,12 @@ from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import project_hierarchy  # noqa: E402
+from penpot_render import render  # noqa: E402
+from penpot_scene import Board, Rect, write_penpot  # noqa: E402
 from project_hierarchy import Guard, Issue, Node  # noqa: E402
 from ui_mockups import (  # noqa: E402
-    NEEDS_MOCKUP, UI_LABEL, folder_problems, is_ui_file, mockup_problem, mockup_references, pull_request_problems,
-    ui_requested,
+    NEEDS_MOCKUP, UI_LABEL, folder_problems, is_ui_file, mockup_problem, mockup_references, placement_problems,
+    pull_request_problems, ui_requested,
 )
 
 PENPOT = "https://design.penpot.app/#/view/0f1e?page-id=2a&section=interactions"
@@ -104,25 +106,48 @@ class FolderTests(unittest.TestCase):
         self.folder = self.root / "docs/mockups"
         self.folder.mkdir(parents=True)
 
+    def pair(self, name: str = "review") -> Path:
+        penpot = self.folder / f"{name}.penpot"
+        write_penpot(penpot, name, "Page", [Board("Board", 0, 0, 100, 60, "#F5F5F5", [Rect("Box", 10, 10, 20, 20, "#4340D2")])])
+        penpot.with_suffix(".svg").write_text(render(penpot)[0], encoding="utf-8", newline=chr(10))
+        return penpot
+
     def test_missing_folder_passes(self) -> None:
         self.assertEqual(folder_problems(Path(tempfile.gettempdir()) / "no-such-repository-root"), [])
 
-    def test_source_and_export_pairs_pass(self) -> None:
-        (self.folder / "review.penpot").write_bytes(b"PK")
-        (self.folder / "review.svg").write_text("<svg/>", encoding="utf-8")
+    def test_source_with_its_current_rendering_passes(self) -> None:
+        self.pair()
         self.assertEqual(folder_problems(self.root), [])
 
     def test_export_without_source_and_source_without_export_fail(self) -> None:
-        (self.folder / "review.svg").write_text("<svg/>", encoding="utf-8")
-        (self.folder / "raids.penpot").write_bytes(b"PK")
+        (self.folder / "raids.svg").write_text("<svg/>", encoding="utf-8")
+        self.pair().with_suffix(".svg").unlink()
         self.assertEqual(sorted(folder_problems(self.root)), [
-            "docs/mockups/raids.penpot: missing its SVG export raids.svg",
-            "docs/mockups/review.svg: missing its Penpot source review.penpot",
+            "docs/mockups/raids.svg: missing its Penpot source raids.penpot",
+            "docs/mockups/review.penpot: missing its SVG; run python scripts/penpot_render.py docs/mockups/review.penpot",
         ])
+
+    def test_stale_rendering_fails(self) -> None:
+        self.pair().with_suffix(".svg").write_text("<svg>old</svg>", encoding="utf-8")
+        self.assertIn("isn't the current rendering", folder_problems(self.root)[0])
 
     def test_other_files_fail(self) -> None:
         (self.folder / "notes.md").write_text("# Notes", encoding="utf-8")
         self.assertIn("only .penpot sources", folder_problems(self.root)[0])
+
+    def test_mockups_outside_docs_mockups_fail(self) -> None:
+        (self.root / "character-review.penpot").write_bytes(b"PK")
+        (self.root / "character-review.svg").write_text("<svg/>", encoding="utf-8")
+        self.assertEqual(sorted(placement_problems(self.root)), [
+            "character-review.penpot: Penpot files live only in docs/mockups/",
+            "character-review.svg: SVG files live only in docs/ (mockups and diagrams) or a web project's wwwroot/",
+        ])
+
+    def test_diagrams_web_assets_and_build_output_are_allowed(self) -> None:
+        for path in ("docs/diagrams/context.svg", "src/Web/wwwroot/logo.svg", "src/Web/bin/Release/icon.svg"):
+            (self.root / path).parent.mkdir(parents=True, exist_ok=True)
+            (self.root / path).write_text("<svg/>", encoding="utf-8")
+        self.assertEqual(placement_problems(self.root), [])
 
 
 class GuardMockupTests(unittest.TestCase):
