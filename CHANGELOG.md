@@ -76,6 +76,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- The review workflow no longer leaves a ready pull request open without a sign. It retries a refused merge for
+  about five minutes and, if nothing else would retry it, fails the `review` job with GitHub's message (#123).
 - The completion guard now re-checks a parent and grandparent when a child is reopened or its labels change, and
   requires at least one completed child. A parent closed as not planned stays closed. A parent marked `Done` early
   returns to `In Progress` through the Project's built-in workflows, with no manual status correction (#116).

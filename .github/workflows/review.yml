@@ -120,27 +120,47 @@ jobs:
           written=$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json body --jq .body \
             | sed '/^## /,$d' | grep -iE '^Closes #[0-9]+[[:blank:]]*$' | grep -oE '[0-9]+' || true)
           closes=$(printf '%s\n%s\n' "$linked" "$written" | grep -E '^[0-9]+$' | sort -un || true)
-          # GitHub needs a moment to take the new status into account, so the merge is retried for a minute.
-          for attempt in $(seq 1 12); do
+          # GitHub needs a moment to take the new status into account, and it sometimes answers "Merge already in
+          # progress" for minutes, so the merge is retried for about five minutes with growing waits.
+          merged=false
+          for attempt in $(seq 1 15); do
             if gh pr merge "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --squash --delete-branch \
               --match-head-commit "$HEAD_SHA" > merge.txt 2>&1; then
-              cat merge.txt
-              for issue in $closes; do
-                labels=$(gh issue view "$issue" --repo "$GITHUB_REPOSITORY" --json labels --jq '.labels[].name')
-                if ! printf '%s\n' "$labels" | grep -Eq '^type:(task|bug|spike)$'; then
-                  echo "Skipped #$issue: only work items may close from a pull request."
-                  continue
-                fi
-                if [ "$(gh issue view "$issue" --repo "$GITHUB_REPOSITORY" --json state --jq .state)" = "OPEN" ]; then
-                  gh issue close "$issue" --repo "$GITHUB_REPOSITORY" --reason completed --comment "Completed by #$PR_NUMBER."
-                fi
-              done
-              for workflow in ci.yml docs.yml docs-publish.yml; do
-                gh workflow run "$workflow" --repo "$GITHUB_REPOSITORY" --ref main
-              done
-              exit 0
+              merged=true
+              break
             fi
-            sleep 5
+            echo "Attempt $attempt: $(tr '\n' ' ' < merge.txt)"
+            # A merge that GitHub reported as still in progress may have completed in the meantime.
+            if [ "$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json state --jq .state)" = "MERGED" ]; then
+              merged=true
+              break
+            fi
+            if [ "$attempt" -le 5 ]; then sleep 5; else sleep 30; fi
           done
-          cat merge.txt
-          echo "Not mergeable yet; a required check that finishes later re-runs this job and merges then."
+          if [ "$merged" = true ]; then
+            cat merge.txt
+            for issue in $closes; do
+              labels=$(gh issue view "$issue" --repo "$GITHUB_REPOSITORY" --json labels --jq '.labels[].name')
+              if ! printf '%s\n' "$labels" | grep -Eq '^type:(task|bug|spike)$'; then
+                echo "Skipped #$issue: only work items may close from a pull request."
+                continue
+              fi
+              if [ "$(gh issue view "$issue" --repo "$GITHUB_REPOSITORY" --json state --jq .state)" = "OPEN" ]; then
+                gh issue close "$issue" --repo "$GITHUB_REPOSITORY" --reason completed --comment "Completed by #$PR_NUMBER."
+              fi
+            done
+            for workflow in ci.yml docs.yml docs-publish.yml; do
+              gh workflow run "$workflow" --repo "$GITHUB_REPOSITORY" --ref main
+            done
+            exit 0
+          fi
+          # A required check that is still running re-runs this job when it finishes, and that run merges.
+          pending=$(gh pr checks "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --required --json bucket \
+            --jq '[.[] | select(.bucket == "pending")] | length' || true)
+          if [ "${pending:-0}" -gt 0 ]; then
+            echo "Not mergeable yet: $pending required check(s) still running. The run they start merges the pull request."
+            exit 0
+          fi
+          # Nothing would re-run this job, so a silent exit would leave a ready pull request unmerged.
+          echo "::error::Every gate passed but GitHub refused the merge: $(tr '\n' ' ' < merge.txt). Re-run this job from the Actions tab to merge."
+          exit 1

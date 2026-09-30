@@ -59,3 +59,7 @@ Quoted text, which starts with `>`, and links do not count as your own words.
 | Failure: changes requested | A peer asked for changes | Push the fix; the operator reviews again |
 | Failure: approved before the sign-off, or an older commit | The approval does not cover the current review | The peer approves again |
 | Success | Both reviews are complete | Nothing; the pull request merges by itself |
+
+If `review-gate` is green but the `review` job fails with "Every gate passed but GitHub refused the merge", GitHub
+kept refusing the merge for about five minutes, for example with "Merge already in progress". Open the failed run in
+the Actions tab and select **Re-run jobs**: the workflow merges on its own again. Don't merge by hand.
