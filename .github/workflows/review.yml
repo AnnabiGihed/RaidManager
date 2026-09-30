@@ -114,15 +114,21 @@ jobs:
         env:
           HEAD_SHA: ${{ steps.gate.outputs.head_sha }}
         run: |
-          closes=$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json closingIssuesReferences \
+          # GitHub does not always link "Closes #N", so the keywords in the body are read as well.
+          linked=$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json closingIssuesReferences \
             --jq '.closingIssuesReferences[].number')
+          written=$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json body --jq .body \
+            | grep -oiE '\b(close[sd]?|fix(e[sd])?|resolve[sd]?)[[:space:]]+#[0-9]+' | grep -oE '[0-9]+' || true)
+          closes=$(printf '%s\n%s\n' "$linked" "$written" | grep -E '^[0-9]+$' | sort -un || true)
           # GitHub needs a moment to take the new status into account, so the merge is retried for a minute.
           for attempt in $(seq 1 12); do
             if gh pr merge "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --squash --delete-branch \
               --match-head-commit "$HEAD_SHA" > merge.txt 2>&1; then
               cat merge.txt
               for issue in $closes; do
-                gh issue close "$issue" --repo "$GITHUB_REPOSITORY" --reason completed --comment "Completed by #$PR_NUMBER."
+                if [ "$(gh issue view "$issue" --repo "$GITHUB_REPOSITORY" --json state --jq .state)" = "OPEN" ]; then
+                  gh issue close "$issue" --repo "$GITHUB_REPOSITORY" --reason completed --comment "Completed by #$PR_NUMBER."
+                fi
               done
               for workflow in ci.yml docs.yml docs-publish.yml; do
                 gh workflow run "$workflow" --repo "$GITHUB_REPOSITORY" --ref main
