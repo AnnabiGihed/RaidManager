@@ -7,6 +7,7 @@
     <Description>Aspire application host that composes RaidManager services and SQL Server for local development.</Description>
     <IsPackable>false</IsPackable>
     <OutputType>Exe</OutputType>
+    <UserSecretsId>c9f2b516-7a43-4251-b819-567fd25edf64</UserSecretsId>
   </PropertyGroup>
   <ItemGroup>
     <ProjectReference Include="../../../API/RaidManager.ApiService/RaidManager.ApiService.csproj" />

@@ -1,0 +1,16 @@
+@page "/sign-in/failed"
+
+<PageTitle>Sign-in did not complete</PageTitle>
+
+<RadzenStack Gap="1rem" class="rz-p-4">
+    <RadzenCard>
+        <RadzenStack Gap="1rem">
+            <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H1">@ViewModel.Title</RadzenText>
+            <RadzenText TextStyle="TextStyle.Body1">@ViewModel.Message</RadzenText>
+            <RadzenStack Orientation="Orientation.Horizontal" Gap="1rem">
+                <RadzenButton Icon="login" Text="Try again" Click="TryAgain" />
+                <RadzenButton ButtonStyle="ButtonStyle.Light" Text="Back to home" Click="GoHome" />
+            </RadzenStack>
+        </RadzenStack>
+    </RadzenCard>
+</RadzenStack>

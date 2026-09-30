@@ -15,9 +15,15 @@ var api = builder.AddProject<Projects.RaidManager_ApiService>("api")
     .WithEnvironment("Website__ServiceKey", websiteServiceKey)
     .WaitFor(database);
 
+// The Discord application's OAuth2 credentials; keep them in the AppHost user secrets (README, "Sign in with Discord").
+var discordClientId = builder.AddParameter("discord-client-id");
+var discordClientSecret = builder.AddParameter("discord-client-secret", secret: true);
+
 builder.AddProject<Projects.RaidManager_Web>("web")
     .WithReference(api)
     .WithEnvironment("Website__ServiceKey", websiteServiceKey)
+    .WithEnvironment("Authentication__Discord__ClientId", discordClientId)
+    .WithEnvironment("Authentication__Discord__ClientSecret", discordClientSecret)
     .WaitFor(api);
 
 builder.AddProject<Projects.RaidManager_DiscordBot>("discord-bot")

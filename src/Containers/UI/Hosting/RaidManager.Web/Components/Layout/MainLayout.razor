@@ -1,0 +1,38 @@
+@inherits LayoutComponentBase
+
+<RadzenComponents />
+<RadzenLayout>
+    <RadzenHeader>
+        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" class="rz-px-4 rz-py-2">
+            <RadzenText TextStyle="TextStyle.H6" TagName="TagName.Span">Raid Manager</RadzenText>
+            <AuthorizeView>
+                <Authorized>
+                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem">
+                        <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.Span" data-testid="signed-in-name">@context.User.Identity?.Name</RadzenText>
+                        <form method="post" action="@AuthenticationRoutes.SignOut" data-enhance="false">
+                            <AntiforgeryToken />
+                            <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Light" Text="Sign out" />
+                        </form>
+                    </RadzenStack>
+                </Authorized>
+                <NotAuthorized>
+                    <RadzenButton Icon="login" Text="Sign in with Discord" Click="SignIn" />
+                </NotAuthorized>
+            </AuthorizeView>
+        </RadzenStack>
+    </RadzenHeader>
+    <RadzenBody>
+        <ErrorBoundary @ref="_errorBoundary">
+            <ChildContent>
+                @Body
+            </ChildContent>
+            <ErrorContent>
+                <RadzenStack Gap="1rem" class="rz-p-4">
+                    <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H1">Something went wrong</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body1">This page could not be shown. Try again, or go back to the home page.</RadzenText>
+                    <RadzenButton Text="Try again" Click="Recover" />
+                </RadzenStack>
+            </ErrorContent>
+        </ErrorBoundary>
+    </RadzenBody>
+</RadzenLayout>

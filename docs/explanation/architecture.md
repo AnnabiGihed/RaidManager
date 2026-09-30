@@ -14,14 +14,17 @@ state, and readiness diagrams. The views below provide the starting context.
 The application programming interface (API) hosts the application and persistence layers and exposes a
 website-only Discord sign-in endpoint, protected by the shared website key of
 [ADR-0011](../adr/0011-website-session-and-api-trust.md).
-The web app renders a placeholder page. The Discord worker logs its startup and waits; it has no interaction gateway.
+The web app signs players in with Discord and keeps a cookie session
+([ADR-0011](../adr/0011-website-session-and-api-trust.md)); it runs in Interactive Server mode with Radzen
+([ADR-0012](../adr/0012-interactive-server-rendering-with-radzen.md)).
+The Discord worker logs its startup and waits; it has no interaction gateway.
 The Aspire AppHost starts the API, web app, bot host, and a local SQL Server resource.
 The Domain project contains initial aggregates and value objects. The Application project has the first commands, to
 resolve a Discord sign-in to one user and to approve or reject a character claim, and a query listing the claims
 awaiting a player's decision. Queries read the write database through no-tracking readers
 ([ADR-0010](../adr/0010-read-queries-from-the-write-database.md)). The Entity Framework Core project persists the
 `User` and `Character` aggregates on SQL Server and records domain events in an outbox table; nothing delivers them
-yet. No host sends commands yet.
+yet. The API sends the sign-in command for the website.
 There is no addon or companion project yet.
 
 ## System context
