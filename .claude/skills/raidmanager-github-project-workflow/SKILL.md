@@ -24,10 +24,13 @@ Use this skill when planning work items or developing a RaidManager user story. 
 ## Work-item contracts
 
 - **Epic:** State the user or business outcome, boundaries, release milestone, and observable exit criteria. Its
-  child stories must cover the outcome; an epic title alone is not a deliverable.
+  child stories must cover the outcome; an epic title alone is not a deliverable. Keep it open and out of `Done`
+  until it has at least one native child story, every child story is closed and `Done`, and its exit criteria are met.
 - **Story:** State the actor, desired capability, and benefit. Write independently verifiable acceptance criteria,
   including relevant invalid, unavailable, and boundary behavior. Identify affected website, Discord bot, addon,
-  companion, and API surfaces, plus dependencies and data/security constraints. Link the parent epic.
+  companion, and API surfaces, plus dependencies and data/security constraints. Link the parent epic. Keep it open
+  and out of `Done` until it has at least one native child work item, every child work item is closed and `Done`,
+  and all acceptance criteria have evidence. Tasks, bugs, and spikes count as work items; an empty story never closes.
 - **Task:** Before any story-related implementation, create or reuse a dedicated repository task issue and make it
   a native child of the story. Give it one bounded deliverable, concrete acceptance criteria, verification steps,
   dependencies, `type:task`, assignee, Area, Priority, Status, and the story's release milestone. Do not merely copy
@@ -55,7 +58,9 @@ tests, documentation, and skill edits for a story may not.
    a justified `none` for an artifact that genuinely does not apply; never leave a required check unexplained.
 5. Review the final diff, commit with a Conventional Commit title containing the task number, and open one draft PR
    for that task against `main`. The PR must link the task with `Closes #<task-number>` and, for story work, the
-   parent with `Refs #<story-number>`. Map each task criterion to evidence and include the five required sections
+   parent with `Refs #<story-number>`. Put the closing reference on a standalone line before the first heading;
+   examples and parent references must not use closing keywords. The merge workflow only closes labeled work items.
+   Map each task criterion to evidence and include the five required sections
    and completed author checklist from `pr-and-branching-standards`. Do not describe a skipped or failing check as
    passed.
 6. Never mark the PR ready and never write a review or review comment in the operator's name: those are the
@@ -69,7 +74,7 @@ tests, documentation, and skill edits for a story may not.
    passes, report the reason; never merge manually to bypass a gate. After merge, verify the source branch was
    deleted and the task is closed and `Done`; mark a story `Done` only when every acceptance criterion is evidenced
    and all required child work is merged. Mark an epic `Done` only when all child stories satisfy their exit
-   criteria.
+   criteria. Close stories and epics separately after checking the full hierarchy.
 
 The `v1.0` milestone tracks release scope; it does not itself authorize a release. Release or tagging requires
 all included stories accepted, release checks completed, and explicit owner approval.

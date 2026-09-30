@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- Project completion rules and a hierarchy audit that reopens epics or stories closed before their native child
+  work is complete (#111).
 - An interactive API reference page at `/scalar` in Development, linked from the Aspire dashboard (ADR-0013) (#109).
 - Players can sign in to the website with Discord and sign out; a cancelled or failed sign-in explains why and
   offers a retry. The website now runs in Interactive Server mode with Radzen (ADR-0012) (#99).
@@ -70,6 +72,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- Pull request examples can no longer close epics or stories when the review workflow merges a change (#111).
 - Starting the Aspire AppHost now opens the dashboard at a fixed address instead of leaving only a console (#105).
 - The review workflow now closes a pull request's tasks even when GitHub does not link its "Closes #N" (#91).
 - Two reviews in quick succession no longer leave the required review check stale: the refresh waits for a

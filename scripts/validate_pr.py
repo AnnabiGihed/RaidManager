@@ -3,7 +3,7 @@
 from __future__ import annotations
 
 import os
-import re
+from closing_work_items import closing_numbers
 
 
 REQUIRED_SECTIONS = (
@@ -30,8 +30,8 @@ def validate(body: str) -> list[str]:
     headings = [line[3:].strip() for line in body.splitlines() if line.startswith("## ")]
     if headings[: len(REQUIRED_SECTIONS)] != list(REQUIRED_SECTIONS):
         errors.append("PR description must contain the five required sections in order")
-    if not re.search(r"\bCloses #\d+\b", body, re.IGNORECASE):
-        errors.append("PR description must close its task issue with Closes #number")
+    if not closing_numbers(body):
+        errors.append("PR description must have a standalone Closes #number line before the first section")
     if "### Author self-review" not in body or "- [" not in body:
         errors.append("PR description must include the author self-review checklist")
     for item in unchecked_self_review_items(body):

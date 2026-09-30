@@ -16,6 +16,7 @@ nav:
   - Review a pull request: how-to/review-a-pull-request.md
   - Glossary: glossary.md
   - API contracts: reference/api-contracts.md
+  - Project automation: reference/project-automation.md
   - Warmane lockout evidence: reference/warmane-lockout-rules.md
   - Decisions:
       - Index: adr/README.md
