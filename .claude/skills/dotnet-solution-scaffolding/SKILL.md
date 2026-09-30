@@ -61,6 +61,11 @@ Never scaffold hand-rolled Result/command/aggregate/repository/controller bases 
 
 - **Dependency direction inward only.** Domain → nothing but `Pivot.Framework.Domain`. Application → Domain. IntegrationEvents → contracts only. Infrastructure and Persistence → Application/Domain, never a container. Containers compose everything. Domain referencing EF Core or ASP.NET is a structural error.
 - **Aspire hosts the development composition.** Install the workload (`dotnet workload install aspire`) rather than excluding the AppHost from the build. Every runnable host references ServiceDefaults.
+- **The AppHost must be runnable with F5 on day one.** A missing launch profile leaves developers with a silent console window and a dashboard address buried in the logs. Every AppHost ships:
+  - `Properties/launchSettings.json` with an `https` and an `http` profile: `"commandName": "Project"`, `"launchBrowser": true`, a **fixed** `applicationUrl` for the dashboard, `ASPNETCORE_ENVIRONMENT`/`DOTNET_ENVIRONMENT` = `Development`, and fixed `ASPIRE_DASHBOARD_OTLP_ENDPOINT_URL` and `ASPIRE_RESOURCE_SERVICE_ENDPOINT_URL` (the `http` profile also sets `ASPIRE_ALLOW_UNSECURED_TRANSPORT=true`). Pick ports that don't collide with the hosts' own `launchSettings.json`.
+  - a `<UserSecretsId>` in the `.csproj`, so `dotnet user-secrets` and persisted generated parameters (`AddParameter(name, new GenerateParameterDefault { ... }, secret: true, persist: true)`) have somewhere to live.
+  - every secret declared as `builder.AddParameter("name", secret: true)` and passed to hosts with `WithEnvironment(...)`/`WithReference(...)`. Values live in the AppHost's user secrets (`dotnet user-secrets set "Parameters:name" "<value>" --project <AppHost>`), never in `appsettings*.json` — not even as empty keys or placeholder passwords.
+  - README instructions: set the AppHost as the Visual Studio startup project with the `https` profile, the dashboard address, what the first run does (image downloads, migrations), and the exact `user-secrets` commands.
 - **Persistence is its own project**, SQL Server via EF Core by default (PostgreSQL via `Pivot.Framework.Infrastructure.Persistence.PostgreSQL` when the work item says so); migrations in that project; no in-memory providers.
 - **Feature-first folders** in every project (`Features/<Feature>/…`, `Features/Shared/`) — see `dotnet-ddd-cqrs-conventions`.
 - **Test tree mirrors src/** — one test project per source project plus one E2E project.
@@ -128,7 +133,7 @@ Details for each call: `pivot-persistence-efcore`, `pivot-messaging-outbox`, `pi
 ## Workflow
 1. Determine containers — API (REST and/or gRPC), Jobs, UI. Aspire always.
 2. Create src/ layers with the Pivot package references above.
-3. Wire references inward only; hosts → ServiceDefaults; register hosts and dev resources (DB, RabbitMQ, Redis, Keycloak) in AppHost.
+3. Wire references inward only; hosts → ServiceDefaults; register hosts and dev resources (DB, RabbitMQ, Redis, Keycloak) in AppHost; add the AppHost's `launchSettings.json`, `UserSecretsId` and secret parameters, then **run the AppHost** and confirm the dashboard opens and every resource reaches Running.
 4. Mirror the test/ tree + E2E.
 5. Bootstrap build props, analyzers, `nuget.config`, root files, `docs/`, first ADR.
 6. Hand off features to `dotnet-ddd-cqrs-conventions`, tests to `dotnet-unit-tests` / `dotnet-e2e-tests`.
@@ -138,6 +143,7 @@ Details for each call: `pivot-persistence-efcore`, `pivot-messaging-outbox`, `pi
 
 ## Completion criteria
 - Tree matches the canonical structure and casing; Aspire AppHost + ServiceDefaults wired to every runnable host.
+- The AppHost has `Properties/launchSettings.json` (`https`/`http`, `launchBrowser`, fixed dashboard/OTLP/resource-service ports), a `UserSecretsId`, secrets as `AddParameter(..., secret: true)` with no values in any `appsettings*.json`, README run instructions, and it was actually started once with every resource Running.
 - Core has Application, Domain, IntegrationEvents; Persistence separate from Infrastructure; references inward only.
 - Each layer references its Pivot.Framework package; versions pinned together centrally; `nuget.config` maps `Pivot.Framework.*` to GitHub Packages with env-var credentials.
 - `test/` mirrors `src/` plus E2E; every project resolves `net10.0`; no package versions in `.csproj`.

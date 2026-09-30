@@ -81,3 +81,29 @@ adopt before a dedicated alignment PR.
   error; `clean-code-static-analysis` R25 requires a waiver ADR for a project-wide suppression.
 - **Floating versions:** `Directory.Packages.props` floats Pivot (`*`) and several packages (`10.*`), against
   `clean-code-static-analysis` R2. The comment there already asks to pin Pivot once the feed is reachable.
+
+## 5. Aspire AppHost and the local run
+
+`src/Containers/Aspire/Hosting/RaidManager.AppHost` is the only way to run the product locally.
+
+- **Launch profile:** `Properties/launchSettings.json`, `https` profile. The dashboard is at `https://localhost:17190`
+  (OTLP `21190`, resource service `22190`); the `http` profile uses `15190`/`19190`/`20190`. The website is
+  `https://localhost:55365` and the API `https://localhost:55366`. Keep these fixed; the Discord redirect and the
+  README depend on them.
+- **Parameters and secrets:** `website-service-key` is generated and persisted by Aspire (ADR-0011).
+  `discord-client-id` and `discord-client-secret` (secret) are set by the owner with
+  `dotnet user-secrets set "Parameters:<name>" "<value>" --project src/Containers/Aspire/Hosting/RaidManager.AppHost`.
+  Add every new secret the same way: `AddParameter(name, secret: true)`, a README line, never a settings file.
+  Check which parameters exist by reading the keys of the AppHost's `secrets.json`, never by printing values.
+- **Feed credentials in the agent shell:** `PIVOT_PACKAGES_USER`/`PIVOT_PACKAGES_TOKEN` are Windows user variables; an
+  agent session started earlier may not inherit them. Read them from the user profile for the one restore command
+  that needs them, without echoing them.
+- **Smoke test after touching startup:** any change to the AppHost, a host's `Program.cs`, launch settings, or
+  configuration keys requires one local run, recorded in the PR:
+  1. `dotnet run --project src/Containers/Aspire/Hosting/RaidManager.AppHost --launch-profile https` in the background.
+  2. Wait until `https://localhost:55365/` returns 200, check `https://localhost:55366/` answers, and that
+     `/sign-in` redirects to `https://discord.com/api/oauth2/authorize` with a `client_id` and the
+     `https://localhost:55365/signin-discord` redirect URI (redact the id and state in the PR).
+  3. Stop the AppHost and every `RaidManager.*` process it started, then remove any leftover `sql-*` container
+     (keep the data volume). Never leave processes or containers running for the owner to collide with.
+  Signing in to Discord itself is the owner's step; the agent never enters Discord credentials.
