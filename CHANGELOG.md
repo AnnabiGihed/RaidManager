@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- A sign-in command that resolves a Discord account to exactly one persisted user, refreshing a changed Discord
+  profile, with a unique Discord id in the database (#92).
 - A query listing a player's pending and conflicted character claims, read with no-tracking queries on the write
   database (ADR-0010) (#89).
 - SQL Server persistence for characters with EF Core: claims, loadouts and raid saves, an initial migration,

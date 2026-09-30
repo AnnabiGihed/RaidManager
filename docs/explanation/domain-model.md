@@ -87,7 +87,7 @@ A diagram concept is not an implemented class merely because it appears there.
 
 | Current foundation | Version 1 design extension |
 | --- | --- |
-| `Identity/Aggregates/User.cs` and `Communities/Aggregates/Community.cs` exist. | Discord sign-in, sessions, pairing and permission workflows need implementation. |
+| `Identity/Aggregates/User.cs` and `Communities/Aggregates/Community.cs` exist. The `SignInWithDiscord` command resolves a Discord account to one persisted user, whose Discord id is unique. | The Discord OAuth flow, sessions, pairing and permission workflows need implementation. |
 | `Characters/Aggregates/Character.cs` owns `CharacterClaim` entries with the pending, approved, rejected and conflict lifecycle; uploads never transfer ownership. The application commands `ApproveCharacterClaim` and `RejectCharacterClaim` apply a player's decision, and `GetPendingCharacterClaims` lists the claims awaiting it. | The API, ownership evidence, conflict resolution and the mandatory approval page are planned. |
 | `Characters/Aggregates/Loadout.cs` and raid lockouts exist. Only a complete saved-instance scan replaces the raid saves; an incomplete scan is recorded without erasing them, and an older complete scan is rejected. | The addon and companion complete-scan marker, snapshot history, source-specific freshness and manual-source handling are planned. |
 | `Raids/Aggregates/Raid.cs` requires one or more distinct `RaidTarget` instance and difficulty pairs. | Recurrence, composition revisions and re-evaluation are planned. |
