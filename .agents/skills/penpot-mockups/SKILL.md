@@ -28,7 +28,8 @@ imports as-is, so no Penpot API, MCP server, plugin or access token is needed.
   and the script is no longer run; say so in the script's docstring.
 - **Link the mockup where the work is tracked.** The user story (or improvement or bug), its UI task, and the pull
   request show the committed SVG:
-  `![<Screen> mockup](https://github.com/AnnabiGihed/RaidManager/blob/main/docs/mockups/<screen>.svg)`. That clears the
+  `![<Screen> mockup](https://github.com/AnnabiGihed/RaidManager/blob/main/docs/mockups/<screen>.svg)`. Once the SVG
+  is on `main`, that clears the
   `needs-mockup` label (ADR-0017).
 - **Never decide the product in the design.** Show only fields the API or domain provides, with realistic values.
   When a screen depends on an open question (what happens next, who acts), ask it on the task first.

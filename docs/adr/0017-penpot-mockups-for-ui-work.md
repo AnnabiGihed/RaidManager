@@ -33,7 +33,8 @@ Penpot is RaidManager's UI design tool, and a mockup is required for every user-
 - Every epic, feature, story, improvement, bug, task or spike that changes what users see carries the `ui` label and
   links or shows its mockup: the committed SVG, or a Penpot share link while the design is in progress. The issue
   forms ask the question and the hierarchy workflow adds the label. It flags an item without a mockup with
-  `needs-mockup`.
+  `needs-mockup`. A named `docs/mockups/<screen>.svg` counts only once that file exists on `main`; naming the file a
+  task will create isn't a mockup.
 - A pull request that changes user-interface files shows the mockup it implements, or states
   `No visual change:` with a reason. The docs `validate` check enforces it.
 - The docs check requires every mockup SVG to have its `.penpot` source, and the other way round.

@@ -61,6 +61,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- A `ui` item keeps its `needs-mockup` label until the mockup it names exists on `main`; naming a file that a task
+  will create no longer counts as a mockup (#199).
 - Documentation spelling is checked as strictly as the editor: US English plus one project word list that CI, Vale
   and Visual Studio share. British spellings and code names written as prose are fixed (#173).
 - The repository scripts and their tests pass a type check. CI runs `mypy`, and a Pyright configuration lets editors
