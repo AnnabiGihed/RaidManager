@@ -10,11 +10,13 @@ sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from validate_pr import validate  # noqa: E402
 
 
-VALID_BODY = """## What changed
+VALID_BODY = """Closes #44
+
+## What changed
 Adds documentation gates.
 
 ## Why it changed
-Closes #44.
+Completes the documentation work item.
 
 ## How it was tested
 Unit and workflow checks passed.
@@ -36,6 +38,10 @@ class PullRequestValidationTests(unittest.TestCase):
 
     def test_missing_task_reference_fails(self) -> None:
         self.assertTrue(any("Closes" in error for error in validate(VALID_BODY.replace("Closes #44", "Refs #44"))))
+
+    def test_closing_example_in_body_does_not_count(self) -> None:
+        body = VALID_BODY.replace("Closes #44\n\n", "").replace("Completes the documentation work item.", "For example: Closes #7.")
+        self.assertTrue(any("Closes" in error for error in validate(body)))
 
     def test_missing_section_fails(self) -> None:
         self.assertTrue(any("five required sections" in error for error in validate(VALID_BODY.replace("## How it was tested", "## Tests"))))

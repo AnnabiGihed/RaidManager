@@ -1,12 +1,14 @@
 # Pull request
 
+Closes #TASK_NUMBER
+
 ## What changed
 
 Describe the user or maintainer-visible outcome.
 
 ## Why it changed
 
-Link the task with a closing reference such as `Closes #44`. Reference the parent story when applicable.
+Explain why the task matters. Reference the parent story with `Refs #STORY_NUMBER` when applicable.
 
 ## How it was tested
 

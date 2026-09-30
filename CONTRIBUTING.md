@@ -6,6 +6,16 @@ Follow the mandatory [GitHub Project workflow](.agents/skills/raidmanager-github
 Story development requires an accepted story and a child task with measurable acceptance criteria before branching
 or implementation. Complete the task through its own issue-linked pull request.
 
+An epic stays open and outside `Done` until it has at least one native child story, all child stories are closed
+and `Done`, and its exit criteria are met. A story stays open and outside `Done` until it has at least one native
+child work item, all child work items are closed and `Done`, and its acceptance criteria are evidenced. Tasks,
+bugs, and spikes count as work items. The [hierarchy workflow](.github/workflows/project-hierarchy.yml) reopens
+invalid closures and audits them every 15 minutes using GitHub Actions' built-in repository permissions. No
+personal token or repository secret is required. The Project's built-in workflows cannot verify child completion
+or reset a manually changed `Done` status. If an invalid parent remains `Done` after its issue is reopened,
+find it in the [Status exceptions](https://github.com/users/AnnabiGihed/projects/2/views/5) view and move its
+Project status back to `In Progress`.
+
 ## Branching
 
 Create short-lived `feature/<task-number>-<slug>` or `fix/<task-number>-<slug>` branches from `main`.
@@ -22,6 +32,7 @@ Do not combine unrelated refactors and feature behavior in one commit.
 Every pull request must:
 
 - target `main`, link its task, and include the required five-section description and author checklist;
+- put `Closes #<work-item-number>` on its own line before the first heading; use `Refs` for parent stories and epics;
 - be reviewed first by its operator, the author who ran the agent: a meaningful review comment on the latest commit,
   then **Ready for review** on the draft;
 - then receive one approval of the latest commit, with a meaningful comment, from someone other than its author and

@@ -1,0 +1,33 @@
+name: project-hierarchy
+
+on:
+  issues:
+    types: [closed, labeled, unlabeled]
+  schedule:
+    - cron: '7,22,37,52 * * * *'
+  workflow_dispatch:
+
+permissions:
+  contents: read
+  issues: write
+
+jobs:
+  hierarchy:
+    runs-on: ubuntu-latest
+    env:
+      GH_TOKEN: ${{ github.token }}
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          ref: main
+          persist-credentials: false
+      - uses: actions/setup-python@v5
+        with:
+          python-version: '3.12'
+      - name: Reopen incomplete epics and stories
+        run: |
+          if [ "${{ github.event_name }}" = issues ]; then
+            python scripts/project_hierarchy.py --repository "$GITHUB_REPOSITORY" --issue "${{ github.event.issue.number }}"
+          else
+            python scripts/project_hierarchy.py --repository "$GITHUB_REPOSITORY"
+          fi
