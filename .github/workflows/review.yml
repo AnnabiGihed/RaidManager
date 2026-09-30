@@ -118,7 +118,7 @@ jobs:
           linked=$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json closingIssuesReferences \
             --jq '.closingIssuesReferences[].number')
           written=$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json body --jq .body \
-            | python scripts/closing_work_items.py)
+            | sed '/^## /,$d' | grep -iE '^Closes #[0-9]+[[:blank:]]*$' | grep -oE '[0-9]+' || true)
           closes=$(printf '%s\n%s\n' "$linked" "$written" | grep -E '^[0-9]+$' | sort -un || true)
           # GitHub needs a moment to take the new status into account, so the merge is retried for a minute.
           for attempt in $(seq 1 12); do
