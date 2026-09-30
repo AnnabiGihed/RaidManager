@@ -44,6 +44,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- The settings file of the API no longer carries an unused Discord section or a placeholder database password (#102).
 - The README now explains step by step how to give a machine access to the Pivot.Framework package feed (#97).
 - Pull requests now need the reviewer to mark every changed file as viewed before approving the latest commit;
   a new push dismisses approval, and unchecked author self-review items fail the description check (#59).
