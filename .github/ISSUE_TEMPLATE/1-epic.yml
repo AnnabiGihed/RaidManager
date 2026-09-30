@@ -1,0 +1,29 @@
+name: Epic
+description: "A user or business outcome, split into features."
+title: "Epic: "
+labels: ["type:epic"]
+body:
+  - type: markdown
+    attributes:
+      value: "Every item sits in one chain: Epic → Feature → Story, Improvement or Bug → Task or Spike (ADR-0016). After creating this issue, add it as a sub-issue of its parent; an item without the right parent gets the `needs-parent` label."
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+      description: "The user or business outcome this epic delivers."
+    validations:
+      required: true
+  - type: textarea
+    id: boundaries
+    attributes:
+      label: Boundaries
+      description: "What is in and out of scope."
+    validations:
+      required: true
+  - type: textarea
+    id: exit
+    attributes:
+      label: Exit criteria
+      description: "Observable conditions that make this epic done."
+    validations:
+      required: true

@@ -1,26 +1,55 @@
 # Project automation
 
-The [Raid Manager Project](https://github.com/users/AnnabiGihed/projects/2) uses native issue sub-issues. Epics and
-stories follow one completion rule, enforced without a personal token or repository secret.
+The [Raid Manager Project](https://github.com/users/AnnabiGihed/projects/2) tracks every work item in one hierarchy of
+native sub-issues ([ADR-0016](../adr/0016-epic-feature-story-task-hierarchy.md)). Automation enforces it without a
+personal token or repository secret.
 
-## Completion rule
+## Hierarchy
 
-- A story may be closed as completed only when it has at least one native child work item closed as completed,
-  and every child work item is closed. Tasks, bugs, and spikes count as work items.
-- An epic may be closed as completed only when it has at least one native child story closed as completed, and
-  every child story is closed.
-- A child closed as *not planned* or *duplicate* counts as closed but not as completed.
-- An epic or story closed as *not planned* or *duplicate* is abandoned, not completed, so the rule doesn't apply.
+| Type | Label | Parent | Children |
+| --- | --- | --- | --- |
+| Epic | `type:epic` | none | features |
+| Feature | `type:feature` | an epic | stories, improvements and bugs |
+| Story | `type:story` | a feature | tasks and spikes |
+| Improvement | `type:improvement` | a feature | tasks and spikes |
+| Bug | `type:bug` | a feature | tasks and spikes |
+| Task | `type:task` | a story, improvement or bug | none |
+| Spike | `type:spike` | a story, improvement or bug | none |
 
-## How the rule is enforced
+- A **story** adds a capability for a user. An **improvement** makes existing behaviour or tooling better. A **bug**
+  fixes something that doesn't work as specified.
+- A **task** is one bounded piece of work, delivered by one pull request. A **spike** is time-boxed research; it
+  counts as a task.
+- Every issue has exactly one type label. The issue forms set it and ask for the parent; add the new issue as a
+  sub-issue of that parent.
 
-The [completion workflow](https://github.com/AnnabiGihed/RaidManager/blob/main/.github/workflows/project-hierarchy.yml)
+## Rules
+
+- **Parent:** every item except an epic has a parent of the type in the table, and an epic has none.
+- **Completion:** an epic, feature, story, improvement or bug may be closed as completed only when at least one child
+  of the level below is closed as completed and every child is closed. A story, improvement or bug therefore never
+  closes without a completed task or spike.
+- **Pull requests:** a pull request closes tasks and spikes only (`Closes #N`), and each one must reach an epic
+  through a story, improvement or bug and a feature. Reference other items with `Refs #N`.
+- A child closed as *not planned* or *duplicate* counts as closed but not as completed. An item closed that way is
+  abandoned, so the completion and parent rules don't apply to it.
+
+## How the rules are enforced
+
+The [hierarchy workflow](https://github.com/AnnabiGihed/RaidManager/blob/main/.github/workflows/project-hierarchy.yml)
 runs with the built-in `GITHUB_TOKEN`:
 
-- When an issue is closed or reopened, or its labels change, it checks that issue, then its parent and
-  grandparent. A child reopened under a completed story therefore reopens the story, and the epic above it.
-- Every 15 minutes it audits every closed issue, as a safety net for events it missed.
+- When an issue is closed or reopened, or its labels change, it checks that issue and its three ancestors. A task
+  reopened under a completed story therefore reopens the story, its feature and its epic.
+- Every 15 minutes it audits every issue, as a safety net for events it missed and for sub-issue changes, which
+  start no workflow.
 - It reopens an invalid parent with a comment that names the missing or open children.
+- It labels a misplaced item `needs-parent` with one comment that says where it belongs, and removes the label once
+  the item is fixed. A new issue gets 10 minutes to be linked before it is flagged.
+
+The docs `validate` check runs the pull-request rule on every pull request, so a task without a full chain can't
+merge. After you fix a parent link, re-run that check from the pull request's Checks tab. The review workflow closes
+only tasks and spikes when it merges.
 
 The Project keeps `Status` in step with the issue through its built-in workflows, which run on GitHub's side and
 need no token:
@@ -30,6 +59,7 @@ need no token:
 | Item closed | Set `Status` to `Done` | A closed issue shows `Done`. |
 | Auto-close issue | Close the issue when `Status` is `Done` | Marking an item `Done` closes its issue, so the guard checks it. |
 | Item reopened | Set `Status` to `In Progress` | An issue the guard reopens leaves `Done` again. |
+| Auto-add sub-issues to project | On | A new child of a Project item joins the Project. |
 
 Together they undo an early `Done` without anyone's help. Marking a story `Done` closes it; the guard reopens it; the
 Project moves it back to `In Progress`.
@@ -37,12 +67,13 @@ Project moves it back to `In Progress`.
 ## One-time setup
 
 Enable **Item reopened** in the Project: open the Project menu, select **Workflows**, then **Item reopened**. Set
-the status to `In Progress`, then save and turn the workflow on. Keep **Item closed** and **Auto-close issue** on.
+the status to `In Progress`, then save and turn the workflow on. Keep the other workflows in the table on.
 Repository Actions can't change a user-owned Project's settings, so the owner does this once in the browser.
 
-## Verify the rule
+## Verify the rules
 
 1. Create a test issue labeled `type:story` with no children, and add it to the Project.
 2. Set its Project status to `Done`.
 3. Within a few minutes, the issue is reopened with a completion comment and its status is `In Progress`.
-4. Close the test issue as *not planned*. It stays closed.
+4. After 10 minutes, the next audit labels it `needs-parent`, because it has no feature.
+5. Close the test issue as *not planned*. It stays closed, and the next audit removes the label.

@@ -1,0 +1,37 @@
+name: User story
+description: "A new capability for a user, under a feature."
+title: "Story: "
+labels: ["type:story"]
+body:
+  - type: markdown
+    attributes:
+      value: "Every item sits in one chain: Epic → Feature → Story, Improvement or Bug → Task or Spike (ADR-0016). After creating this issue, add it as a sub-issue of its parent; an item without the right parent gets the `needs-parent` label."
+  - type: input
+    id: parent
+    attributes:
+      label: Parent
+      description: "The feature this item belongs to, for example #13."
+      placeholder: "#"
+    validations:
+      required: true
+  - type: textarea
+    id: story
+    attributes:
+      label: Story
+      description: "As a <actor>, I want <capability>, so that <benefit>."
+    validations:
+      required: true
+  - type: textarea
+    id: criteria
+    attributes:
+      label: Acceptance criteria
+      description: "Independently verifiable criteria, including invalid, unavailable and boundary cases."
+    validations:
+      required: true
+  - type: textarea
+    id: surfaces
+    attributes:
+      label: Affected surfaces
+      description: "Website, Discord bot, addon, companion, API."
+    validations:
+      required: false

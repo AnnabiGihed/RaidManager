@@ -1,0 +1,37 @@
+name: Task
+description: "One bounded piece of work under a story, improvement or bug."
+title: "Task: "
+labels: ["type:task"]
+body:
+  - type: markdown
+    attributes:
+      value: "Every item sits in one chain: Epic → Feature → Story, Improvement or Bug → Task or Spike (ADR-0016). After creating this issue, add it as a sub-issue of its parent; an item without the right parent gets the `needs-parent` label."
+  - type: input
+    id: parent
+    attributes:
+      label: Parent
+      description: "The story, improvement or bug this item belongs to, for example #13."
+      placeholder: "#"
+    validations:
+      required: true
+  - type: textarea
+    id: deliverable
+    attributes:
+      label: Deliverable
+      description: "The single, bounded result of this task."
+    validations:
+      required: true
+  - type: textarea
+    id: criteria
+    attributes:
+      label: Acceptance criteria
+      description: "Concrete criteria for this task, not a copy of the parent's."
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification
+      description: "How the result is checked: tests, commands, evidence."
+    validations:
+      required: true

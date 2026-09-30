@@ -6,14 +6,19 @@ Follow the mandatory [GitHub Project workflow](.agents/skills/raidmanager-github
 Story development requires an accepted story and a child task with measurable acceptance criteria before branching
 or implementation. Complete the task through its own issue-linked pull request.
 
-An epic stays open and outside `Done` until it has at least one native child story completed, all child stories
-are closed, and its exit criteria are met. A story stays open and outside `Done` until it has at least one native
-child work item completed, all child work items are closed, and its acceptance criteria are evidenced. Tasks,
-bugs, and spikes count as work items. A parent closed as *not planned* or *duplicate* is abandoned and exempt.
-The [hierarchy workflow](.github/workflows/project-hierarchy.yml) reopens an invalid closure, and its parent and
-grandparent, with GitHub Actions' built-in permissions. The Project's built-in workflows then move the item back to
-`In Progress`. No personal token, repository secret or manual status correction is involved. See
-[Project automation](docs/reference/project-automation.md) for the rule and the one-time Project setting.
+Every work item sits in one chain of native sub-issues
+([ADR-0016](docs/adr/0016-epic-feature-story-task-hierarchy.md)): an **epic** holds **features**; a feature holds
+**stories** (new capabilities), **improvements** (better existing behaviour or tooling) and **bugs**; each of those
+holds **tasks** or **spikes**. Only an epic has no parent. Create issues with the issue forms, which set the type
+label, and add each new issue as a sub-issue of its parent right away.
+
+A parent closes as completed only when at least one child is completed and every child is closed, so a story,
+improvement or bug never closes without a completed task. The
+[hierarchy workflow](.github/workflows/project-hierarchy.yml) reopens an invalid closure and its ancestors, and labels
+a misplaced item `needs-parent`. The Project's built-in
+workflows move a reopened item back to `In Progress`. Items closed as *not planned* or *duplicate* are exempt. No
+personal token, repository secret or manual status correction is involved. See
+[Project automation](docs/reference/project-automation.md) for the rules and the one-time Project setting.
 
 ## Branching
 
@@ -31,7 +36,8 @@ Do not combine unrelated refactors and feature behavior in one commit.
 Every pull request must:
 
 - target `main`, link its task, and include the required five-section description and author checklist;
-- put `Closes #<work-item-number>` on its own line before the first heading; use `Refs` for parent stories and epics;
+- put `Closes #<task-number>` on its own line before the first heading; it closes only a task or spike whose chain
+  reaches an epic through a story, improvement or bug and a feature. Use `Refs` for those parents;
 - pass the coverage gate: tests cover at least 80% of the changed source lines, and total line coverage stays at or
   above 60% ([ADR-0015](docs/adr/0015-gate-pull-requests-on-test-coverage.md)). The coverage comment on the pull
   request lists any uncovered changed line;

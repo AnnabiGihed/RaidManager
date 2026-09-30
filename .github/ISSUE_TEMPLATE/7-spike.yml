@@ -1,0 +1,30 @@
+name: Spike
+description: "Time-boxed research under a story, improvement or bug."
+title: "Spike: "
+labels: ["type:spike"]
+body:
+  - type: markdown
+    attributes:
+      value: "Every item sits in one chain: Epic → Feature → Story, Improvement or Bug → Task or Spike (ADR-0016). After creating this issue, add it as a sub-issue of its parent; an item without the right parent gets the `needs-parent` label."
+  - type: input
+    id: parent
+    attributes:
+      label: Parent
+      description: "The story, improvement or bug this item belongs to, for example #13."
+      placeholder: "#"
+    validations:
+      required: true
+  - type: textarea
+    id: question
+    attributes:
+      label: Question
+      description: "What must be learned or decided."
+    validations:
+      required: true
+  - type: textarea
+    id: exit
+    attributes:
+      label: Exit criteria
+      description: "The decision, document or prototype that ends the spike."
+    validations:
+      required: true

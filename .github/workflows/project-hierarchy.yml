@@ -30,7 +30,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Reopen incomplete epics and stories and their ancestors
+      - name: Ensure the needs-parent label exists
+        run: >-
+          gh label create needs-parent --repo "$GITHUB_REPOSITORY" --color d93f0b --force
+          --description "Not placed in the Epic, Feature, Story and Task hierarchy (ADR-0016)"
+      - name: Check parents and completion, and the ancestors of a changed issue
         run: |
           if [ "${{ github.event_name }}" = issues ]; then
             python scripts/project_hierarchy.py --repository "$GITHUB_REPOSITORY" --issue "${{ github.event.issue.number }}"

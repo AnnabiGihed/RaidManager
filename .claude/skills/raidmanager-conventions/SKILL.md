@@ -162,3 +162,20 @@ Coverage is measured and enforced on every pull request
   gate. Changing a threshold needs a new ADR and owner approval.
 - **New projects:** a new `src/` project gets its mirrored test project with real tests in the same PR. The summary
   names every project no test loads, such as `RaidManager.DiscordBot` today.
+
+## 9. Work-item hierarchy (mandatory)
+
+Every work item sits in one chain of native sub-issues
+([ADR-0016](../../../docs/adr/0016-epic-feature-story-task-hierarchy.md)): Epic → Feature → Story, Improvement or
+Bug → Task or Spike. Only an epic has no parent. `raidmanager-github-project-workflow` holds the contracts and the
+delivery sequence; these rules override the ticket rules of `pr-and-branching-standards`:
+
+- The "work item" that a branch, commit and pull request carry is always a **task or spike** number, never a story,
+  improvement, bug, feature or epic. A bug is fixed through its child task.
+- A story, improvement or bug can't close without a completed child task; a feature or epic can't close without a
+  completed child of the level below. `project-hierarchy.yml` reopens early closures and labels misplaced items
+  `needs-parent`; the docs `validate` check rejects a pull request whose task doesn't reach an epic.
+- Create issues with the issue forms (blank issues are disabled) and link the parent immediately. Tooling,
+  documentation and process work belongs under **Epic: Engineering platform and delivery** (#142).
+- Never create an epic without the owner's approval. Never work around the rules with a personal token, a
+  standalone task, or a parent closed as completed without evidence.

@@ -1,0 +1,30 @@
+name: Improvement
+description: "A change that improves existing behaviour or tooling, under a feature."
+title: "Improvement: "
+labels: ["type:improvement"]
+body:
+  - type: markdown
+    attributes:
+      value: "Every item sits in one chain: Epic → Feature → Story, Improvement or Bug → Task or Spike (ADR-0016). After creating this issue, add it as a sub-issue of its parent; an item without the right parent gets the `needs-parent` label."
+  - type: input
+    id: parent
+    attributes:
+      label: Parent
+      description: "The feature this item belongs to, for example #13."
+      placeholder: "#"
+    validations:
+      required: true
+  - type: textarea
+    id: outcome
+    attributes:
+      label: Outcome
+      description: "What gets better, and for whom."
+    validations:
+      required: true
+  - type: textarea
+    id: criteria
+    attributes:
+      label: Acceptance criteria
+      description: "Verifiable criteria for the improvement."
+    validations:
+      required: true
