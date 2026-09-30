@@ -39,7 +39,7 @@ Queries read the write database directly, through no-tracking queries, until a q
 
 ## Alternatives considered
 
-- **Projected read models:** rebuildable and fast to read, but they need event delivery first and add eventual
+- **Projected read models:** can be rebuilt from events and are fast to read, but they need event delivery first and add eventual
   consistency.
 - **Separate read DbContext (Pivot's read/write split):** adds a second context and mapping over the same database,
   with no benefit until reads move elsewhere.
