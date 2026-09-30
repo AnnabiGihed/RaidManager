@@ -48,11 +48,21 @@ def ui_requested(body: str) -> bool:
     return match["answer"].strip().lower().startswith("yes")
 
 
-def mockup_problem(labels: frozenset[str], body: str) -> str | None:
-    """Returns why a UI work item needs a mockup reference, or None when it has one or isn't UI work."""
-    if UI_LABEL not in labels or mockup_references(body):
+def mockup_problem(labels: frozenset[str], body: str, root: Path) -> str | None:
+    """Returns why a UI work item needs a mockup, or None when it shows one or isn't UI work.
+
+    A repository mockup counts only when its SVG exists under `root` (the `main` checkout the hierarchy workflow runs
+    on): naming the file a task will create isn't a mockup. A Penpot share link counts while the design is in progress.
+    """
+    if UI_LABEL not in labels or PENPOT_LINK.search(body or ""):
         return None
-    return ("This item changes a user interface, so it must link or show its mockup: an exported "
+    named = list(dict.fromkeys(REPOSITORY_MOCKUP.findall(body or "")))
+    if any((root / path).is_file() for path in named):
+        return None
+    if named:
+        return (f"This item names `{named[0]}`, but that mockup isn't in the repository yet. Commit it with its "
+                "`.penpot` source, or link the design's Penpot share link meanwhile.")
+    return ("This item changes a user interface, so it must link or show its mockup: a committed "
             "`docs/mockups/<screen>.svg` (as a link or an image) or a Penpot share link.")
 
 

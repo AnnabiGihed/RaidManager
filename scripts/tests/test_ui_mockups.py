@@ -39,15 +39,40 @@ class ReferenceTests(unittest.TestCase):
 
 
 class IssueRuleTests(unittest.TestCase):
-    def test_ui_item_without_a_mockup_fails(self) -> None:
-        self.assertIn("must link or show its mockup", mockup_problem(frozenset({UI_LABEL}), "No design yet.") or "")
+    """An issue shows a mockup when it names a committed SVG or links a Penpot share link."""
 
-    def test_ui_item_with_a_mockup_passes(self) -> None:
-        self.assertIsNone(mockup_problem(frozenset({UI_LABEL}), "![Review](docs/mockups/character-review.svg)"))
-        self.assertIsNone(mockup_problem(frozenset({UI_LABEL}), PENPOT))
+    def setUp(self) -> None:
+        scratch = tempfile.TemporaryDirectory()
+        self.addCleanup(scratch.cleanup)
+        self.root = Path(scratch.name)
+        (self.root / "docs/mockups").mkdir(parents=True)
+        (self.root / "docs/mockups/character-review.svg").write_text("<svg/>", encoding="utf-8")
+
+    def problem(self, body: str, labels: frozenset[str] = frozenset({UI_LABEL})) -> str | None:
+        return mockup_problem(labels, body, self.root)
+
+    def test_ui_item_without_a_mockup_fails(self) -> None:
+        self.assertIn("must link or show its mockup", self.problem("No design yet.") or "")
+
+    def test_committed_mockup_passes_as_image_link_or_blob_url(self) -> None:
+        for body in ("![Review](docs/mockups/character-review.svg)",
+                     "[Review](../docs/mockups/character-review.svg)",
+                     "https://github.com/owner/repo/blob/main/docs/mockups/character-review.svg"):
+            with self.subTest(body=body):
+                self.assertIsNone(self.problem(body))
+
+    def test_penpot_link_passes_while_the_design_is_in_progress(self) -> None:
+        self.assertIsNone(self.problem(PENPOT))
+
+    def test_naming_a_mockup_that_does_not_exist_fails(self) -> None:
+        problem = self.problem("Will produce docs/mockups/raid-list.penpot and docs/mockups/raid-list.svg.") or ""
+        self.assertIn("names `docs/mockups/raid-list.svg`, but that mockup isn't in the repository yet", problem)
+
+    def test_one_existing_mockup_among_missing_ones_passes(self) -> None:
+        self.assertIsNone(self.problem("docs/mockups/raid-list.svg and docs/mockups/character-review.svg"))
 
     def test_items_without_the_ui_label_are_not_checked(self) -> None:
-        self.assertIsNone(mockup_problem(frozenset({"type:task"}), ""))
+        self.assertIsNone(self.problem("", frozenset({"type:task"})))
 
 
 class PullRequestRuleTests(unittest.TestCase):
@@ -155,7 +180,12 @@ class GuardMockupTests(unittest.TestCase):
         patcher = mock.patch.object(project_hierarchy, "gh", return_value="")
         self.gh = patcher.start()
         self.addCleanup(patcher.stop)
-        self.guard = Guard("owner/repo")
+        scratch = tempfile.TemporaryDirectory()
+        self.addCleanup(scratch.cleanup)
+        self.root = Path(scratch.name)
+        (self.root / "docs/mockups").mkdir(parents=True)
+        (self.root / "docs/mockups/character-review.svg").write_text("<svg/>", encoding="utf-8")
+        self.guard = Guard("owner/repo", root=self.root)
 
     def calls(self) -> list[tuple[str, ...]]:
         return [call.args for call in self.gh.call_args_list]
@@ -176,6 +206,12 @@ class GuardMockupTests(unittest.TestCase):
                       body="![Review](docs/mockups/character-review.svg)")
         self.guard.check_mockup(Node(issue))
         self.assertEqual(self.calls(), [("issue", "edit", "18", "--repo", "owner/repo", "--remove-label", NEEDS_MOCKUP)])
+
+    def test_named_but_missing_mockup_keeps_the_label(self) -> None:
+        issue = Issue(167, "open", frozenset({"type:task", UI_LABEL, NEEDS_MOCKUP}),
+                      body="Commits docs/mockups/raid-list.penpot and docs/mockups/raid-list.svg.")
+        self.guard.check_mockup(Node(issue))
+        self.assertEqual(self.calls(), [])
 
     def test_abandoned_ui_item_is_not_flagged(self) -> None:
         self.guard.check_mockup(Node(Issue(18, "closed", frozenset({"type:story", UI_LABEL}), "not_planned")))

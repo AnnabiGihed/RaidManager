@@ -21,6 +21,7 @@ import subprocess
 import sys
 from dataclasses import dataclass, field
 from datetime import datetime, timedelta, timezone
+from pathlib import Path
 from typing import Callable
 
 from ui_mockups import NEEDS_MOCKUP, UI_LABEL, mockup_problem, ui_requested
@@ -230,9 +231,11 @@ def fetch_all(repository: str) -> list[Node]:
 class Guard:
     """Applies the rules to issues and records what it changed."""
 
-    def __init__(self, repository: str, now: datetime | None = None) -> None:
+    def __init__(self, repository: str, now: datetime | None = None, root: Path | None = None) -> None:
         self.repository = repository
         self.now = now or datetime.now(timezone.utc)
+        # The checkout the workflow runs on (main), where a named mockup must exist to count.
+        self.root = root or Path.cwd()
         self.reopened: set[int] = set()
 
     def current(self, issue: Issue) -> Issue:
@@ -263,7 +266,7 @@ class Guard:
             gh("issue", "edit", str(issue.number), "--repo", self.repository, "--add-label", UI_LABEL)
             labels = labels | {UI_LABEL}
             print(f"Labelled #{issue.number} {UI_LABEL}: its issue form says it changes a user interface")
-        problem = None if issue.abandoned else mockup_problem(labels, issue.body)
+        problem = None if issue.abandoned else mockup_problem(labels, issue.body, self.root)
         self.flag(issue, NEEDS_MOCKUP, problem, "Mockup rule (ADR-0017)")
 
     def check_completion(self, node: Node) -> None:
