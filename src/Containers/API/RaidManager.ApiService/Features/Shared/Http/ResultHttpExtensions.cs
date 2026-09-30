@@ -30,11 +30,27 @@ public static class ResultHttpExtensions
     {
         ArgumentNullException.ThrowIfNull(result);
         ArgumentNullException.ThrowIfNull(onSuccess);
-        if (result.IsSuccess)
-        {
-            return onSuccess(result.Value);
-        }
+        return result.IsSuccess ? onSuccess(result.Value) : Failure(result);
+    }
 
+    /// <summary>Returns the success response of a result without a value, or ProblemDetails for its failure.</summary>
+    /// <param name="result">The handler result.</param>
+    /// <param name="onSuccess">Builds the success response.</param>
+    /// <returns>The HTTP result.</returns>
+    public static IResult ToHttpResult(this Result result, Func<IResult> onSuccess)
+    {
+        ArgumentNullException.ThrowIfNull(result);
+        ArgumentNullException.ThrowIfNull(onSuccess);
+        return result.IsSuccess ? onSuccess() : Failure(result);
+    }
+    #endregion Public Methods
+
+    #region Private Helpers
+    /// <summary>Builds the ValidationProblem or ProblemDetails response for a failed result.</summary>
+    /// <param name="result">The failed result.</param>
+    /// <returns>The HTTP result.</returns>
+    private static IResult Failure(Result result)
+    {
         if (result is IValidationResult validation)
         {
             return TypedResults.ValidationProblem(validation.Errors
@@ -44,9 +60,7 @@ public static class ResultHttpExtensions
 
         return TypedResults.Problem(title: result.Error.Code, detail: result.Error.Message, statusCode: StatusCodeOf(result));
     }
-    #endregion Public Methods
 
-    #region Private Helpers
     /// <summary>Chooses the HTTP status for a failed result.</summary>
     /// <param name="result">The failed result.</param>
     /// <returns>The HTTP status code.</returns>
