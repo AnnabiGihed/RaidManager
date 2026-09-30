@@ -39,7 +39,7 @@ server-side rendering while the interactive infrastructure loaded for nothing.
 **Negative**
 
 - Each open tab holds a server circuit, so memory grows with concurrent players; components must dispose what they own.
-- Code reachable from a circuit cannot use `HttpContext`; request data must be captured during prerender.
+- Code reachable from a circuit cannot use `HttpContext`; request data must be captured during prerendering.
 
 ## Alternatives considered
 
