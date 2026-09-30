@@ -14,7 +14,8 @@ website, Discord bot, addon synchronization, and raid workflows are not yet usab
 You need the .NET 10 software development kit (SDK) and GitHub Packages read access for
 `AnnabiGihed/Pivot.Framework`.
 Set `PIVOT_PACKAGES_USER` and `PIVOT_PACKAGES_TOKEN` in your environment before restore.
-Docker is needed when running the Aspire host with its local SQL Server resource.
+Docker is needed when running the Aspire host with its local SQL Server resource, and for the persistence
+integration tests, which start a SQL Server container.
 
 ```bash
 dotnet restore RaidManager.sln
@@ -22,7 +23,16 @@ dotnet build RaidManager.sln --no-restore
 dotnet test RaidManager.sln --no-build
 ```
 
-Most test projects are placeholders; the current executable tests cover the Domain project.
+The executable tests cover the Domain and Application projects and, against a SQL Server container, the
+Entity Framework Core persistence. The other test projects are placeholders.
+
+The persistence schema is managed with Entity Framework Core migrations, using the repository's local `dotnet-ef`
+tool. After changing a mapping, add a migration:
+
+```bash
+dotnet tool restore
+dotnet tool run dotnet-ef migrations add <Name> --project src/Infrastructure/RaidManager.Persistence.EntityFrameworkCore --output-dir Migrations
+```
 
 ## Product direction
 

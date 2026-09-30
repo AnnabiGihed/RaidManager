@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- SQL Server persistence for characters with EF Core: claims, loadouts and raid saves, an initial migration,
+  domain events recorded in an outbox table, and integration tests against a SQL Server container (#87).
 - Application commands to approve or reject a character claim, with validation and handler tests; the domain
   repository contracts now extend Pivot's command repository (#85).
 - A how-to page on reviewing a pull request, with comments that pass and fail the review gate (#81).
