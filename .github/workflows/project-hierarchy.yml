@@ -3,7 +3,8 @@ name: project-hierarchy
 on:
   issues:
     # A reopened or relabeled child can invalidate a completed parent, so every change re-checks the ancestors.
-    types: [closed, reopened, labeled, unlabeled]
+    # Opening or editing an issue can add its mockup link or its form answer, so those events re-check it too.
+    types: [opened, edited, closed, reopened, labeled, unlabeled]
   schedule:
     - cron: '7,22,37,52 * * * *'
   workflow_dispatch:
@@ -30,10 +31,11 @@ jobs:
       - uses: actions/setup-python@v5
         with:
           python-version: '3.12'
-      - name: Ensure the needs-parent label exists
-        run: >-
-          gh label create needs-parent --repo "$GITHUB_REPOSITORY" --color d93f0b --force
-          --description "Not placed in the Epic, Feature, Story and Task hierarchy (ADR-0016)"
+      - name: Ensure the rule labels exist
+        run: |
+          gh label create needs-parent --repo "$GITHUB_REPOSITORY" --color d93f0b --force             --description "Not placed in the Epic, Feature, Story and Task hierarchy (ADR-0016)"
+          gh label create ui --repo "$GITHUB_REPOSITORY" --color 1d76db --force             --description "Changes what users see; must link or show its Penpot mockup (ADR-0017)"
+          gh label create needs-mockup --repo "$GITHUB_REPOSITORY" --color fbca04 --force             --description "UI work without a linked or shown mockup (ADR-0017)"
       - name: Check parents and completion, and the ancestors of a changed issue
         run: |
           if [ "${{ github.event_name }}" = issues ]; then

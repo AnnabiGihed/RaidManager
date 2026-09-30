@@ -179,3 +179,20 @@ delivery sequence; these rules override the ticket rules of `pr-and-branching-st
   documentation and process work belongs under **Epic: Engineering platform and delivery** (#142).
 - Never create an epic without the owner's approval. Never work around the rules with a personal token, a
   standalone task, or a parent closed as completed without evidence.
+
+## 10. UI mockups in Penpot (mandatory)
+
+Penpot is the only UI design tool ([ADR-0017](../../../docs/adr/0017-penpot-mockups-for-ui-work.md),
+`docs/how-to/design-a-screen.md`). A mockup comes before the screen, for every user interface: website, companion,
+addon and Discord messages.
+
+- **Files:** each screen is `docs/mockups/<screen>.penpot` (source) plus `docs/mockups/<screen>.svg` (export),
+  committed together; `validate_docs.py` fails on half a pair or any other file in that folder. Never hand-edit the
+  SVG, and never commit a mockup from another tool.
+- **Work items:** every UI item carries `ui` and links or shows its mockup; `needs-mockup` marks those that don't.
+  Epics and features list their stories' mockups.
+- **Pull requests:** a change to `src/Containers/UI/`, `addon/`, `.razor`, `.css`, `.html`, `.lua` or `.toc` files
+  shows its mockup or states `No visual change: <reason>`; the docs `validate` check (`scripts/ui_mockups.py`)
+  enforces it.
+- **The agent can't design in Penpot** (it needs the owner's account). When a UI task has no mockup, stop and ask the
+  owner for it; don't invent a layout. Deliberate deviations update the mockup in the same PR.

@@ -34,6 +34,15 @@ personal token or repository secret.
 - A child closed as *not planned* or *duplicate* counts as closed but not as completed. An item closed that way is
   abandoned, so the completion and parent rules don't apply to it.
 
+## User-interface mockups
+
+Every item that changes what users see carries the `ui` label and links or shows its Penpot mockup
+([ADR-0017](../adr/0017-penpot-mockups-for-ui-work.md), [how to design a screen](../how-to/design-a-screen.md)). A
+mockup is an exported `docs/mockups/<screen>.svg` shown as an image or link, or a Penpot share link. The issue forms
+ask **User interface**, and answering yes adds the `ui` label. The hierarchy workflow labels a `ui` item without a
+mockup `needs-mockup`, with one comment, and removes the label once the mockup is linked. A pull request that changes
+user-interface files must show its mockup, or state `No visual change:` with a reason.
+
 ## How the rules are enforced
 
 The [hierarchy workflow](https://github.com/AnnabiGihed/RaidManager/blob/main/.github/workflows/project-hierarchy.yml)
@@ -44,12 +53,13 @@ runs with the built-in `GITHUB_TOKEN`:
 - Every 15 minutes it audits every issue, as a safety net for events it missed and for sub-issue changes, which
   start no workflow.
 - It reopens an invalid parent with a comment that names the missing or open children.
-- It labels a misplaced item `needs-parent` with one comment that says where it belongs, and removes the label once
-  the item is fixed. A new issue gets 10 minutes to be linked before it is flagged.
+- It labels a misplaced item `needs-parent` with one comment that says where it belongs, and a `ui` item without a
+  mockup `needs-mockup`. It removes each label once the item is fixed. A new issue gets 10 minutes to be linked
+  before it is flagged.
 
-The docs `validate` check runs the pull-request rule on every pull request, so a task without a full chain can't
-merge. After you fix a parent link, re-run that check from the pull request's Checks tab. The review workflow closes
-only tasks and spikes when it merges.
+The docs `validate` check runs the pull-request rules on every pull request, so a task without a full chain, or a
+user-interface change without its mockup, can't merge. After you fix a parent link, re-run that check from the pull
+request's Checks tab. The review workflow closes only tasks and spikes when it merges.
 
 The Project keeps `Status` in step with the issue through its built-in workflows, which run on GitHub's side and
 need no token:

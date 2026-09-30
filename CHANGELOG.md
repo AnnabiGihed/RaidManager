@@ -9,6 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- Penpot is the UI design tool, and every item or pull request that changes what users see must show its mockup from
+  `docs/mockups/`. Issue forms ask about user-interface impact; the hierarchy workflow labels UI items without a
+  mockup `needs-mockup`, and the docs check keeps each mockup's source and export together (ADR-0017) (#165).
 - The API lets the website list a player's character claims awaiting a decision and approve or reject one. Approving
   a character another player owns keeps the claim in conflict review (#161).
 - Every work item now sits in one Epic, Feature, Story, Improvement or Bug, Task or Spike hierarchy. Issue forms ask

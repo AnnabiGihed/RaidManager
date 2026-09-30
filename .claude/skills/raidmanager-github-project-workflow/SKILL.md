@@ -37,6 +37,12 @@ Every work item sits in exactly one chain of native sub-issues. There are no exc
 
 - Only an epic has no parent. Give every issue exactly one type label, and link it to its parent as soon as it is
   created; after 10 minutes the `project-hierarchy` workflow labels an unlinked item `needs-parent`.
+- **User interface work shows its design (ADR-0017).** Any epic, feature, story, improvement, bug, task or spike
+  that changes what users see (website pages, companion windows, addon frames, Discord messages) carries the `ui`
+  label and links or shows its Penpot mockup: `docs/mockups/<screen>.svg` as an image or link, or a Penpot share link
+  while the design is in progress. Answer **Yes** to the form's **User interface** question to add the label. Until the
+  mockup is linked, the `project-hierarchy` workflow labels the item `needs-mockup`. Never start building a screen
+  whose item is `needs-mockup`: ask the owner for the design first.
 - Choose the middle level by intent: a **story** adds a capability for a user; an **improvement** makes existing
   behaviour, tooling, documentation or process better; a **bug** fixes behaviour that doesn't match its
   specification. Repository tooling belongs under the **Engineering platform and delivery** epic.
@@ -80,7 +86,9 @@ tests, documentation, and skill edits may not.
 3. Run `git branch --show-current`, fetch the latest `main`, and create one short-lived `feature/<task-number>-<slug>`
    or `fix/<task-number>-<slug>` branch from `origin/main`. No branch from an epic, feature or story number, no
    `develop` branch, and no direct push to `main`. Set the task to `In Progress`; reflect active work on its parents.
-4. Implement only the task's scope while satisfying the parent's applicable criteria. Add automated tests for
+4. For UI work, open the item's mockup first and build to it. If the implementation must differ, update the
+   `.penpot` source and the SVG export in the same change (`docs/how-to/design-a-screen.md`).
+   Implement only the task's scope while satisfying the parent's applicable criteria. Add automated tests for
    changed behavior and failure paths. Before pushing, run the build, tests, format, and these gates locally, and
    record the results:
    - **Coverage** (`raidmanager-conventions` §8): at least 80% of changed lines covered and the total at or above
@@ -97,6 +105,9 @@ tests, documentation, and skill edits may not.
    - Link the task with `Closes #<task-number>` on a standalone line before the first heading. Only tasks and spikes
      may be closed by a PR, and the docs `validate` check fails unless each one reaches an epic through a story,
      improvement or bug and a feature.
+   - When the change touches user-interface files, show the mockup it implements
+     (`![<screen>](docs/mockups/<screen>.svg)`), or state `No visual change: <reason>` on its own line. The docs
+     `validate` check fails otherwise.
    - Reference the parents with `Refs #<number>`. Examples and parent references must not use closing keywords.
    - Map each task criterion to evidence, quote the coverage comment's numbers, and include the five required
      sections and the completed author checklist from `pr-and-branching-standards`. Do not describe a skipped or
