@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- Players can sign in to the website with Discord and sign out; a cancelled or failed sign-in explains why and
+  offers a retry. The website now runs in Interactive Server mode with Radzen (ADR-0012) (#99).
 - The API now hosts the application and persistence and exposes a website-only endpoint that resolves a Discord
   sign-in to its user; the Aspire AppHost generates the shared website key (ADR-0011) (#95).
 - A sign-in command that resolves a Discord account to exactly one persisted user, refreshing a changed Discord

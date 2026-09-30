@@ -1,16 +1,15 @@
 @page "/"
 
-<ErrorBoundary>
-    <ChildContent>
-        <main>
-            <h1>Warmane Raid Manager</h1>
-            <p>The project foundation is ready for Discord authentication, Warmane character sync and raid planning.</p>
-        </main>
-    </ChildContent>
-    <ErrorContent Context="exception">
-        <main>
-            <h1>Unable to render the page</h1>
-            <p>@exception.Message</p>
-        </main>
-    </ErrorContent>
-</ErrorBoundary>
+<PageTitle>Raid Manager</PageTitle>
+
+<RadzenStack Gap="1rem" class="rz-p-4">
+    <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H1">Warmane Raid Manager</RadzenText>
+    <AuthorizeView>
+        <Authorized>
+            <RadzenText TextStyle="TextStyle.Body1">Welcome, @context.User.Identity?.Name. Your characters and raids will appear here.</RadzenText>
+        </Authorized>
+        <NotAuthorized>
+            <RadzenText TextStyle="TextStyle.Body1">Sign in with Discord to plan raids with your characters.</RadzenText>
+        </NotAuthorized>
+    </AuthorizeView>
+</RadzenStack>

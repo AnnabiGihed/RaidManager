@@ -66,6 +66,24 @@ Entity Framework Core persistence and the API. The other test projects are place
 Run the product through the Aspire AppHost. It generates the shared website key that the API requires
 (`Website:ServiceKey`, at least 32 characters) and passes it to the API and the website.
 
+### Sign in with Discord locally
+
+The website signs players in with the Discord application's OAuth2 credentials. Store them in the Aspire AppHost's
+user secrets, which live in your user profile, never in the repository:
+
+1. In the [Discord Developer Portal](https://discord.com/developers/applications), open the application, then
+   **OAuth2**, and add the redirect `https://localhost:55365/signin-discord`.
+2. Copy the **Client ID**, and generate a **Client Secret**.
+3. From the repository root, store both:
+
+   ```bash
+   dotnet user-secrets set "Parameters:discord-client-id" "<client-id>" --project src/Containers/Aspire/Hosting/RaidManager.AppHost
+   dotnet user-secrets set "Parameters:discord-client-secret" "<client-secret>" --project src/Containers/Aspire/Hosting/RaidManager.AppHost
+   ```
+
+The AppHost passes them to the website, which refuses to start without them. The Aspire dashboard also asks for any
+parameter that has no value yet.
+
 ### Change the database schema
 
 The persistence schema is managed with Entity Framework Core migrations, using the repository's local `dotnet-ef`

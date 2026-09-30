@@ -11,5 +11,10 @@
     <ProjectReference Include="../../Core/RaidManager.Shared/RaidManager.Shared.csproj" />
     <ProjectReference Include="../../Core/RaidManager.ViewModels/RaidManager.ViewModels.csproj" />
     <ProjectReference Include="../../../Aspire/Defaults/RaidManager.ServiceDefaults/RaidManager.ServiceDefaults.csproj" />
+    <PackageReference Include="AspNet.Security.OAuth.Discord" />
+    <PackageReference Include="Radzen.Blazor" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="RaidManager.Web.Tests" />
   </ItemGroup>
 </Project>
