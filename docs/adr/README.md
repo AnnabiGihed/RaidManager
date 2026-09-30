@@ -16,3 +16,4 @@
 | 0012 | [Interactive Server rendering with Radzen](0012-interactive-server-rendering-with-radzen.md) | Proposed |
 | 0013 | [Scalar as the API reference page](0013-scalar-api-reference.md) | Proposed |
 | 0014 | [Mirror the documentation to the GitHub Wiki](0014-mirror-documentation-to-the-github-wiki.md) | Proposed |
+| 0015 | [Gate pull requests on test coverage](0015-gate-pull-requests-on-test-coverage.md) | Proposed |

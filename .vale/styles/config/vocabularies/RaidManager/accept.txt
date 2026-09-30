@@ -35,3 +35,5 @@ unpair
 Warband
 Warcraft
 Warmane
+Codecov
+SonarCloud

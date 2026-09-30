@@ -34,6 +34,7 @@ nav:
       - Interactive Server rendering with Radzen: adr/0012-interactive-server-rendering-with-radzen.md
       - Scalar API reference: adr/0013-scalar-api-reference.md
       - GitHub Wiki mirror: adr/0014-mirror-documentation-to-the-github-wiki.md
+      - Coverage gate: adr/0015-gate-pull-requests-on-test-coverage.md
 theme:
   name: material
 markdown_extensions:

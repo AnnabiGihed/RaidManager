@@ -13,3 +13,4 @@ site/
 .env
 appsettings.*.local.json
 secrets.json
+coverage-summary.md

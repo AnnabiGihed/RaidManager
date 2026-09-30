@@ -144,3 +144,21 @@ Rules for every documentation change:
 - Keep documents to GitHub-compatible Markdown: fenced `mermaid` blocks, relative links, no MkDocs-only syntax
   (admonitions, tabs, snippets) until the converter supports it.
 - A new ADR also gets a row in `docs/adr/README.md`.
+
+## 8. Test coverage gate (mandatory)
+
+Coverage is measured and enforced on every pull request
+([ADR-0015](../../../docs/adr/0015-gate-pull-requests-on-test-coverage.md)).
+
+- **Rule:** at least 80% of the coverable lines a pull request changes under `src/` are covered, and total line
+  coverage stays at or above 60%. `build-test` fails otherwise, so the PR can't merge.
+- **Measure before pushing:**
+  `dotnet test RaidManager.sln --no-build --settings coverage.runsettings --results-directory TestResults`, then
+  `python scripts/coverage_gate.py --reports TestResults --base origin/main`. The summary lists every uncovered
+  changed line; add tests for them in the same PR.
+- **Evidence:** quote the changed-lines and total percentages from the coverage comment in the PR's "How it was
+  tested" section.
+- **Never** lower the thresholds, widen `coverage.runsettings`, or add `[ExcludeFromCodeCoverage]` to get past the
+  gate. Changing a threshold needs a new ADR and owner approval.
+- **New projects:** a new `src/` project gets its mirrored test project with real tests in the same PR. The summary
+  names every project no test loads, such as `RaidManager.DiscordBot` today.
