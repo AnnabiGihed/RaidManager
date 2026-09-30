@@ -15,10 +15,11 @@ The application programming interface (API) exposes only a foundation endpoint a
 The web app renders a placeholder page. The Discord worker logs its startup and waits; it has no interaction gateway.
 The Aspire AppHost starts the API, web app, bot host, and a local SQL Server resource.
 The Domain project contains initial aggregates and value objects. The Application project has the first commands, to
-approve or reject a character claim, and a query listing the claims awaiting a player's decision. Queries read the
-write database through no-tracking readers ([ADR-0010](../adr/0010-read-queries-from-the-write-database.md)). The
-Entity Framework Core project persists the `Character` aggregate on SQL Server and records domain events in an outbox
-table; nothing delivers them yet. No host sends commands yet.
+resolve a Discord sign-in to one user and to approve or reject a character claim, and a query listing the claims
+awaiting a player's decision. Queries read the write database through no-tracking readers
+([ADR-0010](../adr/0010-read-queries-from-the-write-database.md)). The Entity Framework Core project persists the
+`User` and `Character` aggregates on SQL Server and records domain events in an outbox table; nothing delivers them
+yet. No host sends commands yet.
 There is no addon or companion project yet.
 
 ## System context

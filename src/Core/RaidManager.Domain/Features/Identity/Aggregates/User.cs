@@ -68,12 +68,23 @@ public sealed class User : AggregateRoot<UserId>
     /// <summary>Refreshes mutable profile information retrieved from Discord.</summary>
     /// <param name="displayName">The latest Discord display name.</param>
     /// <param name="avatarUrl">The latest optional Discord avatar URL.</param>
-    public void UpdateDiscordProfile(string displayName, string? avatarUrl)
+    /// <returns>
+    /// <see langword="true"/> when the profile changed and <see cref="DiscordProfileUpdated"/> was raised; <see langword="false"/>
+    /// when it already matched, so a routine sign-in writes nothing.
+    /// </returns>
+    public bool UpdateDiscordProfile(string displayName, string? avatarUrl)
     {
         EnsureDisplayName(displayName);
-        DisplayName = displayName.Trim();
+        var trimmedName = displayName.Trim();
+        if (trimmedName == DisplayName && avatarUrl == AvatarUrl)
+        {
+            return false;
+        }
+
+        DisplayName = trimmedName;
         AvatarUrl = avatarUrl;
         RaiseDomainEvent(new DiscordProfileUpdated(Id, DisplayName));
+        return true;
     }
 
     /// <summary>Sets the timezone used to render raid times for the user.</summary>

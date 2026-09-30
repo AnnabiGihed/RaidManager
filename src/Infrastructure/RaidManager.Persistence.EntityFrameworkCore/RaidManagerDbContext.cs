@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Pivot.Framework.Infrastructure.Abstraction.Outbox.Models;
 using Pivot.Framework.Infrastructure.Persistence.EntityFrameworkCore.PersistenceContext;
 using RaidManager.Domain.Features.Characters.Aggregates;
+using RaidManager.Domain.Features.Identity.Aggregates;
 using RaidManager.Persistence.EntityFrameworkCore.Features.Shared.Conversions;
 
 namespace RaidManager.Persistence.EntityFrameworkCore;
@@ -26,6 +27,9 @@ public sealed class RaidManagerDbContext : PivotDbContextBase
     #region Properties
     /// <summary>Gets the Warmane characters.</summary>
     public DbSet<Character> Characters => Set<Character>();
+
+    /// <summary>Gets the local users, one per Discord account.</summary>
+    public DbSet<User> Users => Set<User>();
 
     /// <summary>Gets the domain events recorded for later delivery.</summary>
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();
