@@ -12,3 +12,4 @@
 | 0008 | [Merge approved pull requests with the workflow token](0008-merge-with-the-workflow-token.md) | Proposed |
 | 0009 | [Prove reviews with meaningful comments](0009-prove-reviews-with-meaningful-comments.md) | Proposed |
 | 0010 | [Read queries from the write database](0010-read-queries-from-the-write-database.md) | Proposed |
+| 0011 | [Website session and API trust](0011-website-session-and-api-trust.md) | Proposed |

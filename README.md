@@ -14,8 +14,10 @@ website, Discord bot, addon synchronization, and raid workflows are not yet usab
 You need the .NET 10 software development kit (SDK) and GitHub Packages read access for
 `AnnabiGihed/Pivot.Framework`.
 Set `PIVOT_PACKAGES_USER` and `PIVOT_PACKAGES_TOKEN` in your environment before restore.
-Docker is needed when running the Aspire host with its local SQL Server resource, and for the persistence
-integration tests, which start a SQL Server container.
+Docker is needed when running the Aspire host with its local SQL Server resource, and for the persistence and API
+integration tests, which start a SQL Server container. Run the product through the Aspire AppHost: it generates the
+shared website key that the API requires (`Website:ServiceKey`, at least 32 characters) and passes it to the API and
+the website.
 
 ```bash
 dotnet restore RaidManager.sln

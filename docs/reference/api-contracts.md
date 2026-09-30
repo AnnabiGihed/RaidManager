@@ -1,12 +1,21 @@
 # API contract scope
 
-The RaidManager application programming interface (API) currently exposes a foundation endpoint only.
-No product operation, request shape, response code, or event contract has been implemented yet.
-OpenAPI will be the source of truth for HTTP operations once the first product slice exists.
+The RaidManager application programming interface (API) publishes its operations in an OpenAPI document at
+`/openapi/v1.json`, which is the source of truth for request shapes, response codes, and security.
+Failures are returned as ProblemDetails; validation failures list each field under `errors`.
 
-Planned contract areas include:
+## Implemented operations
 
-- Discord sign-in, session, and profile access.
+| Operation | Caller | Purpose |
+| --- | --- | --- |
+| `POST /internal/identity/discord-sign-in` | Website only | Resolve a Discord identity confirmed by OAuth to its single local user id. |
+
+Operations under `/internal/` require the website key in the `X-RaidManager-Service-Key` header, as
+[ADR-0011](../adr/0011-website-session-and-api-trust.md) describes. A missing or wrong key returns 401.
+
+## Planned contract areas
+
+- User-scoped website calls, session, and profile access.
 - Companion pairing, monitored-installation status, and authenticated, idempotent character snapshot ingestion.
 - Pending character review, approval, rejection, and ownership conflict handling.
 - Character profiles, loadouts, synchronization timestamps, and raid lockouts.
