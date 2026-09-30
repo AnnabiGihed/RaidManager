@@ -16,6 +16,15 @@ from dataclasses import dataclass
 from penpot_scene import HOUSE_PALETTE, Board, Circle, Click, Group, Item, Rect, text, text_width
 
 P = HOUSE_PALETTE
+# The palette colours the shell and components use most, named once.
+ACCENT = P["Brand/accent"]
+ON_ACCENT = P["Brand/on accent"]
+TEXT = P["Text/primary"]
+SECONDARY = P["Text/secondary"]
+MUTED = P["Text/muted"]
+DIVIDER = P["Line/divider"]
+BLUE = P["Accent/blue"]
+DANGER_TEXT = P["Status/danger text"]
 BOARD_W, BOARD_H = 1440, 900
 SIDEBAR_W, TOP_BAR_H = 240, 64
 CONTENT_X, CONTENT_TOP = SIDEBAR_W + 40, TOP_BAR_H + 40
@@ -27,31 +36,31 @@ NAV_TOP, NAV_ITEM_H, NAV_ITEM_GAP = 176, 36, 4
 # (fill, text) per tone; the text passes WCAG AA on the fill.
 BADGE_TONES = {
     "warning": (P["Status/warning background"], P["Status/warning title"]),
-    "danger": (P["Status/danger background"], P["Status/danger text"]),
-    "success": (P["Status/success background"], P["Brand/accent"]),
-    "info": (P["Status/info background"], P["Accent/blue"]),
-    "neutral": (P["Surface/raised"], P["Text/secondary"]),
+    "danger": (P["Status/danger background"], DANGER_TEXT),
+    "success": (P["Status/success background"], ACCENT),
+    "info": (P["Status/info background"], BLUE),
+    "neutral": (P["Surface/raised"], SECONDARY),
 }
 # (background, border, title, body, icon, icon mark) per tone.
 NOTICE_TONES = {
     "warning": (P["Status/warning background"], P["Status/warning border"], P["Status/warning title"],
-                P["Status/warning text"], P["Accent/amber"], P["Brand/on accent"], "!"),
-    "danger": (P["Status/danger background"], P["Status/danger border"], P["Status/danger text"],
-               P["Status/danger text"], P["Status/danger"], P["Status/on danger"], "!"),
-    "info": (P["Status/info background"], P["Status/info border"], P["Text/primary"], P["Text/secondary"],
-             P["Accent/blue"], P["Brand/on accent"], "i"),
-    "success": (P["Status/success background"], P["Status/success border"], P["Text/primary"], P["Text/secondary"],
-                P["Brand/accent"], P["Brand/on accent"], "✓"),
+                P["Status/warning text"], P["Accent/amber"], ON_ACCENT, "!"),
+    "danger": (P["Status/danger background"], P["Status/danger border"], DANGER_TEXT,
+               DANGER_TEXT, P["Status/danger"], P["Status/on danger"], "!"),
+    "info": (P["Status/info background"], P["Status/info border"], TEXT, SECONDARY,
+             BLUE, ON_ACCENT, "i"),
+    "success": (P["Status/success background"], P["Status/success border"], TEXT, SECONDARY,
+                ACCENT, ON_ACCENT, "✓"),
 }
 AVATAR_TONES = {
-    "blue": (P["Avatar/blue"], P["Accent/blue"]),
+    "blue": (P["Avatar/blue"], BLUE),
     "red": (P["Avatar/red"], P["Avatar/red text"]),
     "purple": (P["Avatar/purple"], P["Avatar/purple text"]),
 }
 # (fill, border, text) per button style.
 BUTTON_STYLES = {
-    "primary": (P["Brand/accent"], None, P["Brand/on accent"]),
-    "secondary": (P["Surface/raised"], P["Line/divider"], P["Text/primary"]),
+    "primary": (ACCENT, None, ON_ACCENT),
+    "secondary": (P["Surface/raised"], DIVIDER, TEXT),
     "danger": (P["Status/danger"], None, P["Status/on danger"]),
 }
 
@@ -86,12 +95,12 @@ def avatar(name: str, cx: float, cy: float, initials: str, tone: str = "purple",
 
 
 def navigation_item(label: str, y: float, active: bool, target: str | None) -> Group:
-    colour = P["Brand/accent"] if active else P["Text/secondary"]
+    colour = ACCENT if active else SECONDARY
     items: list[Item] = [Rect("Area", 12, y, SIDEBAR_W - 24, NAV_ITEM_H,
                               P["Surface/selected"] if active else P["Surface/sidebar"], 1, 8)]
     if active:
-        items.append(Rect("Active mark", 12, y + 8, 3, NAV_ITEM_H - 16, P["Brand/accent"], 1, 2))
-    items += [Circle("Icon", 34, y + NAV_ITEM_H / 2, 4, P["Brand/accent"] if active else P["Text/muted"]),
+        items.append(Rect("Active mark", 12, y + 8, 3, NAV_ITEM_H - 16, ACCENT, 1, 2))
+    items += [Circle("Icon", 34, y + NAV_ITEM_H / 2, 4, ACCENT if active else MUTED),
               text("Label", 50, y + 23, label, 14, 600 if active else 400, colour)]
     return Group(f"{label} link", items, Click("navigate", target) if target else None)
 
@@ -100,23 +109,23 @@ def sidebar(active: str, community: Community, user: User, links: dict[str, str]
     """The left sidebar: logo, community card, navigation by role, and the signed-in user at the bottom."""
     items: list[Item] = [
         Rect("Background", 0, 0, SIDEBAR_W, BOARD_H, P["Surface/sidebar"]),
-        Rect("Edge", SIDEBAR_W - 1, 0, 1, BOARD_H, P["Line/divider"]),
+        Rect("Edge", SIDEBAR_W - 1, 0, 1, BOARD_H, DIVIDER),
         Group("Logo", [Rect("Tile", 20, 16, 32, 32, P["Brand/logo tile"], 1, 8),
-                       Rect("Mark", 28, 24, 16, 16, P["Brand/accent"], 1, 4),
-                       text("Raid", 62, 38, "RAID", 16, 800, P["Text/primary"], None, "left", 0.5),
-                       text("Manager", 104, 38, "MANAGER", 16, 800, P["Brand/accent"], None, "left", 0.5)]),
+                       Rect("Mark", 28, 24, 16, 16, ACCENT, 1, 4),
+                       text("Raid", 62, 38, "RAID", 16, 800, TEXT, None, "left", 0.5),
+                       text("Manager", 104, 38, "MANAGER", 16, 800, ACCENT, None, "left", 0.5)]),
         Group("Community card", [
             Rect("Background", 16, 68, SIDEBAR_W - 32, 60, P["Surface/card"], 1, 10, P["Line/card border"]),
             Rect("Icon", 28, 82, 32, 32, P["Community/icon"], 1, 8),
             text("Initials", 28, 102, community.initials, 12, 800, P["Surface/page"], 32, "center"),
             text("Name", 70, 95, community.name, 14, 600),
-            text("Realm", 70, 114, f"{community.realm} · Community", 12, 400, P["Text/muted"]),
+            text("Realm", 70, 114, f"{community.realm} · Community", 12, 400, MUTED),
         ]),
     ]
     sections = [("Player", PLAYER_PAGES)] + ([("Officer", OFFICER_PAGES)] if user.officer else [])
     y = NAV_TOP - 12
     for section, pages in sections:
-        nav: list[Item] = [text("Heading", 24, y, section.upper(), 11, 700, P["Text/muted"], None, "left", 1.2)]
+        nav: list[Item] = [text("Heading", 24, y, section.upper(), 11, 700, MUTED, None, "left", 1.2)]
         y += 12
         for page in pages:
             nav.append(navigation_item(page, y, page == active, links.get(page)))
@@ -124,10 +133,10 @@ def sidebar(active: str, community: Community, user: User, links: dict[str, str]
         items.append(Group(f"{section} navigation", nav))
         y += 28
     items.append(Group("User card", [
-        Rect("Divider", 0, BOARD_H - 72, SIDEBAR_W - 1, 1, P["Line/divider"]),
+        Rect("Divider", 0, BOARD_H - 72, SIDEBAR_W - 1, 1, DIVIDER),
         avatar("Avatar", 36, BOARD_H - 36, user.initials, user.tone),
         text("Name", 62, BOARD_H - 40, user.name, 14, 600),
-        text("Role", 62, BOARD_H - 21, user.role, 12, 400, P["Text/muted"]),
+        text("Role", 62, BOARD_H - 21, user.role, 12, 400, MUTED),
     ]))
     return Group("Sidebar", items)
 
@@ -135,16 +144,16 @@ def sidebar(active: str, community: Community, user: User, links: dict[str, str]
 def top_bar(community: Community, page: str, user: User) -> Group:
     """The top bar: breadcrumb (community / page), realm status and the user's avatar."""
     width = BOARD_W - SIDEBAR_W
-    crumb = text("Community", CONTENT_X, 37, community.name.upper(), 11, 700, P["Text/muted"], None, "left", 1.2)
-    slash = text("Separator", CONTENT_X + text_width(crumb) + 4, 37, "/", 11, 700, P["Text/muted"], None, "left", 1.2)
-    current = text("Page", slash.x + 16, 37, page.upper(), 11, 700, P["Text/primary"], None, "left", 1.2)
+    crumb = text("Community", CONTENT_X, 37, community.name.upper(), 11, 700, MUTED, None, "left", 1.2)
+    slash = text("Separator", CONTENT_X + text_width(crumb) + 4, 37, "/", 11, 700, MUTED, None, "left", 1.2)
+    current = text("Page", slash.x + 16, 37, page.upper(), 11, 700, TEXT, None, "left", 1.2)
     status_x = BOARD_W - 196
     return Group("Top bar", [
         Rect("Background", SIDEBAR_W, 0, width, TOP_BAR_H, P["Surface/top bar"]),
-        Rect("Divider", SIDEBAR_W, TOP_BAR_H - 1, width, 1, P["Line/divider"]),
+        Rect("Divider", SIDEBAR_W, TOP_BAR_H - 1, width, 1, DIVIDER),
         Group("Breadcrumb", [crumb, slash, current]),
-        Group("Realm status", [Circle("Dot", status_x, 32, 4, P["Brand/accent"]),
-                               text("Label", status_x + 12, 37, "REALM ONLINE", 11, 700, P["Brand/accent"], None,
+        Group("Realm status", [Circle("Dot", status_x, 32, 4, ACCENT),
+                               text("Label", status_x + 12, 37, "REALM ONLINE", 11, 700, ACCENT, None,
                                     "left", 1.2)]),
         avatar("Avatar", BOARD_W - 56, 32, user.initials, user.tone),
     ])
@@ -165,9 +174,9 @@ def app_screen(name: str, x: float, y: float, page: str, content: list[Item], *,
 def page_header(eyebrow: str, title: str, subtitle: str, x: float = CONTENT_X, y: float = CONTENT_TOP) -> Group:
     """The eyebrow (teal, uppercase), the page title and one line of subtitle; 96 px tall."""
     return Group("Page header", [
-        text("Eyebrow", x, y + 14, eyebrow.upper(), 12, 700, P["Brand/accent"], None, "left", 1.5),
+        text("Eyebrow", x, y + 14, eyebrow.upper(), 12, 700, ACCENT, None, "left", 1.5),
         text("Title", x, y + 56, title, 32, 700),
-        text("Subtitle", x, y + 86, subtitle, 15, 400, P["Text/secondary"]),
+        text("Subtitle", x, y + 86, subtitle, 15, 400, SECONDARY),
     ])
 
 

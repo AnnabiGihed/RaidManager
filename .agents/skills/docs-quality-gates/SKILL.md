@@ -248,6 +248,7 @@ Pin action and tool versions according to the organization's supply-chain policy
 - A PR changing `docs/**` where CI runs only code tests.
 - Documentation hosted on a personal subdomain.
 - A lint or check step that reports problems without failing: reviewdog or SARIF annotations with
-  `fail_on_error: false`, `continue-on-error: true`, `|| true`, or a tool run with its exit code ignored (R11a). A green
+  `fail_on_error: false`, `continue-on-error: true`, `|| true`, a tool run with its exit code ignored (R11a), or a
+  static-analysis status such as SonarCloud's whose quality gate passes while it lists findings. A green
   check with red annotations is a broken gate.
 - A hand-written or hand-edited wiki page, a wiki that differs from `/docs`, or an enabled wiki left empty (R23a).

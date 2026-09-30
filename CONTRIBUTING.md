@@ -53,7 +53,7 @@ Every pull request must:
 - update documentation, API contracts, diagrams, and the glossary when affected;
 - add a human-readable entry under `CHANGELOG.md` `[Unreleased]` for observable changes;
 - contain no credentials or environment-specific secrets;
-- pass the required `build-test`, `validate`, and `review-gate` checks, including format, analyzers, tests, Markdown
+- pass the required `build-test`, `validate`, `sonar`, and `review-gate` checks, including format, analyzers, tests, Markdown
   lint, prose, internal links, a strict documentation build, and the review gate.
 
 The checks catch mechanical defects; reviewers still verify technical accuracy, acceptance criteria, terminology,
@@ -72,7 +72,7 @@ See [ADR-0009](docs/adr/0009-prove-reviews-with-meaningful-comments.md) and
 never marks a pull request ready.
 
 GitHub permits squash merges only. The `review` workflow merges a pull request as soon as the operator's review, the
-peer approval, the required `build-test`, `validate`, and `review-gate` checks, and resolution of review
+peer approval, the required `build-test`, `validate`, `sonar`, and `review-gate` checks, and resolution of review
 conversations are all in place ([ADR-0008](docs/adr/0008-merge-with-the-workflow-token.md)). Branch protection still
 decides, and nobody queues or clicks the merge. Do not use administrator bypass or merge your own pull request. GitHub
 deletes the source branch after merge; confirm the linked task is closed and its project status is `Done`.

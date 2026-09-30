@@ -50,6 +50,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - A dark design system from the owner's reference design: named colors, Open Sans text styles, and an app shell on
   every website screen with the Player and Officer navigation, community, breadcrumb, realm status and user. Mockups
   are generated with it, and the website will be re-themed to match (ADR-0019) (#202).
+- A required `sonar` check fails a pull request on any open SonarCloud issue or security hotspot to review, with
+  an annotation on each line; SonarCloud's own check passed code smells (ADR-0020) (#208).
 - The character review mockup in `docs/mockups/`: pending claims with a conflict, the reject confirmation, the
   all-reviewed state with its notification, and the load error, linked as a clickable prototype (#167).
 - A how-to page on reviewing a pull request, with comments that pass and fail the review gate (#81).

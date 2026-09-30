@@ -112,6 +112,7 @@ currently excludes several packages because they have no test project — track 
 - 🔴 **R17.** Gate on new code only (Clean as You Code).
 - 🔴 **R18.** Conditions defined once in the shared gate: no new issues above the agreed severity, hotspots reviewed, new-code coverage and duplication at the organizational thresholds.
 - 🔴 **R19.** The gate is a **required** status check on the protected branch (Pivot: `master`). A gate that doesn't block is a dashboard.
+- 🔴 **R19a.** Prove the gate fails on a finding: a pull request with a deliberate code smell must go red. SonarCloud's default gate only checks ratings, coverage and duplication, so a code smell (rating stays A) passes it. When the gate can't express "no new issues", add a required check that reads the pull request's open issues and hotspots from the SonarCloud API and fails on any (RaidManager: `scripts/sonar_gate.py`, ADR-0020).
 - 🔴 **R20.** No project-specific gates.
 - 🟡 **R21.** Fix a failing gate; mark a genuine false positive individually in SonarCloud with a justification referencing the PR.
 

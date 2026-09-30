@@ -79,3 +79,19 @@ jobs:
         run: |
           echo "::error::The coverage gate failed (ADR-0015). See the coverage summary for the uncovered changed lines."
           exit 1
+
+  # SonarCloud's own check follows the quality gate, which passes new code smells and even some vulnerabilities; this
+  # job fails the pull request on any open SonarCloud issue or security hotspot to review (ADR-0020).
+  sonar:
+    if: github.event_name == 'pull_request'
+    runs-on: ubuntu-latest
+    timeout-minutes: 20
+    steps:
+      - uses: actions/checkout@v4
+      - name: SonarCloud findings
+        env:
+          PR_NUMBER: ${{ github.event.pull_request.number }}
+          HEAD_SHA: ${{ github.event.pull_request.head.sha }}
+        run: >-
+          python3 scripts/sonar_gate.py --project AnnabiGihed_RaidManager
+          --pull-request "$PR_NUMBER" --commit "$HEAD_SHA" --timeout 900

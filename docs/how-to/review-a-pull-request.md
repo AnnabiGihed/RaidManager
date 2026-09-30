@@ -8,7 +8,7 @@ the pull request, then by a peer. Each review is proven by a meaningful review c
 
 ## Review as the operator
 
-1. Wait until the agent reports that the draft pull request passes `build-test` and `validate`.
+1. Wait until the agent reports that the draft pull request passes `build-test`, `validate` and `sonar`.
 2. Read every changed file in the **Files changed** tab.
 3. Select **Review changes**, choose **Comment**, and describe what you checked. Name at least one changed file or
    an identifier from the diff.

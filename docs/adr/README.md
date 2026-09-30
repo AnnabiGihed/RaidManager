@@ -21,3 +21,4 @@
 | 0017 | [Penpot mockups for all user-interface work](0017-penpot-mockups-for-ui-work.md) | Proposed, amended by 0018 |
 | 0018 | [Generate Penpot mockups and render their SVGs in the repository](0018-generate-penpot-mockups-in-the-repository.md) | Proposed, amended by 0019 |
 | 0019 | [A dark design system with an app shell on every screen](0019-dark-design-system-with-an-app-shell.md) | Proposed |
+| 0020 | [Fail pull requests on SonarCloud findings](0020-fail-pull-requests-on-sonarcloud-findings.md) | Proposed |
