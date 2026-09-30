@@ -44,6 +44,7 @@ SECTION = "Candidates"
 TITLE = "Icecrown Citadel candidates"
 CLEAR = "Clear filters"
 CLEAR_BUTTON = "Clear button"
+LATE_PLAYER = "Selm Voss"
 
 ALL = "1 · All candidates"
 FILTERED = "2 · Filtered, one offer expanded"
@@ -174,7 +175,7 @@ def header() -> Group:
 
 def all_candidates() -> list[Item]:
     table_y = TOP + 176
-    return [header(), role_counts(True), filter_bar(TOP + 108, "", [], True), table(table_y + 36, [c for c in CANDIDATES[:6] if c.player != "Selm Voss"]),
+    return [header(), role_counts(True), filter_bar(TOP + 108, "", [], True), table(table_y + 36, [c for c in CANDIDATES[:6] if c.player != LATE_PLAYER]),
             text("Count", CONTENT_X + CONTENT_W - 360, table_y + 20,
                  f"Showing 5 of {TOTAL_PLAYERS} players · {TOTAL_OPTIONS} options offered", 12, 400, MUTED, 360,
                  "right")]
@@ -203,13 +204,13 @@ def empty() -> list[Item]:
 
 
 def syncing() -> list[Item]:
-    arrived = [c for c in CANDIDATES if c.player in ("Selm Voss", "Ilsa Brand", "Bryn Valewood", "Arvel Moss")]
+    arrived = [c for c in CANDIDATES if c.player in (LATE_PLAYER, "Ilsa Brand", "Bryn Valewood", "Arvel Moss")]
     return [header(),
             notice("Syncing notice", CONTENT_X, TOP, CONTENT_W, "Some data is still arriving",
                    "Selm Voss just signed up in Discord, and two characters are syncing. Their readiness appears when it's checked.",
                    "info"),
             filter_bar(TOP + 108, "", [], False),
-            table(TOP + 176, arrived, syncing={"Selm Voss": "From Discord, now", "Ilsa Brand": "Syncing…"})]
+            table(TOP + 176, arrived, syncing={LATE_PLAYER: "From Discord, now", "Ilsa Brand": "Syncing…"})]
 
 
 def boards() -> list[Board]:
