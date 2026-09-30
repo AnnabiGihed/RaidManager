@@ -11,3 +11,4 @@
 | 0007 | [Queue auto-merge when the operator marks a pull request ready](0007-queue-auto-merge-when-ready.md) | Superseded by 0008 |
 | 0008 | [Merge approved pull requests with the workflow token](0008-merge-with-the-workflow-token.md) | Proposed |
 | 0009 | [Prove reviews with meaningful comments](0009-prove-reviews-with-meaningful-comments.md) | Proposed |
+| 0010 | [Read queries from the write database](0010-read-queries-from-the-write-database.md) | Proposed |

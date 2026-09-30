@@ -20,7 +20,8 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Tests.Features.Characters;
 /// Date: 2026-09-30<br/>
 /// Purpose: Proves the mapping round-trips every part of the aggregate, the unit of work writes the outbox, and the migrations match the model.
 /// </remarks>
-public sealed class CharacterPersistenceTests : IClassFixture<SqlServerFixture>
+[Collection(SqlServerTestGroup.Name)]
+public sealed class CharacterPersistenceTests
 {
     #region Fields
     /// <summary>Stores the SQL Server fixture.</summary>
