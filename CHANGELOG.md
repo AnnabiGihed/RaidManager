@@ -9,6 +9,7 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- An interactive API reference page at `/scalar` in Development, linked from the Aspire dashboard (ADR-0013) (#109).
 - Players can sign in to the website with Discord and sign out; a cancelled or failed sign-in explains why and
   offers a retry. The website now runs in Interactive Server mode with Radzen (ADR-0012) (#99).
 - The API now hosts the application and persistence and exposes a website-only endpoint that resolves a Discord

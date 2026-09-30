@@ -13,7 +13,10 @@ var websiteServiceKey = builder.AddParameter(
 var api = builder.AddProject<Projects.RaidManager_ApiService>("api")
     .WithReference(database)
     .WithEnvironment("Website__ServiceKey", websiteServiceKey)
+    .WithUrlForEndpoint("https", url => url.DisplayText = "API (https)")
     .WaitFor(database);
+
+api.WithUrl(ReferenceExpression.Create($"{api.GetEndpoint("https")}/scalar"), "API reference");
 
 // The Discord application's OAuth2 credentials; keep them in the AppHost user secrets (README, "Sign in with Discord").
 var discordClientId = builder.AddParameter("discord-client-id");

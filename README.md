@@ -74,7 +74,8 @@ Run the product through the Aspire AppHost. It generates the shared website key 
 Docker Desktop must be running. The browser opens the Aspire dashboard at `https://localhost:17190`; the console
 window only shows logs. Wait until `sql`, `api`, and `web` show **Running**. The first run downloads the SQL Server
 image, which takes a few minutes, and the API then creates the database schema. The website is at
-`https://localhost:55365`.
+`https://localhost:55365`, and the interactive API reference is at `https://localhost:55366/scalar` (linked as
+"API reference" in the dashboard).
 
 ### Sign in with Discord locally
 
