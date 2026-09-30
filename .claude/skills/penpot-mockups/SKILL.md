@@ -2,8 +2,8 @@
 name: penpot-mockups
 description: >-
   Generate RaidManager UI mockups as native Penpot files and render their SVGs: write a screen script under
-  scripts/mockups/, produce docs/mockups/<screen>.penpot with editable text, a shared colour and typography library,
-  a clickable prototype and WCAG AA contrast, render docs/mockups/<screen>.svg from it, commit both, and link the SVG
+  scripts/mockups/ with the dark design system and app shell, produce docs/mockups/<screen>.penpot with editable
+  text, a shared colour and typography library, a clickable prototype and WCAG AA contrast, render docs/mockups/<screen>.svg from it, commit both, and link the SVG
   in the user story. Use whenever a story, task or pull request needs a mockup, a screen is designed or changed, or a
   .penpot or mockup SVG file is created, edited, reviewed or moved.
 ---
@@ -38,23 +38,33 @@ imports as-is, so no Penpot API, MCP server, plugin or access token is needed.
 
 The generator turns the design into a small design system that a designer keeps working with:
 
-- **Colours come only from the palette.** `HOUSE_PALETTE` in `scripts/penpot_scene.py` is the website's Radzen
-  material theme (ADR-0012), one name per colour, grouped as `Neutral/`, `Brand/`, `Surface/`, `Text/` and
-  `Status/`. Screen-specific colours are added under their own group, for example
-  `{**HOUSE_PALETTE, "WoW class/Mage": "#3FC7EB"}`. The generator refuses a colour the palette doesn't name, and
+- **Colours come only from the palette.** `HOUSE_PALETTE` in `scripts/penpot_scene.py` is RaidManager's dark
+  design system (ADR-0019), one name per colour, grouped as `Surface/`, `Line/`, `Brand/`, `Text/`, `Accent/`,
+  `Status/`, `Avatar/` and `Community/`. `Brand/accent` (teal) marks the primary action and the active page only.
+  Screen-specific colours are added under their own group, for example `{**HOUSE_PALETTE, "WoW class/Mage": "#3FC7EB"}`. The generator refuses a colour the palette doesn't name, and
   refuses two names for one colour. Every palette colour a screen uses becomes a library colour, and layers reference
   it, so the Assets panel restyles the whole screen.
-- **Text styles come from the type scale.** `TYPE_SCALE` names each size, weight and spacing (`Heading/Page title`
-  24/400, `Body/Default` 14/400, `Label/Button` 13/500/0.5, `Caption/Default` 12/400, `Icon/Small` 13/700). Each
-  becomes a library typography that text layers reference. A style outside the scale is named `Other/...`; add it to
+- **Text styles come from the type scale, in Open Sans.** `TYPE_SCALE` names each size, weight and spacing
+  (`Heading/Page title` 32/700, `Heading/Section title` 18/700, `Body/Default` 14/400, `Label/Button` 13/700,
+  `Label/Eyebrow` 12/700/1.5, `Label/Section` 11/700/1.2, `Caption/Default` 12/400, `Icon/Default` 16/800). Uppercase
+  labels are typed in capitals. Each becomes a library typography that text layers reference. A style outside the scale is named `Other/...`; add it to
   the scale instead of leaving it there.
 - **Contrast is checked before writing.** Text needs 4.5:1 against the opaque shape behind it (3:1 for text of 24 px,
   or 18.66 px bold); icon glyphs made of text (`icon=True`) need 3:1. The generator stops with the failing layers. Fix
   the colour in the palette (for example `Status/warning text` on `Status/warning background`); never lower the check.
 - **Status is never colour alone.** Badges carry a word (`Pending`, `Conflict`), and errors carry an icon and a sentence.
-- **Radzen material look:** 64 px app bar, 4 px radius, 36 px buttons with uppercase labels and 0.5 spacing, 1 px
-  `Surface/border` card outlines, 24 px card padding. Keep positions and sizes on a 4 px grid (8 px for spacing
-  between blocks).
+- **The app shell is on every website screen.** Build each board with
+  `app_screen(name, x, y, page, content, section=, user=, links=)` from `scripts/penpot_components.py`: a
+  1440 x 900 board with the sidebar (logo, community card, Player navigation, Officer navigation for officers only,
+  user card) and the top bar (breadcrumb, realm status, avatar). `page` is the active navigation entry; pass
+  `user=PLAYER` for a player's view. Content starts at `CONTENT_X`, `CONTENT_TOP` and is `CONTENT_W` wide.
+- **Use the shared components** instead of drawing your own: `page_header` (teal eyebrow, 32 px title, subtitle),
+  `card` (12 px radius, `Line/card border` outline, optional accent bar), `button` (40 px, 8 px radius: `primary`,
+  `secondary`, `danger`), `badge` (a word on a tinted pill), `notice` (icon, title, one line) and `avatar`. Add a new
+  shared component there when two screens need it.
+- **Layout:** 24 px card padding, 16 px between cards, 40 px margins around the content. Keep positions and sizes on
+  a 4 px grid (8 px for spacing between blocks). Companion windows, addon frames and Discord messages don't use the
+  website shell; they use the palette and type scale.
 
 ## Structure and naming
 
@@ -65,7 +75,8 @@ The generator turns the design into a small design system that a designer keeps 
   `Reject dialog`; never `Rectangle 12` or `Blue box`. Inside a group, name the parts by role (`Background`, `Label`,
   `Icon`, `Icon mark`). Sibling layers need distinct names; the generator stops otherwise.
 - **Group what a developer builds as one component:** a button, a badge, a table row, a dialog, a notification. Name
-  it after the Radzen or Blazor component when there is one.
+  it after the Radzen or Blazor component when there is one. The shell's groups (`Sidebar`, `Top bar`,
+  `<Page> link`) keep the names `app_screen` gives them.
 
 ## Prototype
 
@@ -81,7 +92,8 @@ The generator turns the design into a small design system that a designer keeps 
 1. Confirm the item is labelled `ui` and has a design task under its story, improvement or bug.
 2. Read the API contract and the story's criteria; list the states the screen shows and the journeys between them.
 3. Write `scripts/mockups/<screen_name>.py`:
-   - `Board(name, x, y, width, height, fill, children)` for each state;
+   - `app_screen(...)` for each state of a website screen (`Board(name, x, y, width, height, fill, children)`
+     otherwise), with the shared components from `scripts/penpot_components.py`;
    - `Rect`, `Circle`, `Group(name, children, on_click)`, and
      `text(name, x, baseline, value, size, weight, color, width, align, spacing, icon)`;
    - finish with `write_mockup(repository_root, "<screen>", "<Page name>", boards, palette, flows)`, which checks
@@ -116,4 +128,5 @@ The generator turns the design into a small design system that a designer keeps 
 - `python scripts/validate_docs.py` passes, so the SVG is the current rendering.
 - Every state has a board, every control that changes state is linked, and each journey has a flow.
 - Colours come from the palette, text styles from the type scale, and every layer and group has a function-based name.
+- Every website board is an `app_screen` with the right active page and user role, built from the shared components.
 - The owner imported the `.penpot` and confirmed it, and the story, task and pull request show the SVG.

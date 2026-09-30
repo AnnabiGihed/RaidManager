@@ -1,6 +1,6 @@
 # ADR-0018: Generate Penpot mockups and render their SVGs in the repository
 
-- Status: Proposed
+- Status: Proposed, amended by [ADR-0019](0019-dark-design-system-with-an-app-shell.md)
 - Date: 2026-09-30
 - Deciders: Gihed Annabi
 
@@ -21,9 +21,9 @@ Penpot 2.18.0's source imported cleanly, with every text as an editable text lay
 
 - **Generate the first version in the repository.** `scripts/penpot_scene.py` turns a screen script,
   `scripts/mockups/<screen_name>.py`, into `docs/mockups/<screen>.penpot`: named boards, groups, rectangles, circles
-  and editable Roboto text layers. The format is pinned to Penpot 2.18.0 (file version 67, its persisted features and
+  and editable text layers. The format is pinned to Penpot 2.18.0 (file version 67, its persisted features and
   its 82 data migrations) and must be updated when penpot.app upgrades.
-- **Make each file a small design system.** The website's colors become named library colors and its text sizes
+- **Make each file a small design system.** The house colors become named library colors and its text sizes
   named typographies, which the layers reference. Controls link to the boards they lead to, and named flows make the
   file a clickable prototype. The generator refuses a color the palette doesn't name, and text below WCAG AA
   contrast.

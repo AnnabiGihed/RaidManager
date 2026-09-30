@@ -133,7 +133,7 @@ class FolderTests(unittest.TestCase):
 
     def pair(self, name: str = "review") -> Path:
         penpot = self.folder / f"{name}.penpot"
-        write_penpot(penpot, name, "Page", [Board("Board", 0, 0, 100, 60, "#F5F5F5", [Rect("Box", 10, 10, 20, 20, "#4340D2")])])
+        write_penpot(penpot, name, "Page", [Board("Board", 0, 0, 100, 60, "#0B111C", [Rect("Box", 10, 10, 20, 20, "#5DE0C1")])])
         penpot.with_suffix(".svg").write_text(render(penpot)[0], encoding="utf-8", newline=chr(10))
         return penpot
 

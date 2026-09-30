@@ -189,7 +189,8 @@ delivery sequence; these rules override the ticket rules of `pr-and-branching-st
 ## 10. UI mockups in Penpot (mandatory)
 
 Penpot is the only UI design tool ([ADR-0017](../../../docs/adr/0017-penpot-mockups-for-ui-work.md),
-[ADR-0018](../../../docs/adr/0018-generate-penpot-mockups-in-the-repository.md), `docs/how-to/design-a-screen.md`).
+[ADR-0018](../../../docs/adr/0018-generate-penpot-mockups-in-the-repository.md),
+[ADR-0019](../../../docs/adr/0019-dark-design-system-with-an-app-shell.md), `docs/how-to/design-a-screen.md`).
 A mockup comes before the screen, for every user interface: website, companion, addon and Discord messages. The
 `penpot-mockups` skill holds the full workflow.
 
@@ -201,6 +202,11 @@ A mockup comes before the screen, for every user interface: website, companion, 
 - **Generate, then render:** draft a screen as `scripts/mockups/<screen_name>.py` with `scripts/penpot_scene.py`, run
   it to write the `.penpot` and its SVG, then have the owner import the `.penpot` in Penpot and confirm it. When the
   owner edits the design in Penpot, their downloaded `.penpot` replaces the generated one; re-render the SVG.
+- **One design system (ADR-0019):** the dark palette and Open Sans type scale in `scripts/penpot_scene.py`, and the
+  app shell (sidebar with Player and Officer navigation, community card, user card, top bar with breadcrumb and realm
+  status) on every website screen, drawn with `app_screen` and the shared components in
+  `scripts/penpot_components.py`. Never draw a screen's own shell, buttons or badges. The website keeps Radzen and is
+  re-themed to match (#203).
 - **Use it in the story:** show the SVG in the user story (or improvement or bug), its UI task and the pull request.
 - **Work items:** every UI item carries `ui` and links or shows its mockup; `needs-mockup` marks those that don't.
   Epics and features list their stories' mockups.

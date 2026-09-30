@@ -49,55 +49,81 @@ MIGRATIONS = [
     "0023-repair-token-themes-with-inexistent-sets", "0024b-fix-stroke-cap-placement",
     "0025-repair-empty-text-content", "0026-fix-svg-raw-shapes-uuids",
 ]
-FONT = {"fontId": "gfont-roboto", "fontFamily": "Roboto"}
-VARIANTS = {400: "regular", 500: "500", 700: "700"}
+# Open Sans is the free Google font closest to the reference design's Segoe UI (ADR-0019); Penpot ships it.
+FONT = {"fontId": "gfont-open-sans", "fontFamily": "Open Sans"}
+VARIANTS = {400: "regular", 500: "500", 600: "600", 700: "700", 800: "800"}
 IDENTITY = {"a": 1, "b": 0, "c": 0, "d": 1, "e": 0, "f": 0}
 # A fixed date keeps the output identical when an unchanged screen is regenerated.
 TIMESTAMP = "2026-01-01T00:00:00.000Z"
 
-# The website's Radzen 11.5 material theme (ADR-0012), as named library colours: one name per colour. "Group/name"
-# puts a colour in a group of the Assets panel. Status text colours are the darker shades that pass WCAG AA on their
-# light backgrounds.
+# RaidManager's design system (ADR-0019): the dark "Command Center" theme with a teal accent, as named library
+# colours, one name per colour. "Group/name" puts a colour in a group of the Assets panel. Every text colour passes
+# WCAG AA on the surfaces it is used on; `Text/muted` is the darkest text colour that passes on `Surface/card`.
 HOUSE_PALETTE: dict[str, str] = {
-    "Neutral/white": "#FFFFFF",
     "Neutral/black": "#000000",
-    "Brand/primary": "#4340D2",
-    "Brand/avatar": "#2E2B9E",
-    "Surface/page": "#F5F5F5",
-    "Surface/table header": "#FAFAFA",
-    "Surface/border": "#E0E0E0",
-    "Text/primary": "#424242",
-    "Text/secondary": "#616161",
-    "Status/info": "#2196F3",
-    "Status/info background": "#E3F2FD",
-    "Status/success": "#4CAF50",
-    "Status/success background": "#E8F5E9",
-    "Status/success mark": "#2E7D32",
-    "Status/warning": "#FF9800",
-    "Status/warning text": "#8A4B00",
-    "Status/warning background": "#FFF0DB",
-    "Status/danger": "#F44336",
-    "Status/danger text": "#B71C1C",
-    "Status/danger background": "#FDE3E1",
+    "Surface/page": "#0B111C",
+    "Surface/sidebar": "#0F1825",
+    "Surface/top bar": "#111C2A",
+    "Surface/card": "#172333",
+    "Surface/raised": "#1C2B3E",
+    "Surface/hero": "#1B3341",
+    "Surface/selected": "#1B4548",
+    "Surface/track": "#314155",
+    "Line/divider": "#2B3B50",
+    "Line/card border": "#212F41",
+    "Brand/accent": "#5DE0C1",
+    "Brand/on accent": "#102830",
+    "Brand/logo tile": "#0C2931",
+    "Text/primary": "#EFF5FA",
+    "Text/secondary": "#9EADC1",
+    "Text/muted": "#8394AA",
+    "Text/hero": "#C6D7E2",
+    "Accent/blue": "#8FB3F6",
+    "Accent/amber": "#F3BE75",
+    "Accent/purple": "#C4A3EF",
+    "Status/warning background": "#4B382A",
+    "Status/warning border": "#5E4631",
+    "Status/warning title": "#F9D7A7",
+    "Status/warning text": "#E2BA87",
+    "Status/danger": "#F2878C",
+    "Status/on danger": "#2B1115",
+    "Status/danger background": "#3F2329",
+    "Status/danger border": "#6B3740",
+    "Status/danger text": "#F4A7AB",
+    "Status/success background": "#173A36",
+    "Status/success border": "#22524A",
+    "Status/info background": "#1B2E4A",
+    "Status/info border": "#2A4468",
+    "Avatar/blue": "#293D58",
+    "Avatar/red": "#56343C",
+    "Avatar/red text": "#F08B8F",
+    "Avatar/purple": "#604C80",
+    "Avatar/purple text": "#F2E8FF",
+    "Community/icon": "#9077B3",
 }
 # Names for the text styles a screen uses, keyed by (size, weight, letter spacing); others get a generated name.
+# Uppercase labels are typed in capitals; the letter spacing is part of the style.
 TYPE_SCALE: dict[tuple[float, int, float], str] = {
-    (24, 400, 0): "Heading/Page title",
-    (20, 500, 0): "Heading/Section title",
-    (16, 400, 0): "Body/Large",
-    (15, 500, 0): "Body/Emphasis",
+    (32, 700, 0): "Heading/Page title",
+    (22, 700, 0): "Heading/Hero title",
+    (18, 700, 0): "Heading/Section title",
+    (16, 600, 0): "Heading/Card title",
+    (28, 700, 0): "Display/Stat",
+    (15, 400, 0): "Body/Large",
     (14, 400, 0): "Body/Default",
-    (14, 500, 0): "Body/Strong",
+    (14, 600, 0): "Body/Strong",
     (13, 400, 0): "Body/Small",
-    (13, 500, 0.5): "Label/Button",
+    (13, 700, 0): "Label/Button",
     (12, 400, 0): "Caption/Default",
-    (12, 500, 0): "Caption/Strong",
-    (12, 500, 0.5): "Label/Column heading",
-    (13, 700, 0): "Icon/Small",
-    (14, 700, 0): "Icon/Default",
-    (44, 700, 0): "Icon/Large",
+    (12, 600, 0): "Caption/Strong",
+    (11, 700, 1.2): "Label/Section",
+    (12, 700, 1.5): "Label/Eyebrow",
+    (16, 800, 0.5): "Brand/Logo",
+    (12, 800, 0): "Icon/Small",
+    (16, 800, 0): "Icon/Default",
+    (40, 800, 0): "Icon/Large",
 }
-WEIGHT_NAMES = {400: "Regular", 500: "Medium", 700: "Bold"}
+WEIGHT_NAMES = {400: "Regular", 500: "Medium", 600: "Semibold", 700: "Bold", 800: "Extra bold"}
 # WCAG 2.1 AA: 4.5:1 for normal text, 3:1 for large text (at least 24 px, or 18.66 px bold) and for icons, which
 # count as graphical objects (success criterion 1.4.11).
 NORMAL_TEXT_CONTRAST = 4.5
@@ -156,7 +182,7 @@ class Text:
     text: str
     size: float = 14
     weight: int = 400
-    color: str = "#424242"
+    color: str = "#EFF5FA"
     width: float | None = None
     align: str = "left"
     spacing: float = 0
@@ -199,7 +225,7 @@ class Board:
 
 
 def text(name: str, x: float, baseline: float, value: str, size: float = 14, weight: int = 400,
-         color: str = "#424242", width: float | None = None, align: str = "left", spacing: float = 0,
+         color: str = "#EFF5FA", width: float | None = None, align: str = "left", spacing: float = 0,
          icon: bool = False) -> Text:
     """Places a text layer by its baseline, the way a designer lines text up."""
     return Text(name, x, round(baseline - size * 1.03, 2), value, size, weight, color, width, align, spacing, icon)
@@ -252,7 +278,7 @@ def type_style_name(size: float, weight: int, spacing: float) -> str:
     if named:
         return named
     suffix = f" spaced {spacing:g}" if spacing else ""
-    return f"Other/Roboto {size:g} {WEIGHT_NAMES.get(weight, str(weight))}{suffix}"
+    return f"Other/{FONT['fontFamily']} {size:g} {WEIGHT_NAMES.get(weight, str(weight))}{suffix}"
 
 
 def split_name(full_name: str) -> tuple[str, str]:

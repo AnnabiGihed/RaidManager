@@ -19,4 +19,5 @@
 | 0015 | [Gate pull requests on test coverage](0015-gate-pull-requests-on-test-coverage.md) | Proposed |
 | 0016 | [One Epic, Feature, Story and Task hierarchy](0016-epic-feature-story-task-hierarchy.md) | Proposed |
 | 0017 | [Penpot mockups for all user-interface work](0017-penpot-mockups-for-ui-work.md) | Proposed, amended by 0018 |
-| 0018 | [Generate Penpot mockups and render their SVGs in the repository](0018-generate-penpot-mockups-in-the-repository.md) | Proposed |
+| 0018 | [Generate Penpot mockups and render their SVGs in the repository](0018-generate-penpot-mockups-in-the-repository.md) | Proposed, amended by 0019 |
+| 0019 | [A dark design system with an app shell on every screen](0019-dark-design-system-with-an-app-shell.md) | Proposed |

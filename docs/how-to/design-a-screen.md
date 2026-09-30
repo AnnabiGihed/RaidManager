@@ -12,8 +12,9 @@ the SVG rendered from it, `<screen>.svg`, are kept together in `docs/mockups/` a
    or use a self-hosted Penpot.
 2. Create a team and a project named **RaidManager**, and invite the people who design or review screens.
 3. Keep one Penpot file per screen, named like its future mockup file, for example `character-review`.
-4. Use the Radzen material look, which is the website's theme
-   ([ADR-0012](../adr/0012-interactive-server-rendering-with-radzen.md)): its colors, spacing and components.
+4. Use RaidManager's design system ([ADR-0019](../adr/0019-dark-design-system-with-an-app-shell.md)): the dark
+   palette, Open Sans, and the app shell on every website screen. The shell has a sidebar with the community, the
+   Player and Officer navigation and the signed-in user, and a top bar with the breadcrumb and realm status.
 
 ## Generate the first version
 
@@ -21,12 +22,13 @@ A screen's first version is generated in the repository, so it arrives in Penpot
 
 - every text is an editable text layer;
 - every layer and group has a function-based name;
-- the website's colors and text styles are shared library assets that the layers use;
+- the design system's colors and text styles are shared library assets that the layers use;
 - the buttons are linked into a clickable prototype.
 
 1. Write `scripts/mockups/<screen_name>.py` with the scene model in `scripts/penpot_scene.py`: one board per state
-   (filled, empty, error, dialogs), made of named groups, rectangles, circles and text. Take colors from the house
-   palette and link each control to the board it leads to.
+   (filled, empty, error, dialogs), made of named groups, rectangles, circles and text. Draw each website board with
+   `app_screen` from `scripts/penpot_components.py`, which adds the shell, and use its page header, cards, buttons,
+   badges and notices. Take colors from the house palette and link each control to the board it leads to.
 2. Run `python scripts/mockups/<screen_name>.py`. It checks that every color is a named palette color and that text
    meets WCAG AA contrast, then writes `docs/mockups/<screen>.penpot` and renders `docs/mockups/<screen>.svg` from it.
    Use lowercase words with hyphens for `<screen>`.

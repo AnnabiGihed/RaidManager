@@ -18,7 +18,9 @@ from html import escape
 from pathlib import Path
 
 ROOT_ID = "00000000-0000-0000-0000-000000000000"
-FONT_STACK = "Roboto, Arial, sans-serif"
+# The fallbacks after the file's own font; Open Sans is the house font (ADR-0019).
+FALLBACK_FONTS = "Segoe UI, Arial, sans-serif"
+FONT_STACK = f"Open Sans, {FALLBACK_FONTS}"
 DRAWN_TYPES = frozenset({"frame", "group", "rect", "circle", "text"})
 BOARD_GAP = 80
 
@@ -166,7 +168,8 @@ class Renderer:
             fill = first(style.get("fills"), "fillColor") or {"fillColor": "#000000"}
             spacing = float(style.get("letterSpacing", 0) or 0)
             spacing_attribute = f' letter-spacing="{number(spacing)}"' if spacing else ""
-            parts.append(f'<text x="{number(x)}" y="{number(top + size * 1.03)}" font-family="{FONT_STACK}" '
+            family = escape(str(style.get("fontFamily") or "Open Sans"))
+            parts.append(f'<text x="{number(x)}" y="{number(top + size * 1.03)}" font-family="{family}, {FALLBACK_FONTS}" '
                          f'font-size="{number(size)}" font-weight="{style.get("fontWeight", "400")}" '
                          f'fill="{fill["fillColor"]}" text-anchor="{anchor}"{spacing_attribute}'
                          f'{transform_attribute(shape)}>{escape(line)}</text>')

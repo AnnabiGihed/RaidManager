@@ -76,7 +76,7 @@ These govern the UI layer as a whole, not a single component. Every one of them 
 - Package: `Radzen.Blazor`, version pinned in `Directory.Packages.props` (no version in the `.csproj`).
 - Remove the Blazor template's Bootstrap: delete `wwwroot/lib/bootstrap/`, its `<link>` in `App.razor`, and Bootstrap classes in `MainLayout.razor`/`NavMenu.razor`/`app.css`.
 - `Program.cs`: `builder.Services.AddRadzenComponents();` (registers `DialogService`, `NotificationService`, `TooltipService`, `ContextMenuService`).
-- `App.razor`: theme via `<RadzenTheme Theme="material" @rendermode="InteractiveServer" />` in `<head>` (one house theme, chosen in the render-mode/UI ADR — never mix themes) and `<script src="_content/Radzen.Blazor/Radzen.Blazor.js?v=@(typeof(Radzen.Colors).Assembly.GetName().Version)"></script>` before `</body>`.
+- `App.razor`: theme via `<RadzenTheme Theme="material" @rendermode="InteractiveServer" />` in `<head>` (one house theme, chosen in the render-mode/UI ADR — never mix themes; RaidManager: a dark base theme with its `--rz-*` variables set from the ADR-0019 palette and Open Sans, #203) and `<script src="_content/Radzen.Blazor/Radzen.Blazor.js?v=@(typeof(Radzen.Colors).Assembly.GetName().Version)"></script>` before `</body>`.
 - `MainLayout.razor`: `<RadzenComponents @rendermode="InteractiveServer" />` once, so dialogs, notifications, tooltips and context menus render.
 - `_Imports.razor`: `@using Radzen` and `@using Radzen.Blazor` (never per page).
 - Radzen components need an **interactive** render mode to raise events; under static SSR they render but don't respond — part of the render-mode decision above.
@@ -106,7 +106,8 @@ These govern the UI layer as a whole, not a single component. Every one of them 
 ## Workflow
 
 0. **Start from the approved mockup.** Where the repository keeps UI designs (RaidManager: Penpot files and the SVGs
-   rendered from them in `docs/mockups/`, ADR-0017 and ADR-0018, `penpot-mockups` skill), open the screen's mockup before writing markup and build to it: layout, states
+   rendered from them in `docs/mockups/`, ADR-0017 to ADR-0019, `penpot-mockups` skill; the app shell of ADR-0019
+   is the main layout), open the screen's mockup before writing markup and build to it: layout, states
    (empty, loading, error, filled) and wording. No mockup means no screen: ask for it. A deliberate deviation updates
    the mockup in the same PR, and the PR shows it.
 1. **Determine the render mode and TFM.** This gates every other decision. State it explicitly, apply it (`@rendermode`), verify an interactive feature works under it, and record it in the ADR on first UI delivery.
