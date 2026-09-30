@@ -15,8 +15,9 @@ untested code as long as the total stays above the bar, and a high total bar wou
 
 CI measures line coverage on every run and enforces two rules on pull requests:
 
-- **Changed lines:** at least 80% of the coverable source lines a pull request adds or changes under `src/` are
-  covered. A pull request that changes no coverable line passes this rule.
+- **Changed lines:** at least 80% of the executable source lines a pull request adds or changes under `src/` are
+  covered. Declarations, blank lines and comments don't count. A pull request that changes no executable line
+  passes this rule.
 - **Total:** line coverage of all product code stays at or above 60%.
 
 `coverage.runsettings` excludes test projects, EF Core migrations, files under `obj/` and code marked
