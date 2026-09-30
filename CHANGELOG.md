@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- The GitHub Wiki now shows the `docs/` documentation, generated and published after every merge, and pull requests
+  check that it builds. The site navigation lists every decision record (ADR-0014) (#119).
 - Project completion rules and a hierarchy audit that reopens epics or stories closed before their native child
   work is complete (#111).
 - An interactive API reference page at `/scalar` in Development, linked from the Aspire dashboard (ADR-0013) (#109).

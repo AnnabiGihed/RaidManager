@@ -113,6 +113,7 @@ attribute-service/
 
 - 🟡 **R18.** Projects with non-trivial documentation publish a static site. Default: **MkDocs Material**. Alternatives: Docusaurus, Hugo, Sphinx (Python-heavy), Antora (multi-repo).
 - 🟡 **R19.** The site has search.
+- 🔴 **R19a.** If the repository has a wiki, it is generated from `/docs` on every merge and never edited by hand (`docs-quality-gates` R23a). Every document therefore starts with its `#` title (the wiki page name) and appears in the site navigation (the wiki sidebar).
 
 Pipeline and gate details: `docs-quality-gates`.
 
@@ -122,6 +123,7 @@ Pipeline and gate details: `docs-quality-gates`.
 - A PR that changes behavior (for example a default timeout) with no changelog or reference update.
 - A single page mixing tutorial, reference, rationale and runbook.
 - "See the wiki" as the only pointer to documentation (`README, CHANGELOG, CONTRIBUTING / R5`).
+- Content written directly in the wiki instead of `/docs` (R19a).
 
 ## 9. Merged from the former `docs-authoring` skill
 

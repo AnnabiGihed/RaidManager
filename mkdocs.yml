@@ -23,6 +23,17 @@ nav:
       - Foundation and authentication: adr/0001-foundation-and-authentication.md
       - Character synchronization: adr/0002-use-desktop-companion-for-character-sync.md
       - Documentation publication: adr/0003-publish-documentation-through-github-pages.md
+      - Protected automatic squash merges: adr/0004-use-protected-automatic-squash-merges.md
+      - Viewed files before approval: adr/0005-require-viewed-files-before-approval.md
+      - Operator review before a peer: adr/0006-review-by-operator-before-peer.md
+      - Auto-merge when ready: adr/0007-queue-auto-merge-when-ready.md
+      - Merge with the workflow token: adr/0008-merge-with-the-workflow-token.md
+      - Meaningful review comments: adr/0009-prove-reviews-with-meaningful-comments.md
+      - Read queries from the write database: adr/0010-read-queries-from-the-write-database.md
+      - Website session and API trust: adr/0011-website-session-and-api-trust.md
+      - Interactive Server rendering with Radzen: adr/0012-interactive-server-rendering-with-radzen.md
+      - Scalar API reference: adr/0013-scalar-api-reference.md
+      - GitHub Wiki mirror: adr/0014-mirror-documentation-to-the-github-wiki.md
 theme:
   name: material
 markdown_extensions:

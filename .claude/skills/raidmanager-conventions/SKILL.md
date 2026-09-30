@@ -42,7 +42,7 @@ accepted ADRs and enforced configuration win where they differ. Precedence, high
 | `PACKAGES_READ_USER` / `PACKAGES_READ_TOKEN` | `PIVOT_PACKAGES_USER` / `PIVOT_PACKAGES_TOKEN` | `nuget.config`, `ci.yml`, README |
 | Skills kit under `.claude/skills/` or `.github/skills/` | `.agents/skills/` and an identical `.claude/skills/`; apply every change to both in one commit | `AGENTS.md` |
 | SonarAnalyzer.CSharp + Meziantou.Analyzer + SonarCloud gate | .NET analyzers + StyleCop only; no SonarCloud project yet | `Directory.Build.props` (adding the others needs an ADR, `clean-code-static-analysis` R1) |
-| Azure DevOps pipelines and wiki, `::: mermaid` fences | GitHub Actions, MkDocs Material, fenced `mermaid` blocks | `.github/workflows/`, `mkdocs.yml` |
+| Azure DevOps pipelines and wiki, `::: mermaid` fences | GitHub Actions, MkDocs Material, a GitHub Wiki generated from `docs/`, fenced `mermaid` blocks | `.github/workflows/`, `mkdocs.yml`, `scripts/build_wiki.py` |
 | Keep Mermaid to the Azure DevOps subset | Still keep to that subset: it renders everywhere | `docs-diagrams-as-code` |
 | Swashbuckle via Pivot's Keycloak Swagger setup | `Microsoft.AspNetCore.OpenApi` (`AddOpenApi`), one generator only | `RaidManager.ApiService/Program.cs` |
 | Test projects `{Project}.UnitTests`, mocks in `{Solution}.Shared.UnitTests.Mocks` | `{Project}.Tests` mirrored under `test/`; ask where shared mock factories live when the first one is needed | solution layout |
@@ -123,3 +123,24 @@ page is not allowed.
 - **Smoke test:** step 2 of §5 checks the page.
 - **New API host:** a second API host copies all of the above in the same PR that creates it, including its
   dashboard link, tests, README line and an entry in `docs/reference/api-contracts.md`.
+
+## 7. Documentation publication (mandatory)
+
+`docs/` is published twice after every merge to `main`, both generated
+([ADR-0003](../../../docs/adr/0003-publish-documentation-through-github-pages.md),
+[ADR-0014](../../../docs/adr/0014-mirror-documentation-to-the-github-wiki.md)):
+
+- **GitHub Pages:** `https://annabigihed.github.io/RaidManager/`, the strict MkDocs build.
+- **GitHub Wiki:** `https://github.com/AnnabiGihed/RaidManager/wiki`, built by `scripts/build_wiki.py` and pushed by
+  the `wiki` job of `docs-publish.yml` with `GITHUB_TOKEN`.
+
+Rules for every documentation change:
+
+- Never create, edit or delete a wiki page by hand, and never ask the owner to. Change `docs/` and let the merge
+  publish it.
+- Every new document starts with its `#` title and gets a `mkdocs.yml` nav entry in the same PR. The docs check runs
+  `python scripts/build_wiki.py` and fails on a missing nav entry, a broken link, or a duplicate page name. Run it
+  locally before pushing.
+- Keep documents to GitHub-compatible Markdown: fenced `mermaid` blocks, relative links, no MkDocs-only syntax
+  (admonitions, tabs, snippets) until the converter supports it.
+- A new ADR also gets a row in `docs/adr/README.md`.

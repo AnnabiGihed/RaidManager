@@ -100,6 +100,14 @@ done
 ## 8. Publication
 
 - 🔴 **R23.** Docs are published automatically on every merge to the default branch. Never propose a manual or laptop-run deploy step.
+- 🔴 **R23a.** When the repository host has a wiki (GitHub Wiki, Azure DevOps project wiki), it is a **generated mirror of `/docs`**, published by the same pipeline on every merge. This is mandatory, not optional:
+  - `/docs` stays the only source. Nobody writes or edits wiki pages by hand; each publication replaces them.
+  - Every generated page states that it is generated and links to the source file to edit.
+  - Links between documents are rewritten to wiki pages, links outside `/docs` to the repository, and referenced images are copied.
+  - The wiki's navigation (GitHub `_Sidebar.md`, Azure DevOps `.order`) is generated from the site navigation, which lists every document.
+  - Every PR builds the wiki in the docs check and fails on a broken link, two documents with the same page name, or a document missing from the navigation.
+  - Publication uses the pipeline's built-in credential (`GITHUB_TOKEN` with `contents: write`, or the Azure DevOps build service), never a personal token, and skips the push when nothing changed.
+  - An enabled wiki that stays empty is a defect: publish into it, or disable it.
 - 🔴 **R24.** The pipeline is defined in the repository: `.azuredevops/pipelines/docs.yml` for Azure DevOps, `.github/workflows/docs.yml` for GitHub.
 - 🟡 **R25.** Preview, staging and production use the same pipeline definition.
 - 🟡 **R26.** Published docs are versioned with a version switcher; with MkDocs use `mike`.
@@ -226,3 +234,4 @@ Pin action and tool versions according to the organization's supply-chain policy
 - "Ask Alice to run `./deploy-docs.sh`" or any manual publication step.
 - A PR changing `docs/**` where CI runs only code tests.
 - Documentation hosted on a personal subdomain.
+- A hand-written or hand-edited wiki page, a wiki that differs from `/docs`, or an enabled wiki left empty (R23a).
