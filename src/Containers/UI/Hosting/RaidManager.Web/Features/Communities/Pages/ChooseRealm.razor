@@ -1,0 +1,28 @@
+@page "/communities/link/realm"
+
+<PageTitle>Choose the realm · Raid Manager</PageTitle>
+
+@if (ViewModel.Status == CommunityPageStatus.Ready)
+{
+    <div class="community-page rm-design-page">
+        <PageHeading Eyebrow="Almost done" Title="@ViewModel.Title" Subtitle="RaidManager was added to your Discord server. Choose the Warmane realm your community plays on." />
+        <div class="community-column">
+        @if (ViewModel.Failure is { } failure)
+        {
+            <Notice Tone="NoticeTone.Danger" Title="@failure.Title" Message="@failure.Message" data-testid="link-failed" />
+        }
+        <SurfaceCard data-testid="realm-card">
+            <ChildContent>
+                <div class="realm-card-content">
+                    <LabeledValue Label="Discord server" Value="@ViewModel.ServerName" Note="@ViewModel.AddedBy" />
+                    <ChoiceList TValue="string" Legend="Warmane realm" Options="@RealmOptions" Value="@ViewModel.SelectedRealm" ValueChanged="SelectRealm" />
+                </div>
+            </ChildContent>
+            <Actions>
+                <ActionButton Text="Finish linking" Disabled="@(!ViewModel.CanFinish)" Click="FinishAsync" />
+                <ActionButton Text="Cancel" Appearance="ActionButtonAppearance.Secondary" Click="Cancel" />
+            </Actions>
+        </SurfaceCard>
+        </div>
+    </div>
+}

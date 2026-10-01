@@ -1,0 +1,32 @@
+/* Placement only: the parts are shared components, and colors come from the project-wide theme. */
+.community-page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    box-sizing: border-box;
+    /* With the content area's own 16 px, the page starts where the mockup's content does. */
+    padding: 24px;
+}
+
+/* The cards keep the widths of the mockup boards; the heading spans the content area. */
+.community-column {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 400px;
+}
+
+.community-values {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+}
+
+/* The confirmation sits at the top right, as the mockup's notification does. */
+.community-linked {
+    position: fixed;
+    top: 80px;
+    right: 40px;
+    z-index: 10;
+    width: 380px;
+}

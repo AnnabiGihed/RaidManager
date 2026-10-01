@@ -4,10 +4,43 @@
 
 <AuthorizeView>
     <Authorized>
-        <RadzenStack Gap="0.5rem" class="rz-p-4">
-            <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H1">Welcome, @context.User.Identity?.Name</RadzenText>
-            <RadzenText TextStyle="TextStyle.Body1">Your characters and raids will appear here.</RadzenText>
-        </RadzenStack>
+        @switch (Overview.Status)
+        {
+            case CommunityPageStatus.Ready when Overview.Community is null:
+                <div class="overview-page rm-design-page">
+                    <PageHeading Eyebrow="Get started" Title="Link your Discord community" Subtitle="RaidManager plans raids inside a Discord server. Add the bot to your server to start." />
+                    <div class="overview-column">
+                    @if (Overview.Failure is { } failure)
+                    {
+                        <Notice Tone="NoticeTone.Danger" Title="@failure.Title" Message="@failure.Message" data-testid="link-failed" />
+                    }
+                    <SurfaceCard data-testid="link-steps">
+                        <ChildContent>
+                            <StepList Steps="@Steps" />
+                        </ChildContent>
+                        <Actions>
+                            <ActionButton Text="@OverviewViewModel.AddBotLabel" Click="AddBot" />
+                        </Actions>
+                    </SurfaceCard>
+                    <TextNote Text="@OverviewViewModel.MemberNote" />
+                    </div>
+                </div>
+                break;
+            case CommunityPageStatus.Ready:
+                <RadzenStack Gap="0.5rem" class="rz-p-4">
+                    <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H1">Welcome, @context.User.Identity?.Name</RadzenText>
+                    <RadzenText TextStyle="TextStyle.Body1">Your characters and raids will appear here.</RadzenText>
+                </RadzenStack>
+                break;
+            case CommunityPageStatus.Failed:
+                <div class="overview-page rm-design-page">
+                    <Notice Tone="NoticeTone.Danger" Title="The Overview couldn't load" Message="Try again in a moment." data-testid="load-failed" />
+                    <div>
+                        <ActionButton Text="Try again" Appearance="ActionButtonAppearance.Secondary" Click="LoadAsync" />
+                    </div>
+                </div>
+                break;
+        }
     </Authorized>
     <NotAuthorized>
         <PageHeading Title="Plan raids with your characters" Subtitle="Raid signups, rosters and readiness for your Discord community." Alignment="ContentAlignment.Center" />

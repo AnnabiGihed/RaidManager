@@ -20,7 +20,14 @@
     --rm-accent-amber: #F3BE75;
     --rm-status-danger: #F2878C;
     --rm-status-on-danger: #2B1115;
+    --rm-status-danger-background: #3F2329;
+    --rm-status-danger-border: #6B3740;
+    --rm-status-danger-text: #F4A7AB;
+    --rm-status-info-background: #1B2E4A;
+    --rm-status-info-border: #2A4468;
+    --rm-accent-blue: #8FB3F6;
     --rm-avatar-background: #604C80;
+    --rm-community-icon: #9077B3;
     --rm-avatar-text: #F2E8FF;
     --rm-font-family: "Open Sans", sans-serif;
     --rm-radius-card: 10px;
@@ -63,7 +70,19 @@
     background: transparent;
 }
 
+/* A signed-in page built on the design system marks its root with this class, and the content area around it takes
+   the dark page background. Pages without it keep the Radzen theme until the re-theme (#203). */
+.rm-theme-dark .rz-body:has(.rm-design-page) {
+    background: var(--rm-surface-page);
+}
+
 /* A page background in the dark palette. */
 .rm-surface-page {
     background: var(--rm-surface-page);
+}
+
+/* FocusOnNavigate moves focus to the page's h1 after each navigation, for screen readers; the heading isn't a control,
+   so it shows no focus ring (as in the Blazor template). */
+h1:focus {
+    outline: none;
 }

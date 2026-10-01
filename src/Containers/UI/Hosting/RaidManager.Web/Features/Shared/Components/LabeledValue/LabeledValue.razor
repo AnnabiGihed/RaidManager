@@ -1,0 +1,9 @@
+@namespace RaidManager.Web.Features.Shared.Components
+<div class="labeled-value" @attributes="AdditionalAttributes">
+    <span class="labeled-value-label">@Label</span>
+    <span class="labeled-value-value">@Value</span>
+    @if (!string.IsNullOrWhiteSpace(Note))
+    {
+        <span class="labeled-value-note">@Note</span>
+    }
+</div>

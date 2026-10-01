@@ -23,6 +23,18 @@
     padding: 16px 12px 0;
 }
 
+.shell-community-link {
+    display: block;
+    border-radius: var(--rm-radius-card);
+    color: inherit;
+    text-decoration: none;
+}
+
+.shell-community-link:focus-visible {
+    outline: 2px solid var(--rm-brand-accent);
+    outline-offset: 2px;
+}
+
 .shell-navigation {
     display: flex;
     flex-direction: column;

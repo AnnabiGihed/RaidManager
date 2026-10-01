@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="4640" height="2040" viewBox="-80 -80 4640 2040">
+<svg xmlns="http://www.w3.org/2000/svg" width="4640" height="3020" viewBox="-80 -80 4640 3020">
 <title>Community settings (rendered from community-settings.penpot)</title>
-<rect x="-80" y="-80" width="4640" height="2040" fill="#e8e8e8"/>
+<rect x="-80" y="-80" width="4640" height="3020" fill="#e8e8e8"/>
 <text x="0" y="-14" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">1 · No community yet</text>
 <clipPath id="clip1"><rect x="0" y="0" width="1440" height="900"/></clipPath>
 <rect x="0" y="0" width="1440" height="900" fill="#0b111c"/>
@@ -85,10 +85,9 @@
 <text x="1590" y="95" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">No community yet</text>
 <text x="1590" y="114" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Link a Discord server</text>
 <text x="1544" y="164" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">PLAYER</text>
-<rect x="1532" y="176" width="216" height="36" rx="8" fill="#1b4548"/>
-<rect x="1532" y="184" width="3" height="20" rx="2" fill="#5de0c1"/>
-<ellipse cx="1554" cy="194" rx="4" ry="4" fill="#5de0c1"/>
-<text x="1570" y="199" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#5de0c1" text-anchor="start">Overview</text>
+<rect x="1532" y="176" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="194" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="199" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Overview</text>
 <rect x="1532" y="216" width="216" height="36" rx="8" fill="#0f1825"/>
 <ellipse cx="1554" cy="234" rx="4" ry="4" fill="#8394aa"/>
 <text x="1570" y="239" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Raids</text>
@@ -162,10 +161,9 @@
 <text x="3110" y="95" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Citadel Vanguard</text>
 <text x="3110" y="114" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Icecrown · Community</text>
 <text x="3064" y="164" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">PLAYER</text>
-<rect x="3052" y="176" width="216" height="36" rx="8" fill="#1b4548"/>
-<rect x="3052" y="184" width="3" height="20" rx="2" fill="#5de0c1"/>
-<ellipse cx="3074" cy="194" rx="4" ry="4" fill="#5de0c1"/>
-<text x="3090" y="199" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#5de0c1" text-anchor="start">Overview</text>
+<rect x="3052" y="176" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="3074" cy="194" rx="4" ry="4" fill="#8394aa"/>
+<text x="3090" y="199" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Overview</text>
 <rect x="3052" y="216" width="216" height="36" rx="8" fill="#0f1825"/>
 <ellipse cx="3074" cy="234" rx="4" ry="4" fill="#8394aa"/>
 <text x="3090" y="239" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Raids</text>
@@ -475,5 +473,78 @@
 <text x="3380" y="1257" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#f4a7ab" text-anchor="start">Your Officer role was removed in Discord, so the change wasn&#x27;t saved. The raid and its history stay.</text>
 <rect x="3320.5" y="1300.5" width="135" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
 <text x="3388" y="1325" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Back to raids</text>
+</g>
+<text x="0" y="1946" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">7 · Adding RaidManager didn&#x27;t finish</text>
+<clipPath id="clip7"><rect x="0" y="1960" width="1440" height="900"/></clipPath>
+<rect x="0" y="1960" width="1440" height="900" fill="#0b111c"/>
+<g clip-path="url(#clip7)">
+<rect x="0" y="1960" width="240" height="900" fill="#0f1825"/>
+<rect x="239" y="1960" width="1" height="900" fill="#2b3b50"/>
+<rect x="20" y="1976" width="32" height="32" rx="8" fill="#0c2931"/>
+<rect x="28" y="1984" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="62" y="1998" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#eff5fa" text-anchor="start" letter-spacing="0.5">RAID</text>
+<text x="104" y="1998" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#5de0c1" text-anchor="start" letter-spacing="0.5">MANAGER</text>
+<rect x="16.5" y="2028.5" width="207" height="59" rx="10" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<rect x="28.5" y="2042.5" width="31" height="31" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="44" y="2064" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#9eadc1" text-anchor="middle">+</text>
+<text x="70" y="2055" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">No community yet</text>
+<text x="70" y="2074" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Link a Discord server</text>
+<text x="24" y="2124" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">PLAYER</text>
+<rect x="12" y="2136" width="216" height="36" rx="8" fill="#1b4548"/>
+<rect x="12" y="2144" width="3" height="20" rx="2" fill="#5de0c1"/>
+<ellipse cx="34" cy="2154" rx="4" ry="4" fill="#5de0c1"/>
+<text x="50" y="2159" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#5de0c1" text-anchor="start">Overview</text>
+<rect x="12" y="2176" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="2194" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="2199" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Raids</text>
+<rect x="12" y="2216" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="2234" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="2239" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">My characters</text>
+<rect x="12" y="2256" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="2274" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="2279" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Readiness</text>
+<rect x="12" y="2296" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="2314" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="2319" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Companion &amp; sync</text>
+<rect x="0" y="2788" width="239" height="1" fill="#2b3b50"/>
+<ellipse cx="36" cy="2824" rx="16" ry="16" fill="#604c80"/>
+<text x="36" y="2828" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#f2e8ff" text-anchor="middle">GA</text>
+<text x="62" y="2820" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Gihed Annabi</text>
+<text x="62" y="2839" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Player</text>
+<rect x="240" y="1960" width="1200" height="64" fill="#111c2a"/>
+<rect x="240" y="2023" width="1200" height="1" fill="#2b3b50"/>
+<text x="280" y="1997" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">RAIDMANAGER</text>
+<text x="380.2" y="1997" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">/</text>
+<text x="396.2" y="1997" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#eff5fa" text-anchor="start" letter-spacing="1.2">OVERVIEW</text>
+<ellipse cx="1124" cy="1992" rx="4" ry="4" fill="#5de0c1"/>
+<text x="1136" y="1997" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.2">REALM ONLINE</text>
+<ellipse cx="1272" cy="1992" rx="16" ry="16" fill="#604c80"/>
+<text x="1272" y="1996" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#f2e8ff" text-anchor="middle">GA</text>
+<rect x="1304.5" y="1972.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="1352" y="1997" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Sign out</text>
+<text x="280" y="2078" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.5">GET STARTED</text>
+<text x="280" y="2120" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#eff5fa" text-anchor="start">Link your Discord community</text>
+<text x="280" y="2150" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="400" fill="#9eadc1" text-anchor="start">RaidManager plans raids inside a Discord server. Add the bot to your server to start.</text>
+<rect x="280.5" y="2184.5" width="719" height="71" rx="10" fill="#3f2329" stroke="#6b3740" stroke-width="1"/>
+<ellipse cx="312" cy="2220" rx="12" ry="12" fill="#f2878c"/>
+<text x="312" y="2226" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#2b1115" text-anchor="middle">!</text>
+<text x="340" y="2215" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#f4a7ab" text-anchor="start">RaidManager wasn&#x27;t added</text>
+<text x="340" y="2237" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#f4a7ab" text-anchor="start">You cancelled on Discord&#x27;s page. Nothing was linked.</text>
+<rect x="280.5" y="2280.5" width="719" height="287" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<ellipse cx="320" cy="2320" rx="16" ry="16" fill="#1c2b3e"/>
+<text x="320" y="2325" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#5de0c1" text-anchor="middle">1</text>
+<text x="352" y="2318" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Add RaidManager to your Discord server</text>
+<text x="352" y="2338" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Discord asks which server. You need the Manage Server permission there.</text>
+<ellipse cx="320" cy="2384" rx="16" ry="16" fill="#1c2b3e"/>
+<text x="320" y="2389" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#5de0c1" text-anchor="middle">2</text>
+<text x="352" y="2382" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Choose your Warmane realm</text>
+<text x="352" y="2402" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Characters, raids and lockouts are checked against this realm.</text>
+<ellipse cx="320" cy="2448" rx="16" ry="16" fill="#1c2b3e"/>
+<text x="320" y="2453" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="700" fill="#5de0c1" text-anchor="middle">3</text>
+<text x="352" y="2446" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Map your officer roles</text>
+<text x="352" y="2466" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Pick the Discord roles that make someone an Officer or a Raid leader.</text>
+<rect x="304" y="2504" width="300" height="40" rx="8" fill="#5de0c1"/>
+<text x="454" y="2529" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#102830" text-anchor="middle">Add RaidManager to a Discord server</text>
+<text x="280" y="2604" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#8394aa" text-anchor="start">Is your server already linked? Its community appears here once you&#x27;re a member of the server.</text>
 </g>
 </svg>

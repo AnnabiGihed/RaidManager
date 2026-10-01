@@ -5,8 +5,11 @@ using Microsoft.Extensions.DependencyInjection;
 using Radzen;
 using Shouldly;
 using Xunit;
+using RaidManager.ViewModels.Features.Communities;
+using RaidManager.ViewModels.Features.Shared.Shell;
 using RaidManager.Web.Features.Authentication;
 using RaidManager.Web.Features.Shared.Layout;
+using RaidManager.Web.Tests.Support;
 
 namespace RaidManager.Web.Tests.Features.Shared.Layout;
 
@@ -19,12 +22,19 @@ namespace RaidManager.Web.Tests.Features.Shared.Layout;
 /// </remarks>
 public sealed class MainLayoutTests : BunitContext
 {
+    #region Fields
+    /// <summary>Stores the fake API's community endpoints.</summary>
+    private readonly FakeCommunitiesApiClient _communities = new();
+    #endregion Fields
+
     #region Constructors
     /// <summary>Initializes a new instance of the <see cref="MainLayoutTests"/> class.</summary>
     public MainLayoutTests()
     {
         Services.AddRadzenComponents();
         Services.AddShellNavigation();
+        Services.AddSingleton<ICommunitiesApiClient>(_communities);
+        Services.AddScoped<ShellCommunityViewModel>();
         JSInterop.Mode = JSRuntimeMode.Loose;
     }
     #endregion Constructors
@@ -58,6 +68,35 @@ public sealed class MainLayoutTests : BunitContext
         layout.Find("form[action='/sign-out']").ShouldNotBeNull();
         layout.FindAll(".user-avatar-initials").Select(avatar => avatar.TextContent).ShouldAllBe(initials => initials == "AM");
         layout.FindAll("[data-testid=public-frame]").ShouldBeEmpty();
+    }
+
+    /// <summary>Shows the Administrator's community in the card, leading to the community page, and their role.</summary>
+    [Fact]
+    public void AdministratorSeesTheirCommunityAndRole()
+    {
+        var userId = Guid.NewGuid();
+        _communities.Communities.Add(FakeCommunitiesApiClient.Community(userId, "Dark Templars", "Lordaeron"));
+        AddAuthorization().SetAuthorized("Gihed Annabi").SetClaims(new Claim(RaidManagerClaimTypes.UserId, userId.ToString()));
+
+        var layout = RenderLayout();
+
+        layout.WaitForAssertion(() => layout.Find("[data-testid=community-card] .summary-tile-title").TextContent.ShouldBe("Dark Templars"));
+        layout.Find("[data-testid=community-card]").TextContent.ShouldContain("Lordaeron · Community");
+        layout.Find("[data-testid=community-card] .icon-tile-community").TextContent.ShouldBe("DT");
+        layout.Find("a.shell-community-link").GetAttribute("href").ShouldBe("/community");
+        layout.Find("[data-testid=user-card]").TextContent.ShouldContain("Administrator");
+    }
+
+    /// <summary>Leads a user without a community to the Overview, which explains how to link one.</summary>
+    [Fact]
+    public void UserWithoutACommunityIsLedToTheOverview()
+    {
+        AddAuthorization().SetAuthorized("Arthas Menethil").SetClaims(new Claim(RaidManagerClaimTypes.UserId, Guid.NewGuid().ToString()));
+
+        var layout = RenderLayout();
+
+        layout.WaitForAssertion(() => layout.Find("a.shell-community-link").GetAttribute("href").ShouldBe("/"));
+        layout.Find("[data-testid=community-card]").TextContent.ShouldContain("Link a Discord server");
     }
 
     /// <summary>Lists only existing pages and highlights the current one.</summary>

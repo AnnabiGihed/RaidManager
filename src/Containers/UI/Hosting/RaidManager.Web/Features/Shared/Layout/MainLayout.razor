@@ -17,11 +17,13 @@
                 <RadzenSidebar Responsive="false">
                     <div class="shell-sidebar">
                         <BrandLogo />
-                        <SummaryTile Title="@ShellViewModel.NoCommunityName" Subtitle="@ShellViewModel.NoCommunityHint" data-testid="community-card">
-                            <Leading>
-                                <IconTile Glyph="+" />
-                            </Leading>
-                        </SummaryTile>
+                        <a class="shell-community-link" href="@CommunityHref">
+                            <SummaryTile Title="@Community.CardTitle" Subtitle="@Community.CardSubtitle" data-testid="community-card">
+                                <Leading>
+                                    <IconTile Glyph="@Community.CardGlyph" Appearance="@CommunityGlyphAppearance" />
+                                </Leading>
+                            </SummaryTile>
+                        </a>
                         <nav class="shell-navigation" aria-label="Main">
                             @foreach (var group in NavigationGroups)
                             {
@@ -29,7 +31,7 @@
                             }
                         </nav>
                         <div class="shell-user">
-                            <SummaryTile Title="@(context.User.Identity?.Name ?? string.Empty)" Subtitle="@RoleLabel" Appearance="SummaryTileAppearance.Plain" data-testid="user-card">
+                            <SummaryTile Title="@(context.User.Identity?.Name ?? string.Empty)" Subtitle="@Community.RoleLabel" Appearance="SummaryTileAppearance.Plain" data-testid="user-card">
                                 <Leading>
                                     <UserAvatar Name="@context.User.Identity?.Name" ImageUrl="@AvatarUrl(context.User)" />
                                 </Leading>

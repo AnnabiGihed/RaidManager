@@ -1,8 +1,11 @@
 using Radzen;
 using RaidManager.ViewModels.Features.Authentication;
 using RaidManager.ViewModels.Features.Characters;
+using RaidManager.ViewModels.Features.Communities;
+using RaidManager.ViewModels.Features.Shared.Shell;
 using RaidManager.Web.Components;
 using RaidManager.Web.Features.Authentication;
+using RaidManager.Web.Features.Communities;
 using RaidManager.Web.Features.Shared.Layout;
 
 var builder = WebApplication.CreateBuilder(args);
@@ -12,6 +15,10 @@ builder.Services.AddRadzenComponents();
 builder.Services.AddRaidManagerAuthentication(builder.Configuration);
 builder.Services.AddScoped<SignInFailedViewModel>();
 builder.Services.AddScoped<CharacterReviewViewModel>();
+builder.Services.AddScoped<OverviewViewModel>();
+builder.Services.AddScoped<ChooseRealmViewModel>();
+builder.Services.AddTransient<CommunityViewModel>();
+builder.Services.AddScoped<ShellCommunityViewModel>();
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddShellNavigation();
 
@@ -28,6 +35,7 @@ app.UseAuthorization();
 app.UseAntiforgery();
 app.MapStaticAssets();
 app.MapAuthenticationEndpoints();
+app.MapCommunityLinkEndpoints();
 app.MapRazorComponents<App>().AddInteractiveServerRenderMode();
 app.MapDefaultEndpoints();
 await app.RunAsync();

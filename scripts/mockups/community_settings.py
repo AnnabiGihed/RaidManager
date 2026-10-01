@@ -10,6 +10,9 @@ by adding the RaidManager bot from the website, and Discord roles map to RaidMan
    View members opens 5.
 5. Members and the RaidManager role each one gets from their Discord roles. The community card goes back to 4.
 6. A raid change refused because the member's Discord officer role was removed; the raid and its history stay.
+7. Board 1 after adding the bot didn't finish: the reason, such as a cancel on Discord's page, above the steps (#288).
+
+Boards 2 and 3 aren't sidebar entries, so no navigation entry is highlighted there, as in the website's shell.
 
 Run from the repository root: python scripts/mockups/community_settings.py
 Once the owner edits the design in Penpot, the downloaded file replaces docs/mockups/community-settings.penpot and
@@ -41,6 +44,7 @@ REALMS = ("Icecrown", "Lordaeron", "Blackrock", "Onyxia")
 OFFICER_ROLE, RAID_LEAD_ROLE, RAID_LEADER = "@Officer", "@Raid Lead", "Raid leader"
 
 NO_COMMUNITY = "1 · No community yet"
+NOT_FINISHED = "7 · Adding RaidManager didn't finish"
 CHOOSE_REALM = "2 · Choose the realm"
 ALREADY_LINKED = "3 · Server already linked"
 SETTINGS = "4 · Community settings"
@@ -66,11 +70,16 @@ def step(index: int, x: float, y: float, title: str, detail: str) -> Group:
     ])
 
 
-def no_community() -> list[Item]:
+def no_community(failure: tuple[str, str] | None = None) -> list[Item]:
     top, width = CONTENT_TOP + 120, 720
-    return [
+    items: list[Item] = [
         page_header("Get started", "Link your Discord community",
                     "RaidManager plans raids inside a Discord server. Add the bot to your server to start."),
+    ]
+    if failure:
+        items.append(notice("Failure notice", CONTENT_X, top, width, failure[0], failure[1], "danger"))
+        top += 96
+    return items + [
         Group("Steps card", [
             *card(CONTENT_X, top, width, 288),
             step(1, CONTENT_X + 24, top + 24, "Add RaidManager to your Discord server",
@@ -234,13 +243,15 @@ def boards() -> list[Board]:
     column, row = BOARD_W + BOARD_GAP, BOARD_H + BOARD_GAP
     return [
         app_screen(NO_COMMUNITY, 0, 0, "Overview", no_community(), community=None, user=NEWCOMER),
-        app_screen(CHOOSE_REALM, column, 0, "Overview", choose_realm(), section=ADD_SECTION, community=None,
-                   user=NEWCOMER),
-        app_screen(ALREADY_LINKED, 2 * column, 0, "Overview", already_linked(), section=ADD_SECTION, user=PLAYER),
+        app_screen(CHOOSE_REALM, column, 0, ADD_SECTION, choose_realm(), community=None, user=NEWCOMER),
+        app_screen(ALREADY_LINKED, 2 * column, 0, ADD_SECTION, already_linked(), user=PLAYER),
         app_screen(SETTINGS, 0, row, SECTION, settings(), user=ADMINISTRATOR),
         app_screen(MEMBERS, column, row, SECTION, members(), section="Members", user=ADMINISTRATOR,
                    links={"Community": SETTINGS}),
         app_screen(REFUSED, 2 * column, row, "Raids", refused(), user=DEMOTED),
+        app_screen(NOT_FINISHED, 0, 2 * row, "Overview",
+                   no_community(("RaidManager wasn't added", "You cancelled on Discord's page. Nothing was linked.")),
+                   community=None, user=NEWCOMER),
     ]
 
 

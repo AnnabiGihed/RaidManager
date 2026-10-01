@@ -15,5 +15,12 @@ public sealed partial class IconTile
     [Parameter]
     [EditorRequired]
     public string Glyph { get; set; } = string.Empty;
+
+    /// <summary>Gets or sets the tile's look.</summary>
+    [Parameter]
+    public IconTileAppearance Appearance { get; set; } = IconTileAppearance.Neutral;
+
+    /// <summary>Gets the classes for the look.</summary>
+    private string CssClass => Appearance == IconTileAppearance.Community ? "icon-tile icon-tile-community" : "icon-tile";
     #endregion Properties
 }

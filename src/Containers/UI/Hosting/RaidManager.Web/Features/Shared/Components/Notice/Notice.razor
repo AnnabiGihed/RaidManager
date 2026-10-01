@@ -1,0 +1,11 @@
+@namespace RaidManager.Web.Features.Shared.Components
+<div class="@CssClass" role="@Role" @attributes="AdditionalAttributes">
+    <span class="notice-mark" aria-hidden="true">@Mark</span>
+    <div class="notice-text">
+        <p class="notice-title">@Title</p>
+        @if (!string.IsNullOrWhiteSpace(Message))
+        {
+            <p class="notice-message">@Message</p>
+        }
+    </div>
+</div>

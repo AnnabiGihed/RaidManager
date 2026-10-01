@@ -5,7 +5,9 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using RaidManager.ViewModels.Features.Characters;
+using RaidManager.ViewModels.Features.Communities;
 using RaidManager.Web.Features.Authentication;
+using RaidManager.Web.Features.Communities;
 
 namespace RaidManager.Web.Tests.Support;
 
@@ -28,6 +30,12 @@ public sealed class WebsiteFactory : WebApplicationFactory<Program>
 
     /// <summary>Gets the fake character claims API the website calls.</summary>
     public FakeCharacterClaimsApiClient ClaimsApi { get; } = new();
+
+    /// <summary>Gets the fake API's community endpoints.</summary>
+    public FakeCommunitiesApiClient CommunitiesApi { get; } = new();
+
+    /// <summary>Gets the fake of Discord's exchange when the bot is added.</summary>
+    public FakeDiscordInstallClient DiscordInstall { get; } = new();
     #endregion Properties
 
     #region Public Methods
@@ -55,6 +63,10 @@ public sealed class WebsiteFactory : WebApplicationFactory<Program>
             services.AddSingleton<IIdentityApiClient>(IdentityApi);
             services.RemoveAll<ICharacterClaimsApiClient>();
             services.AddSingleton<ICharacterClaimsApiClient>(ClaimsApi);
+            services.RemoveAll<ICommunitiesApiClient>();
+            services.AddSingleton<ICommunitiesApiClient>(CommunitiesApi);
+            services.RemoveAll<IDiscordInstallClient>();
+            services.AddSingleton<IDiscordInstallClient>(DiscordInstall);
             services.PostConfigure<DiscordAuthenticationOptions>(
                 DiscordAuthenticationDefaults.AuthenticationScheme,
                 options => options.Backchannel = new HttpClient(new DiscordBackchannelStub()));

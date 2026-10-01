@@ -1,0 +1,35 @@
+@page "/community"
+
+<PageTitle>Community · Raid Manager</PageTitle>
+
+<div class="community-page rm-design-page">
+    @switch (ViewModel.Status)
+    {
+        case CommunityPageStatus.Ready:
+            @if (JustLinked)
+            {
+                <div class="community-linked" role="status">
+                    <SurfaceCard Title="@ViewModel.LinkedTitle" Accent="CardAccent.Brand" HeadingLevel="HeadingLevel.H3" data-testid="linked-confirmation">
+                        <ChildContent>Members see it at their next sign-in.</ChildContent>
+                    </SurfaceCard>
+                </div>
+            }
+            <PageHeading Eyebrow="Community" Title="@ViewModel.Community!.Name" Subtitle="@ViewModel.LinkedOn" />
+            <div class="community-column">
+            <SurfaceCard Title="Community" data-testid="community-summary">
+                <div class="community-values">
+                    <LabeledValue Label="Discord server" Value="@ViewModel.Community.Name" />
+                    <LabeledValue Label="Warmane realm" Value="@ViewModel.Community.Realm" />
+                    <LabeledValue Label="Administrator" Value="@ViewModel.Community.AdministratorName" />
+                </div>
+            </SurfaceCard>
+            </div>
+            break;
+        case CommunityPageStatus.Failed:
+        <Notice Tone="NoticeTone.Danger" Title="The community couldn't be shown" Message="Try again in a moment." data-testid="load-failed" />
+        <div>
+            <ActionButton Text="Try again" Appearance="ActionButtonAppearance.Secondary" Click="LoadAsync" />
+        </div>
+            break;
+    }
+</div>

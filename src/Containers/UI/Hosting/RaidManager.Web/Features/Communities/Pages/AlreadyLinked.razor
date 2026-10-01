@@ -1,0 +1,24 @@
+@page "/communities/link/already-linked"
+
+<PageTitle>Already linked · Raid Manager</PageTitle>
+
+<div class="community-page rm-design-page">
+    @switch (ViewModel.Status)
+    {
+        case CommunityPageStatus.Ready:
+            <PageHeading Eyebrow="Add RaidManager" Title="@ViewModel.AlreadyLinkedTitle" Subtitle="Each Discord server links to one RaidManager community." />
+            <div class="community-column">
+                <Notice Title="You're a member of this community" Message="@ViewModel.AdministratorLine" data-testid="already-linked" />
+                <div>
+                    <ActionButton Text="Open the overview" Click="OpenOverview" />
+                </div>
+            </div>
+            break;
+        case CommunityPageStatus.Failed:
+        <Notice Tone="NoticeTone.Danger" Title="The community couldn't be shown" Message="Try again in a moment." data-testid="load-failed" />
+        <div>
+            <ActionButton Text="Try again" Appearance="ActionButtonAppearance.Secondary" Click="LoadAsync" />
+        </div>
+            break;
+    }
+</div>
