@@ -50,6 +50,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - A dark design system from the owner's reference design: named colors, Open Sans text styles, and an app shell on
   every website screen with the Player and Officer navigation, community, breadcrumb, realm status and user. Mockups
   are generated with it, and the website will be re-themed to match (ADR-0019) (#202).
+- The roster publication mockup in `docs/mockups/`: the final review with changed places and open warnings, the
+  published roster with its single Discord post edited in place, and a published roster flagged after a lockout
+  change with nothing replaced (#239).
 - The roster coverage mockup in `docs/mockups/`: covered, placeholder and missing raid buffs and debuffs, the five
   kinds of composition warning, and one warning inspected with the officer's choices (#237).
 - The roster composer mockup in `docs/mockups/`: unpublished drafts in five groups with the bench, one copied from a
