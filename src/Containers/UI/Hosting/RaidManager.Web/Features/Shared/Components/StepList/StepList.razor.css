@@ -1,0 +1,46 @@
+.step-list {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+    font-family: var(--rm-font-family);
+}
+
+.step-list-item {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+}
+
+.step-list-number {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 50%;
+    background: var(--rm-surface-raised);
+    color: var(--rm-brand-accent);
+    font-size: 14px;
+    font-weight: 700;
+}
+
+.step-list-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.step-list-title {
+    color: var(--rm-text-primary);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.step-list-detail {
+    color: var(--rm-text-secondary);
+    font-size: 13px;
+}

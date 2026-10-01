@@ -2,7 +2,9 @@ using AspNet.Security.OAuth.Discord;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using RaidManager.ViewModels.Features.Characters;
+using RaidManager.ViewModels.Features.Communities;
 using RaidManager.Web.Features.Characters;
+using RaidManager.Web.Features.Communities;
 
 namespace RaidManager.Web.Features.Authentication;
 
@@ -32,6 +34,9 @@ public static class RaidManagerAuthenticationExtensions
 
     /// <summary>Defines the API address, resolved by Aspire service discovery.</summary>
     private const string ApiBaseAddress = "https+http://api";
+
+    /// <summary>Defines the address of Discord's REST API, version included.</summary>
+    private const string DiscordApiBaseAddress = "https://discord.com/api/v10/";
     #endregion Constants
 
     #region Fields
@@ -92,6 +97,12 @@ public static class RaidManagerAuthenticationExtensions
 
         services.AddHttpClient<IIdentityApiClient, IdentityApiClient>(AddressApi);
         services.AddHttpClient<ICharacterClaimsApiClient, CharacterClaimsApiClient>(AddressApi);
+        services.AddHttpClient<ICommunitiesApiClient, CommunitiesApiClient>(AddressApi);
+
+        // Adding the bot to a server uses the same Discord application as sign-in (docs/how-to/set-up-discord.md).
+        services.AddSingleton(new DiscordApplicationCredentials(clientId, clientSecret));
+        services.AddSingleton<CommunityLinkProtector>();
+        services.AddHttpClient<IDiscordInstallClient, DiscordInstallClient>(client => client.BaseAddress = new Uri(DiscordApiBaseAddress));
         return services;
     }
     #endregion Public Methods

@@ -1,0 +1,12 @@
+@namespace RaidManager.Web.Features.Shared.Components
+@typeparam TValue
+<fieldset class="choice-list" @attributes="AdditionalAttributes">
+    <legend class="choice-list-legend">@Legend</legend>
+    @foreach (var option in Options)
+    {
+        <label @key="option.Value" class="@OptionClass(option)">
+            <input type="radio" name="@Name" checked="@IsSelected(option)" @onchange="() => SelectAsync(option)" />
+            <span class="choice-list-label">@option.Label</span>
+        </label>
+    }
+</fieldset>

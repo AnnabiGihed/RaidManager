@@ -11,3 +11,10 @@
     color: var(--rm-text-secondary);
     font-weight: 800;
 }
+
+.icon-tile-community {
+    border-color: var(--rm-community-icon);
+    background: var(--rm-community-icon);
+    color: var(--rm-surface-page);
+    font-size: 12px;
+}

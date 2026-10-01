@@ -1,5 +1,6 @@
 using RaidManager.ViewModels.Features.Shared.Shell;
 using RaidManager.Web.Features.Characters;
+using RaidManager.Web.Features.Communities;
 
 namespace RaidManager.Web.Features.Shared.Layout;
 
@@ -18,6 +19,9 @@ public static class ShellNavigation
     [
         new(ShellSection.Player, "Overview", "/"),
         new(ShellSection.Player, "Review new characters", CharacterRoutes.Review, InSidebar: false),
+        new(ShellSection.Player, "Add RaidManager", CommunityRoutes.ChooseRealm, InSidebar: false),
+        new(ShellSection.Player, "Add RaidManager", CommunityRoutes.AlreadyLinked, InSidebar: false),
+        new(ShellSection.Player, "Community settings", CommunityRoutes.Settings, InSidebar: false),
     ];
     #endregion Fields
 

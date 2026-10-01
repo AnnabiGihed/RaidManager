@@ -1,0 +1,25 @@
+.labeled-value {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    font-family: var(--rm-font-family);
+}
+
+.labeled-value-label {
+    color: var(--rm-text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.labeled-value-value {
+    color: var(--rm-text-primary);
+    font-size: 15px;
+    font-weight: 600;
+}
+
+.labeled-value-note {
+    color: var(--rm-text-secondary);
+    font-size: 13px;
+}

@@ -25,6 +25,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   owned by another player also sees the page, which says an officer will review them (#255).
 - The API lets the website list a player's character claims awaiting a decision, oldest first, and approve or reject
   one. Approving a character another player owns keeps the claim in conflict review (ADR-0010) (#85, #89, #161).
+- A signed-in player without a community sees how to link one on the Overview. Adding RaidManager to a Discord
+  server from the website opens Discord's page; RaidManager then learns the server from Discord, asks for the Warmane
+  realm, and links the community with the player as its Administrator. A server that is already linked says so, and
+  a canceled or failed attempt explains why. The sidebar shows the community, and its Administrator's role (#288).
 - The API lets the website link a Discord server as a community, once per server, and read communities back by id,
   by server and by Administrator (#297).
 - The API checks a member's role in a community with Discord, using the bot token, and reuses each answer for a

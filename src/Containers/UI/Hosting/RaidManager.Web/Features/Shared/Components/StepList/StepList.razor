@@ -1,0 +1,13 @@
+@namespace RaidManager.Web.Features.Shared.Components
+<ol class="step-list" @attributes="AdditionalAttributes">
+    @foreach (var (step, index) in Steps.Select((step, index) => (step, index)))
+    {
+        <li @key="step.Title" class="step-list-item">
+            <span class="step-list-number" aria-hidden="true">@(index + 1)</span>
+            <span class="step-list-text">
+                <span class="step-list-title">@step.Title</span>
+                <span class="step-list-detail">@step.Detail</span>
+            </span>
+        </li>
+    }
+</ol>
