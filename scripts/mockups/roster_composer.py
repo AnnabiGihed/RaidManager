@@ -79,14 +79,17 @@ def slot_card(name: str, x: float, y: float, slot: Slot, state: str = "", on_cli
         return Group(name, [Rect("Place", x, y, width, SLOT_H - 6, P["Surface/card"], 1, 6, DIVIDER),
                             text("Placeholder", x + 12, y + 18, f"{slot.role} placeholder", 12, 600, SECONDARY),
                             text("Fill", x + 12, y + 35, "Fill from candidates", 11, 400, ACCENT)], on_click)
-    border = ACCENT if state == "selected" else None
-    fill = SELECTED if state == "selected" else RAISED
+    # state: "selected" (being swapped), "changed" (since the published roster) or "flagged" (no longer eligible).
+    fill, border, detail = {
+        "selected": (SELECTED, ACCENT, SECONDARY),
+        "changed": (RAISED, ACCENT, MUTED),
+        "flagged": (P["Status/danger background"], P["Status/danger border"], P["Status/danger text"]),
+    }.get(state, (RAISED, None, MUTED))
     return Group(name, [
         Rect("Place", x, y, width, SLOT_H - 6, fill, 1, 6, border),
         Circle("Class colour", x + 12, y + 14, 4, CLASS_COLOURS[slot.wow_class]),
         text("Character", x + 22, y + 18, slot.character, 13, 600, TEXT),
-        text("Spec", x + 12, y + 35, f"{slot.spec} · {ROLE_SHORT[slot.role]}", 11, 400,
-             SECONDARY if state == "selected" else MUTED),
+        text("Spec", x + 12, y + 35, f"{slot.spec} · {ROLE_SHORT[slot.role]}", 11, 400, detail),
     ], on_click)
 
 
