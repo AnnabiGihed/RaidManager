@@ -1,5 +1,6 @@
 using Radzen;
 using RaidManager.ViewModels.Features.Authentication;
+using RaidManager.ViewModels.Features.Characters;
 using RaidManager.Web.Components;
 using RaidManager.Web.Features.Authentication;
 
@@ -9,6 +10,8 @@ builder.Services.AddRazorComponents().AddInteractiveServerComponents();
 builder.Services.AddRadzenComponents();
 builder.Services.AddRaidManagerAuthentication(builder.Configuration);
 builder.Services.AddScoped<SignInFailedViewModel>();
+builder.Services.AddScoped<CharacterReviewViewModel>();
+builder.Services.AddSingleton(TimeProvider.System);
 
 var app = builder.Build();
 if (!app.Environment.IsDevelopment())
