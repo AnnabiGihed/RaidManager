@@ -127,6 +127,14 @@ tests, documentation, and skill edits may not.
 7. After merge, verify the source branch was deleted and the task is closed and `Done`. Close a story, improvement
    or bug only when every acceptance criterion is evidenced and all child tasks are closed, at least one completed.
    Close a feature, then an epic, the same way, one level at a time after checking the full hierarchy.
+   - **Branch cleanup is mandatory whenever you are told a PR is merged**, before any other work in that turn:
+     1. Check the merge yourself: `gh pr view <number> --json state,mergedAt,headRefName` must say `MERGED`.
+     2. Run `git fetch --prune origin` and confirm `git ls-remote --heads origin <branch>` prints nothing. If the remote
+        branch still exists, delete it (`git push origin --delete <branch>`).
+     3. Switch to `main`, pull it, and delete the local branch with `git branch -D <branch>`. `-D` is needed because a
+        squash merge leaves the branch looking unmerged. Delete only branches whose PR you confirmed as merged.
+     4. Delete any other local branch whose upstream shows `[gone]` in `git branch -vv`, again only after confirming
+        its PR merged.
    - The `project-hierarchy` workflow reopens a parent closed too early and re-checks the ancestors of every changed
      issue. The Project's built-in *Item reopened* workflow then returns it to `In Progress`.
    - Never add a personal token or secret to change Project status: the loop needs none
