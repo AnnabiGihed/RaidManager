@@ -20,7 +20,9 @@ Source: [Mermaid](../diagrams/domain-overview.mmd).
 
 ## Identity and community
 
-A membership associates one user with one community and its scoped role.
+A community is a linked Discord server. The user who added the bot is its Administrator, and its role mappings say
+which Discord roles give Officer or Raid leader. Membership and each member's Discord roles stay in Discord: a member's
+role is read from Discord when an action needs it ([ADR-0022](../adr/0022-check-discord-roles-at-action-time.md)).
 That same user can authorize companion pairings and request character claims across multiple game accounts.
 
 [![Identity model with community membership, Discord identity, companion pairings, and claims](../diagrams/domain-identity.svg)](../diagrams/domain-identity.svg)
@@ -87,7 +89,7 @@ A diagram concept is not an implemented class merely because it appears there.
 
 | Current foundation | Version 1 design extension |
 | --- | --- |
-| `Identity/Aggregates/User.cs` and `Communities/Aggregates/Community.cs` exist. The `SignInWithDiscord` command resolves a Discord account to one persisted user, whose Discord id is unique. | The Discord OAuth flow, sessions, pairing and permission workflows need implementation. |
+| `Identity/Aggregates/User.cs` and `Communities/Aggregates/Community.cs` exist. The `SignInWithDiscord` command resolves a Discord account to one persisted user, whose Discord id is unique. A community stores its server, realm, Administrator and Discord role mappings, one per Discord server, and gives a member's role from their Discord roles. | The Discord OAuth flow, sessions, pairing and permission workflows need implementation. |
 | `Characters/Aggregates/Character.cs` owns `CharacterClaim` entries with the pending, approved, rejected and conflict lifecycle; uploads never transfer ownership. The application commands `ApproveCharacterClaim` and `RejectCharacterClaim` apply a player's decision, and `GetPendingCharacterClaims` lists the claims awaiting it. | The API, ownership evidence, conflict resolution and the mandatory approval page are planned. |
 | `Characters/Aggregates/Loadout.cs` and raid lockouts exist. Only a complete saved-instance scan replaces the raid saves; an incomplete scan is recorded without erasing them, and an older complete scan is rejected. | The addon and companion complete-scan marker, snapshot history, source-specific freshness and manual-source handling are planned. |
 | `Raids/Aggregates/Raid.cs` requires one or more distinct `RaidTarget` instance and difficulty pairs, all for one size. A raid is stored in SQL Server with its targets, signups and roster selections. | Recurrence, composition revisions and re-evaluation are planned. |
@@ -95,6 +97,6 @@ A diagram concept is not an implemented class merely because it appears there.
 | `Raids/Aggregates/RaidSignup.cs` stores options and a confirmed, tentative, late or declined availability; selection no longer changes it. | Withdrawal, presets, preferred option, notes and bench entries are planned. |
 | `Raids/Aggregates/RosterSelection.cs` supports one selection per user. | Multiple draft compositions, publication review, boss assignments and attendance are planned. |
 
-Users, characters and raids are stored with EF Core; each aggregate's mapping is in the `Configurations` folder of
-its feature in `RaidManager.Persistence.EntityFrameworkCore`. No storage diagram is drawn yet: generate one from the
-real schema rather than drawing it by hand.
+Users, characters, communities and raids are stored with EF Core; each aggregate's mapping is in the
+`Configurations` folder of its feature in `RaidManager.Persistence.EntityFrameworkCore`. No storage diagram is drawn
+yet: generate one from the real schema rather than drawing it by hand.

@@ -18,7 +18,8 @@ Character-wide state includes approval, ownership, synchronization freshness, an
 
 ## Community
 
-A Discord-backed raiding community that organizes raid events and manages member participation.
+A Discord server linked to RaidManager, raiding on one Warmane realm. Everyone in the server is a member; the user
+who added the bot is its Administrator, and the Discord roles it maps give Officer or Raid leader.
 
 ## Discord identity
 

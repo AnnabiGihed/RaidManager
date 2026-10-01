@@ -1,15 +1,16 @@
 classDiagram
-    Community "1" *-- "0..*" CommunityMember : scoped membership
-    CommunityMember "0..*" --> "1" User : identifies
+    Community "1" *-- "0..*" DiscordRoleMapping : gives roles
+    Community "0..*" --> "1" User : administered by
     User "1" --> "0..*" CompanionPairing : authorizes
     User "1" --> "0..*" CharacterClaim : requests
     class Community {
         CommunityId Id
         string DiscordGuildId
         WarmaneRealm Realm
+        UserId AdministratorId
     }
-    class CommunityMember {
-        UserId UserId
+    class DiscordRoleMapping {
+        string DiscordRoleId
         CommunityMemberRole Role
     }
     class User {
