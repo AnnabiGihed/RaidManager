@@ -1,0 +1,508 @@
+<svg xmlns="http://www.w3.org/2000/svg" width="3120" height="2040" viewBox="-80 -80 3120 2040">
+<title>Boss assignments (rendered from boss-assignments.penpot)</title>
+<rect x="-80" y="-80" width="3120" height="2040" fill="#e8e8e8"/>
+<text x="0" y="-14" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">1 · Define assignments</text>
+<clipPath id="clip1"><rect x="0" y="0" width="1440" height="900"/></clipPath>
+<rect x="0" y="0" width="1440" height="900" fill="#0b111c"/>
+<g clip-path="url(#clip1)">
+<rect x="0" y="0" width="240" height="900" fill="#0f1825"/>
+<rect x="239" y="0" width="1" height="900" fill="#2b3b50"/>
+<rect x="20" y="16" width="32" height="32" rx="8" fill="#0c2931"/>
+<rect x="28" y="24" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="62" y="38" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#eff5fa" text-anchor="start" letter-spacing="0.5">RAID</text>
+<text x="104" y="38" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#5de0c1" text-anchor="start" letter-spacing="0.5">MANAGER</text>
+<rect x="16.5" y="68.5" width="207" height="59" rx="10" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<rect x="28" y="82" width="32" height="32" rx="8" fill="#9077b3"/>
+<text x="44" y="102" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#0b111c" text-anchor="middle">CV</text>
+<text x="70" y="95" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Citadel Vanguard</text>
+<text x="70" y="114" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Icecrown · Community</text>
+<text x="24" y="164" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">PLAYER</text>
+<rect x="12" y="176" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="194" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="199" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Overview</text>
+<rect x="12" y="216" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="234" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="239" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Raids</text>
+<rect x="12" y="256" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="274" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="279" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">My characters</text>
+<rect x="12" y="296" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="314" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="319" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Readiness</text>
+<rect x="12" y="336" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="354" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="359" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Companion &amp; sync</text>
+<text x="24" y="404" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">OFFICER</text>
+<rect x="12" y="416" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="434" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="439" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Schedule</text>
+<rect x="12" y="456" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="474" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="479" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Roster builder</text>
+<rect x="12" y="496" width="216" height="36" rx="8" fill="#1b4548"/>
+<rect x="12" y="504" width="3" height="20" rx="2" fill="#5de0c1"/>
+<ellipse cx="34" cy="514" rx="4" ry="4" fill="#5de0c1"/>
+<text x="50" y="519" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#5de0c1" text-anchor="start">Raid night</text>
+<rect x="0" y="828" width="239" height="1" fill="#2b3b50"/>
+<ellipse cx="36" cy="864" rx="16" ry="16" fill="#604c80"/>
+<text x="36" y="868" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#f2e8ff" text-anchor="middle">GA</text>
+<text x="62" y="860" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Gihed Annabi</text>
+<text x="62" y="879" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Community officer</text>
+<rect x="240" y="0" width="1200" height="64" fill="#111c2a"/>
+<rect x="240" y="63" width="1200" height="1" fill="#2b3b50"/>
+<text x="280" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">CITADEL VANGUARD</text>
+<text x="420.3" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">/</text>
+<text x="436.3" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#eff5fa" text-anchor="start" letter-spacing="1.2">ASSIGNMENTS</text>
+<ellipse cx="1124" cy="32" rx="4" ry="4" fill="#5de0c1"/>
+<text x="1136" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.2">REALM ONLINE</text>
+<ellipse cx="1272" cy="32" rx="16" ry="16" fill="#604c80"/>
+<text x="1272" y="36" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#f2e8ff" text-anchor="middle">GA</text>
+<rect x="1304.5" y="12.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="1352" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Sign out</text>
+<text x="280" y="118" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.5">RAID NIGHT</text>
+<text x="280" y="160" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#eff5fa" text-anchor="start">Boss assignments</text>
+<text x="280" y="190" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="400" fill="#9eadc1" text-anchor="start">Fri 9 Oct, 21:00 · 19:00 UTC · Icecrown Citadel 25 heroic + Ruby Sanctum 25</text>
+<rect x="280.5" y="224.5" width="279" height="527" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="300" y="258" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#eff5fa" text-anchor="start">Bosses</text>
+<rect x="288" y="276" width="264" height="32" rx="6" fill="#172333"/>
+<text x="300" y="297" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Lord Marrowgar</text>
+<text x="536" y="297" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end">4</text>
+<rect x="288" y="312" width="264" height="32" rx="6" fill="#172333"/>
+<text x="300" y="333" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Lady Deathwhisper</text>
+<text x="536" y="333" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end">5</text>
+<rect x="288" y="348" width="264" height="32" rx="6" fill="#172333"/>
+<text x="300" y="369" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Gunship Battle</text>
+<text x="536" y="369" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end"></text>
+<rect x="288" y="384" width="264" height="32" rx="6" fill="#1b4548"/>
+<text x="300" y="405" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#5de0c1" text-anchor="start">Deathbringer Saurfang</text>
+<text x="536" y="405" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#5de0c1" text-anchor="end">4</text>
+<rect x="288" y="420" width="264" height="32" rx="6" fill="#172333"/>
+<text x="300" y="441" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Festergut</text>
+<text x="536" y="441" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end">3</text>
+<rect x="288" y="456" width="264" height="32" rx="6" fill="#172333"/>
+<text x="300" y="477" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Rotface</text>
+<text x="536" y="477" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end">3</text>
+<rect x="288" y="492" width="264" height="32" rx="6" fill="#172333"/>
+<text x="300" y="513" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Professor Putricide</text>
+<text x="536" y="513" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end"></text>
+<rect x="288" y="528" width="264" height="32" rx="6" fill="#172333"/>
+<text x="300" y="549" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Blood Prince Council</text>
+<text x="536" y="549" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end"></text>
+<rect x="288" y="564" width="264" height="32" rx="6" fill="#172333"/>
+<text x="300" y="585" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Blood-Queen Lana&#x27;thel</text>
+<text x="536" y="585" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end"></text>
+<rect x="288" y="600" width="264" height="32" rx="6" fill="#172333"/>
+<text x="300" y="621" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Valithria Dreamwalker</text>
+<text x="536" y="621" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end"></text>
+<rect x="288" y="636" width="264" height="32" rx="6" fill="#172333"/>
+<text x="300" y="657" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Sindragosa</text>
+<text x="536" y="657" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end"></text>
+<rect x="288" y="672" width="264" height="32" rx="6" fill="#172333"/>
+<text x="300" y="693" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">The Lich King</text>
+<text x="536" y="693" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end"></text>
+<rect x="288" y="708" width="264" height="32" rx="6" fill="#172333"/>
+<text x="300" y="729" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Halion</text>
+<text x="536" y="729" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end">4</text>
+<rect x="580.5" y="224.5" width="819" height="387" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="600" y="258" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#eff5fa" text-anchor="start">Deathbringer Saurfang</text>
+<rect x="580" y="300" width="820" height="1" fill="#2b3b50"/>
+<text x="600" y="326" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Tanks: taunt on Rune of Blood</text>
+<rect x="600.5" y="332.5" width="90" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="645.5" y="351" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Stonebrow</text>
+<rect x="699.5" y="332.5" width="76" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="737.5" y="351" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Tomasdk</text>
+<text x="788" y="351" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#5de0c1" text-anchor="start">+ Assign</text>
+<rect x="580" y="364" width="820" height="1" fill="#2b3b50"/>
+<text x="600" y="390" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Blood Beasts: slow and kill</text>
+<rect x="600.5" y="396.5" width="97" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="649" y="415" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Frostweave</text>
+<rect x="706.5" y="396.5" width="90" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="751.5" y="415" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Swiftshot</text>
+<rect x="805.5" y="396.5" width="97" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="854" y="415" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Longstride</text>
+<text x="915" y="415" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#5de0c1" text-anchor="start">+ Assign</text>
+<rect x="580" y="428" width="820" height="1" fill="#2b3b50"/>
+<text x="600" y="454" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Mark of the Fallen Champion: heal</text>
+<rect x="600.5" y="460.5" width="76" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="638.5" y="479" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Mendara</text>
+<rect x="685.5" y="460.5" width="104" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="737.5" y="479" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Lightwarden</text>
+<text x="802" y="479" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#5de0c1" text-anchor="start">+ Assign</text>
+<rect x="580" y="492" width="820" height="1" fill="#2b3b50"/>
+<text x="600" y="518" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Melee: stay on the boss</text>
+<rect x="600.5" y="524.5" width="83" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="642" y="543" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Arthasdk</text>
+<rect x="692.5" y="524.5" width="83" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="734" y="543" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Crusader</text>
+<rect x="784.5" y="524.5" width="83" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="826" y="543" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Ironclad</text>
+<text x="880" y="543" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#5de0c1" text-anchor="start">+ Assign</text>
+<text x="600" y="588" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#5de0c1" text-anchor="start">+ Add a task</text>
+<rect x="1180.5" y="132.5" width="219" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="1290" y="157" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Copy from a prior run</text>
+</g>
+<text x="1520" y="-14" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">2 · Copied from a prior run</text>
+<clipPath id="clip2"><rect x="1520" y="0" width="1440" height="900"/></clipPath>
+<rect x="1520" y="0" width="1440" height="900" fill="#0b111c"/>
+<g clip-path="url(#clip2)">
+<rect x="1520" y="0" width="240" height="900" fill="#0f1825"/>
+<rect x="1759" y="0" width="1" height="900" fill="#2b3b50"/>
+<rect x="1540" y="16" width="32" height="32" rx="8" fill="#0c2931"/>
+<rect x="1548" y="24" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="1582" y="38" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#eff5fa" text-anchor="start" letter-spacing="0.5">RAID</text>
+<text x="1624" y="38" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#5de0c1" text-anchor="start" letter-spacing="0.5">MANAGER</text>
+<rect x="1536.5" y="68.5" width="207" height="59" rx="10" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<rect x="1548" y="82" width="32" height="32" rx="8" fill="#9077b3"/>
+<text x="1564" y="102" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#0b111c" text-anchor="middle">CV</text>
+<text x="1590" y="95" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Citadel Vanguard</text>
+<text x="1590" y="114" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Icecrown · Community</text>
+<text x="1544" y="164" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">PLAYER</text>
+<rect x="1532" y="176" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="194" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="199" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Overview</text>
+<rect x="1532" y="216" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="234" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="239" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Raids</text>
+<rect x="1532" y="256" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="274" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="279" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">My characters</text>
+<rect x="1532" y="296" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="314" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="319" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Readiness</text>
+<rect x="1532" y="336" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="354" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="359" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Companion &amp; sync</text>
+<text x="1544" y="404" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">OFFICER</text>
+<rect x="1532" y="416" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="434" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="439" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Schedule</text>
+<rect x="1532" y="456" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="474" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="479" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Roster builder</text>
+<rect x="1532" y="496" width="216" height="36" rx="8" fill="#1b4548"/>
+<rect x="1532" y="504" width="3" height="20" rx="2" fill="#5de0c1"/>
+<ellipse cx="1554" cy="514" rx="4" ry="4" fill="#5de0c1"/>
+<text x="1570" y="519" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#5de0c1" text-anchor="start">Raid night</text>
+<rect x="1520" y="828" width="239" height="1" fill="#2b3b50"/>
+<ellipse cx="1556" cy="864" rx="16" ry="16" fill="#604c80"/>
+<text x="1556" y="868" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#f2e8ff" text-anchor="middle">GA</text>
+<text x="1582" y="860" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Gihed Annabi</text>
+<text x="1582" y="879" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Community officer</text>
+<rect x="1760" y="0" width="1200" height="64" fill="#111c2a"/>
+<rect x="1760" y="63" width="1200" height="1" fill="#2b3b50"/>
+<text x="1800" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">CITADEL VANGUARD</text>
+<text x="1940.3" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">/</text>
+<text x="1956.3" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#eff5fa" text-anchor="start" letter-spacing="1.2">ASSIGNMENTS</text>
+<ellipse cx="2644" cy="32" rx="4" ry="4" fill="#5de0c1"/>
+<text x="2656" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.2">REALM ONLINE</text>
+<ellipse cx="2792" cy="32" rx="16" ry="16" fill="#604c80"/>
+<text x="2792" y="36" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#f2e8ff" text-anchor="middle">GA</text>
+<rect x="2824.5" y="12.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2872" y="37" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Sign out</text>
+<text x="1800" y="118" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.5">RAID NIGHT</text>
+<text x="1800" y="160" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#eff5fa" text-anchor="start">Boss assignments</text>
+<text x="1800" y="190" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="400" fill="#9eadc1" text-anchor="start">Fri 9 Oct, 21:00 · 19:00 UTC · Icecrown Citadel 25 heroic + Ruby Sanctum 25</text>
+<rect x="1800.5" y="224.5" width="1119" height="71" rx="10" fill="#1b2e4a" stroke="#2a4468" stroke-width="1"/>
+<ellipse cx="1832" cy="260" rx="12" ry="12" fill="#8fb3f6"/>
+<text x="1832" y="266" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#102830" text-anchor="middle">i</text>
+<text x="1860" y="255" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Copied from the run on Fri 25 Sep</text>
+<text x="1860" y="277" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Everything stays editable. Lorwyn isn&#x27;t in this roster, so that place waits for you.</text>
+<rect x="1800.5" y="312.5" width="279" height="527" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="1820" y="346" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#eff5fa" text-anchor="start">Bosses</text>
+<rect x="1808" y="364" width="264" height="32" rx="6" fill="#172333"/>
+<text x="1820" y="385" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Lord Marrowgar</text>
+<text x="2056" y="385" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end">4</text>
+<rect x="1808" y="400" width="264" height="32" rx="6" fill="#172333"/>
+<text x="1820" y="421" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Lady Deathwhisper</text>
+<text x="2056" y="421" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end">5</text>
+<rect x="1808" y="436" width="264" height="32" rx="6" fill="#172333"/>
+<text x="1820" y="457" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Gunship Battle</text>
+<text x="2056" y="457" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end"></text>
+<rect x="1808" y="472" width="264" height="32" rx="6" fill="#1b4548"/>
+<text x="1820" y="493" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#5de0c1" text-anchor="start">Deathbringer Saurfang</text>
+<text x="2056" y="493" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#5de0c1" text-anchor="end">4</text>
+<rect x="1808" y="508" width="264" height="32" rx="6" fill="#172333"/>
+<text x="1820" y="529" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Festergut</text>
+<text x="2056" y="529" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end">3</text>
+<rect x="1808" y="544" width="264" height="32" rx="6" fill="#172333"/>
+<text x="1820" y="565" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Rotface</text>
+<text x="2056" y="565" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end">3</text>
+<rect x="1808" y="580" width="264" height="32" rx="6" fill="#172333"/>
+<text x="1820" y="601" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Professor Putricide</text>
+<text x="2056" y="601" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end"></text>
+<rect x="1808" y="616" width="264" height="32" rx="6" fill="#172333"/>
+<text x="1820" y="637" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Blood Prince Council</text>
+<text x="2056" y="637" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end"></text>
+<rect x="1808" y="652" width="264" height="32" rx="6" fill="#172333"/>
+<text x="1820" y="673" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Blood-Queen Lana&#x27;thel</text>
+<text x="2056" y="673" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end"></text>
+<rect x="1808" y="688" width="264" height="32" rx="6" fill="#172333"/>
+<text x="1820" y="709" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Valithria Dreamwalker</text>
+<text x="2056" y="709" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end"></text>
+<rect x="1808" y="724" width="264" height="32" rx="6" fill="#172333"/>
+<text x="1820" y="745" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Sindragosa</text>
+<text x="2056" y="745" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end"></text>
+<rect x="1808" y="760" width="264" height="32" rx="6" fill="#172333"/>
+<text x="1820" y="781" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">The Lich King</text>
+<text x="2056" y="781" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end"></text>
+<rect x="1808" y="796" width="264" height="32" rx="6" fill="#172333"/>
+<text x="1820" y="817" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Halion</text>
+<text x="2056" y="817" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end">4</text>
+<rect x="2100.5" y="312.5" width="819" height="387" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="2120" y="346" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#eff5fa" text-anchor="start">Deathbringer Saurfang</text>
+<text x="2120" y="366" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Copied · Lorwyn isn&#x27;t in this roster</text>
+<rect x="2100" y="388" width="820" height="1" fill="#2b3b50"/>
+<text x="2120" y="414" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Tanks: taunt on Rune of Blood</text>
+<rect x="2120.5" y="420.5" width="90" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2165.5" y="439" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Stonebrow</text>
+<rect x="2219.5" y="420.5" width="76" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2257.5" y="439" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Tomasdk</text>
+<text x="2308" y="439" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#5de0c1" text-anchor="start">+ Assign</text>
+<rect x="2100" y="452" width="820" height="1" fill="#2b3b50"/>
+<text x="2120" y="478" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Blood Beasts: slow and kill</text>
+<rect x="2120.5" y="484.5" width="97" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2169" y="503" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Frostweave</text>
+<rect x="2226.5" y="484.5" width="69" height="27" rx="14" fill="#4b382a" stroke="#5e4631" stroke-width="1"/>
+<text x="2261" y="503" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#f9d7a7" text-anchor="middle">Lorwyn</text>
+<rect x="2304.5" y="484.5" width="97" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2353" y="503" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Longstride</text>
+<text x="2414" y="503" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#5de0c1" text-anchor="start">+ Assign</text>
+<rect x="2100" y="516" width="820" height="1" fill="#2b3b50"/>
+<text x="2120" y="542" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Mark of the Fallen Champion: heal</text>
+<rect x="2120.5" y="548.5" width="76" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2158.5" y="567" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Mendara</text>
+<rect x="2205.5" y="548.5" width="104" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2257.5" y="567" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Lightwarden</text>
+<text x="2322" y="567" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#5de0c1" text-anchor="start">+ Assign</text>
+<rect x="2100" y="580" width="820" height="1" fill="#2b3b50"/>
+<text x="2120" y="606" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Melee: stay on the boss</text>
+<rect x="2120.5" y="612.5" width="83" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2162" y="631" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Arthasdk</text>
+<rect x="2212.5" y="612.5" width="83" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2254" y="631" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Crusader</text>
+<rect x="2304.5" y="612.5" width="83" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2346" y="631" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Ironclad</text>
+<text x="2400" y="631" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#5de0c1" text-anchor="start">+ Assign</text>
+<text x="2120" y="676" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#5de0c1" text-anchor="start">+ Add a task</text>
+<rect x="2816" y="132" width="104" height="40" rx="8" fill="#5de0c1"/>
+<text x="2868" y="157" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#102830" text-anchor="middle">Done</text>
+</g>
+<text x="0" y="966" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">3 · A player&#x27;s assignments</text>
+<clipPath id="clip3"><rect x="0" y="980" width="1440" height="900"/></clipPath>
+<rect x="0" y="980" width="1440" height="900" fill="#0b111c"/>
+<g clip-path="url(#clip3)">
+<rect x="0" y="980" width="240" height="900" fill="#0f1825"/>
+<rect x="239" y="980" width="1" height="900" fill="#2b3b50"/>
+<rect x="20" y="996" width="32" height="32" rx="8" fill="#0c2931"/>
+<rect x="28" y="1004" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="62" y="1018" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#eff5fa" text-anchor="start" letter-spacing="0.5">RAID</text>
+<text x="104" y="1018" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#5de0c1" text-anchor="start" letter-spacing="0.5">MANAGER</text>
+<rect x="16.5" y="1048.5" width="207" height="59" rx="10" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<rect x="28" y="1062" width="32" height="32" rx="8" fill="#9077b3"/>
+<text x="44" y="1082" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#0b111c" text-anchor="middle">CV</text>
+<text x="70" y="1075" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Citadel Vanguard</text>
+<text x="70" y="1094" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Icecrown · Community</text>
+<text x="24" y="1144" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">PLAYER</text>
+<rect x="12" y="1156" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="1174" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="1179" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Overview</text>
+<rect x="12" y="1196" width="216" height="36" rx="8" fill="#1b4548"/>
+<rect x="12" y="1204" width="3" height="20" rx="2" fill="#5de0c1"/>
+<ellipse cx="34" cy="1214" rx="4" ry="4" fill="#5de0c1"/>
+<text x="50" y="1219" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#5de0c1" text-anchor="start">Raids</text>
+<rect x="12" y="1236" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="1254" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="1259" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">My characters</text>
+<rect x="12" y="1276" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="1294" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="1299" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Readiness</text>
+<rect x="12" y="1316" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="1334" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="1339" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Companion &amp; sync</text>
+<rect x="0" y="1808" width="239" height="1" fill="#2b3b50"/>
+<ellipse cx="36" cy="1844" rx="16" ry="16" fill="#293d58"/>
+<text x="36" y="1848" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#8fb3f6" text-anchor="middle">BV</text>
+<text x="62" y="1840" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Bryn Valewood</text>
+<text x="62" y="1859" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Player</text>
+<rect x="240" y="980" width="1200" height="64" fill="#111c2a"/>
+<rect x="240" y="1043" width="1200" height="1" fill="#2b3b50"/>
+<text x="280" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">CITADEL VANGUARD</text>
+<text x="420.3" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">/</text>
+<text x="436.3" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#eff5fa" text-anchor="start" letter-spacing="1.2">ASSIGNMENTS</text>
+<ellipse cx="1124" cy="1012" rx="4" ry="4" fill="#5de0c1"/>
+<text x="1136" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.2">REALM ONLINE</text>
+<ellipse cx="1272" cy="1012" rx="16" ry="16" fill="#293d58"/>
+<text x="1272" y="1016" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#8fb3f6" text-anchor="middle">BV</text>
+<rect x="1304.5" y="992.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="1352" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Sign out</text>
+<text x="280" y="1098" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.5">RAIDS</text>
+<text x="280" y="1140" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#eff5fa" text-anchor="start">Your assignments</text>
+<text x="280" y="1170" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="400" fill="#9eadc1" text-anchor="start">Icecrown Citadel · Fri 9 Oct, 21:00</text>
+<rect x="280.5" y="1204.5" width="1119" height="339" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="300" y="1238" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#eff5fa" text-anchor="start">Arthasdk · Frost DPS</text>
+<rect x="280" y="1256" width="1120" height="1" fill="#2b3b50"/>
+<text x="300" y="1290" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Lord Marrowgar</text>
+<text x="560" y="1290" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Bone Spikes: break them on the east side</text>
+<rect x="280" y="1312" width="1120" height="1" fill="#2b3b50"/>
+<text x="300" y="1346" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Lady Deathwhisper</text>
+<text x="560" y="1346" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Adds: kill the fanatics on the left stairs</text>
+<rect x="280" y="1368" width="1120" height="1" fill="#2b3b50"/>
+<text x="300" y="1402" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Deathbringer Saurfang</text>
+<text x="560" y="1402" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Melee: stay on the boss</text>
+<rect x="280" y="1424" width="1120" height="1" fill="#2b3b50"/>
+<text x="300" y="1458" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Professor Putricide</text>
+<text x="560" y="1458" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Malleable Goo: call it in raid chat</text>
+<rect x="280" y="1480" width="1120" height="1" fill="#2b3b50"/>
+<text x="300" y="1514" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Sindragosa</text>
+<text x="560" y="1514" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Unchained Magic: stop casting, spread out</text>
+<text x="280" y="1576" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#8394aa" text-anchor="start">Only your own assignments show here; the full plan is on the raid page.</text>
+</g>
+<text x="1520" y="966" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">4 · Stale after a swap</text>
+<clipPath id="clip4"><rect x="1520" y="980" width="1440" height="900"/></clipPath>
+<rect x="1520" y="980" width="1440" height="900" fill="#0b111c"/>
+<g clip-path="url(#clip4)">
+<rect x="1520" y="980" width="240" height="900" fill="#0f1825"/>
+<rect x="1759" y="980" width="1" height="900" fill="#2b3b50"/>
+<rect x="1540" y="996" width="32" height="32" rx="8" fill="#0c2931"/>
+<rect x="1548" y="1004" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="1582" y="1018" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#eff5fa" text-anchor="start" letter-spacing="0.5">RAID</text>
+<text x="1624" y="1018" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#5de0c1" text-anchor="start" letter-spacing="0.5">MANAGER</text>
+<rect x="1536.5" y="1048.5" width="207" height="59" rx="10" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<rect x="1548" y="1062" width="32" height="32" rx="8" fill="#9077b3"/>
+<text x="1564" y="1082" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#0b111c" text-anchor="middle">CV</text>
+<text x="1590" y="1075" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Citadel Vanguard</text>
+<text x="1590" y="1094" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Icecrown · Community</text>
+<text x="1544" y="1144" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">PLAYER</text>
+<rect x="1532" y="1156" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="1174" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="1179" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Overview</text>
+<rect x="1532" y="1196" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="1214" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="1219" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Raids</text>
+<rect x="1532" y="1236" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="1254" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="1259" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">My characters</text>
+<rect x="1532" y="1276" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="1294" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="1299" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Readiness</text>
+<rect x="1532" y="1316" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="1334" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="1339" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Companion &amp; sync</text>
+<text x="1544" y="1384" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">OFFICER</text>
+<rect x="1532" y="1396" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="1414" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="1419" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Schedule</text>
+<rect x="1532" y="1436" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="1454" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="1459" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Roster builder</text>
+<rect x="1532" y="1476" width="216" height="36" rx="8" fill="#1b4548"/>
+<rect x="1532" y="1484" width="3" height="20" rx="2" fill="#5de0c1"/>
+<ellipse cx="1554" cy="1494" rx="4" ry="4" fill="#5de0c1"/>
+<text x="1570" y="1499" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#5de0c1" text-anchor="start">Raid night</text>
+<rect x="1520" y="1808" width="239" height="1" fill="#2b3b50"/>
+<ellipse cx="1556" cy="1844" rx="16" ry="16" fill="#604c80"/>
+<text x="1556" y="1848" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#f2e8ff" text-anchor="middle">GA</text>
+<text x="1582" y="1840" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Gihed Annabi</text>
+<text x="1582" y="1859" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Community officer</text>
+<rect x="1760" y="980" width="1200" height="64" fill="#111c2a"/>
+<rect x="1760" y="1043" width="1200" height="1" fill="#2b3b50"/>
+<text x="1800" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">CITADEL VANGUARD</text>
+<text x="1940.3" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">/</text>
+<text x="1956.3" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#eff5fa" text-anchor="start" letter-spacing="1.2">ASSIGNMENTS</text>
+<ellipse cx="2644" cy="1012" rx="4" ry="4" fill="#5de0c1"/>
+<text x="2656" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.2">REALM ONLINE</text>
+<ellipse cx="2792" cy="1012" rx="16" ry="16" fill="#604c80"/>
+<text x="2792" y="1016" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#f2e8ff" text-anchor="middle">GA</text>
+<rect x="2824.5" y="992.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2872" y="1017" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Sign out</text>
+<text x="1800" y="1098" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.5">RAID NIGHT</text>
+<text x="1800" y="1140" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#eff5fa" text-anchor="start">Boss assignments</text>
+<text x="1800" y="1170" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="400" fill="#9eadc1" text-anchor="start">Fri 9 Oct, 21:00 · 19:00 UTC · Icecrown Citadel 25 heroic + Ruby Sanctum 25</text>
+<rect x="1800.5" y="1204.5" width="1119" height="71" rx="10" fill="#3f2329" stroke="#6b3740" stroke-width="1"/>
+<ellipse cx="1832" cy="1240" rx="12" ry="12" fill="#f2878c"/>
+<text x="1832" y="1246" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#2b1115" text-anchor="middle">!</text>
+<text x="1860" y="1235" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#f4a7ab" text-anchor="start">Pyrelight left the roster tonight</text>
+<text x="1860" y="1257" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#f4a7ab" text-anchor="start">It was swapped for Shadestep at 21:02. Its 3 assignments still name it until you choose.</text>
+<rect x="1800.5" y="1292.5" width="279" height="527" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="1820" y="1326" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#eff5fa" text-anchor="start">Bosses</text>
+<rect x="1808" y="1344" width="264" height="32" rx="6" fill="#172333"/>
+<text x="1820" y="1365" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Lord Marrowgar</text>
+<text x="2056" y="1365" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end">4</text>
+<rect x="1808" y="1380" width="264" height="32" rx="6" fill="#172333"/>
+<text x="1820" y="1401" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Lady Deathwhisper</text>
+<text x="2056" y="1401" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end">5</text>
+<rect x="1808" y="1416" width="264" height="32" rx="6" fill="#172333"/>
+<text x="1820" y="1437" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Gunship Battle</text>
+<text x="2056" y="1437" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end"></text>
+<rect x="1808" y="1452" width="264" height="32" rx="6" fill="#1b4548"/>
+<text x="1820" y="1473" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#5de0c1" text-anchor="start">Deathbringer Saurfang</text>
+<text x="2056" y="1473" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#5de0c1" text-anchor="end">4</text>
+<rect x="1808" y="1488" width="264" height="32" rx="6" fill="#172333"/>
+<text x="1820" y="1509" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Festergut</text>
+<text x="2056" y="1509" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end">3</text>
+<rect x="1808" y="1524" width="264" height="32" rx="6" fill="#172333"/>
+<text x="1820" y="1545" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Rotface</text>
+<text x="2056" y="1545" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end">3</text>
+<rect x="1808" y="1560" width="264" height="32" rx="6" fill="#172333"/>
+<text x="1820" y="1581" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Professor Putricide</text>
+<text x="2056" y="1581" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end"></text>
+<rect x="1808" y="1596" width="264" height="32" rx="6" fill="#172333"/>
+<text x="1820" y="1617" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Blood Prince Council</text>
+<text x="2056" y="1617" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end"></text>
+<rect x="1808" y="1632" width="264" height="32" rx="6" fill="#172333"/>
+<text x="1820" y="1653" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Blood-Queen Lana&#x27;thel</text>
+<text x="2056" y="1653" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end"></text>
+<rect x="1808" y="1668" width="264" height="32" rx="6" fill="#172333"/>
+<text x="1820" y="1689" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Valithria Dreamwalker</text>
+<text x="2056" y="1689" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end"></text>
+<rect x="1808" y="1704" width="264" height="32" rx="6" fill="#172333"/>
+<text x="1820" y="1725" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Sindragosa</text>
+<text x="2056" y="1725" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end"></text>
+<rect x="1808" y="1740" width="264" height="32" rx="6" fill="#172333"/>
+<text x="1820" y="1761" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">The Lich King</text>
+<text x="2056" y="1761" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end"></text>
+<rect x="1808" y="1776" width="264" height="32" rx="6" fill="#172333"/>
+<text x="1820" y="1797" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">Halion</text>
+<text x="2056" y="1797" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="end">4</text>
+<rect x="2100.5" y="1292.5" width="819" height="387" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="2120" y="1326" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#eff5fa" text-anchor="start">Deathbringer Saurfang</text>
+<text x="2120" y="1346" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Pyrelight is no longer in the roster</text>
+<rect x="2100" y="1368" width="820" height="1" fill="#2b3b50"/>
+<text x="2120" y="1394" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Tanks: taunt on Rune of Blood</text>
+<rect x="2120.5" y="1400.5" width="90" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2165.5" y="1419" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Stonebrow</text>
+<rect x="2219.5" y="1400.5" width="76" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2257.5" y="1419" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Tomasdk</text>
+<text x="2308" y="1419" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#5de0c1" text-anchor="start">+ Assign</text>
+<rect x="2100" y="1432" width="820" height="1" fill="#2b3b50"/>
+<text x="2120" y="1458" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Blood Beasts: slow and kill</text>
+<rect x="2120.5" y="1464.5" width="90" height="27" rx="14" fill="#3f2329" stroke="#6b3740" stroke-width="1"/>
+<text x="2165.5" y="1483" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#f4a7ab" text-anchor="middle">Pyrelight</text>
+<rect x="2219.5" y="1464.5" width="90" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2264.5" y="1483" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Swiftshot</text>
+<rect x="2318.5" y="1464.5" width="97" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2367" y="1483" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Longstride</text>
+<text x="2428" y="1483" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#5de0c1" text-anchor="start">+ Assign</text>
+<rect x="2100" y="1496" width="820" height="1" fill="#2b3b50"/>
+<text x="2120" y="1522" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Mark of the Fallen Champion: heal</text>
+<rect x="2120.5" y="1528.5" width="76" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2158.5" y="1547" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Mendara</text>
+<rect x="2205.5" y="1528.5" width="104" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2257.5" y="1547" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Lightwarden</text>
+<text x="2322" y="1547" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#5de0c1" text-anchor="start">+ Assign</text>
+<rect x="2100" y="1560" width="820" height="1" fill="#2b3b50"/>
+<text x="2120" y="1586" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Melee: stay on the boss</text>
+<rect x="2120.5" y="1592.5" width="83" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2162" y="1611" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Arthasdk</text>
+<rect x="2212.5" y="1592.5" width="83" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2254" y="1611" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Crusader</text>
+<rect x="2304.5" y="1592.5" width="83" height="27" rx="14" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2346" y="1611" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#eff5fa" text-anchor="middle">Ironclad</text>
+<text x="2400" y="1611" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#5de0c1" text-anchor="start">+ Assign</text>
+<text x="2120" y="1656" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#5de0c1" text-anchor="start">+ Add a task</text>
+<rect x="2100" y="1696" width="220" height="40" rx="8" fill="#5de0c1"/>
+<text x="2210" y="1721" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#102830" text-anchor="middle">Assign Shadestep instead</text>
+<rect x="2328.5" y="1696.5" width="199" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2428" y="1721" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Choose someone else</text>
+</g>
+</svg>
