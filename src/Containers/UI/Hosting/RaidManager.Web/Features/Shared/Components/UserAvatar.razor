@@ -1,0 +1,8 @@
+@if (HasImage)
+{
+    <img class="user-avatar" src="@ImageUrl" alt="" width="@Size" height="@Size" style="@SizeStyle" />
+}
+else
+{
+    <span class="user-avatar user-avatar-initials" style="@SizeStyle" aria-hidden="true">@Initials</span>
+}

@@ -1,18 +1,21 @@
+using System.Security.Claims;
 using Bunit;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
 using Radzen;
 using Shouldly;
 using Xunit;
+using RaidManager.Web.Features.Authentication;
 using RaidManager.Web.Features.Shared.Layout;
 
 namespace RaidManager.Web.Tests.Features.Shared.Layout;
 
-/// <summary>Verifies the session controls the layout shows to visitors and to signed-in players.</summary>
+/// <summary>Verifies the app shell signed-in players see and the public frame visitors see.</summary>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
-/// Date: 2026-09-30<br/>
-/// Purpose: Visitors see "Sign in with Discord"; players see their name and a "Sign out" form.
+/// Date: 2026-10-01<br/>
+/// Purpose: Covers ADR-0019's shell: sidebar navigation of existing pages, the community and user cards, the breadcrumb
+/// and Sign out; and the shell-less frame of signed-out pages.
 /// </remarks>
 public sealed class MainLayoutTests : BunitContext
 {
@@ -21,6 +24,7 @@ public sealed class MainLayoutTests : BunitContext
     public MainLayoutTests()
     {
         Services.AddRadzenComponents();
+        Services.AddShellNavigation();
         JSInterop.Mode = JSRuntimeMode.Loose;
     }
     #endregion Constructors
@@ -28,41 +32,83 @@ public sealed class MainLayoutTests : BunitContext
     #region Tests
     /// <summary>Renders the layout for an anonymous visitor.</summary>
     [Fact]
-    public void VisitorSeesSignInWithDiscord()
+    public void VisitorSeesThePublicFrameWithoutTheShell()
     {
         AddAuthorization();
 
         var layout = RenderLayout();
 
-        layout.Markup.ShouldContain("Sign in with Discord");
+        layout.Find("[data-testid=public-frame]").TextContent.ShouldContain("page");
+        layout.FindAll(".rz-sidebar").ShouldBeEmpty();
         layout.Markup.ShouldNotContain("Sign out");
     }
 
-    /// <summary>Renders the layout for a signed-in player.</summary>
+    /// <summary>Renders the shell for a signed-in player.</summary>
     [Fact]
-    public void SignedInPlayerSeesTheirNameAndSignOut()
+    public void SignedInPlayerSeesTheShell()
     {
         AddAuthorization().SetAuthorized("Arthas Menethil");
 
         var layout = RenderLayout();
 
         layout.Find("[data-testid=signed-in-name]").TextContent.ShouldBe("Arthas Menethil");
+        layout.Find("[data-testid=user-card]").TextContent.ShouldContain("Player");
+        layout.Find("[data-testid=community-card]").TextContent.ShouldContain("No community yet");
         layout.Find("form[action='/sign-out']").ShouldNotBeNull();
-        layout.Markup.ShouldNotContain("Sign in with Discord");
+        layout.FindAll(".user-avatar-initials").Select(avatar => avatar.TextContent).ShouldAllBe(initials => initials == "AM");
+        layout.FindAll("[data-testid=public-frame]").ShouldBeEmpty();
     }
 
-    /// <summary>Clicks "Sign in with Discord" and checks the return to the current page.</summary>
+    /// <summary>Lists only existing pages and highlights the current one.</summary>
     [Fact]
-    public void SignInReturnsToTheCurrentPage()
+    public void NavigationListsOverviewAndHighlightsIt()
     {
-        AddAuthorization();
-        var navigation = Services.GetRequiredService<NavigationManager>();
-        navigation.NavigateTo("/raids");
+        AddAuthorization().SetAuthorized("Arthas Menethil");
+
         var layout = RenderLayout();
 
-        layout.FindAll("button").First(button => button.TextContent.Contains("Sign in with Discord", StringComparison.Ordinal)).Click();
+        layout.Find(".shell-navigation").TextContent.ShouldContain("PLAYER");
+        layout.FindAll(".shell-navigation a").Select(link => link.GetAttribute("href")).ShouldBe(["/"]);
+        layout.Markup.ShouldNotContain("OFFICER");
+        layout.Find(".rz-navigation-item-wrapper-active").TextContent.ShouldContain("Overview");
+        layout.Find("[data-testid=breadcrumb-page]").TextContent.ShouldBe("Overview");
+    }
 
-        navigation.Uri.ShouldEndWith("/sign-in?returnUrl=%2Fraids");
+    /// <summary>Follows navigation to a page outside the sidebar in the breadcrumb.</summary>
+    [Fact]
+    public void BreadcrumbFollowsNavigation()
+    {
+        AddAuthorization().SetAuthorized("Arthas Menethil");
+        var layout = RenderLayout();
+
+        Services.GetRequiredService<NavigationManager>().NavigateTo("/characters/review?returnUrl=%2F");
+
+        layout.WaitForAssertion(() => layout.Find("[data-testid=breadcrumb-page]").TextContent.ShouldBe("Review new characters"));
+    }
+
+    /// <summary>Leaves the breadcrumb page out for a page the shell doesn't know.</summary>
+    [Fact]
+    public void UnknownPageShowsOnlyTheBreadcrumbRoot()
+    {
+        AddAuthorization().SetAuthorized("Arthas Menethil");
+        Services.GetRequiredService<NavigationManager>().NavigateTo("/somewhere");
+
+        var layout = RenderLayout();
+
+        layout.Find(".shell-breadcrumb").TextContent.Trim().ShouldBe("RaidManager");
+    }
+
+    /// <summary>Shows the Discord avatar when the session has one.</summary>
+    [Fact]
+    public void DiscordAvatarReplacesTheInitials()
+    {
+        const string avatarUrl = "https://cdn.discordapp.com/avatars/1/a.png";
+        AddAuthorization().SetAuthorized("Arthas Menethil").SetClaims(new Claim(RaidManagerClaimTypes.AvatarUrl, avatarUrl));
+
+        var layout = RenderLayout();
+
+        layout.FindAll("img.user-avatar").Select(image => image.GetAttribute("src")).ShouldAllBe(source => source == avatarUrl);
+        layout.FindAll(".user-avatar-initials").ShouldBeEmpty();
     }
     #endregion Tests
 

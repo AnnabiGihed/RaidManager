@@ -3,6 +3,7 @@ using RaidManager.ViewModels.Features.Authentication;
 using RaidManager.ViewModels.Features.Characters;
 using RaidManager.Web.Components;
 using RaidManager.Web.Features.Authentication;
+using RaidManager.Web.Features.Shared.Layout;
 
 var builder = WebApplication.CreateBuilder(args);
 builder.AddServiceDefaults();
@@ -12,6 +13,7 @@ builder.Services.AddRaidManagerAuthentication(builder.Configuration);
 builder.Services.AddScoped<SignInFailedViewModel>();
 builder.Services.AddScoped<CharacterReviewViewModel>();
 builder.Services.AddSingleton(TimeProvider.System);
+builder.Services.AddShellNavigation();
 
 var app = builder.Build();
 if (!app.Environment.IsDevelopment())

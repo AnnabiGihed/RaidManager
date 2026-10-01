@@ -47,6 +47,9 @@ Its text is set in Segoe UI, which isn't a free font and isn't available in Penp
 - **Radzen stays.** The website is re-themed to this design system later (#203): a dark Radzen base theme with its
   CSS variables set from the palette, Open Sans, and the app shell in the main layout. Until then, the website and
   new mockups differ in look, and the mockups are the target.
+- **The shell comes first** (owner decision, 2026-10-01): the main layout gets the dark shell before the rest of the
+  re-theme, so pages are reachable. The sidebar lists only pages that exist, and each page's pull request adds its
+  entry. Page contents keep the Radzen theme until the re-theme.
 - This decision amends [ADR-0018](0018-generate-penpot-mockups-in-the-repository.md): generated mockups use this
   design system instead of the Radzen material look.
 
