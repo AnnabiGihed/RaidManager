@@ -12,7 +12,7 @@ namespace RaidManager.Web.Features.Authentication;
 /// Date: 2026-09-30<br/>
 /// Purpose: Resolves the Discord identity to its local user through the API before the cookie is issued, so a player is
 /// only signed in when the API knows them. Any failure leads to the retry page instead of a half-signed-in state. A
-/// player with characters awaiting their decision lands on the review page first (story #18).
+/// player with characters awaiting their decision or an officer lands on the review page first (story #18).
 /// </remarks>
 internal sealed partial class DiscordSignInEvents : OAuthEvents
 {
@@ -106,18 +106,18 @@ internal sealed partial class DiscordSignInEvents : OAuthEvents
     [LoggerMessage(Level = LogLevel.Warning, Message = "Discord sign-in failed.")]
     private static partial void LogSignInFailed(ILogger logger, Exception? failure);
 
-    /// <summary>Sends a player with characters awaiting their decision to the review page, keeping the requested page.</summary>
+    /// <summary>Sends a player with claims awaiting a decision or an officer to the review page, keeping the requested page.</summary>
     /// <param name="userId">The signed-in player.</param>
     /// <param name="requested">The page the player asked for.</param>
     /// <param name="cancellationToken">A token to cancel the call.</param>
-    /// <returns>The review page when a claim is pending or the check fails; otherwise the requested page.</returns>
+    /// <returns>The review page when a claim is pending or in conflict, or the check fails; otherwise the requested page.</returns>
     /// <remarks>A failed check still opens the review page, which shows the error and a retry, so no review is skipped.</remarks>
     private async Task<string?> RedirectAfterSignInAsync(Guid userId, string? requested, CancellationToken cancellationToken)
     {
         try
         {
             var claims = await _claimsApi.GetPendingAsync(userId, cancellationToken);
-            if (!claims.Any(claim => claim.IsPending))
+            if (claims.Count == 0)
             {
                 return requested;
             }

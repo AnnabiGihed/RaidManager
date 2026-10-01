@@ -153,6 +153,21 @@ public sealed class CharacterReviewTests : BunitContext
         Services.GetRequiredService<NavigationManager>().Uri.ShouldBe("http://localhost/");
     }
 
+    /// <summary>Opens the page with only a conflict waiting for an officer.</summary>
+    [Fact]
+    public void OnlyAConflictShowsAllSetWithTheReminder()
+    {
+        _api.Claims = [FakeCharacterClaimsApiClient.Claim("Sylvanash", CharacterClaim.ConflictState)];
+
+        var page = RenderPage("/raids");
+
+        page.WaitForElement("[data-testid=all-set]");
+        page.Markup.ShouldContain("Sylvanash stays in conflict review until an officer decides.");
+        page.FindAll("[data-testid=decide-later]").ShouldBeEmpty();
+        page.FindAll("button").First(button => button.TextContent.Contains("Continue", StringComparison.Ordinal)).Click();
+        Services.GetRequiredService<NavigationManager>().Uri.ShouldEndWith("/raids");
+    }
+
     /// <summary>Opens the page with a session that holds no user id.</summary>
     [Fact]
     public void SessionWithoutAUserIdShowsTheLoadError()
