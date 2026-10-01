@@ -2,6 +2,7 @@ using FluentValidation;
 using Microsoft.EntityFrameworkCore;
 using Pivot.Framework.Application.Behaviors;
 using RaidManager.ApiService.Features.Characters;
+using RaidManager.ApiService.Features.Communities;
 using RaidManager.ApiService.Features.Identity;
 using RaidManager.ApiService.Features.Shared.Authentication;
 using RaidManager.ApiService.Features.Shared.OpenApi;
@@ -56,6 +57,7 @@ if (app.Environment.IsDevelopment())
 app.MapGet("/", () => Results.Ok(new { service = "RaidManager.ApiService", status = "foundation" }));
 app.MapIdentityEndpoints();
 app.MapCharacterClaimEndpoints();
+app.MapCommunityEndpoints();
 app.MapDefaultEndpoints();
 await app.RunAsync();
 

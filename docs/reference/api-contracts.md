@@ -18,6 +18,10 @@ as `Parameters:website-service-key` in your own terminal.
 | `GET /internal/users/{userId}/character-claims/pending` | Website only | List the player's pending and conflicted character claims, oldest first. |
 | `POST /internal/users/{userId}/character-claims/{characterId}/approve` | Website only | Approve a pending claim. Returns 409 and keeps the claim in conflict review when another player owns the character. |
 | `POST /internal/users/{userId}/character-claims/{characterId}/reject` | Website only | Reject a pending claim, so the character never becomes the player's signup option. |
+| `POST /internal/communities` | Website only | Link a Discord server as a community, with the user who added the bot as its Administrator. Returns 201 with the community id, or 409 when the server is already linked. |
+| `GET /internal/communities/{communityId}` | Website only | Get a community's Discord server, realm and Administrator. |
+| `GET /internal/communities/by-discord-server/{discordGuildId}` | Website only | Get the community a Discord server links to, or 404 when it isn't linked. |
+| `GET /internal/users/{userId}/communities` | Website only | List the communities the user administers, by name. |
 
 Operations under `/internal/` require the website key in the `X-RaidManager-Service-Key` header, as
 [ADR-0011](../adr/0011-website-session-and-api-trust.md) describes. A missing or wrong key returns 401. The website
@@ -27,13 +31,17 @@ A claim decision returns 204 on success, 404 when the character or claim doesn't
 already decided or another player owns the character. Claims carry realm, class, race and claim state as names, such
 as `Icecrown` or `Conflict`.
 
+A community carries its realm as a name too. Linking needs a server id that is a Discord snowflake, a name of at most
+100 characters, one of the realm names and a known user; anything else returns 400 naming the field, and an unknown
+user returns 404.
+
 ## Planned contract areas
 
 - User-scoped website calls, session, and profile access.
 - Companion pairing, monitored-installation status, and authenticated, idempotent character snapshot ingestion.
 - Resolving an ownership conflict between two players.
 - Character profiles, loadouts, synchronization timestamps, and raid lockouts.
-- Community membership, officer permissions, raid templates, recurrence, scheduling, and publication.
+- Community membership and officer permissions, raid templates, recurrence, scheduling, and publication.
 - Confirmed, tentative, late, and declined signups, presets, compositions, bench, boss assignments,
   gear-readiness warnings, and raid-buff coverage.
 - Eligibility results per scheduled raid target, including verdict, source, freshness, reason, and reset time.

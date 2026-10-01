@@ -3,12 +3,14 @@ using Microsoft.Extensions.DependencyInjection;
 using Pivot.Framework.Infrastructure.Abstraction.UnitOfWork;
 using Pivot.Framework.Infrastructure.Messaging.EntityFrameworkCore.Extensions;
 using RaidManager.Application.Features.Characters.Abstractions;
+using RaidManager.Application.Features.Communities.Abstractions;
 using RaidManager.Domain.Features.Characters.Repositories;
 using RaidManager.Domain.Features.Communities.Repositories;
 using RaidManager.Domain.Features.Identity.Repositories;
 using RaidManager.Domain.Features.Raids.Repositories;
 using RaidManager.Persistence.EntityFrameworkCore.Features.Characters.Queries;
 using RaidManager.Persistence.EntityFrameworkCore.Features.Characters.Repositories;
+using RaidManager.Persistence.EntityFrameworkCore.Features.Communities.Queries;
 using RaidManager.Persistence.EntityFrameworkCore.Features.Communities.Repositories;
 using RaidManager.Persistence.EntityFrameworkCore.Features.Identity.Repositories;
 using RaidManager.Persistence.EntityFrameworkCore.Features.Raids.Repositories;
@@ -42,6 +44,7 @@ public static class PersistenceServiceCollectionExtensions
         services.AddScoped<ICharacterClaimReader, CharacterClaimReader>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ICommunityRepository, CommunityRepository>();
+        services.AddScoped<ICommunityReader, CommunityReader>();
         services.AddScoped<IRaidRepository, RaidRepository>();
         return services;
     }
