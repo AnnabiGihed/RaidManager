@@ -34,7 +34,10 @@ public sealed class HomeTests : BunitContext
         var navigation = Services.GetRequiredService<NavigationManager>();
         var page = Render<HomePage>();
 
-        page.Find("h1").TextContent.ShouldBe("Sign in to continue");
+        page.Find("h1").TextContent.ShouldBe("Plan raids with your characters");
+        page.Find("[data-testid=sign-in-card] h2").TextContent.ShouldBe("Sign in to continue");
+        page.Find("button.action-button-primary").TextContent.ShouldContain("Sign in with Discord");
+        page.Find(".text-note").TextContent.ShouldBe("Your first sign-in creates your RaidManager account.");
         page.FindAll("button").First(button => button.TextContent.Contains("Sign in with Discord", StringComparison.Ordinal)).Click();
 
         navigation.Uri.ShouldEndWith("/sign-in");

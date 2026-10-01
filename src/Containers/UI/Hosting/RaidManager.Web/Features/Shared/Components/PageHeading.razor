@@ -1,0 +1,11 @@
+<header class="@CssClass">
+    @if (!string.IsNullOrWhiteSpace(Eyebrow))
+    {
+        <span class="page-heading-eyebrow">@Eyebrow</span>
+    }
+    <h1 class="page-heading-title">@Title</h1>
+    @if (!string.IsNullOrWhiteSpace(Subtitle))
+    {
+        <p class="page-heading-subtitle">@Subtitle</p>
+    }
+</header>

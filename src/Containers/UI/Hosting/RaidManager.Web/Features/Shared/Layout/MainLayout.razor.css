@@ -46,6 +46,9 @@
 }
 
 .public-column {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
     width: 100%;
     max-width: 480px;
 }

@@ -19,6 +19,9 @@ public sealed class SignInFailedViewModel
 
     /// <summary>Gets the explanation shown under the title.</summary>
     public string Message { get; private set; } = string.Empty;
+
+    /// <summary>Gets a value indicating whether the player cancelled on Discord, as opposed to sign-in failing.</summary>
+    public bool IsCancelled { get; private set; }
     #endregion Properties
 
     #region Public Methods
@@ -26,7 +29,8 @@ public sealed class SignInFailedViewModel
     /// <param name="reason">The failure reason from the sign-in flow; anything unknown is treated as a general failure.</param>
     public void Describe(string? reason)
     {
-        if (string.Equals(reason, DeniedReason, StringComparison.OrdinalIgnoreCase))
+        IsCancelled = string.Equals(reason, DeniedReason, StringComparison.OrdinalIgnoreCase);
+        if (IsCancelled)
         {
             Title = "Sign-in cancelled";
             Message = "Discord did not share your account with RaidManager, so you are not signed in. "

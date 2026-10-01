@@ -17,6 +17,9 @@
     --rm-text-primary: #EFF5FA;
     --rm-text-secondary: #9EADC1;
     --rm-text-muted: #8394AA;
+    --rm-accent-amber: #F3BE75;
+    --rm-status-danger: #F2878C;
+    --rm-status-on-danger: #2B1115;
     --rm-avatar-background: #604C80;
     --rm-avatar-text: #F2E8FF;
     --rm-font-family: "Open Sans", sans-serif;

@@ -37,6 +37,33 @@ public sealed class SignInFailedTests : BunitContext
         var page = Render<SignInFailed>();
 
         page.Find("h1").TextContent.ShouldBe("Sign-in cancelled");
+        page.Find(".surface-card-accent").ClassList.ShouldContain("surface-card-accent-warning");
+        page.Find("button.action-button-secondary").TextContent.ShouldContain("Back to home");
+    }
+
+    /// <summary>Renders the page for any other failure with the danger accent.</summary>
+    [Fact]
+    public void FailedReasonShowsTheDangerAccent()
+    {
+        Services.GetRequiredService<NavigationManager>().NavigateTo("/sign-in/failed?reason=failed");
+
+        var page = Render<SignInFailed>();
+
+        page.Find("h1").TextContent.ShouldBe("Sign-in did not complete");
+        page.Find(".surface-card-accent").ClassList.ShouldContain("surface-card-accent-danger");
+    }
+
+    /// <summary>Clicks "Back to home".</summary>
+    [Fact]
+    public void BackToHomeGoesHome()
+    {
+        var navigation = Services.GetRequiredService<NavigationManager>();
+        navigation.NavigateTo("/sign-in/failed?reason=denied");
+        var page = Render<SignInFailed>();
+
+        page.Find("button.action-button-secondary").Click();
+
+        navigation.Uri.ShouldBe("http://localhost/");
     }
 
     /// <summary>Clicks "Try again" and checks that sign-in restarts with a full page load.</summary>

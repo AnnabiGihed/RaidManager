@@ -1,6 +1,7 @@
 using Microsoft.AspNetCore.Components;
 using RaidManager.ViewModels.Features.Authentication;
 using RaidManager.Web.Features.Authentication;
+using RaidManager.Web.Features.Shared.Components;
 
 namespace RaidManager.Web.Features.Authentication.Pages;
 
@@ -20,6 +21,9 @@ public partial class SignInFailed
     /// <summary>Gets or sets the view model that explains the failure.</summary>
     [Inject]
     private SignInFailedViewModel ViewModel { get; set; } = default!;
+
+    /// <summary>Gets the card's accent: amber when the player cancelled, red when sign-in failed (sign-in mockup).</summary>
+    private CardAccent Accent => ViewModel.IsCancelled ? CardAccent.Warning : CardAccent.Danger;
 
     /// <summary>Gets or sets the navigation manager.</summary>
     [Inject]
