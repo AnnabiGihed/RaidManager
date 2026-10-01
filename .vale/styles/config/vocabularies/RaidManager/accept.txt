@@ -24,6 +24,7 @@ CQRS
 CSS
 DDD
 debuff
+debuffs
 deduplication
 dialogs
 diff
