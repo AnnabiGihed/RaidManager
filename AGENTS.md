@@ -21,3 +21,20 @@ Project skills live in `.agents/skills/` and, identically, in `.claude/skills/` 
   `.agents/skills/wow-addon-335a-lua/SKILL.md`.
 - For UI mockups (Penpot files and their SVGs in `docs/mockups/`), use `.agents/skills/penpot-mockups/SKILL.md`.
   Never put a `.penpot` or mockup `.svg` file in the repository root.
+
+## Working agreements (every session, mandatory)
+
+These hold in every agent session; the skills named give the details.
+
+- **One task, one branch, one draft PR**, following `raidmanager-github-project-workflow`. Branch from `origin/main`
+  after checking `git branch --show-current`; stage explicit paths only, because other sessions share this checkout.
+- **Before handover:** build, tests, coverage after committing, the docs check, the spell check and Vale, then a
+  zero-finding `sonar_gate.py` (`raidmanager-conventions` §7, §8, §11). For UI changes, compare each state with its
+  mockup board using the real styles (`raidmanager-conventions` §10).
+- **With every PR, draft both review comments**, the operator's and the peer's, checked with
+  `scripts/verify_review.py`. Never post them, approve, mark ready or merge (workflow skill, step 6).
+- **When told a PR is merged**, confirm it, make sure the remote branch is deleted, and delete the local branch
+  before anything else (workflow skill, step 7).
+- **Owner decisions** are recorded on the issue they settle; product questions are asked, never assumed.
+- **Blazor work** follows `blazor-components`: pages in feature folders, specific looks as standalone generic
+  components, colors only from the project-wide theme.

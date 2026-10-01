@@ -107,6 +107,10 @@ adopt before a dedicated alignment PR.
   3. Stop the AppHost and every `RaidManager.*` process it started, then remove any leftover `sql-*` container
      (keep the data volume). Never leave processes or containers running for the owner to collide with.
   Signing in to Discord itself is the owner's step; the agent never enters Discord credentials.
+- **Never stop an app the owner started.** A `RaidManager.*` process you didn't start belongs to the owner (check its
+  start time). If it locks `bin/` and the build fails, don't stop it: build elsewhere with `--artifacts-path` (the
+  SQL Server tests can't load their native driver from a long scratch path, so say which tests didn't run) or ask
+  the owner. Stop only the processes and `sql-*` containers your own run started.
 
 ## 6. API reference page (mandatory)
 
@@ -144,6 +148,13 @@ Rules for every documentation change:
 - Keep documents to GitHub-compatible Markdown: fenced `mermaid` blocks, relative links, no MkDocs-only syntax
   (admonitions, tabs, snippets) until the converter supports it.
 - A new ADR also gets a row in `docs/adr/README.md`.
+- **Run Vale before every handover in which Markdown changed**, the changelog included. CI fails on any Vale error,
+  and `scripts/spell_check.py` alone isn't enough (it accepts plurals that Vale rejects):
+
+  ```bash
+  MSYS_NO_PATHCONV=1 docker run --rm -v "<repository path>:/work" -w /work jdkato/vale:v3.23.0 README.md CHANGELOG.md CONTRIBUTING.md SECURITY.md docs
+  ```
+
 - **Spelling is strict and US English.** The docs check runs `python scripts/spell_check.py` (install
   `pyspellchecker`): every word outside code and links must be a US English word or appear in the one project word
   list, `.vale/styles/config/vocabularies/RaidManager/accept.txt`, which Vale and Visual Studio (through
@@ -162,6 +173,8 @@ Coverage is measured and enforced on every pull request
   `dotnet test RaidManager.sln --no-build --settings coverage.runsettings --results-directory TestResults`, then
   `python scripts/coverage_gate.py --reports TestResults --base origin/main`. The summary lists every uncovered
   changed line; add tests for them in the same PR.
+- **Run the gate after committing.** `coverage_gate.py` compares committed changes with `--base`, so uncommitted work
+  shows as "0 / 0 changed lines". Commit first, then run it on the fresh `TestResults`.
 - **Evidence:** quote the changed-lines and total percentages from the coverage comment in the PR's "How it was
   tested" section.
 - **Never** lower the thresholds, widen `coverage.runsettings`, or add `[ExcludeFromCodeCoverage]` to get past the
@@ -215,6 +228,14 @@ A mockup comes before the screen, for every user interface: website, companion, 
 - **Pull requests:** a change to `src/Containers/UI/`, `addon/`, `.razor`, `.css`, `.html`, `.lua` or `.toc` files
   shows its mockup or states `No visual change: <reason>`; the docs `validate` check (`scripts/ui_mockups.py`)
   enforces it.
+- **Check the screen against its mockup before handover (mandatory).** Tests prove behavior, not looks: the owner
+  rejected a sign-in page whose tests passed but whose card and button didn't follow the mockup. For every UI change,
+  render each state the mockup shows with the real styles (the Radzen theme, `wwwroot/fonts/open-sans.css`,
+  `wwwroot/theme/raidmanager-theme.css` and the scoped `RaidManager.Web.styles.css` bundle) and compare it with the
+  board: layout, colors, type, button shape and case. Signed-out pages can be checked in the running app; for
+  signed-in pages, dump the component's markup from a throwaway bUnit test into the scratchpad and open it with those
+  stylesheets in the browser. When the browser pane is hidden it can't take screenshots: check the computed styles
+  and sizes instead, and say so. Never commit the throwaway test or the preview files.
 - **Product decisions stay with the owner.** Draft layouts freely, but when a UI task depends on an open product
   question, ask it on the task instead of designing an answer. Deliberate deviations update the mockup in the same PR.
 
@@ -226,6 +247,9 @@ SonarCloud analyzes every pull request, and the required `sonar` check fails it 
 - **Rule:** a pull request merges with no open SonarCloud issue (bug, vulnerability or code smell, any severity) and
   no security hotspot to review. SonarCloud's own `SonarCloud Code Analysis` check follows the default quality gate,
   which passes code smells: never read its green status as "no findings".
+- **Hand over only at zero findings.** Wait for `sonar_gate.py` on the head commit before giving the owner the PR
+  summary and its review comments; never present a PR whose findings the owner would have to point out. Name a
+  repeated string literal once as a constant while writing a script, rather than after Sonar flags it.
 - **Check before asking for review:** `python scripts/sonar_gate.py --project AnnabiGihed_RaidManager
   --pull-request <number> --commit <head sha>` prints each finding with its file, line and rule. Common ones in this
   repository: a string literal repeated three or more times (`python:S1192`, name it once as a constant), and
@@ -233,3 +257,19 @@ SonarCloud analyzes every pull request, and the required `sonar` check fails it 
 - **Fix every finding in the same pull request.** Only a finding that is genuinely wrong is marked as a false
   positive or accepted in SonarCloud, individually, with a reason naming the pull request. Never bulk-resolve.
 - **Evidence:** the `sonar` check is green on the head commit; say so in "How it was tested".
+
+## 12. Working on Windows (mandatory)
+
+The owner's checkout is on Windows with `core.autocrlf`, so files in the working copy have CRLF line endings while
+Git stores LF.
+
+- **Write files with LF.** A script that writes a source file uses `newline="\n"` (Python); Git converts on checkout.
+- **`dotnet format --verify-no-changes`** reports `ENDOFLINE` for every CRLF file in a Windows working copy, including
+  files nobody changed. CI on Linux doesn't. Verify only the files you changed, after normalizing them to LF:
+  `dotnet format RaidManager.sln --verify-no-changes --include <changed .cs and .razor files>`, and ignore
+  `ENDOFLINE` lines for files you didn't touch.
+- **Line-ending-only diffs:** a regenerated file that differs only in line endings shows as modified;
+  `git diff --ignore-cr-at-eol --name-only` lists the real changes. Don't commit or report line-ending-only changes.
+- **Binary files** such as fonts are marked in `.gitattributes`; add a rule there for any new binary type.
+- **Long or quoted text in a shell:** a heredoc containing apostrophes can fail in the agent's shell. Write long files
+  with the editor tool or from a script file in the scratchpad instead.
