@@ -50,6 +50,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - A dark design system from the owner's reference design: named colors, Open Sans text styles, and an app shell on
   every website screen with the Player and Officer navigation, community, breadcrumb, realm status and user. Mockups
   are generated with it, and the website will be re-themed to match (ADR-0019) (#202).
+- The claim conflicts mockup in `docs/mockups/`: the officer's list of ownership conflicts with resolved decisions kept
+  for audit, resolving one with a required reason, the outcome each player sees, and the access error for
+  non-officers (#249).
 - The preparation and history mockup in `docs/mockups/`: missing enchant and gem warnings, an inspected loadout,
   advisory gear requirements that never exclude anyone, and attendance history with each record's source (#247).
 - The roster is imported into the WoW addon by pasting a versioned code from the website (ADR-0021). The addon
