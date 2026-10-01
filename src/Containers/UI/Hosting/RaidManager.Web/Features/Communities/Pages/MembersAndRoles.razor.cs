@@ -91,7 +91,7 @@ public sealed partial class MembersAndRoles : IDisposable
         }
         else
         {
-            await Members.LoadAsync(userId, Guid.Empty, _lifetime.Token);
+            Members.ShowUnavailable();
         }
 
         StateHasChanged();

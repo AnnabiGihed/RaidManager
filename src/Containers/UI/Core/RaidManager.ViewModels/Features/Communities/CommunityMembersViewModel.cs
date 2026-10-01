@@ -72,6 +72,9 @@ public sealed class CommunityMembersViewModel
             Fail(CommunityApiStatus.DiscordUnavailable);
         }
     }
+
+    /// <summary>Shows the members as unavailable without asking, when the community itself couldn't be read.</summary>
+    public void ShowUnavailable() => Fail(CommunityApiStatus.DiscordUnavailable);
     #endregion Public Methods
 
     #region Private Helpers

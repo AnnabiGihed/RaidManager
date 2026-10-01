@@ -82,6 +82,22 @@ public sealed class MembersAndRolesTests : BunitContext
         page.WaitForAssertion(() => page.FindAll("[data-testid=members-table] tbody tr").Count.ShouldBe(2));
     }
 
+    /// <summary>Offers a retry when the API can't read the community, and lists the members once it can.</summary>
+    [Fact]
+    public void UnreachableApiOffersARetry()
+    {
+        _communities.Communities.Add(FakeCommunitiesApiClient.Community(_userId));
+        _communities.Fails = true;
+        SignIn();
+        var page = Render<MembersAndRoles>();
+        page.WaitForAssertion(() => page.Find("[data-testid=members-problem] .notice-title").TextContent.ShouldBe("The members couldn't be shown"));
+
+        _communities.Fails = false;
+        page.Find("button").Click();
+
+        page.WaitForAssertion(() => page.FindAll("[data-testid=members-table] tbody tr").Count.ShouldBe(2));
+    }
+
     /// <summary>Sends a user without a community to the Overview.</summary>
     [Fact]
     public void UserWithoutACommunityGoesToTheOverview()

@@ -66,6 +66,12 @@ public sealed class CommunityRoleSettingsStepDefinitions
     /// <summary>Stores a value indicating whether Discord fails every call.</summary>
     private bool _discordDown;
 
+    /// <summary>Stores a value indicating whether Discord fails to read the server.</summary>
+    private bool _serverDown;
+
+    /// <summary>Stores a value indicating whether Discord fails to list the server's people.</summary>
+    private bool _memberListDown;
+
     /// <summary>Stores the community.</summary>
     private Community? _community;
 
@@ -98,12 +104,14 @@ public sealed class CommunityRoleSettingsStepDefinitions
                     : DiscordMembership.NotMember));
         _discordServers
             .Setup(discord => discord.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(() => _discordDown
+            .ReturnsAsync(() => _discordDown || _serverDown
                 ? Result.Failure<DiscordServer>(DiscordErrors.Unavailable)
                 : Result.Success(new DiscordServer(_serverName, [.. _serverRoles])));
         _discordServers
             .Setup(discord => discord.ListMembersAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(() => Result.Success<IReadOnlyList<DiscordServerMember>>([.. _members]));
+            .ReturnsAsync(() => _memberListDown
+                ? Result.Failure<IReadOnlyList<DiscordServerMember>>(DiscordErrors.Unavailable)
+                : Result.Success<IReadOnlyList<DiscordServerMember>>([.. _members]));
         _unitOfWork
             .Setup(unitOfWork => unitOfWork.SaveChangesAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result.Success());
@@ -172,6 +180,14 @@ public sealed class CommunityRoleSettingsStepDefinitions
     /// <summary>Makes every Discord call fail.</summary>
     [Given("Discord can't be reached")]
     public void GivenDiscordCantBeReached() => _discordDown = true;
+
+    /// <summary>Makes Discord fail to read the server, after it confirmed the membership.</summary>
+    [Given("Discord can't read the server")]
+    public void GivenDiscordCantReadTheServer() => _serverDown = true;
+
+    /// <summary>Makes Discord fail to list the server's people, after it read the server.</summary>
+    [Given("Discord can't list the server's people")]
+    public void GivenDiscordCantListTheServersPeople() => _memberListDown = true;
     #endregion Given Steps
 
     #region When Steps
@@ -193,6 +209,16 @@ public sealed class CommunityRoleSettingsStepDefinitions
     {
         var handler = new GetCommunityMembersQueryHandler(_communities.Object, _userRepository.Object, _discordMembers.Object, _discordServers.Object, TimeProvider.System);
         _memberList = await handler.Handle(new GetCommunityMembersQuery(Community.Id.Value, UserNamed(name).Id.Value), CancellationToken.None);
+    }
+
+    /// <summary>Lists the members of a community that doesn't exist.</summary>
+    /// <param name="name">The user's name.</param>
+    /// <returns>A task that completes when the list has run.</returns>
+    [When("{string} lists the members of an unknown community")]
+    public async Task WhenListsTheMembersOfAnUnknownCommunity(string name)
+    {
+        var handler = new GetCommunityMembersQueryHandler(_communities.Object, _userRepository.Object, _discordMembers.Object, _discordServers.Object, TimeProvider.System);
+        _memberList = await handler.Handle(new GetCommunityMembersQuery(Guid.NewGuid(), UserNamed(name).Id.Value), CancellationToken.None);
     }
 
     /// <summary>Maps a Discord role as a user.</summary>
@@ -304,6 +330,10 @@ public sealed class CommunityRoleSettingsStepDefinitions
         Outcome.IsFailure.ShouldBeTrue();
         Outcome.Error.ShouldBe(CommunityErrors.RoleNotMappable);
     }
+
+    /// <summary>Checks that the request failed because the community doesn't exist.</summary>
+    [Then("the request fails because the community doesn't exist")]
+    public void ThenTheRequestFailsBecauseTheCommunityDoesntExist() => ShouldFail(CommunityErrors.NotFound, ResultExceptionType.NotFound);
 
     /// <summary>Checks that the request failed because Discord couldn't answer.</summary>
     [Then("the request fails because Discord is unavailable")]

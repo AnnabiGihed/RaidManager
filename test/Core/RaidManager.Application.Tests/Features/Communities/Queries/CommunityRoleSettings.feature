@@ -120,3 +120,17 @@ Feature: Community role settings
       Given Discord can't be reached
       When "Gihed" lists the community's members
       Then the request fails because Discord is unavailable
+
+    Scenario: Discord failing to read the server refuses the list
+      Given Discord can't read the server
+      When "Gihed" lists the community's members
+      Then the request fails because Discord is unavailable
+
+    Scenario: Discord failing to list the people refuses the list
+      Given Discord can't list the server's people
+      When "Gihed" lists the community's members
+      Then the request fails because Discord is unavailable
+
+    Scenario: A community that doesn't exist can't be listed
+      When "Gihed" lists the members of an unknown community
+      Then the request fails because the community doesn't exist

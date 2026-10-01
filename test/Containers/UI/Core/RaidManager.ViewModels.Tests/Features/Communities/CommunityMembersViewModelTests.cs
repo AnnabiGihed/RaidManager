@@ -86,6 +86,19 @@ public sealed class CommunityMembersViewModelTests
 
         members.Problem.ShouldNotBeNull().Message.ShouldBe("Discord didn't answer. Try again in a minute.");
     }
+
+    /// <summary>Shows the members as unavailable without asking the API.</summary>
+    [Fact]
+    public void ShowUnavailableExplainsWithoutAsking()
+    {
+        var members = Create();
+
+        members.ShowUnavailable();
+
+        members.Status.ShouldBe(CommunityPageStatus.Failed);
+        members.Rows.ShouldBeEmpty();
+        members.Problem.ShouldNotBeNull().Title.ShouldBe("The members couldn't be shown");
+    }
     #endregion Tests
 
     #region Private Helpers
