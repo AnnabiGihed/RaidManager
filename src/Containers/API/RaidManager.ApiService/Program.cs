@@ -5,6 +5,7 @@ using RaidManager.ApiService.Features.Characters;
 using RaidManager.ApiService.Features.Identity;
 using RaidManager.ApiService.Features.Shared.Authentication;
 using RaidManager.ApiService.Features.Shared.OpenApi;
+using RaidManager.Infrastructure.Features.Communities;
 using RaidManager.Persistence.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -26,6 +27,7 @@ builder.Services.AddValidatorsFromAssembly(RaidManager.Application.AssemblyRefer
 builder.Services.AddRaidManagerPersistence(
     builder.Configuration.GetConnectionString("Database")
         ?? throw new InvalidOperationException("Configure the 'Database' connection string; the Aspire AppHost provides it."));
+builder.Services.AddRaidManagerDiscord(builder.Configuration);
 builder.Services.AddWebsiteServiceAuthentication(builder.Configuration);
 
 var app = builder.Build();

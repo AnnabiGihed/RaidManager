@@ -25,6 +25,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   owned by another player also sees the page, which says an officer will review them (#255).
 - The API lets the website list a player's character claims awaiting a decision, oldest first, and approve or reject
   one. Approving a character another player owns keeps the claim in conflict review (ADR-0010) (#85, #89, #161).
+- The API checks a member's role in a community with Discord, using the bot token, and reuses each answer for a
+  minute. Someone who isn't in the Discord server gets no role, and a check Discord can't answer is refused. The
+  AppHost has a new `discord-bot-token` secret (ADR-0022) (#287).
 - Communities are stored in SQL Server: the linked Discord server, its Warmane realm, the Administrator who added the
   bot, and the Discord roles that give Officer or Raid leader. A member's role follows their Discord roles, which
   RaidManager reads from Discord when an action needs them (ADR-0022) (#286).

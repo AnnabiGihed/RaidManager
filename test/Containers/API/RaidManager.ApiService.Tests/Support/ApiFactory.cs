@@ -17,6 +17,9 @@ public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
     /// <summary>Defines the website key the tests present; long enough to pass the startup check.</summary>
     public const string WebsiteServiceKey = "test-website-service-key-0123456789abcdefghijkl";
 
+    /// <summary>Defines a placeholder bot token: startup requires one, and these tests never call Discord.</summary>
+    private const string PlaceholderBotToken = "not-a-real-bot-token";
+
     /// <summary>Defines the SQL Server image, matching the persistence tests.</summary>
     private const string SqlServerImage = "mcr.microsoft.com/mssql/server:2022-latest";
     #endregion Constants
@@ -50,6 +53,7 @@ public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         builder.UseEnvironment(EnvironmentName);
         builder.UseSetting("ConnectionStrings:Database", _database.GetConnectionString());
         builder.UseSetting("Website:ServiceKey", WebsiteServiceKey);
+        builder.UseSetting("Discord:BotToken", PlaceholderBotToken);
     }
     #endregion Overrides
 }

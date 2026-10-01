@@ -10,9 +10,13 @@ var websiteServiceKey = builder.AddParameter(
     secret: true,
     persist: true);
 
+// The Discord bot's token; the API asks Discord for members' roles with it (ADR-0022). Keep it in the AppHost user secrets.
+var discordBotToken = builder.AddParameter("discord-bot-token", secret: true);
+
 var api = builder.AddProject<Projects.RaidManager_ApiService>("api")
     .WithReference(database)
     .WithEnvironment("Website__ServiceKey", websiteServiceKey)
+    .WithEnvironment("Discord__BotToken", discordBotToken)
     .WithUrlForEndpoint("https", url => url.DisplayText = "API (https)")
     .WaitFor(database);
 
