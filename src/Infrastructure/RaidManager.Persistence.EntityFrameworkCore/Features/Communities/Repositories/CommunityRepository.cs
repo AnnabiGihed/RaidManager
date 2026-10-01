@@ -1,3 +1,4 @@
+using Microsoft.EntityFrameworkCore;
 using Pivot.Framework.Infrastructure.Persistence.EntityFrameworkCore.Repositories;
 using RaidManager.Domain.Features.Communities.Aggregates;
 using RaidManager.Domain.Features.Communities.Repositories;
@@ -13,12 +14,24 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Features.Communities.Repos
 /// </remarks>
 internal sealed class CommunityRepository : BaseAsyncCommandRepository<Community, CommunityId>, ICommunityRepository
 {
+    #region Fields
+    /// <summary>Stores the RaidManager database context.</summary>
+    private readonly RaidManagerDbContext _dbContext;
+    #endregion Fields
+
     #region Constructors
     /// <summary>Initializes a new instance of the <see cref="CommunityRepository"/> class.</summary>
     /// <param name="dbContext">The RaidManager database context.</param>
     public CommunityRepository(RaidManagerDbContext dbContext)
         : base(dbContext)
     {
+        _dbContext = dbContext;
     }
     #endregion Constructors
+
+    #region Public Methods
+    /// <inheritdoc />
+    public Task<bool> IsDiscordGuildLinkedAsync(string discordGuildId, CancellationToken cancellationToken) =>
+        _dbContext.Communities.AnyAsync(community => community.DiscordGuildId == discordGuildId, cancellationToken);
+    #endregion Public Methods
 }

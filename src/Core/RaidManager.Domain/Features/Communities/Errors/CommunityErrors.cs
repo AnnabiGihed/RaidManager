@@ -16,5 +16,8 @@ public static class CommunityErrors
 
     /// <summary>Gets the error returned when the user is not in the community's Discord server.</summary>
     public static readonly Error NotAMember = new("Community.NotAMember", "You aren't a member of this community's Discord server.");
+
+    /// <summary>Gets the error returned when the Discord server already links to a community.</summary>
+    public static readonly Error AlreadyLinked = new("Community.AlreadyLinked", "This Discord server is already linked to a RaidManager community.");
     #endregion Static Instances
 }
