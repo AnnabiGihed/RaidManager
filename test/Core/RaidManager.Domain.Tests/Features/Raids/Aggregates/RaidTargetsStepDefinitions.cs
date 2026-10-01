@@ -77,6 +77,7 @@ public sealed class RaidTargetsStepDefinitions
             _raid = Raid.Create(
                 new CommunityId(Guid.NewGuid()),
                 new UserId(Guid.NewGuid()),
+                "Icecrown Citadel",
                 targets,
                 startsAtUtc,
                 startsAtUtc.AddHours(-4),

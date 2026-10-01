@@ -24,6 +24,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - Character claims in the domain: pending, approved, rejected and conflict. A repeated upload never approves,
   reopens or transfers a claim (#48).
 - Combined raids in the domain: a raid requires one or more distinct instance and difficulty targets (#49).
+- Raids in the domain have a title and a size of 10 or 25 players shared by every target. An officer can edit a
+  raid's details until it starts, and the change says whether the start or the targets moved (#257).
 - Signup availability in the domain: confirmed, tentative, late with an arrival time, or declined, independent of
   roster selection (#50).
 - Raid-start readiness in the domain: each raid target gets an available, resets-before-raid, needs-fresh-sync or

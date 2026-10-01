@@ -155,17 +155,17 @@ namespace RaidManager.Domain.Tests.Features.Raids.Aggregates
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table3 = new global::Reqnroll.Table(new string[] {
                             "instance",
                             "difficulty"});
-                table1.AddRow(new string[] {
+                table3.AddRow(new string[] {
                             "IcecrownCitadel",
                             "TwentyFivePlayer"});
-                table1.AddRow(new string[] {
+                table3.AddRow(new string[] {
                             "RubySanctum",
                             "TwentyFivePlayer"});
 #line 9
-      await testRunner.WhenAsync("the officer creates a raid requiring these targets", ((string)(null)), table1, "When ");
+      await testRunner.WhenAsync("the officer creates a raid requiring these targets", ((string)(null)), table3, "When ");
 #line hidden
 #line 13
       await testRunner.ThenAsync("the raid requires 2 targets", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
@@ -229,17 +229,17 @@ namespace RaidManager.Domain.Tests.Features.Raids.Aggregates
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
                             "instance",
                             "difficulty"});
-                table2.AddRow(new string[] {
+                table4.AddRow(new string[] {
                             "IcecrownCitadel",
                             "TwentyFivePlayer"});
-                table2.AddRow(new string[] {
+                table4.AddRow(new string[] {
                             "IcecrownCitadel",
                             "TwentyFivePlayer"});
 #line 21
-      await testRunner.WhenAsync("the officer creates a raid requiring these targets", ((string)(null)), table2, "When ");
+      await testRunner.WhenAsync("the officer creates a raid requiring these targets", ((string)(null)), table4, "When ");
 #line hidden
 #line 25
       await testRunner.ThenAsync("the raid creation is rejected", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");

@@ -82,6 +82,7 @@ public sealed class RaidReadinessStepDefinitions
         _raid = Raid.Create(
             new CommunityId(Guid.NewGuid()),
             new UserId(Guid.NewGuid()),
+            "Icecrown Citadel",
             _targets,
             _startsAtUtc,
             _startsAtUtc.AddHours(-SignupHoursBeforeStart),

@@ -13,6 +13,11 @@ namespace RaidManager.Domain.Features.Raids.Aggregates;
 /// </remarks>
 public sealed class Raid : AggregateRoot<RaidId>
 {
+    #region Constants
+    /// <summary>Defines the longest raid title.</summary>
+    public const int MaximumTitleLength = 100;
+    #endregion Constants
+
     #region Fields
     /// <summary>Stores participant signups for the raid.</summary>
     private readonly List<RaidSignup> _signups = [];
@@ -31,6 +36,7 @@ public sealed class Raid : AggregateRoot<RaidId>
     {
         CommunityId = new CommunityId(Guid.NewGuid());
         CreatedByUserId = new UserId(Guid.NewGuid());
+        Title = string.Empty;
         Requirements = new RaidRequirements(null, false, TimeSpan.FromDays(3));
     }
 
@@ -38,6 +44,7 @@ public sealed class Raid : AggregateRoot<RaidId>
     /// <param name="id">The raid identifier.</param>
     /// <param name="communityId">The organizing community.</param>
     /// <param name="createdByUserId">The creating raid leader.</param>
+    /// <param name="title">The raid title.</param>
     /// <param name="startsAtUtc">The scheduled start instant.</param>
     /// <param name="signupDeadlineUtc">The signup deadline.</param>
     /// <param name="requirements">The automatic signup requirements.</param>
@@ -46,6 +53,7 @@ public sealed class Raid : AggregateRoot<RaidId>
         RaidId id,
         CommunityId communityId,
         UserId createdByUserId,
+        string title,
         DateTimeOffset startsAtUtc,
         DateTimeOffset signupDeadlineUtc,
         RaidRequirements requirements,
@@ -54,6 +62,7 @@ public sealed class Raid : AggregateRoot<RaidId>
     {
         CommunityId = communityId;
         CreatedByUserId = createdByUserId;
+        Title = title;
         StartsAtUtc = startsAtUtc;
         SignupDeadlineUtc = signupDeadlineUtc;
         Requirements = requirements;
@@ -68,6 +77,12 @@ public sealed class Raid : AggregateRoot<RaidId>
 
     /// <summary>Gets the user who created the raid.</summary>
     public UserId CreatedByUserId { get; private set; }
+
+    /// <summary>Gets the raid title.</summary>
+    public string Title { get; private set; }
+
+    /// <summary>Gets the number of players every target is for: 10 or 25.</summary>
+    public int Size => _targets.Count == 0 ? 0 : _targets[0].Size;
 
     /// <summary>Gets every instance and difficulty the raid requires; each receives its own readiness verdict.</summary>
     public IReadOnlyCollection<RaidTarget> Targets => _targets.AsReadOnly();
@@ -98,22 +113,25 @@ public sealed class Raid : AggregateRoot<RaidId>
     /// <summary>Creates a draft raid event.</summary>
     /// <param name="communityId">The organizing community.</param>
     /// <param name="createdByUserId">The creating raid leader.</param>
-    /// <param name="targets">The required instances and difficulties: at least one, each listed once.</param>
+    /// <param name="title">The raid title: required, at most <see cref="MaximumTitleLength"/> characters.</param>
+    /// <param name="targets">The required instances and difficulties: at least one, each listed once, all for one size.</param>
     /// <param name="startsAtUtc">The scheduled start instant.</param>
     /// <param name="signupDeadlineUtc">The signup deadline.</param>
     /// <param name="requirements">The automatic signup requirements.</param>
     /// <param name="description">The optional organizer description.</param>
     /// <returns>The draft raid.</returns>
-    /// <exception cref="DomainException">Thrown when the schedule or the targets are invalid.</exception>
+    /// <exception cref="DomainException">Thrown when the title, the schedule or the targets are invalid.</exception>
     public static Raid Create(
         CommunityId communityId,
         UserId createdByUserId,
+        string title,
         IEnumerable<RaidTarget> targets,
         DateTimeOffset startsAtUtc,
         DateTimeOffset signupDeadlineUtc,
         RaidRequirements requirements,
         string? description)
     {
+        var trimmedTitle = EnsureTitle(title);
         EnsureSchedule(startsAtUtc, signupDeadlineUtc);
         var targetList = targets.ToList();
         EnsureTargets(targetList);
@@ -121,10 +139,11 @@ public sealed class Raid : AggregateRoot<RaidId>
             new RaidId(Guid.NewGuid()),
             communityId,
             createdByUserId,
+            trimmedTitle,
             startsAtUtc,
             signupDeadlineUtc,
             requirements,
-            string.IsNullOrWhiteSpace(description) ? null : description.Trim());
+            NormalizeDescription(description));
         raid._targets.AddRange(targetList);
         raid.RaiseDomainEvent(new RaidCreated(raid.Id, communityId, targetList.ConvertAll(target => target.ToString()), startsAtUtc));
         return raid;
@@ -132,6 +151,60 @@ public sealed class Raid : AggregateRoot<RaidId>
     #endregion Factory Methods
 
     #region Domain Behavior
+    /// <summary>Changes the raid's details; the same rules as creation apply to the new values.</summary>
+    /// <param name="title">The raid title: required, at most <see cref="MaximumTitleLength"/> characters.</param>
+    /// <param name="description">The optional organizer description.</param>
+    /// <param name="targets">The required instances and difficulties: at least one, each listed once, all for one size.</param>
+    /// <param name="startsAtUtc">The scheduled start instant.</param>
+    /// <param name="signupDeadlineUtc">The signup deadline.</param>
+    /// <param name="requirements">The automatic signup requirements.</param>
+    /// <exception cref="DomainException">
+    /// Thrown when the raid is in progress, completed or cancelled, or when the new details are invalid.
+    /// </exception>
+    /// <remarks>
+    /// A change raises one <see cref="RaidDetailsChanged"/> event telling whether the start or the targets changed, which
+    /// is when readiness must be recalculated. Identical details raise nothing.
+    /// </remarks>
+    public void UpdateDetails(
+        string title,
+        string? description,
+        IEnumerable<RaidTarget> targets,
+        DateTimeOffset startsAtUtc,
+        DateTimeOffset signupDeadlineUtc,
+        RaidRequirements requirements)
+    {
+        if (Status is not (RaidStatus.Draft or RaidStatus.OpenForSignups or RaidStatus.RosterPublished))
+        {
+            throw new UnknownDomainException("Only a raid that has not started can be edited.");
+        }
+
+        var trimmedTitle = EnsureTitle(title);
+        EnsureSchedule(startsAtUtc, signupDeadlineUtc);
+        var targetList = targets.ToList();
+        EnsureTargets(targetList);
+        var normalizedDescription = NormalizeDescription(description);
+
+        var startChanged = startsAtUtc != StartsAtUtc;
+        var targetsChanged = !targetList.SequenceEqual(_targets);
+        var otherChanged = trimmedTitle != Title
+            || normalizedDescription != Description
+            || signupDeadlineUtc != SignupDeadlineUtc
+            || requirements != Requirements;
+        if (!startChanged && !targetsChanged && !otherChanged)
+        {
+            return;
+        }
+
+        Title = trimmedTitle;
+        Description = normalizedDescription;
+        StartsAtUtc = startsAtUtc;
+        SignupDeadlineUtc = signupDeadlineUtc;
+        Requirements = requirements;
+        _targets.Clear();
+        _targets.AddRange(targetList);
+        RaiseDomainEvent(new RaidDetailsChanged(Id, startChanged, targetsChanged));
+    }
+
     /// <summary>Opens a draft raid for player signups.</summary>
     public void OpenForSignups()
     {
@@ -254,6 +327,26 @@ public sealed class Raid : AggregateRoot<RaidId>
     #endregion Domain Behavior
 
     #region Invariants
+    /// <summary>Ensures a raid has a title of acceptable length.</summary>
+    /// <param name="title">The requested title.</param>
+    /// <returns>The trimmed title.</returns>
+    /// <exception cref="DomainException">Thrown when the title is blank or too long.</exception>
+    private static string EnsureTitle(string title)
+    {
+        var trimmed = title?.Trim() ?? string.Empty;
+        if (trimmed.Length == 0)
+        {
+            throw new UnknownDomainException("A raid needs a title.");
+        }
+
+        if (trimmed.Length > MaximumTitleLength)
+        {
+            throw new UnknownDomainException($"A raid title cannot be longer than {MaximumTitleLength} characters.");
+        }
+
+        return trimmed;
+    }
+
     /// <summary>Ensures signup closes before the raid starts.</summary>
     /// <param name="startsAtUtc">The raid start instant.</param>
     /// <param name="signupDeadlineUtc">The signup deadline.</param>
@@ -266,9 +359,9 @@ public sealed class Raid : AggregateRoot<RaidId>
         }
     }
 
-    /// <summary>Ensures a raid requires at least one target and lists each target once.</summary>
+    /// <summary>Ensures a raid requires at least one target, lists each target once, and keeps one size.</summary>
     /// <param name="targets">The required raid targets.</param>
-    /// <exception cref="DomainException">Thrown when no target is given or a target is repeated.</exception>
+    /// <exception cref="DomainException">Thrown when no target is given, a target is repeated, or sizes are mixed.</exception>
     private static void EnsureTargets(List<RaidTarget> targets)
     {
         if (targets.Count == 0)
@@ -279,6 +372,11 @@ public sealed class Raid : AggregateRoot<RaidId>
         if (targets.Distinct().Count() != targets.Count)
         {
             throw new UnknownDomainException("A raid cannot require the same instance and difficulty twice.");
+        }
+
+        if (targets.Select(target => target.Size).Distinct().Count() > 1)
+        {
+            throw new UnknownDomainException("Every target of a raid must be for the same number of players.");
         }
     }
 
@@ -298,6 +396,12 @@ public sealed class Raid : AggregateRoot<RaidId>
     #endregion Invariants
 
     #region Private Helpers
+    /// <summary>Trims a description and treats a blank one as none.</summary>
+    /// <param name="description">The requested description.</param>
+    /// <returns>The trimmed description, or <see langword="null"/>.</returns>
+    private static string? NormalizeDescription(string? description) =>
+        string.IsNullOrWhiteSpace(description) ? null : description.Trim();
+
     /// <summary>Finds a character's readiness assessed for this raid's current targets and scheduled start.</summary>
     /// <param name="readiness">The supplied assessments.</param>
     /// <param name="characterId">The character to find.</param>
