@@ -25,6 +25,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   owned by another player also sees the page, which says an officer will review them (#255).
 - The API lets the website list a player's character claims awaiting a decision, oldest first, and approve or reject
   one. Approving a character another player owns keeps the claim in conflict review (ADR-0010) (#85, #89, #161).
+- Raids are stored in SQL Server with EF Core: their requirements, targets in the organizer's order, signups with
+  the offered loadouts, and roster selections (#281).
 - Characters are stored in SQL Server with EF Core: claims, loadouts and raid saves, with domain events recorded in an
   outbox table (#87).
 - Character claims in the domain: pending, approved, rejected and conflict. A repeated upload never approves,

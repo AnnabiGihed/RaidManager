@@ -5,9 +5,11 @@ using Pivot.Framework.Infrastructure.Messaging.EntityFrameworkCore.Extensions;
 using RaidManager.Application.Features.Characters.Abstractions;
 using RaidManager.Domain.Features.Characters.Repositories;
 using RaidManager.Domain.Features.Identity.Repositories;
+using RaidManager.Domain.Features.Raids.Repositories;
 using RaidManager.Persistence.EntityFrameworkCore.Features.Characters.Queries;
 using RaidManager.Persistence.EntityFrameworkCore.Features.Characters.Repositories;
 using RaidManager.Persistence.EntityFrameworkCore.Features.Identity.Repositories;
+using RaidManager.Persistence.EntityFrameworkCore.Features.Raids.Repositories;
 using DomainUnitOfWork = Pivot.Framework.Domain.Repositories.IUnitOfWork;
 
 namespace RaidManager.Persistence.EntityFrameworkCore;
@@ -37,6 +39,7 @@ public static class PersistenceServiceCollectionExtensions
         services.AddScoped<ICharacterRepository, CharacterRepository>();
         services.AddScoped<ICharacterClaimReader, CharacterClaimReader>();
         services.AddScoped<IUserRepository, UserRepository>();
+        services.AddScoped<IRaidRepository, RaidRepository>();
         return services;
     }
     #endregion Public Methods
