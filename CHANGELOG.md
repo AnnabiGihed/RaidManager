@@ -121,6 +121,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- When a pull request is reported merged, the workflow skill requires checking the merge, making sure the remote
+  branch is deleted and deleting the local branch (#271).
 - The website's colors, font and Radzen overrides live in one project-wide theme (`wwwroot/theme/`), and the app
   shell is built from standalone, generic components; the Blazor skills make both rules mandatory (#268).
 - The website's pages, layout and their tests are organized by feature (`Features/<Feature>/Pages`, `Features/Shared/Layout`),
