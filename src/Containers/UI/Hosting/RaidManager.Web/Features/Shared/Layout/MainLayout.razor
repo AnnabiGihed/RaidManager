@@ -3,60 +3,37 @@
 <RadzenComponents />
 <AuthorizeView>
     <Authorized>
-        <div class="shell">
+        <div class="rm-theme-dark">
             <RadzenLayout>
                 <RadzenHeader>
                     <div class="shell-top-bar">
-                        <nav class="shell-breadcrumb" aria-label="Breadcrumb">
-                            <span>@ShellViewModel.ProductName</span>
-                            @if (PageTitle is not null)
-                            {
-                                <span aria-hidden="true">/</span>
-                                <span class="shell-breadcrumb-page" aria-current="page" data-testid="breadcrumb-page">@PageTitle</span>
-                            }
-                        </nav>
+                        <Breadcrumb Items="@BreadcrumbItems" />
                         <div class="shell-session">
                             <UserAvatar Name="@context.User.Identity?.Name" ImageUrl="@AvatarUrl(context.User)" />
-                            <form method="post" action="@AuthenticationRoutes.SignOut" data-enhance="false">
-                                <AntiforgeryToken />
-                                <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Base" Variant="Variant.Outlined" Text="Sign out" class="shell-sign-out" />
-                            </form>
+                            <SignOutButton />
                         </div>
                     </div>
                 </RadzenHeader>
                 <RadzenSidebar Responsive="false">
                     <div class="shell-sidebar">
-                        <a class="shell-logo" href="/" aria-label="RaidManager home">
-                            <span class="shell-logo-tile" aria-hidden="true"><span class="shell-logo-mark"></span></span>
-                            <span>RAID<span class="shell-logo-accent">MANAGER</span></span>
-                        </a>
-                        <div class="shell-community" data-testid="community-card">
-                            <span class="shell-community-icon" aria-hidden="true">+</span>
-                            <span class="shell-community-text">
-                                <span class="shell-community-name">@ShellViewModel.NoCommunityName</span>
-                                <span class="shell-community-hint">@ShellViewModel.NoCommunityHint</span>
-                            </span>
-                        </div>
+                        <BrandLogo />
+                        <SummaryTile Title="@ShellViewModel.NoCommunityName" Subtitle="@ShellViewModel.NoCommunityHint" data-testid="community-card">
+                            <Leading>
+                                <IconTile Glyph="+" />
+                            </Leading>
+                        </SummaryTile>
                         <nav class="shell-navigation" aria-label="Main">
                             @foreach (var group in NavigationGroups)
                             {
-                                <div @key="group.Heading" class="shell-section">
-                                    <span class="shell-section-heading">@group.Heading</span>
-                                    <RadzenPanelMenu Match="NavLinkMatch.All" DisplayStyle="MenuItemDisplayStyle.Text">
-                                        @foreach (var entry in group.Entries)
-                                        {
-                                            <RadzenPanelMenuItem @key="entry.Route" Text="@entry.Title" Path="@entry.Route" />
-                                        }
-                                    </RadzenPanelMenu>
-                                </div>
+                                <NavigationSection @key="group.Heading" Heading="@group.Heading" Entries="@group.Entries" />
                             }
                         </nav>
-                        <div class="shell-user" data-testid="user-card">
-                            <UserAvatar Name="@context.User.Identity?.Name" ImageUrl="@AvatarUrl(context.User)" />
-                            <span class="shell-user-text">
-                                <span class="shell-user-name" data-testid="signed-in-name">@context.User.Identity?.Name</span>
-                                <span class="shell-user-role">@RoleLabel</span>
-                            </span>
+                        <div class="shell-user">
+                            <SummaryTile Title="@(context.User.Identity?.Name ?? string.Empty)" Subtitle="@RoleLabel" Appearance="SummaryTileAppearance.Plain" data-testid="user-card">
+                                <Leading>
+                                    <UserAvatar Name="@context.User.Identity?.Name" ImageUrl="@AvatarUrl(context.User)" />
+                                </Leading>
+                            </SummaryTile>
                         </div>
                     </div>
                 </RadzenSidebar>
@@ -78,11 +55,8 @@
         </div>
     </Authorized>
     <NotAuthorized>
-        <div class="public-frame" data-testid="public-frame">
-            <a class="shell-logo" href="/" aria-label="RaidManager home">
-                <span class="shell-logo-tile" aria-hidden="true"><span class="shell-logo-mark"></span></span>
-                <span>RAID<span class="shell-logo-accent">MANAGER</span></span>
-            </a>
+        <div class="public-frame rm-theme-dark rm-surface-page" data-testid="public-frame">
+            <BrandLogo />
             <main class="public-column">
                 <ErrorBoundary @ref="_errorBoundary">
                     <ChildContent>

@@ -1,0 +1,66 @@
+/* RaidManager's project-wide theme (ADR-0019). The only place colors, the font and Radzen variable overrides are set:
+   components and pages use the --rm-* tokens and the theme classes below, never their own values.
+   The token values are the design system's named palette in scripts/penpot_scene.py (HOUSE_PALETTE). */
+
+:root {
+    --rm-surface-page: #0B111C;
+    --rm-surface-sidebar: #0F1825;
+    --rm-surface-top-bar: #111C2A;
+    --rm-surface-card: #172333;
+    --rm-surface-raised: #1C2B3E;
+    --rm-surface-selected: #1B4548;
+    --rm-line-divider: #2B3B50;
+    --rm-line-card-border: #212F41;
+    --rm-brand-accent: #5DE0C1;
+    --rm-brand-on-accent: #102830;
+    --rm-brand-logo-tile: #0C2931;
+    --rm-text-primary: #EFF5FA;
+    --rm-text-secondary: #9EADC1;
+    --rm-text-muted: #8394AA;
+    --rm-avatar-background: #604C80;
+    --rm-avatar-text: #F2E8FF;
+    --rm-font-family: "Open Sans", sans-serif;
+    --rm-radius-card: 10px;
+    --rm-radius-control: 8px;
+}
+
+/* A region in the dark palette, such as the app shell or the signed-out frame. It sets the font and text color and
+   points Radzen's sidebar, header and panel menu at the tokens. Page contents outside such a region keep the Radzen
+   theme until the re-theme (#203). */
+.rm-theme-dark {
+    font-family: var(--rm-font-family);
+    color: var(--rm-text-primary);
+    --rz-sidebar-width: 240px;
+    --rz-sidebar-background-color: var(--rm-surface-sidebar);
+    --rz-sidebar-color: var(--rm-text-secondary);
+    --rz-sidebar-border-inline-end: 1px solid var(--rm-line-divider);
+    --rz-header-background-color: var(--rm-surface-top-bar);
+    --rz-header-color: var(--rm-text-primary);
+    --rz-header-min-height: 64px;
+    --rz-header-shadow: none;
+    --rz-panel-menu-item-color: var(--rm-text-secondary);
+    --rz-panel-menu-item-background-color: transparent;
+    --rz-panel-menu-item-hover-color: var(--rm-text-primary);
+    --rz-panel-menu-item-hover-background-color: var(--rm-surface-raised);
+    --rz-panel-menu-item-active-color: var(--rm-brand-accent);
+    --rz-panel-menu-item-active-background-color: var(--rm-surface-selected);
+    --rz-panel-menu-item-border-radius: var(--rm-radius-control);
+    --rz-panel-menu-item-padding-block: 8px;
+    --rz-panel-menu-item-padding-inline: 16px;
+    --rz-panel-menu-font-size: 14px;
+    --rz-panel-menu-padding-block: 0;
+    --rz-panel-menu-padding-inline: 0;
+}
+
+.rm-theme-dark .rz-header {
+    border-bottom: 1px solid var(--rm-line-divider);
+}
+
+.rm-theme-dark .rz-panel-menu {
+    background: transparent;
+}
+
+/* A page background in the dark palette. */
+.rm-surface-page {
+    background: var(--rm-surface-page);
+}

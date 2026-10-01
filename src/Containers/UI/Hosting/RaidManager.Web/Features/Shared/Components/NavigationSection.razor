@@ -1,0 +1,9 @@
+<div class="navigation-section">
+    <span class="navigation-section-heading">@Heading</span>
+    <RadzenPanelMenu Match="NavLinkMatch.All" DisplayStyle="MenuItemDisplayStyle.Text">
+        @foreach (var entry in Entries)
+        {
+            <RadzenPanelMenuItem @key="entry.Route" Text="@entry.Title" Path="@entry.Route" />
+        }
+    </RadzenPanelMenu>
+</div>

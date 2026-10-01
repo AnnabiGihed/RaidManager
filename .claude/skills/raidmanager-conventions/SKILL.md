@@ -206,7 +206,9 @@ A mockup comes before the screen, for every user interface: website, companion, 
   app shell (sidebar with Player and Officer navigation, community card, user card, top bar with breadcrumb and realm
   status) on every website screen, drawn with `app_screen` and the shared components in
   `scripts/penpot_components.py`. Never draw a screen's own shell, buttons or badges. The website keeps Radzen and is
-  re-themed to match (#203).
+  re-themed to match (#203). On the website, the palette lives only in the project-wide theme
+  `wwwroot/theme/raidmanager-theme.css`, and every specific look is a standalone, generic component
+  (`blazor-components`, both rules mandatory).
 - **Use it in the story:** show the SVG in the user story (or improvement or bug), its UI task and the pull request.
 - **Work items:** every UI item carries `ui` and links or shows its mockup; `needs-mockup` marks those that don't.
   Epics and features list their stories' mockups.

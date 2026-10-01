@@ -11,9 +11,9 @@ namespace RaidManager.Web.Features.Shared.Layout;
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-01<br/>
-/// Purpose: Implements the shell of ADR-0019: a sidebar with the logo, the community card, the navigation and the
-/// user card, and a top bar with the breadcrumb and Sign out. Signed-out pages show only the logo above a centered
-/// column. The shell is dark; page contents keep the Radzen theme until the rest of #203.
+/// Purpose: Composes the shell of ADR-0019 from shared components: a sidebar with the logo, the community card, the
+/// navigation and the user card, and a top bar with the breadcrumb and Sign out. Signed-out pages show only the logo
+/// above a centered column. The theme's dark class colors both; page contents keep the Radzen theme until #203.
 /// </remarks>
 public sealed partial class MainLayout : IDisposable
 {
@@ -37,8 +37,11 @@ public sealed partial class MainLayout : IDisposable
     /// <summary>Gets the sidebar sections; nobody is an officer until community linking (#14).</summary>
     private IReadOnlyList<ShellNavigationGroup> NavigationGroups => Shell.Navigation(isOfficer: false);
 
-    /// <summary>Gets the current page's title for the breadcrumb, if the shell knows the page.</summary>
-    private string? PageTitle => Shell.PageTitle(Navigation.ToBaseRelativePath(Navigation.Uri));
+    /// <summary>Gets the breadcrumb: the product, then the current page when the shell knows it.</summary>
+    private IReadOnlyList<string> BreadcrumbItems =>
+        Shell.PageTitle(Navigation.ToBaseRelativePath(Navigation.Uri)) is { } page
+            ? [ShellViewModel.ProductName, page]
+            : [ShellViewModel.ProductName];
     #endregion Properties
 
     #region Public Methods

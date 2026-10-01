@@ -59,6 +59,7 @@ Every project is organized as vertical slices under `Features/`, with `Features/
 {Solution}.Web/                                    ← the Blazor host
 ├── _Imports.razor                     ← at the project root, so it covers every feature folder
 ├── Program.cs
+├── wwwroot/theme/                     ← the one project-wide theme: --rm-* tokens, theme classes, Radzen overrides
 ├── Components/                        ← host root only: App.razor, Routes.razor (+ code-behinds)
 └── Features/
     ├── <Feature>/
@@ -67,7 +68,7 @@ Every project is organized as vertical slices under `Features/`, with `Features/
     │   └── <Feature>Routes.cs, *ApiClient.cs, endpoints, DI extensions
     └── Shared/
         ├── Layout/                    ← MainLayout, the app shell
-        └── Components/                ← components several features use
+        └── Components/                ← standalone, generic components several features use
 ```
 - One use case = one folder with Command/Query + Handler + Validator + Response, nothing else.
 - **The UI follows the same slices, and this is not optional.** A page, its feature components, its routes and its API

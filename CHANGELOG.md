@@ -121,6 +121,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- The website's colors, font and Radzen overrides live in one project-wide theme (`wwwroot/theme/`), and the app
+  shell is built from standalone, generic components; the Blazor skills make both rules mandatory (#268).
 - The website's pages, layout and their tests are organized by feature (`Features/<Feature>/Pages`, `Features/Shared/Layout`),
   and the Blazor and DDD skills make that layout mandatory (#261).
 - A pull request merges only after its operator posts a meaningful review comment and marks it ready, and a peer
