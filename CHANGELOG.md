@@ -139,6 +139,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- The AppHost no longer logs a resource watch timeout every minute: the Aspire packages are pinned to 13.5.4, the AppHost
+  SDK's version, until the Aspire 13.6.0 regression is fixed (#274).
 - A `ui` item keeps its `needs-mockup` label until the mockup it names exists on `main`; naming a file that a task
   will create no longer counts as a mockup (#199).
 - Documentation spelling is checked as strictly as the editor: US English plus one project word list that CI, Vale

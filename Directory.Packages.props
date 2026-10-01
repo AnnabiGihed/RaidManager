@@ -22,8 +22,11 @@
     <PackageVersion Include="Scalar.AspNetCore" Version="2.17.11" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.SqlServer" Version="10.*" />
     <PackageVersion Include="Microsoft.EntityFrameworkCore.Design" Version="10.*" />
-    <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.*" />
-    <PackageVersion Include="Aspire.Hosting.SqlServer" Version="13.*" />
+    <!-- Aspire is pinned to the AppHost SDK's version (13.5.4): 13.6.0 logs a DCP watch TimeoutRejectedException every
+         minute (https://github.com/microsoft/aspire/issues/20648). Move SDK and packages together to the release that
+         fixes it. -->
+    <PackageVersion Include="Aspire.Hosting.AppHost" Version="13.5.4" />
+    <PackageVersion Include="Aspire.Hosting.SqlServer" Version="13.5.4" />
     <PackageVersion Include="Microsoft.Extensions.ServiceDiscovery" Version="10.*" />
     <PackageVersion Include="Microsoft.Extensions.Hosting" Version="10.*" />
     <PackageVersion Include="Microsoft.Extensions.Http.Resilience" Version="10.*" />
