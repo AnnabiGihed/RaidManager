@@ -37,10 +37,32 @@ These govern the UI layer as a whole, not a single component. Every one of them 
 - **Pages are organized by feature — mandatory.** Every routable page lives in
   `{Solution}.Web/Features/<Feature>/Pages/` as a `.razor` + `.razor.cs` pair; components only that feature uses live in
   `Features/<Feature>/Components/`; the layout (app shell) and cross-feature components live in `Features/Shared/`.
-  Only the host root (`App.razor`, `Routes.razor`) stays in `Components/`, and `_Imports.razor` sits at the project root
+  Only the host root (`App`, `Routes`) stays in the host's `Components/`, and `_Imports.razor` sits at the project root
   so it applies to every feature folder. Namespaces follow the folders. The bUnit tests mirror the same tree
   (`test/.../{Solution}.Web.Tests/Features/<Feature>/Pages/<Page>Tests.cs`). A page in a flat `Pages/` or
   `Components/Pages/` folder is a defect — see `dotnet-ddd-cqrs-conventions` for the full layout.
+- **Every component has its own folder — mandatory.** In any `Components/` folder (the host's, a feature's or
+  `Features/Shared/`), a component lives in `Components/<Name>/` with everything that belongs only to it:
+
+  ```text
+  Components/ActionButton/ActionButton.razor
+  Components/ActionButton/ActionButton.razor.cs
+  Components/ActionButton/ActionButton.razor.css
+  Components/ActionButton/ActionButtonAppearance.cs   ← a parameter type only ActionButton uses
+  ```
+
+  - A type that only one component uses (an appearance enum, an item record) goes in that component's folder. A type
+    several components share stays at the root of their `Components/` folder; move it into a folder when only one
+    component uses it any more.
+  - The component's folder doesn't add a namespace segment: the namespace stops at `Components`
+    (`{Solution}.Web.Features.Shared.Components`). Otherwise the folder `ActionButton` becomes a namespace named like
+    its class, and every reference to `ActionButton` fails. Razor appends folder names to an imported `@namespace`, so
+    each component's `.razor` file starts with its own `@namespace` line, matching its code-behind.
+  - Its bUnit tests mirror the folder, one test class per component:
+    `test/.../{Solution}.Web.Tests/Features/Shared/Components/ActionButton/ActionButtonTests.cs`, in the same
+    namespace rule (no folder segment).
+  - A component file loose in a `Components/` folder, or two components in one folder, is a defect; move it in the
+    same PR that touches it.
 - **Every page is reachable.** A page players look for gets its entry in the app shell's navigation in the same PR. A
   flow page that isn't in the navigation (a sign-in failure page, a page sign-in redirects to) says in its code-behind
   summary and in the PR where it is reached from.
@@ -205,6 +227,7 @@ These govern the UI layer as a whole, not a single component. Every one of them 
 - The mirrored bUnit/view-model test projects exist and cover the delivered behavior in the same PR.
 - Specific looks and behaviors are standalone, generic components with their own bUnit tests; pages and layouts only compose them. Colors, fonts and Radzen overrides come only from the project-wide theme in `wwwroot/theme/`.
 - Pages live in `Features/<Feature>/Pages/`, the layout and shared components in `Features/Shared/`, with tests mirroring them; every page is reachable from the navigation or from the flow the PR names.
+- Every component is in its own `Components/<Name>/` folder with the types only it uses, its `.razor` declares its `@namespace` (no folder segment), and its tests are in the mirrored `<Name>/<Name>Tests.cs`.
 - The screen matches its approved mockup (every state it shows), and the PR shows that mockup.
 - UI uses Radzen components, layout (`RadzenStack`/`RadzenRow`/`RadzenColumn`) and one theme only — no Bootstrap CSS/JS or classes, no DIFA or other component libraries; `AddRadzenComponents()`, theme, script and `<RadzenComponents />` are wired once; lists use server-side `RadzenDataGrid` `LoadData`.
 
