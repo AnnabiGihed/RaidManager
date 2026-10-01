@@ -19,15 +19,6 @@ public sealed class CommunityRolesViewModel
     #endregion Constants
 
     #region Fields
-    /// <summary>Stores the labels of the RaidManager roles.</summary>
-    private static readonly Dictionary<string, string> Labels = new(StringComparer.Ordinal)
-    {
-        ["Administrator"] = "Administrator",
-        ["Officer"] = "Officer",
-        ["RaidLeader"] = "Raid leader",
-        ["Member"] = "Member",
-    };
-
     /// <summary>Stores the API client.</summary>
     private readonly ICommunitiesApiClient _api;
 
@@ -176,7 +167,7 @@ public sealed class CommunityRolesViewModel
         };
         return new RoleRowView(
             row.Role,
-            Labels.GetValueOrDefault(row.Role, row.Role),
+            CommunityRoleLabels.For(row.Role),
             source,
             [.. row.DiscordRoles.Select(role => new RoleChipView(role.DiscordRoleId, role.Missing ? "Deleted role" : $"@{role.Name}", role.Missing))],
             string.Create(CultureInfo.InvariantCulture, $"{row.Members} member{(row.Members == 1 ? string.Empty : "s")}"),

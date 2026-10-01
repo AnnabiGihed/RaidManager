@@ -13,4 +13,10 @@ public enum TagChipTone
 
     /// <summary>A tag that needs attention, such as a Discord role deleted since it was mapped.</summary>
     Danger,
+
+    /// <summary>A tag that confirms something, such as an officer role.</summary>
+    Success,
+
+    /// <summary>A plain tag, such as the Member role.</summary>
+    Neutral,
 }

@@ -124,6 +124,9 @@ public sealed partial class CommunitySettings : IDisposable
     private IReadOnlyList<ChoiceOption<string>> PickerOptions(string role) =>
         [.. Roles.PickerOptions(role).Select(option => new ChoiceOption<string>(option.Id, $"@{option.Name}"))];
 
+    /// <summary>Opens the members page.</summary>
+    private void ViewMembers() => Navigation.NavigateTo(CommunityRoutes.Members);
+
     /// <summary>Records the Discord role chosen in the picker.</summary>
     /// <param name="discordRoleId">The Discord role snowflake.</param>
     private void PickRole(string discordRoleId) => Roles.PickedRoleId = discordRoleId;

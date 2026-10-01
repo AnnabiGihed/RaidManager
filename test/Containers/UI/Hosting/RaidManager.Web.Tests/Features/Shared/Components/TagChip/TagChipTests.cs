@@ -44,5 +44,15 @@ public sealed class TagChipTests : BunitContext
 
         removed.ShouldBeTrue();
     }
+
+    /// <summary>Gives each tone its own class.</summary>
+    /// <param name="tone">The tone.</param>
+    /// <param name="expectedClass">The class it adds.</param>
+    [Theory]
+    [InlineData(TagChipTone.Success, "tag-chip-success")]
+    [InlineData(TagChipTone.Neutral, "tag-chip-neutral")]
+    public void EachToneHasItsClass(TagChipTone tone, string expectedClass) =>
+        Render<TagChip>(parameters => parameters.Add(component => component.Text, "Officer").Add(component => component.Tone, tone))
+            .Find(".tag-chip").ClassList.ShouldContain(expectedClass);
     #endregion Tests
 }

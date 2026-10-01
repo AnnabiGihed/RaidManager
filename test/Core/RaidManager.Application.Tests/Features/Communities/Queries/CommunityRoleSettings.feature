@@ -97,3 +97,26 @@ Feature: Community role settings
     Scenario: An unchanged name saves nothing
       When the community's name is refreshed to "Dark Templars"
       Then nothing is saved
+
+  Rule: A member of the server sees its people with the role each one gets
+
+    Scenario: Members are listed by role, each with their Discord roles
+      Given the Discord role "Officier" gives RaidLeader
+      When "Daymox" lists the community's members
+      Then the members are listed as
+        | name    | discord roles | role          |
+        | Gihed   | Guild Master  | Administrator |
+        | Malarya | Officier      | Officer       |
+        | Daymox  | Veteran       | Member        |
+        | Orlk    |               | Member        |
+      And the list says when Discord was asked
+
+    Scenario: Someone outside the server can't list the members
+      Given "Stranger" is not in the Discord server
+      When "Stranger" lists the community's members
+      Then the request is refused because the user is not a member
+
+    Scenario: Discord being unavailable refuses the list
+      Given Discord can't be reached
+      When "Gihed" lists the community's members
+      Then the request fails because Discord is unavailable

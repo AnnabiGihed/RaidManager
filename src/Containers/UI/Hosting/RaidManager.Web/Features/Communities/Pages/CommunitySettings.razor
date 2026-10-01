@@ -75,6 +75,12 @@
                                     <span class="role-row-members">@row.MembersLabel</span>
                                 </div>
                             }
+                            @if (Roles.Status == CommunityPageStatus.Ready)
+                            {
+                                <div>
+                                    <ActionButton Text="View members" Appearance="ActionButtonAppearance.Secondary" Click="ViewMembers" />
+                                </div>
+                            }
                         </div>
                     </SurfaceCard>
                 </div>

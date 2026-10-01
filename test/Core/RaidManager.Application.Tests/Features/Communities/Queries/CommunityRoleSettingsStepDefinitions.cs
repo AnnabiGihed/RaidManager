@@ -7,6 +7,7 @@ using RaidManager.Application.Features.Communities.Abstractions;
 using RaidManager.Application.Features.Communities.Commands.MapCommunityRole;
 using RaidManager.Application.Features.Communities.Commands.RefreshCommunityName;
 using RaidManager.Application.Features.Communities.Commands.UnmapCommunityRole;
+using RaidManager.Application.Features.Communities.Queries.GetCommunityMembers;
 using RaidManager.Application.Features.Communities.Queries.GetCommunityRoleSettings;
 using RaidManager.Domain.Features.Communities.Aggregates;
 using RaidManager.Domain.Features.Communities.Enums;
@@ -73,6 +74,9 @@ public sealed class CommunityRoleSettingsStepDefinitions
 
     /// <summary>Stores the result of the latest change.</summary>
     private Result? _change;
+
+    /// <summary>Stores the result of the latest members list.</summary>
+    private Result<CommunityMembersResponse>? _memberList;
     #endregion Fields
 
     #region Constructors
@@ -114,7 +118,7 @@ public sealed class CommunityRoleSettingsStepDefinitions
     private Result<CommunityRoleSettingsResponse> Read => _read ?? throw new InvalidOperationException("No read ran in this scenario.");
 
     /// <summary>Gets the latest request's outcome, read or change.</summary>
-    private Result Outcome => (Result?)_read ?? _change ?? throw new InvalidOperationException("No request ran in this scenario.");
+    private Result Outcome => (Result?)_read ?? (Result?)_memberList ?? _change ?? throw new InvalidOperationException("No request ran in this scenario.");
     #endregion Properties
 
     #region Given Steps
@@ -181,6 +185,16 @@ public sealed class CommunityRoleSettingsStepDefinitions
         _read = await handler.Handle(new GetCommunityRoleSettingsQuery(Community.Id.Value, UserNamed(name).Id.Value), CancellationToken.None);
     }
 
+    /// <summary>Lists the community's members as a user.</summary>
+    /// <param name="name">The user's name.</param>
+    /// <returns>A task that completes when the list has run.</returns>
+    [When("{string} lists the community's members")]
+    public async Task WhenListsTheCommunitysMembers(string name)
+    {
+        var handler = new GetCommunityMembersQueryHandler(_communities.Object, _userRepository.Object, _discordMembers.Object, _discordServers.Object, TimeProvider.System);
+        _memberList = await handler.Handle(new GetCommunityMembersQuery(Community.Id.Value, UserNamed(name).Id.Value), CancellationToken.None);
+    }
+
     /// <summary>Maps a Discord role as a user.</summary>
     /// <param name="name">The user's name.</param>
     /// <param name="role">The Discord role name.</param>
@@ -219,6 +233,25 @@ public sealed class CommunityRoleSettingsStepDefinitions
     #endregion When Steps
 
     #region Then Steps
+    /// <summary>Checks the members, in order, with their Discord roles and RaidManager role.</summary>
+    /// <param name="rows">Table with the columns <c>name</c>, <c>discord roles</c> and <c>role</c>.</param>
+    [Then("the members are listed as")]
+    public void ThenTheMembersAreListedAs(DataTable rows)
+    {
+        var members = (_memberList ?? throw new InvalidOperationException("No list ran in this scenario.")).Value.Members;
+        members.Select(member => member.DisplayName).ShouldBe(rows.Rows.Select(row => row["name"]));
+        foreach (var (actual, expected) in members.Zip(rows.Rows))
+        {
+            string.Join(",", actual.DiscordRoles.Select(role => role.Name)).ShouldBe(expected["discord roles"]);
+            actual.Role.ToString().ShouldBe(expected["role"]);
+        }
+    }
+
+    /// <summary>Checks that the list says when Discord was asked.</summary>
+    [Then("the list says when Discord was asked")]
+    public void ThenTheListSaysWhenDiscordWasAsked() =>
+        (DateTimeOffset.UtcNow - _memberList!.Value.CheckedAtUtc).ShouldBeLessThan(TimeSpan.FromMinutes(1));
+
     /// <summary>Checks that the asking user may edit.</summary>
     [Then("the roles can be edited")]
     public void ThenTheRolesCanBeEdited() => Read.Value.CanEdit.ShouldBeTrue();

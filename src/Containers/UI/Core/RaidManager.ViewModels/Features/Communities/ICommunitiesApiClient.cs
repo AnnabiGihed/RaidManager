@@ -41,6 +41,13 @@ public interface ICommunitiesApiClient
     /// <returns>The roles card, or why it couldn't be read.</returns>
     Task<CommunityRoleSettingsAnswer> GetRoleSettingsAsync(Guid userId, Guid communityId, CancellationToken cancellationToken);
 
+    /// <summary>Lists the people in a community's Discord server with the RaidManager role each one gets.</summary>
+    /// <param name="userId">The signed-in user.</param>
+    /// <param name="communityId">The community.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>The members, or why they couldn't be read.</returns>
+    Task<CommunityMembersAnswer> GetMembersAsync(Guid userId, Guid communityId, CancellationToken cancellationToken);
+
     /// <summary>Maps a Discord role to Officer or Raid leader.</summary>
     /// <param name="userId">The signed-in user; only the Administrator may.</param>
     /// <param name="communityId">The community.</param>

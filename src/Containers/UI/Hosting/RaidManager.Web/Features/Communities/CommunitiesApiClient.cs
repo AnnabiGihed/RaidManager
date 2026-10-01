@@ -81,6 +81,21 @@ internal sealed class CommunitiesApiClient : ICommunitiesApiClient
     }
 
     /// <inheritdoc />
+    public async Task<CommunityMembersAnswer> GetMembersAsync(Guid userId, Guid communityId, CancellationToken cancellationToken)
+    {
+        using var response = await _httpClient.GetAsync(UserCommunityRoute(userId, communityId) + "/members", cancellationToken);
+        var status = StatusOf(response);
+        if (status != CommunityApiStatus.Succeeded)
+        {
+            return new CommunityMembersAnswer(status, null);
+        }
+
+        var members = await response.Content.ReadFromJsonAsync<CommunityMembers>(cancellationToken)
+            ?? throw new HttpRequestException("The API returned an empty members response.");
+        return new CommunityMembersAnswer(status, members);
+    }
+
+    /// <inheritdoc />
     public async Task<CommunityApiStatus> MapRoleAsync(Guid userId, Guid communityId, string discordRoleId, string role, CancellationToken cancellationToken)
     {
         using var response = await _httpClient.PutAsync(MappingRoute(userId, communityId, role, discordRoleId), content: null, cancellationToken);

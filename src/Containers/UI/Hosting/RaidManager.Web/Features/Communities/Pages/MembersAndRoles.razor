@@ -1,0 +1,47 @@
+@page "/community/members"
+
+<PageTitle>Members · Raid Manager</PageTitle>
+
+<div class="community-page rm-design-page">
+    <PageHeading Eyebrow="Community" Title="Members and roles" Subtitle="Roles follow Discord. The highest mapped role applies; everyone else in the server is a Member." />
+    @switch (Members.Status)
+    {
+        case CommunityPageStatus.Ready:
+            <div class="members-table-card">
+                <table class="members-table" data-testid="members-table">
+                    <thead>
+                        <tr>
+                            <th scope="col">Member</th>
+                            <th scope="col">Discord roles</th>
+                            <th scope="col">RaidManager role</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach (var member in Members.Rows)
+                        {
+                            <tr @key="member.DiscordUserId">
+                                <td>
+                                    <span class="member-name">
+                                        <UserAvatar Name="@member.DisplayName" ImageUrl="@member.AvatarUrl" />
+                                        @member.DisplayName
+                                    </span>
+                                </td>
+                                <td class="member-discord-roles">@member.DiscordRoles</td>
+                                <td><TagChip Text="@member.RoleLabel" Tone="@RoleTone(member.Role)" /></td>
+                            </tr>
+                        }
+                    </tbody>
+                </table>
+            </div>
+            <TextNote Text="@Members.CheckedNote" />
+            break;
+        case CommunityPageStatus.Failed:
+            <div class="community-column">
+                <Notice Tone="NoticeTone.Danger" Title="@Members.Problem!.Title" Message="@Members.Problem.Message" data-testid="members-problem" />
+                <div>
+                    <ActionButton Text="Try again" Appearance="ActionButtonAppearance.Secondary" Click="LoadAsync" />
+                </div>
+            </div>
+            break;
+    }
+</div>
