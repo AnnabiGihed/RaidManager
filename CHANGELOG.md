@@ -13,6 +13,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   retry. The website runs in Interactive Server mode with Radzen (ADR-0012) (#99).
 - The API resolves a Discord sign-in to exactly one local user for the website, refreshing a changed Discord profile.
   Only the website can call it, with a key the Aspire AppHost generates (ADR-0011) (#92, #95).
+- Signed-in pages have the dark app shell of ADR-0019: a sidebar with the logo, the community card, the navigation
+  of existing pages and the player's card, and a top bar with the breadcrumb, the avatar and Sign out. Signed-out
+  pages show the logo above a centered sign-in card (#263).
 - After sign-in, a player with characters awaiting their decision lands on the character review page. They approve
   or reject each one, with a confirmation before rejecting, or decide later. A character another player owns waits
   for an officer, and a page that can't load offers a retry (#253). A player whose only waiting characters are

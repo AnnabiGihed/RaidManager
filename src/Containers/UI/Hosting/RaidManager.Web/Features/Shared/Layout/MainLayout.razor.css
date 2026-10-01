@@ -1,0 +1,220 @@
+/* The app shell of ADR-0019. Colors are the design system's named palette (scripts/penpot_scene.py); page contents
+   keep the Radzen theme until the rest of #203, so only the shell's own surfaces and Radzen's layout and menu
+   variables change here. */
+.shell,
+.public-frame {
+    --shell-page: #0B111C;
+    --shell-sidebar: #0F1825;
+    --shell-top-bar: #111C2A;
+    --shell-card: #172333;
+    --shell-card-border: #212F41;
+    --shell-raised: #1C2B3E;
+    --shell-selected: #1B4548;
+    --shell-divider: #2B3B50;
+    --shell-accent: #5DE0C1;
+    --shell-logo-tile: #0C2931;
+    --shell-text: #EFF5FA;
+    --shell-secondary: #9EADC1;
+    --shell-muted: #8394AA;
+    font-family: "Open Sans", sans-serif;
+}
+
+.shell {
+    --rz-sidebar-width: 240px;
+    --rz-sidebar-background-color: var(--shell-sidebar);
+    --rz-sidebar-color: var(--shell-secondary);
+    --rz-sidebar-border-inline-end: 1px solid var(--shell-divider);
+    --rz-header-background-color: var(--shell-top-bar);
+    --rz-header-color: var(--shell-text);
+    --rz-header-min-height: 64px;
+    --rz-header-shadow: none;
+    --rz-panel-menu-item-color: var(--shell-secondary);
+    --rz-panel-menu-item-background-color: transparent;
+    --rz-panel-menu-item-hover-color: var(--shell-text);
+    --rz-panel-menu-item-hover-background-color: var(--shell-raised);
+    --rz-panel-menu-item-active-color: var(--shell-accent);
+    --rz-panel-menu-item-active-background-color: var(--shell-selected);
+    --rz-panel-menu-item-border-radius: 8px;
+    --rz-panel-menu-item-padding-block: 8px;
+    --rz-panel-menu-item-padding-inline: 16px;
+    --rz-panel-menu-font-size: 14px;
+    --rz-panel-menu-padding-block: 0;
+    --rz-panel-menu-padding-inline: 0;
+}
+
+.shell ::deep .rz-header {
+    border-bottom: 1px solid var(--shell-divider);
+}
+
+.shell ::deep .rz-panel-menu {
+    background: transparent;
+}
+
+.shell-top-bar {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 64px;
+    padding: 0 40px;
+}
+
+.shell-breadcrumb {
+    display: flex;
+    gap: 8px;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+    color: var(--shell-muted);
+}
+
+.shell-breadcrumb-page {
+    color: var(--shell-text);
+}
+
+.shell-session {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+/* Radzen styles an outlined base button with four classes, so the override names the same classes. */
+.shell ::deep .rz-button.rz-base.shell-sign-out {
+    border: 1px solid var(--shell-divider);
+    background: var(--shell-raised);
+    color: var(--shell-text);
+    font-family: inherit;
+    font-weight: 700;
+    text-transform: none;
+}
+
+.shell-sidebar {
+    display: flex;
+    flex-direction: column;
+    gap: 20px;
+    min-height: 100%;
+    padding: 16px 12px 0;
+}
+
+.shell-logo {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 0 8px;
+    color: var(--shell-text);
+    font-size: 16px;
+    font-weight: 800;
+    letter-spacing: 0.03em;
+    text-decoration: none;
+}
+
+.shell-logo-tile {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border-radius: 8px;
+    background: var(--shell-logo-tile);
+}
+
+.shell-logo-mark {
+    width: 16px;
+    height: 16px;
+    border-radius: 4px;
+    background: var(--shell-accent);
+}
+
+.shell-logo-accent {
+    color: var(--shell-accent);
+}
+
+.shell-community {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px;
+    border: 1px solid var(--shell-card-border);
+    border-radius: 10px;
+    background: var(--shell-card);
+}
+
+.shell-community-icon {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--shell-divider);
+    border-radius: 8px;
+    background: var(--shell-raised);
+    color: var(--shell-secondary);
+    font-weight: 800;
+}
+
+.shell-community-text,
+.shell-user-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.shell-community-name,
+.shell-user-name {
+    color: var(--shell-text);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.shell-community-hint,
+.shell-user-role {
+    color: var(--shell-muted);
+    font-size: 12px;
+}
+
+.shell-navigation {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.shell-section {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
+.shell-section-heading {
+    padding: 0 12px;
+    color: var(--shell-muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.1em;
+}
+
+.shell-user {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin: auto -12px 0;
+    padding: 16px 20px;
+    border-top: 1px solid var(--shell-divider);
+}
+
+.public-frame {
+    box-sizing: border-box;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 48px;
+    min-height: 100vh;
+    padding: 120px 16px 48px;
+    background: var(--shell-page);
+}
+
+.public-column {
+    width: 100%;
+    max-width: 480px;
+}

@@ -1,38 +1,104 @@
 @inherits LayoutComponentBase
 
 <RadzenComponents />
-<RadzenLayout>
-    <RadzenHeader>
-        <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" JustifyContent="JustifyContent.SpaceBetween" class="rz-px-4 rz-py-2">
-            <RadzenText TextStyle="TextStyle.H6" TagName="TagName.Span">Raid Manager</RadzenText>
-            <AuthorizeView>
-                <Authorized>
-                    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Center" Gap="1rem">
-                        <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.Span" data-testid="signed-in-name">@context.User.Identity?.Name</RadzenText>
-                        <form method="post" action="@AuthenticationRoutes.SignOut" data-enhance="false">
-                            <AntiforgeryToken />
-                            <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Light" Text="Sign out" />
-                        </form>
-                    </RadzenStack>
-                </Authorized>
-                <NotAuthorized>
-                    <RadzenButton Icon="login" Text="Sign in with Discord" Click="SignIn" />
-                </NotAuthorized>
-            </AuthorizeView>
-        </RadzenStack>
-    </RadzenHeader>
-    <RadzenBody>
-        <ErrorBoundary @ref="_errorBoundary">
-            <ChildContent>
-                @Body
-            </ChildContent>
-            <ErrorContent>
-                <RadzenStack Gap="1rem" class="rz-p-4">
-                    <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H1">Something went wrong</RadzenText>
-                    <RadzenText TextStyle="TextStyle.Body1">This page could not be shown. Try again, or go back to the home page.</RadzenText>
-                    <RadzenButton Text="Try again" Click="Recover" />
-                </RadzenStack>
-            </ErrorContent>
-        </ErrorBoundary>
-    </RadzenBody>
-</RadzenLayout>
+<AuthorizeView>
+    <Authorized>
+        <div class="shell">
+            <RadzenLayout>
+                <RadzenHeader>
+                    <div class="shell-top-bar">
+                        <nav class="shell-breadcrumb" aria-label="Breadcrumb">
+                            <span>@ShellViewModel.ProductName</span>
+                            @if (PageTitle is not null)
+                            {
+                                <span aria-hidden="true">/</span>
+                                <span class="shell-breadcrumb-page" aria-current="page" data-testid="breadcrumb-page">@PageTitle</span>
+                            }
+                        </nav>
+                        <div class="shell-session">
+                            <UserAvatar Name="@context.User.Identity?.Name" ImageUrl="@AvatarUrl(context.User)" />
+                            <form method="post" action="@AuthenticationRoutes.SignOut" data-enhance="false">
+                                <AntiforgeryToken />
+                                <RadzenButton ButtonType="ButtonType.Submit" ButtonStyle="ButtonStyle.Base" Variant="Variant.Outlined" Text="Sign out" class="shell-sign-out" />
+                            </form>
+                        </div>
+                    </div>
+                </RadzenHeader>
+                <RadzenSidebar Responsive="false">
+                    <div class="shell-sidebar">
+                        <a class="shell-logo" href="/" aria-label="RaidManager home">
+                            <span class="shell-logo-tile" aria-hidden="true"><span class="shell-logo-mark"></span></span>
+                            <span>RAID<span class="shell-logo-accent">MANAGER</span></span>
+                        </a>
+                        <div class="shell-community" data-testid="community-card">
+                            <span class="shell-community-icon" aria-hidden="true">+</span>
+                            <span class="shell-community-text">
+                                <span class="shell-community-name">@ShellViewModel.NoCommunityName</span>
+                                <span class="shell-community-hint">@ShellViewModel.NoCommunityHint</span>
+                            </span>
+                        </div>
+                        <nav class="shell-navigation" aria-label="Main">
+                            @foreach (var group in NavigationGroups)
+                            {
+                                <div @key="group.Heading" class="shell-section">
+                                    <span class="shell-section-heading">@group.Heading</span>
+                                    <RadzenPanelMenu Match="NavLinkMatch.All" DisplayStyle="MenuItemDisplayStyle.Text">
+                                        @foreach (var entry in group.Entries)
+                                        {
+                                            <RadzenPanelMenuItem @key="entry.Route" Text="@entry.Title" Path="@entry.Route" />
+                                        }
+                                    </RadzenPanelMenu>
+                                </div>
+                            }
+                        </nav>
+                        <div class="shell-user" data-testid="user-card">
+                            <UserAvatar Name="@context.User.Identity?.Name" ImageUrl="@AvatarUrl(context.User)" />
+                            <span class="shell-user-text">
+                                <span class="shell-user-name" data-testid="signed-in-name">@context.User.Identity?.Name</span>
+                                <span class="shell-user-role">@RoleLabel</span>
+                            </span>
+                        </div>
+                    </div>
+                </RadzenSidebar>
+                <RadzenBody>
+                    <ErrorBoundary @ref="_errorBoundary">
+                        <ChildContent>
+                            @Body
+                        </ChildContent>
+                        <ErrorContent Context="error">
+                            <RadzenStack Gap="1rem" class="rz-p-4">
+                                <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H1">Something went wrong</RadzenText>
+                                <RadzenText TextStyle="TextStyle.Body1">This page could not be shown. Try again, or go back to the home page.</RadzenText>
+                                <RadzenButton Text="Try again" Click="Recover" />
+                            </RadzenStack>
+                        </ErrorContent>
+                    </ErrorBoundary>
+                </RadzenBody>
+            </RadzenLayout>
+        </div>
+    </Authorized>
+    <NotAuthorized>
+        <div class="public-frame" data-testid="public-frame">
+            <a class="shell-logo" href="/" aria-label="RaidManager home">
+                <span class="shell-logo-tile" aria-hidden="true"><span class="shell-logo-mark"></span></span>
+                <span>RAID<span class="shell-logo-accent">MANAGER</span></span>
+            </a>
+            <main class="public-column">
+                <ErrorBoundary @ref="_errorBoundary">
+                    <ChildContent>
+                        @Body
+                    </ChildContent>
+                    <ErrorContent Context="error">
+                        <RadzenCard>
+                            <RadzenStack Gap="1rem">
+                                <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H1">Something went wrong</RadzenText>
+                                <RadzenText TextStyle="TextStyle.Body1">This page could not be shown. Try again, or go back to the home page.</RadzenText>
+                                <RadzenButton Text="Try again" Click="Recover" />
+                            </RadzenStack>
+                        </RadzenCard>
+                    </ErrorContent>
+                </ErrorBoundary>
+            </main>
+        </div>
+    </NotAuthorized>
+</AuthorizeView>

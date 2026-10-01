@@ -2,14 +2,21 @@
 
 <PageTitle>Raid Manager</PageTitle>
 
-<RadzenStack Gap="1rem" class="rz-p-4">
-    <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H1">Warmane Raid Manager</RadzenText>
-    <AuthorizeView>
-        <Authorized>
-            <RadzenText TextStyle="TextStyle.Body1">Welcome, @context.User.Identity?.Name. Your characters and raids will appear here.</RadzenText>
-        </Authorized>
-        <NotAuthorized>
-            <RadzenText TextStyle="TextStyle.Body1">Sign in with Discord to plan raids with your characters.</RadzenText>
-        </NotAuthorized>
-    </AuthorizeView>
-</RadzenStack>
+<AuthorizeView>
+    <Authorized>
+        <RadzenStack Gap="0.5rem" class="rz-p-4">
+            <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H1">Welcome, @context.User.Identity?.Name</RadzenText>
+            <RadzenText TextStyle="TextStyle.Body1">Your characters and raids will appear here.</RadzenText>
+        </RadzenStack>
+    </Authorized>
+    <NotAuthorized>
+        <RadzenCard>
+            <RadzenStack Gap="1rem">
+                <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H1">Sign in to continue</RadzenText>
+                <RadzenText TextStyle="TextStyle.Body1">RaidManager uses your Discord account to plan raids with your characters. It gets your Discord name and avatar, never your password.</RadzenText>
+                <RadzenButton Icon="login" Text="Sign in with Discord" Click="SignIn" />
+                <RadzenText TextStyle="TextStyle.Caption">Your first sign-in creates your RaidManager account.</RadzenText>
+            </RadzenStack>
+        </RadzenCard>
+    </NotAuthorized>
+</AuthorizeView>
