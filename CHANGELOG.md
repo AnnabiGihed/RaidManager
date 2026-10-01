@@ -50,6 +50,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - A dark design system from the owner's reference design: named colors, Open Sans text styles, and an app shell on
   every website screen with the Player and Officer navigation, community, breadcrumb, realm status and user. Mockups
   are generated with it, and the website will be re-themed to match (ADR-0019) (#202).
+- The boss assignments mockup in `docs/mockups/`: defining a boss's assignments, copying them from a prior run with a
+  missing character left to replace, a player's own assignments, and a stale reference flagged after a swap (#243).
 - The raid-night attendance mockup in `docs/mockups/`: check-in with late, absent and bench, a substitute swap with
   ownership and lockout checked again, a swap refused for an active lock, and the night's log after the raid (#241).
 - The roster publication mockup in `docs/mockups/`: the final review with changed places and open warnings, the
