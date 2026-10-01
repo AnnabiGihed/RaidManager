@@ -60,21 +60,25 @@ Every project is organized as vertical slices under `Features/`, with `Features/
 ├── _Imports.razor                     ← at the project root, so it covers every feature folder
 ├── Program.cs
 ├── wwwroot/theme/                     ← the one project-wide theme: --rm-* tokens, theme classes, Radzen overrides
-├── Components/                        ← host root only: App.razor, Routes.razor (+ code-behinds)
+├── Components/                        ← host root only: App/, Routes/ (one folder each)
 └── Features/
     ├── <Feature>/
     │   ├── Pages/                     ← routable pages (@page): <Page>.razor + <Page>.razor.cs
-    │   ├── Components/                ← components only this feature uses
+    │   ├── Components/                ← components only this feature uses, one folder each: <Name>/<Name>.razor…
     │   └── <Feature>Routes.cs, *ApiClient.cs, endpoints, DI extensions
     └── Shared/
         ├── Layout/                    ← MainLayout, the app shell
-        └── Components/                ← standalone, generic components several features use
+        └── Components/                ← standalone, generic components several features use, one folder each
 ```
 - One use case = one folder with Command/Query + Handler + Validator + Response, nothing else.
 - **The UI follows the same slices, and this is not optional.** A page, its feature components, its routes and its API
   client live in `Features/<Feature>/` of the Web project, next to the feature's view models in
   `{Solution}.ViewModels/Features/<Feature>/`. A flat `Pages/` or `Components/Pages/` folder holding feature pages, or a
   page outside its feature, is a defect; move it in the same PR that touches it.
+- **Every component has its own folder, and this is not optional:** `Components/<Name>/` holds the component's
+  `.razor`, `.razor.cs`, `.razor.css` and the types only it uses, for example
+  `Components/ActionButton/ActionButton.razor` and `Components/ActionButton/ActionButtonAppearance.cs`. The folder adds
+  no namespace segment; `blazor-components` has the details.
 - Test projects mirror the same `Features/<Feature>/…` tree (see `dotnet-unit-tests`).
 
 ## Mediator dispatch is mandatory
