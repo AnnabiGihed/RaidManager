@@ -12,6 +12,11 @@ namespace RaidManager.Domain.Features.Raids.ValueObjects;
 /// </remarks>
 public sealed record RaidTarget(RaidInstance Instance, RaidDifficulty Difficulty)
 {
+    #region Properties
+    /// <summary>Gets the number of players the difficulty is for: 10 or 25.</summary>
+    public int Size => Difficulty is RaidDifficulty.TenPlayer or RaidDifficulty.TenPlayerHeroic ? 10 : 25;
+    #endregion Properties
+
     #region Overrides
     /// <inheritdoc />
     public override string ToString() => $"{Instance} {Difficulty}";

@@ -51,6 +51,7 @@ public sealed class RaidSignupAvailabilityStepDefinitions
         _raid = Raid.Create(
             new CommunityId(Guid.NewGuid()),
             new UserId(Guid.NewGuid()),
+            "Icecrown Citadel",
             [new RaidTarget(RaidInstance.IcecrownCitadel, RaidDifficulty.TwentyFivePlayer)],
             startsAtUtc,
             startsAtUtc.AddHours(-SignupHoursBeforeStart),
