@@ -22,6 +22,7 @@ public sealed class SignInFailedViewModelTests
         viewModel.Describe("denied");
 
         viewModel.Title.ShouldBe("Sign-in cancelled");
+        viewModel.IsCancelled.ShouldBeTrue();
         viewModel.Message.ShouldContain("Authorize");
     }
 
@@ -38,6 +39,7 @@ public sealed class SignInFailedViewModelTests
         viewModel.Describe(reason);
 
         viewModel.Title.ShouldBe("Sign-in did not complete");
+        viewModel.IsCancelled.ShouldBeFalse();
         viewModel.Message.ShouldContain("try again");
     }
     #endregion Tests

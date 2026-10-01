@@ -111,34 +111,141 @@ public sealed class SharedComponentsTests : BunitContext
         section.FindAll("a").Select(link => link.GetAttribute("href")).ShouldBe(["/schedule", "/conflicts"]);
     }
 
-    /// <summary>Raises its click and carries the dark-surface look.</summary>
+    /// <summary>Raises its click and carries the primary look by default.</summary>
     [Fact]
-    public void SurfaceButtonRaisesItsClick()
+    public void ActionButtonRaisesItsClick()
     {
         var clicks = 0;
-        var button = Render<SurfaceButton>(parameters => parameters
-            .Add(component => component.Text, "Refresh")
+        var button = Render<ActionButton>(parameters => parameters
+            .Add(component => component.Text, "Sign in with Discord")
             .Add(component => component.Click, () => clicks++));
 
-        var element = button.Find("button.surface-button");
-        element.TextContent.ShouldContain("Refresh");
+        var element = button.Find("button.action-button");
+        element.ClassList.ShouldContain("action-button-primary");
+        element.TextContent.ShouldContain("Sign in with Discord");
         element.GetAttribute("type").ShouldBe("button");
         element.Click();
         clicks.ShouldBe(1);
     }
 
-    /// <summary>Submits a form when asked, and stays disabled when told.</summary>
-    [Fact]
-    public void SurfaceButtonCanSubmitAndBeDisabled()
+    /// <summary>Applies each appearance as its own class.</summary>
+    /// <param name="appearance">The appearance.</param>
+    /// <param name="expectedClass">The class it adds.</param>
+    [Theory]
+    [InlineData(ActionButtonAppearance.Primary, "action-button-primary")]
+    [InlineData(ActionButtonAppearance.Secondary, "action-button-secondary")]
+    [InlineData(ActionButtonAppearance.Danger, "action-button-danger")]
+    public void ActionButtonAppliesItsAppearance(ActionButtonAppearance appearance, string expectedClass)
     {
-        var button = Render<SurfaceButton>(parameters => parameters
+        var button = Render<ActionButton>(parameters => parameters
+            .Add(component => component.Text, "Go")
+            .Add(component => component.Appearance, appearance));
+
+        button.Find("button").ClassList.ShouldContain(expectedClass);
+    }
+
+    /// <summary>Submits a form, fills its container and stays disabled when told.</summary>
+    [Fact]
+    public void ActionButtonCanSubmitFillAndBeDisabled()
+    {
+        var button = Render<ActionButton>(parameters => parameters
             .Add(component => component.Text, "Save")
             .Add(component => component.ButtonType, ButtonType.Submit)
+            .Add(component => component.FullWidth, true)
             .Add(component => component.Disabled, true));
 
-        var element = button.Find("button.surface-button");
+        var element = button.Find("button.action-button");
         element.GetAttribute("type").ShouldBe("submit");
         element.HasAttribute("disabled").ShouldBeTrue();
+        button.Find(".action-button-host").ClassList.ShouldContain("action-button-full");
+    }
+
+    /// <summary>Shows a titled card with its body, actions and accent.</summary>
+    [Fact]
+    public void SurfaceCardShowsTitleBodyActionsAndAccent()
+    {
+        var card = Render<SurfaceCard>(parameters => parameters
+            .Add(component => component.Title, "Sign-in cancelled")
+            .Add(component => component.HeadingLevel, HeadingLevel.H1)
+            .Add(component => component.Accent, CardAccent.Warning)
+            .AddChildContent("Discord did not share your account.")
+            .Add(component => component.Actions, (RenderFragment)(builder => builder.AddMarkupContent(0, "<button>Try again</button>"))));
+
+        card.Find("h1.surface-card-title").TextContent.ShouldBe("Sign-in cancelled");
+        card.Find(".surface-card-body").TextContent.ShouldBe("Discord did not share your account.");
+        card.Find(".surface-card-actions button").TextContent.ShouldBe("Try again");
+        card.Find(".surface-card-accent").ClassList.ShouldContain("surface-card-accent-warning");
+    }
+
+    /// <summary>Renders each heading level and leaves out what isn't given.</summary>
+    /// <param name="level">The heading level.</param>
+    /// <param name="tag">The expected tag.</param>
+    [Theory]
+    [InlineData(HeadingLevel.H2, "h2")]
+    [InlineData(HeadingLevel.H3, "h3")]
+    public void SurfaceCardUsesTheHeadingLevelAndOmitsAbsentParts(HeadingLevel level, string tag)
+    {
+        var card = Render<SurfaceCard>(parameters => parameters
+            .Add(component => component.Title, "Sign in to continue")
+            .Add(component => component.HeadingLevel, level)
+            .AddChildContent("Body"));
+
+        card.Find($"{tag}.surface-card-title").TextContent.ShouldBe("Sign in to continue");
+        card.FindAll(".surface-card-accent").ShouldBeEmpty();
+        card.FindAll(".surface-card-actions").ShouldBeEmpty();
+    }
+
+    /// <summary>Shows a card without a title.</summary>
+    [Fact]
+    public void SurfaceCardWithoutTitleHasNoHeading()
+    {
+        var card = Render<SurfaceCard>(parameters => parameters.AddChildContent("Only a body"));
+
+        card.FindAll(".surface-card-title").ShouldBeEmpty();
+    }
+
+    /// <summary>Centers a heading with every part.</summary>
+    [Fact]
+    public void PageHeadingShowsEyebrowTitleAndSubtitle()
+    {
+        var heading = Render<PageHeading>(parameters => parameters
+            .Add(component => component.Eyebrow, "Signed in")
+            .Add(component => component.Title, "Welcome, Anguish")
+            .Add(component => component.Subtitle, "Your characters and raids will appear here.")
+            .Add(component => component.Alignment, ContentAlignment.Center));
+
+        heading.Find("header").ClassList.ShouldContain("page-heading-center");
+        heading.Find(".page-heading-eyebrow").TextContent.ShouldBe("Signed in");
+        heading.Find("h1").TextContent.ShouldBe("Welcome, Anguish");
+        heading.Find(".page-heading-subtitle").TextContent.ShouldBe("Your characters and raids will appear here.");
+    }
+
+    /// <summary>Aligns a heading with only a title to the start.</summary>
+    [Fact]
+    public void PageHeadingWithOnlyATitleStartsAligned()
+    {
+        var heading = Render<PageHeading>(parameters => parameters.Add(component => component.Title, "Raids"));
+
+        heading.Find("header").ClassList.ShouldNotContain("page-heading-center");
+        heading.FindAll(".page-heading-eyebrow").ShouldBeEmpty();
+        heading.FindAll(".page-heading-subtitle").ShouldBeEmpty();
+    }
+
+    /// <summary>Shows a note aligned as told.</summary>
+    /// <param name="alignment">The alignment.</param>
+    /// <param name="centered">Whether the note is centered.</param>
+    [Theory]
+    [InlineData(ContentAlignment.Center, true)]
+    [InlineData(ContentAlignment.Start, false)]
+    public void TextNoteShowsItsTextAligned(ContentAlignment alignment, bool centered)
+    {
+        var note = Render<TextNote>(parameters => parameters
+            .Add(component => component.Text, "Your first sign-in creates your RaidManager account.")
+            .Add(component => component.Alignment, alignment));
+
+        var paragraph = note.Find("p.text-note");
+        paragraph.TextContent.ShouldBe("Your first sign-in creates your RaidManager account.");
+        paragraph.ClassList.Contains("text-note-center").ShouldBe(centered);
     }
 
     /// <summary>Shows the avatar image when there is one.</summary>

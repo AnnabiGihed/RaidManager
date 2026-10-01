@@ -1,0 +1,43 @@
+/* Radzen styles a button with up to four classes, so each override names the button and its appearance classes. */
+.action-button-host {
+    display: inline-flex;
+}
+
+.action-button-full {
+    display: flex;
+    width: 100%;
+}
+
+.action-button-full ::deep .rz-button.action-button {
+    width: 100%;
+}
+
+.action-button-host ::deep .rz-button.action-button {
+    height: 40px;
+    padding: 0 20px;
+    border-radius: var(--rm-radius-control);
+    box-shadow: none;
+    font-family: var(--rm-font-family);
+    font-size: 13px;
+    font-weight: 700;
+    letter-spacing: normal;
+    text-transform: none;
+}
+
+.action-button-host ::deep .rz-button.action-button.action-button-primary {
+    border: none;
+    background: var(--rm-brand-accent);
+    color: var(--rm-brand-on-accent);
+}
+
+.action-button-host ::deep .rz-button.action-button.action-button-secondary {
+    border: 1px solid var(--rm-line-divider);
+    background: var(--rm-surface-raised);
+    color: var(--rm-text-primary);
+}
+
+.action-button-host ::deep .rz-button.action-button.action-button-danger {
+    border: none;
+    background: var(--rm-status-danger);
+    color: var(--rm-status-on-danger);
+}

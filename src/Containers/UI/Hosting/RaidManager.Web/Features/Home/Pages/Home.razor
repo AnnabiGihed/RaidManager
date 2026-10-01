@@ -10,13 +10,13 @@
         </RadzenStack>
     </Authorized>
     <NotAuthorized>
-        <RadzenCard>
-            <RadzenStack Gap="1rem">
-                <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H1">Sign in to continue</RadzenText>
-                <RadzenText TextStyle="TextStyle.Body1">RaidManager uses your Discord account to plan raids with your characters. It gets your Discord name and avatar, never your password.</RadzenText>
-                <RadzenButton Icon="login" Text="Sign in with Discord" Click="SignIn" />
-                <RadzenText TextStyle="TextStyle.Caption">Your first sign-in creates your RaidManager account.</RadzenText>
-            </RadzenStack>
-        </RadzenCard>
+        <PageHeading Title="Plan raids with your characters" Subtitle="Raid signups, rosters and readiness for your Discord community." Alignment="ContentAlignment.Center" />
+        <SurfaceCard Title="Sign in to continue" data-testid="sign-in-card">
+            <ChildContent>RaidManager uses your Discord account. It gets your Discord name and avatar, never your password.</ChildContent>
+            <Actions>
+                <ActionButton Text="Sign in with Discord" FullWidth="true" Click="SignIn" />
+            </Actions>
+        </SurfaceCard>
+        <TextNote Text="Your first sign-in creates your RaidManager account." Alignment="ContentAlignment.Center" />
     </NotAuthorized>
 </AuthorizeView>

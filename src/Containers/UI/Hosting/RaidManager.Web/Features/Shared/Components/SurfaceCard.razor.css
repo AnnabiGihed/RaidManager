@@ -1,0 +1,61 @@
+.surface-card {
+    position: relative;
+    box-sizing: border-box;
+    padding: 24px;
+    border: 1px solid var(--rm-line-card-border);
+    border-radius: 12px;
+    background: var(--rm-surface-card);
+    font-family: var(--rm-font-family);
+}
+
+.surface-card-accent {
+    position: absolute;
+    top: 12px;
+    bottom: 12px;
+    left: 0;
+    width: 4px;
+    border-radius: 2px;
+}
+
+.surface-card-accent-brand {
+    background: var(--rm-brand-accent);
+}
+
+.surface-card-accent-warning {
+    background: var(--rm-accent-amber);
+}
+
+.surface-card-accent-danger {
+    background: var(--rm-status-danger);
+}
+
+.surface-card-accent + .surface-card-content {
+    padding-left: 8px;
+}
+
+.surface-card-content {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+.surface-card-title {
+    margin: 0;
+    color: var(--rm-text-primary);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1.3;
+}
+
+.surface-card-body {
+    color: var(--rm-text-secondary);
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.surface-card-actions {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 8px;
+    margin-top: 8px;
+}

@@ -1,0 +1,10 @@
+.text-note {
+    margin: 0;
+    color: var(--rm-text-muted);
+    font-family: var(--rm-font-family);
+    font-size: 12px;
+}
+
+.text-note-center {
+    text-align: center;
+}

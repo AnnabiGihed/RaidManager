@@ -17,6 +17,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   of existing pages and the player's card, and a top bar with the breadcrumb, the avatar and Sign out. Signed-out
   pages show the logo above a centered sign-in card (#263).
 - The website serves the Open Sans font from its own files instead of Google Fonts (#265).
+- The signed-out home and sign-in failure pages follow the sign-in mockup: a centered heading, dark cards with an
+  accent for the failure kind, and the design system's teal and secondary buttons, built from generic components (#275).
 - After sign-in, a player with characters awaiting their decision lands on the character review page. They approve
   or reject each one, with a confirmation before rejecting, or decide later. A character another player owns waits
   for an officer, and a page that can't load offers a retry (#253). A player whose only waiting characters are
