@@ -60,38 +60,55 @@ def label(name: str, x: float, y: float, value: str) -> Item:
     return text(name, x, y, value, 11, 700, MUTED, None, "left", 1.2)
 
 
+GEAR_COLUMNS = {"character": 24, "score": 320, "enchants": 460, "sockets": 680, "action": 980}
+GEAR_HEAD_H, GEAR_ROW_H = 44, 60
+
+
+def enchant_badge(x: float, y: float, missing: int) -> Group:
+    if missing:
+        return badge("Enchants", x, y, f"{missing} missing", "warning")
+    return badge("Enchants", x, y, "All enchanted", "success")
+
+
+def socket_badge(x: float, y: float, empty: int) -> Group:
+    if not empty:
+        return badge("Sockets", x, y, "All filled", "success")
+    plural = "s" if empty > 1 else ""
+    return badge("Sockets", x, y, f"{empty} empty socket{plural}", "warning")
+
+
+def gear_row(y: float, gear: tuple[str, str, str, str, int, int]) -> Group:
+    character, player, wow_class, score, enchants, sockets = gear
+    row: list[Item] = [
+        Rect("Divider", CONTENT_X, y, CONTENT_W, 1, DIVIDER),
+        Circle("Class colour", CONTENT_X + 29, y + 24, 5, CLASS_COLOURS[wow_class]),
+        text("Character", CONTENT_X + 42, y + 28, character, 14, 600),
+        text("Player", CONTENT_X + 42, y + 46, player, 12, 400, MUTED),
+        text("Score", CONTENT_X + GEAR_COLUMNS["score"], y + 36, score, 14),
+        enchant_badge(CONTENT_X + GEAR_COLUMNS["enchants"], y + 18, enchants),
+        socket_badge(CONTENT_X + GEAR_COLUMNS["sockets"], y + 18, sockets),
+    ]
+    if enchants or sockets:
+        target = Click("navigate", INSPECT) if character == INSPECTED else None
+        row.append(button("Inspect button", CONTENT_X + GEAR_COLUMNS["action"], y + 10, "Inspect", "secondary", 104,
+                          target))
+    return Group(f"Row {character}", row)
+
+
 def gear_warnings() -> list[Item]:
-    head_h, row_h = 44, 60
-    columns = {"character": 24, "score": 320, "enchants": 460, "sockets": 680, "action": 980}
-    items: list[Item] = [*card(CONTENT_X, TOP + 40, CONTENT_W, head_h + row_h * len(GEAR) + 8)]
+    table_top = TOP + 40
+    items: list[Item] = [*card(CONTENT_X, table_top, CONTENT_W, GEAR_HEAD_H + GEAR_ROW_H * len(GEAR) + 8)]
     items.append(Group("Table header", [
-        label(f"{heading.title()} heading", CONTENT_X + columns[key], TOP + 40 + 27, heading)
+        label(f"{heading.title()} heading", CONTENT_X + GEAR_COLUMNS[key], table_top + 27, heading)
         for key, heading in (("character", "CHARACTER"), ("score", "GEARSCORE"), ("enchants", "ENCHANTS"),
                              ("sockets", "GEMS"))]))
-    for index, (character, player, wow_class, score, enchants, sockets) in enumerate(GEAR):
-        y = TOP + 40 + head_h + index * row_h
-        row: list[Item] = [
-            Rect("Divider", CONTENT_X, y, CONTENT_W, 1, DIVIDER),
-            Circle("Class colour", CONTENT_X + 29, y + 24, 5, CLASS_COLOURS[wow_class]),
-            text("Character", CONTENT_X + 42, y + 28, character, 14, 600),
-            text("Player", CONTENT_X + 42, y + 46, player, 12, 400, MUTED),
-            text("Score", CONTENT_X + columns["score"], y + 36, score, 14),
-            badge("Enchants", CONTENT_X + columns["enchants"], y + 18,
-                  f"{enchants} missing" if enchants else "All enchanted", "warning" if enchants else "success"),
-            badge("Sockets", CONTENT_X + columns["sockets"], y + 18,
-                  f"{sockets} empty socket" + ("s" if sockets > 1 else "") if sockets else "All filled",
-                  "warning" if sockets else "success"),
-        ]
-        if enchants or sockets:
-            row.append(button("Inspect button", CONTENT_X + columns["action"], y + 10, "Inspect", "secondary", 104,
-                              Click("navigate", INSPECT) if character == INSPECTED else None))
-        items.append(Group(f"Row {character}", row))
+    items += [gear_row(table_top + GEAR_HEAD_H + index * GEAR_ROW_H, gear) for index, gear in enumerate(GEAR)]
     return [
         page_header(PAGE, "Gear before the raid", WHEN),
         text("Summary", CONTENT_X, TOP + 17, "3 characters have missing enchants or empty sockets · from synced item links",
              13, 400, SECONDARY),
         Group("Gear table", items),
-        text("Advisory", CONTENT_X, TOP + 40 + head_h + row_h * len(GEAR) + 40,
+        text("Advisory", CONTENT_X, table_top + GEAR_HEAD_H + GEAR_ROW_H * len(GEAR) + 40,
              "Gear warnings are advice for you and the player; they never remove anyone from the roster.", 13, 400, MUTED),
     ]
 
