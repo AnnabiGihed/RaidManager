@@ -23,3 +23,4 @@
 | 0019 | [A dark design system with an app shell on every screen](0019-dark-design-system-with-an-app-shell.md) | Proposed |
 | 0020 | [Fail pull requests on SonarCloud findings](0020-fail-pull-requests-on-sonarcloud-findings.md) | Proposed |
 | 0021 | [Import the roster into the addon by pasting a code](0021-import-the-roster-into-the-addon-by-pasting-a-code.md) | Proposed |
+| 0022 | [Check Discord roles at action time](0022-check-discord-roles-at-action-time.md) | Proposed |

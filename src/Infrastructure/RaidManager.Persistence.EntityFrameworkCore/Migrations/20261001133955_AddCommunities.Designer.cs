@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
 using Microsoft.EntityFrameworkCore.Metadata;
+using Microsoft.EntityFrameworkCore.Migrations;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
 using RaidManager.Persistence.EntityFrameworkCore;
 
@@ -12,9 +13,11 @@ using RaidManager.Persistence.EntityFrameworkCore;
 namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
 {
     [DbContext(typeof(RaidManagerDbContext))]
-    partial class RaidManagerDbContextModelSnapshot : ModelSnapshot
+    [Migration("20261001133955_AddCommunities")]
+    partial class AddCommunities
     {
-        protected override void BuildModel(ModelBuilder modelBuilder)
+        /// <inheritdoc />
+        protected override void BuildTargetModel(ModelBuilder modelBuilder)
         {
 #pragma warning disable 612, 618
             modelBuilder

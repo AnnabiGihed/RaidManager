@@ -2,6 +2,7 @@ using Microsoft.EntityFrameworkCore;
 using Pivot.Framework.Infrastructure.Abstraction.Outbox.Models;
 using Pivot.Framework.Infrastructure.Persistence.EntityFrameworkCore.PersistenceContext;
 using RaidManager.Domain.Features.Characters.Aggregates;
+using RaidManager.Domain.Features.Communities.Aggregates;
 using RaidManager.Domain.Features.Identity.Aggregates;
 using RaidManager.Domain.Features.Raids.Aggregates;
 using RaidManager.Persistence.EntityFrameworkCore.Features.Shared.Conversions;
@@ -31,6 +32,9 @@ public sealed class RaidManagerDbContext : PivotDbContextBase
 
     /// <summary>Gets the local users, one per Discord account.</summary>
     public DbSet<User> Users => Set<User>();
+
+    /// <summary>Gets the Discord servers linked as communities.</summary>
+    public DbSet<Community> Communities => Set<Community>();
 
     /// <summary>Gets the scheduled raids with their signups and rosters.</summary>
     public DbSet<Raid> Raids => Set<Raid>();
