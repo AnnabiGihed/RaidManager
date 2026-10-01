@@ -98,11 +98,15 @@ tests, documentation, and skill edits may not.
      (`raidmanager-conventions` §7). Every new document gets its `#` title and a `mkdocs.yml` nav entry; never
      edit the wiki.
    - **Skills:** edit both trees identically.
+   - **Vale and spelling** whenever any Markdown changed, the changelog included (`raidmanager-conventions` §7).
+   - **UI:** compare the rendered page with its mockup board, with the real styles (`raidmanager-conventions` §10).
 
    Update affected documentation, API contracts, diagrams, ADRs, and changelog in the same change. Record a
    justified `none` for an artifact that genuinely does not apply; never leave a required check unexplained.
-5. Review the final diff and stage only the files the task changed (never `git add -A`). Commit with a Conventional
-   Commit title containing the task number, and open one draft PR for that task against `main`:
+5. Review the final diff and stage only the files the task changed (never `git add -A` or `git add .`). Other agent
+   sessions share this checkout and leave their own untracked or modified files: check `git status --short` before
+   committing and leave every file you didn't create alone. Commit with a Conventional Commit title containing the
+   task number, and open one draft PR for that task against `main`:
    - Link the task with `Closes #<task-number>` on a standalone line before the first heading. Only tasks and spikes
      may be closed by a PR, and the docs `validate` check fails unless each one reaches an epic through a story,
      improvement or bug and a feature.
@@ -117,6 +121,37 @@ tests, documentation, and skill edits may not.
    operator's review (ADR-0006, ADR-0009). Tell the operator the draft is ready for their review once required CI is
    green. The operator posts a meaningful review comment and marks it Ready for review; the workflow then requests
    the peer, and any new commit returns the PR to draft.
+   - **Hand over only a clean PR:** wait for `python scripts/sonar_gate.py --project AnnabiGihed_RaidManager
+     --pull-request <number> --commit <head sha> --timeout 1200` to report no finding, and fix every finding first
+     (`raidmanager-conventions` §11).
+   - **Draft both review comments, every PR (mandatory).** With the summary of the PR, give the operator two texts
+     to post, never posting them yourself, approving, or marking ready:
+     1. the **operator's review comment**, about product and design intent: what the operator checked and why it is
+        what they asked for;
+     2. the **peer's approval comment**, about code and tests: which files or identifiers were reviewed and what
+        they guarantee.
+
+     Each must name something the PR changes (a file or an identifier from the diff), have at least ten meaningful
+     words and no generic praise, and the two must not be copies of each other. Check them with the review gate's
+     own rules before handing them over:
+
+     ```bash
+     python - <<'PY'
+     import subprocess, sys
+     sys.path.insert(0, "scripts")
+     from verify_review import Change, comment_problems, is_copy
+     PR = "<number>"
+     OPERATOR = """<operator comment>"""
+     PEER = """<peer comment>"""
+     run = lambda *a: subprocess.run(["gh", "pr", "diff", PR, *a], capture_output=True, text=True, check=True).stdout
+     change = Change(tuple(run("--name-only").split()), run())
+     print("operator:", comment_problems(OPERATOR, change, summary=True) or "passes")
+     print("peer:", comment_problems(PEER, change, summary=True) or "passes")
+     print("copy of each other:", is_copy(PEER, OPERATOR))
+     PY
+     ```
+
+     When the operator asks for another version of one comment, write a new one and check it the same way.
    - The `review` workflow merges the PR itself once every gate passes (ADR-0008). Never queue or perform the merge
      yourself, and never use `--admin`, self-merge, or force-push.
    - GitHub must wait for the peer approval, required checks, and resolved conversations. `review-gate` needs the

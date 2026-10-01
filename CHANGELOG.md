@@ -123,6 +123,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- The agent's working practices live in the skills and `AGENTS.md` instead of an agent's memory: drafting both
+  review comments, a clean Vale and SonarCloud before handover, checking a page against its mockup, shared-checkout
+  git hygiene, Windows line endings, and leaving the owner's running app alone (#279).
 - When a pull request is reported merged, the workflow skill requires checking the merge, making sure the remote
   branch is deleted and deleting the local branch (#271).
 - The website's colors, font and Radzen overrides live in one project-wide theme (`wwwroot/theme/`), and the app
