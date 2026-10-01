@@ -41,6 +41,7 @@ nav:
       - Generated Penpot mockups: adr/0018-generate-penpot-mockups-in-the-repository.md
       - Dark design system: adr/0019-dark-design-system-with-an-app-shell.md
       - SonarCloud findings: adr/0020-fail-pull-requests-on-sonarcloud-findings.md
+      - Addon roster import: adr/0021-import-the-roster-into-the-addon-by-pasting-a-code.md
 theme:
   name: material
 markdown_extensions:

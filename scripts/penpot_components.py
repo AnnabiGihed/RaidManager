@@ -30,6 +30,8 @@ PAGE_BACKGROUND = P["Surface/page"]
 RAISED = P["Surface/raised"]
 CARD = P["Surface/card"]
 LOGO_TILE = P["Brand/logo tile"]
+CARD_BORDER, SIDEBAR_BACKGROUND = P["Line/card border"], P["Surface/sidebar"]
+TOP_BAR_BACKGROUND = P["Surface/top bar"]
 BOARD_W, BOARD_H = 1440, 900
 SIDEBAR_W, TOP_BAR_H = 240, 64
 CONTENT_X, CONTENT_TOP = SIDEBAR_W + 40, TOP_BAR_H + 40
@@ -109,7 +111,7 @@ def avatar(name: str, cx: float, cy: float, initials: str, tone: str = "purple",
 def navigation_item(label: str, y: float, active: bool, target: str | None) -> Group:
     colour = ACCENT if active else SECONDARY
     items: list[Item] = [Rect("Area", 12, y, SIDEBAR_W - 24, NAV_ITEM_H,
-                              P["Surface/selected"] if active else P["Surface/sidebar"], 1, 8)]
+                              P["Surface/selected"] if active else SIDEBAR_BACKGROUND, 1, 8)]
     if active:
         items.append(Rect("Active mark", 12, y + 8, 3, NAV_ITEM_H - 16, ACCENT, 1, 2))
     items += [Circle("Icon", 34, y + NAV_ITEM_H / 2, 4, ACCENT if active else MUTED),
@@ -120,7 +122,7 @@ def navigation_item(label: str, y: float, active: bool, target: str | None) -> G
 def community_card(community: Community | None, target: str | None) -> Group:
     """The sidebar's community card; `None` is a signed-in user who hasn't joined or linked a community yet."""
     items: list[Item] = [Rect("Background", 16, 68, SIDEBAR_W - 32, 60, CARD, 1, 10,
-                              P["Line/card border"])]
+                              CARD_BORDER)]
     if community is None:
         items += [Rect("Icon", 28, 82, 32, 32, RAISED, 1, 8, DIVIDER),
                   text("Icon mark", 28, 104, "+", 16, 800, SECONDARY, 32, "center", icon=True),
@@ -140,7 +142,7 @@ def sidebar(active: str, community: Community | None, user: User, links: dict[st
     `links` maps navigation entries, and "Community" for the community card, to the boards they open.
     """
     items: list[Item] = [
-        Rect("Background", 0, 0, SIDEBAR_W, BOARD_H, P["Surface/sidebar"]),
+        Rect("Background", 0, 0, SIDEBAR_W, BOARD_H, SIDEBAR_BACKGROUND),
         Rect("Edge", SIDEBAR_W - 1, 0, 1, BOARD_H, DIVIDER),
         Group("Logo", [Rect("Tile", 20, 16, 32, 32, LOGO_TILE, 1, 8),
                        Rect("Mark", 28, 24, 16, 16, ACCENT, 1, 4),
@@ -177,7 +179,7 @@ def top_bar(community: Community | None, page: str, user: User, sign_out: Click 
     avatar_x = sign_out_x - 16 - 16
     status_x = avatar_x - 16 - 132
     return Group("Top bar", [
-        Rect("Background", SIDEBAR_W, 0, width, TOP_BAR_H, P["Surface/top bar"]),
+        Rect("Background", SIDEBAR_W, 0, width, TOP_BAR_H, TOP_BAR_BACKGROUND),
         Rect("Divider", SIDEBAR_W, TOP_BAR_H - 1, width, 1, DIVIDER),
         Group("Breadcrumb", [crumb, slash, current]),
         Group("Realm status", [Circle("Dot", status_x, 32, 4, ACCENT),
@@ -213,7 +215,7 @@ def page_header(eyebrow: str, title: str, subtitle: str, x: float = CONTENT_X, y
 
 def card(x: float, y: float, w: float, h: float, accent: str | None = None, fill: str | None = None) -> list[Item]:
     """A card's background with its outline, and an optional coloured bar on its left edge."""
-    items: list[Item] = [Rect("Card", x, y, w, h, fill or CARD, 1, 12, P["Line/card border"])]
+    items: list[Item] = [Rect("Card", x, y, w, h, fill or CARD, 1, 12, CARD_BORDER)]
     if accent:
         items.append(Rect("Accent", x, y + 12, 4, h - 24, accent, 1, 2))
     return items
@@ -269,7 +271,7 @@ def companion_window(name: str, x: float, y: float, content: list[Item], *, widt
     `content` is placed from `WINDOW_PADDING` and below `TITLE_BAR_H`, in window coordinates.
     """
     title_bar = Group("Title bar", [
-        Rect("Background", 0, 0, width, TITLE_BAR_H, P["Surface/top bar"]),
+        Rect("Background", 0, 0, width, TITLE_BAR_H, TOP_BAR_BACKGROUND),
         Rect("Divider", 0, TITLE_BAR_H - 1, width, 1, DIVIDER),
         Rect("Mark", 16, 14, 16, 16, ACCENT, 1, 4),
         text("App name", 42, 28, "RaidManager Companion", 13, 600),
@@ -374,3 +376,24 @@ def discord_button(name: str, x: float, y: float, label: str, style: str = "seco
     width = width or round(text_width(label_layer) + 32)
     label_layer.width, label_layer.align = width, "center"
     return Group(name, [Rect("Background", x, y, width, 32, DISCORD_BUTTONS[style], 1, 3), label_layer], on_click)
+
+
+# The WoW addon's in-game frames: the palette and type scale, no website shell (ADR-0019, ADR-0021).
+ADDON_W, ADDON_H, ADDON_TITLE_H = 440, 600, 36
+
+
+def addon_frame(name: str, x: float, y: float, title: str, content: list[Item], *, width: float = ADDON_W,
+                height: float = ADDON_H) -> Board:
+    """An in-game addon frame: a bordered window with its title and a close mark, drawn over a dimmed game view.
+
+    `content` uses frame coordinates; the area below `ADDON_TITLE_H` is free.
+    """
+    frame = Group("Frame chrome", [
+        Rect("Border", 0, 0, width, height, SIDEBAR_BACKGROUND, 1, 6, CARD_BORDER),
+        Rect("Title bar", 1, 1, width - 2, ADDON_TITLE_H, TOP_BAR_BACKGROUND, 1, 6),
+        Rect("Title divider", 1, ADDON_TITLE_H, width - 2, 1, DIVIDER),
+        Rect("Mark", 12, 10, 16, 16, ACCENT, 1, 4),
+        text("Title", 36, 24, title, 13, 700, TEXT),
+        text("Close", width - 30, 24, "×", 16, 800, SECONDARY, 20, "center", icon=True),
+    ])
+    return Board(name, x, y, width, height, PAGE_BACKGROUND, [frame, *content])
