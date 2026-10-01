@@ -50,6 +50,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - A dark design system from the owner's reference design: named colors, Open Sans text styles, and an app shell on
   every website screen with the Player and Officer navigation, community, breadcrumb, realm status and user. Mockups
   are generated with it, and the website will be re-themed to match (ADR-0019) (#202).
+- The app shell's Officer section lists Conflicts, which opens the ownership conflicts page; every officer mockup
+  is regenerated with it (ADR-0019) (#251).
 - The claim conflicts mockup in `docs/mockups/`: the officer's list of ownership conflicts with resolved decisions kept
   for audit, resolving one with a required reason, the outcome each player sees, and the access error for
   non-officers (#249).

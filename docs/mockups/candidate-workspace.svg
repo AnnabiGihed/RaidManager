@@ -43,6 +43,9 @@
 <rect x="12" y="496" width="216" height="36" rx="8" fill="#0f1825"/>
 <ellipse cx="34" cy="514" rx="4" ry="4" fill="#8394aa"/>
 <text x="50" y="519" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Raid night</text>
+<rect x="12" y="536" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="554" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="559" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Conflicts</text>
 <rect x="0" y="828" width="239" height="1" fill="#2b3b50"/>
 <ellipse cx="36" cy="864" rx="16" ry="16" fill="#604c80"/>
 <text x="36" y="868" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#f2e8ff" text-anchor="middle">GA</text>
@@ -212,6 +215,9 @@
 <rect x="1532" y="496" width="216" height="36" rx="8" fill="#0f1825"/>
 <ellipse cx="1554" cy="514" rx="4" ry="4" fill="#8394aa"/>
 <text x="1570" y="519" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Raid night</text>
+<rect x="1532" y="536" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="554" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="559" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Conflicts</text>
 <rect x="1520" y="828" width="239" height="1" fill="#2b3b50"/>
 <ellipse cx="1556" cy="864" rx="16" ry="16" fill="#604c80"/>
 <text x="1556" y="868" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#f2e8ff" text-anchor="middle">GA</text>
@@ -366,6 +372,9 @@
 <rect x="12" y="1476" width="216" height="36" rx="8" fill="#0f1825"/>
 <ellipse cx="34" cy="1494" rx="4" ry="4" fill="#8394aa"/>
 <text x="50" y="1499" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Raid night</text>
+<rect x="12" y="1516" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="1534" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="1539" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Conflicts</text>
 <rect x="0" y="1808" width="239" height="1" fill="#2b3b50"/>
 <ellipse cx="36" cy="1844" rx="16" ry="16" fill="#604c80"/>
 <text x="36" y="1848" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#f2e8ff" text-anchor="middle">GA</text>
@@ -477,6 +486,9 @@
 <rect x="1532" y="1476" width="216" height="36" rx="8" fill="#0f1825"/>
 <ellipse cx="1554" cy="1494" rx="4" ry="4" fill="#8394aa"/>
 <text x="1570" y="1499" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Raid night</text>
+<rect x="1532" y="1516" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="1534" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="1539" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Conflicts</text>
 <rect x="1520" y="1808" width="239" height="1" fill="#2b3b50"/>
 <ellipse cx="1556" cy="1844" rx="16" ry="16" fill="#604c80"/>
 <text x="1556" y="1848" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#f2e8ff" text-anchor="middle">GA</text>

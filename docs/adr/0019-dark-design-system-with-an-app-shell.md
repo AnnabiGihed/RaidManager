@@ -34,8 +34,8 @@ Its text is set in Segoe UI, which isn't a free font and isn't available in Penp
 - **App shell on every website screen:** a 1440 x 900 board with a 240-pixel sidebar and a 64-pixel top bar, drawn by
   `app_screen` in `scripts/penpot_components.py`:
   - the sidebar holds the logo, the community card, the Player section (Overview, Raids, My characters, Readiness,
-    Companion & sync), the Officer section (Schedule, Roster builder, Raid night) shown only to officers, and the user
-    card at the bottom;
+    Companion & sync), the Officer section (Schedule, Roster builder, Raid night, Conflicts) shown only to officers,
+    and the user card at the bottom;
   - the top bar holds the breadcrumb (community / page), the realm status, the user's avatar and Sign out;
   - the page's content starts 40 pixels from the sidebar and the top bar.
 - **Signed-out pages have no shell** (owner decision, 2026-09-30): the sign-in page and its failure pages show the

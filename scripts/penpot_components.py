@@ -38,7 +38,7 @@ CONTENT_X, CONTENT_TOP = SIDEBAR_W + 40, TOP_BAR_H + 40
 CONTENT_W = BOARD_W - CONTENT_X - 40
 BOARD_GAP = 80
 PLAYER_PAGES = ("Overview", "Raids", "My characters", "Readiness", "Companion & sync")
-OFFICER_PAGES = ("Schedule", "Roster builder", "Raid night")
+OFFICER_PAGES = ("Schedule", "Roster builder", "Raid night", "Conflicts")
 NAV_TOP, NAV_ITEM_H, NAV_ITEM_GAP = 176, 36, 4
 SIGN_OUT_W = 96
 # Signed-out pages (sign-in and its failures) are centred, without the app shell (ADR-0019).
