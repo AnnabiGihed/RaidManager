@@ -8,25 +8,79 @@
     padding: 24px;
 }
 
-/* The cards keep the widths of the mockup boards; the heading spans the content area. */
-.community-column {
+/* The community card keeps the mockup's 400 px; the roles card takes the rest of the content width. */
+.community-columns {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    max-width: 1120px;
+}
+
+.community-summary-column {
+    flex: 0 0 400px;
+}
+
+.community-roles-column {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.roles-content {
     display: flex;
     flex-direction: column;
-    gap: 24px;
-    max-width: 400px;
+    gap: 16px;
+}
+
+.roles-caption {
+    margin: 0;
+    color: var(--rm-text-secondary);
+    font-size: 13px;
+}
+
+.role-row {
+    display: flex;
+    gap: 16px;
+    align-items: center;
+    min-height: 64px;
+    padding: 8px 0;
+    border-top: 1px solid var(--rm-line-divider);
+}
+
+.role-row-label {
+    flex: 0 0 144px;
+    color: var(--rm-text-primary);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.role-row-sources {
+    display: flex;
+    flex: 1 1 auto;
+    flex-wrap: wrap;
+    gap: 8px;
+    align-items: center;
+}
+
+.role-row-source,
+.role-row-members {
+    color: var(--rm-text-secondary);
+    font-size: 13px;
+}
+
+.role-row-members {
+    flex: 0 0 auto;
+    text-align: right;
+}
+
+.role-picker {
+    display: flex;
+    flex-basis: 100%;
+    gap: 8px;
+    align-items: center;
 }
 
 .community-values {
     display: flex;
     flex-direction: column;
     gap: 20px;
-}
-
-/* The confirmation sits at the top right, as the mockup's notification does. */
-.community-linked {
-    position: fixed;
-    top: 80px;
-    right: 40px;
-    z-index: 10;
-    width: 380px;
 }

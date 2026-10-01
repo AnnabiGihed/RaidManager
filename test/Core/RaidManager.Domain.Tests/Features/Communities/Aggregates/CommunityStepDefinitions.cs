@@ -81,10 +81,11 @@ public sealed class CommunityStepDefinitions
     public void WhenTheAdministratorMapsTheDiscordRole(string discordRoleId, CommunityMemberRole role) =>
         Attempt(() => Community.MapDiscordRole(discordRoleId, role));
 
-    /// <summary>Removes a Discord role's mapping.</summary>
+    /// <summary>Stops a Discord role giving one RaidManager role.</summary>
+    /// <param name="role">The RaidManager role.</param>
     /// <param name="discordRoleId">The Discord role snowflake.</param>
-    [When("the Administrator removes the mapping of the Discord role {string}")]
-    public void WhenTheAdministratorRemovesTheMapping(string discordRoleId) => Community.UnmapDiscordRole(discordRoleId);
+    [When("the Administrator removes the {CommunityMemberRole} mapping of the Discord role {string}")]
+    public void WhenTheAdministratorRemovesTheMapping(CommunityMemberRole role, string discordRoleId) => Community.UnmapDiscordRole(discordRoleId, role);
 
     /// <summary>Gives the role of a member other than the Administrator from their Discord roles.</summary>
     /// <param name="discordRoleIds">The member's Discord role snowflakes, comma-separated; empty for none.</param>

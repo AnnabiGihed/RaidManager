@@ -64,9 +64,64 @@ internal sealed class CommunitiesApiClient : ICommunitiesApiClient
             ?? throw new HttpRequestException("The API returned an empty link response.");
         return linked.CommunityId;
     }
+
+    /// <inheritdoc />
+    public async Task<CommunityRoleSettingsAnswer> GetRoleSettingsAsync(Guid userId, Guid communityId, CancellationToken cancellationToken)
+    {
+        using var response = await _httpClient.GetAsync(UserCommunityRoute(userId, communityId) + "/roles", cancellationToken);
+        var status = StatusOf(response);
+        if (status != CommunityApiStatus.Succeeded)
+        {
+            return new CommunityRoleSettingsAnswer(status, null);
+        }
+
+        var settings = await response.Content.ReadFromJsonAsync<CommunityRoleSettings>(cancellationToken)
+            ?? throw new HttpRequestException("The API returned an empty roles response.");
+        return new CommunityRoleSettingsAnswer(status, settings);
+    }
+
+    /// <inheritdoc />
+    public async Task<CommunityApiStatus> MapRoleAsync(Guid userId, Guid communityId, string discordRoleId, string role, CancellationToken cancellationToken)
+    {
+        using var response = await _httpClient.PutAsync(MappingRoute(userId, communityId, role, discordRoleId), content: null, cancellationToken);
+        return StatusOf(response);
+    }
+
+    /// <inheritdoc />
+    public async Task<CommunityApiStatus> UnmapRoleAsync(Guid userId, Guid communityId, string discordRoleId, string role, CancellationToken cancellationToken)
+    {
+        using var response = await _httpClient.DeleteAsync(MappingRoute(userId, communityId, role, discordRoleId), cancellationToken);
+        return StatusOf(response);
+    }
     #endregion Public Methods
 
     #region Private Helpers
+    /// <summary>Builds a user's route to a community.</summary>
+    /// <param name="userId">The signed-in user.</param>
+    /// <param name="communityId">The community.</param>
+    /// <returns>The route.</returns>
+    private static string UserCommunityRoute(Guid userId, Guid communityId) => $"internal/users/{userId}/communities/{communityId}";
+
+    /// <summary>Builds the route of a Discord role's mapping to a RaidManager role.</summary>
+    /// <param name="userId">The signed-in user.</param>
+    /// <param name="communityId">The community.</param>
+    /// <param name="role">The RaidManager role's name.</param>
+    /// <param name="discordRoleId">The Discord role snowflake.</param>
+    /// <returns>The route.</returns>
+    private static string MappingRoute(Guid userId, Guid communityId, string role, string discordRoleId) =>
+        $"{UserCommunityRoute(userId, communityId)}/role-mappings/{Uri.EscapeDataString(role)}/{Uri.EscapeDataString(discordRoleId)}";
+
+    /// <summary>Reads how the API answered a roles call; an unexpected status throws for the page to show.</summary>
+    /// <param name="response">The response.</param>
+    /// <returns>The outcome.</returns>
+    private static CommunityApiStatus StatusOf(HttpResponseMessage response) => response.StatusCode switch
+    {
+        HttpStatusCode.Forbidden or HttpStatusCode.BadRequest => CommunityApiStatus.Refused,
+        HttpStatusCode.ServiceUnavailable => CommunityApiStatus.DiscordUnavailable,
+        HttpStatusCode.Conflict => CommunityApiStatus.BotRemoved,
+        _ => response.EnsureSuccessStatusCode().IsSuccessStatusCode ? CommunityApiStatus.Succeeded : CommunityApiStatus.Refused,
+    };
+
     /// <summary>Reads one community, treating 404 as none.</summary>
     /// <param name="route">The API route.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>

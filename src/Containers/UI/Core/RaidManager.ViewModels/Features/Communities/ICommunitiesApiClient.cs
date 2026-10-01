@@ -33,5 +33,30 @@ public interface ICommunitiesApiClient
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>The new community's identifier, or <see langword="null"/> when the server was linked in the meantime.</returns>
     Task<Guid?> LinkAsync(PendingCommunityLink link, string realm, CancellationToken cancellationToken);
+
+    /// <summary>Reads a community's officer roles as the signed-in user sees them.</summary>
+    /// <param name="userId">The signed-in user.</param>
+    /// <param name="communityId">The community.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>The roles card, or why it couldn't be read.</returns>
+    Task<CommunityRoleSettingsAnswer> GetRoleSettingsAsync(Guid userId, Guid communityId, CancellationToken cancellationToken);
+
+    /// <summary>Maps a Discord role to Officer or Raid leader.</summary>
+    /// <param name="userId">The signed-in user; only the Administrator may.</param>
+    /// <param name="communityId">The community.</param>
+    /// <param name="discordRoleId">The Discord role snowflake.</param>
+    /// <param name="role">The RaidManager role's name: <c>Officer</c> or <c>RaidLeader</c>.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>How the API answered.</returns>
+    Task<CommunityApiStatus> MapRoleAsync(Guid userId, Guid communityId, string discordRoleId, string role, CancellationToken cancellationToken);
+
+    /// <summary>Stops a Discord role giving one RaidManager role; any other role it gives stays.</summary>
+    /// <param name="userId">The signed-in user; only the Administrator may.</param>
+    /// <param name="communityId">The community.</param>
+    /// <param name="discordRoleId">The Discord role snowflake.</param>
+    /// <param name="role">The RaidManager role's name: <c>Officer</c> or <c>RaidLeader</c>.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>How the API answered.</returns>
+    Task<CommunityApiStatus> UnmapRoleAsync(Guid userId, Guid communityId, string discordRoleId, string role, CancellationToken cancellationToken);
     #endregion Methods
 }

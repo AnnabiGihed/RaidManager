@@ -68,6 +68,43 @@ public sealed class CommunitiesApiClientTests : IDisposable
         await Should.ThrowAsync<HttpRequestException>(() => Client().FindByDiscordServerAsync("987", CancellationToken.None));
         await Should.ThrowAsync<HttpRequestException>(() => Client().LinkAsync(new PendingCommunityLink("987", "x", Guid.NewGuid()), "Icecrown", CancellationToken.None));
     }
+
+    /// <summary>Reads the roles card, and turns each refusal and Discord failure into its outcome.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task RoleCallsTurnStatusesIntoOutcomes()
+    {
+        var user = Guid.Parse("0b5f3d2c-7a1e-4b8f-9c6d-1e2f3a4b5c6d");
+        var community = Guid.Parse("6f1c3f4e-1d3a-4c55-9a8e-0d3c1b2a4f5e");
+        var route = $"/internal/users/{user}/communities/{community}";
+        _api.Answer($"{route}/roles", HttpStatusCode.OK, """{"communityId":"6f1c3f4e-1d3a-4c55-9a8e-0d3c1b2a4f5e","serverName":"Dark Templars","canEdit":true,"mappableRoles":[{"id":"12","name":"Officier"}],"rows":[{"role":"Officer","discordRoles":[{"discordRoleId":"12","name":"Officier","missing":false}],"members":1}]}""")
+            .Answer($"{route}/role-mappings/Officer/12", HttpStatusCode.NoContent);
+        var client = Client();
+
+        var card = await client.GetRoleSettingsAsync(user, community, CancellationToken.None);
+        card.Status.ShouldBe(CommunityApiStatus.Succeeded);
+        card.Settings.ShouldNotBeNull().Rows.ShouldHaveSingleItem().DiscordRoles.ShouldHaveSingleItem().Name.ShouldBe("Officier");
+        (await client.MapRoleAsync(user, community, "12", "Officer", CancellationToken.None)).ShouldBe(CommunityApiStatus.Succeeded);
+        _api.Requests[^1].Request.Method.ShouldBe(HttpMethod.Put);
+        (await client.UnmapRoleAsync(user, community, "12", "Officer", CancellationToken.None)).ShouldBe(CommunityApiStatus.Succeeded);
+        _api.Requests[^1].Request.Method.ShouldBe(HttpMethod.Delete);
+
+        foreach (var (status, outcome) in new[]
+        {
+            (HttpStatusCode.Forbidden, CommunityApiStatus.Refused),
+            (HttpStatusCode.BadRequest, CommunityApiStatus.Refused),
+            (HttpStatusCode.ServiceUnavailable, CommunityApiStatus.DiscordUnavailable),
+            (HttpStatusCode.Conflict, CommunityApiStatus.BotRemoved),
+        })
+        {
+            _api.Answer($"{route}/roles", status);
+            var refused = await client.GetRoleSettingsAsync(user, community, CancellationToken.None);
+            refused.ShouldBe(new CommunityRoleSettingsAnswer(outcome, null));
+        }
+
+        _api.Answer($"{route}/roles", HttpStatusCode.InternalServerError);
+        await Should.ThrowAsync<HttpRequestException>(() => client.GetRoleSettingsAsync(user, community, CancellationToken.None));
+    }
     #endregion Tests
 
     #region Public Methods

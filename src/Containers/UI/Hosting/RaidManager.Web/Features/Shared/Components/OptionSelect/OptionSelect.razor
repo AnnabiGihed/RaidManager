@@ -1,0 +1,8 @@
+@namespace RaidManager.Web.Features.Shared.Components
+@typeparam TValue
+<select class="option-select" aria-label="@Label" @onchange="SelectAsync" @attributes="AdditionalAttributes">
+    @foreach (var (option, index) in Options.Select((option, index) => (option, index)))
+    {
+        <option @key="option.Value" value="@index" selected="@IsSelected(option)">@option.Label</option>
+    }
+</select>

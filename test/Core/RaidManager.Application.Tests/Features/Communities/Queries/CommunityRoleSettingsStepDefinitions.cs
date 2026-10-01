@@ -193,15 +193,18 @@ public sealed class CommunityRoleSettingsStepDefinitions
         _change = await handler.Handle(new MapCommunityRoleCommand(Community.Id.Value, UserNamed(name).Id.Value, RoleId(role), raidManagerRole.ToString()), CancellationToken.None);
     }
 
-    /// <summary>Removes a Discord role's mapping as a user.</summary>
+    /// <summary>Stops a Discord role giving a RaidManager role, as a user.</summary>
     /// <param name="name">The user's name.</param>
+    /// <param name="raidManagerRole">The RaidManager role.</param>
     /// <param name="role">The Discord role name.</param>
     /// <returns>A task that completes when the change has run.</returns>
-    [When("{string} removes the mapping of the Discord role {string}")]
-    public async Task WhenRemovesTheMapping(string name, string role)
+    [When("{string} removes the {CommunityMemberRole} mapping of the Discord role {string}")]
+    public async Task WhenRemovesTheMapping(string name, CommunityMemberRole raidManagerRole, string role)
     {
         var handler = new UnmapCommunityRoleCommandHandler(_communities.Object, _userRepository.Object, _discordMembers.Object, _unitOfWork.Object);
-        _change = await handler.Handle(new UnmapCommunityRoleCommand(Community.Id.Value, UserNamed(name).Id.Value, RoleId(role)), CancellationToken.None);
+        _change = await handler.Handle(
+            new UnmapCommunityRoleCommand(Community.Id.Value, UserNamed(name).Id.Value, RoleId(role), raidManagerRole.ToString()),
+            CancellationToken.None);
     }
 
     /// <summary>Refreshes the community's name from Discord's answer.</summary>
@@ -295,6 +298,14 @@ public sealed class CommunityRoleSettingsStepDefinitions
     [Then("the Discord role {string} gives {CommunityMemberRole}")]
     public void ThenTheDiscordRoleGives(string role, CommunityMemberRole raidManagerRole) =>
         Community.MappedRoleFor([RoleId(role)]).ShouldBe(raidManagerRole);
+
+    /// <summary>Checks that a Discord role gives two RaidManager roles.</summary>
+    /// <param name="role">The Discord role name.</param>
+    /// <param name="first">The first RaidManager role.</param>
+    /// <param name="second">The second RaidManager role.</param>
+    [Then("the Discord role {string} gives {CommunityMemberRole} and {CommunityMemberRole}")]
+    public void ThenTheDiscordRoleGivesBoth(string role, CommunityMemberRole first, CommunityMemberRole second) =>
+        Community.RoleMappings.Where(mapping => mapping.DiscordRoleId == RoleId(role)).Select(mapping => mapping.Role).ShouldBe([first, second], ignoreOrder: true);
 
     /// <summary>Checks that a Discord role gives no RaidManager role.</summary>
     /// <param name="role">The Discord role name.</param>

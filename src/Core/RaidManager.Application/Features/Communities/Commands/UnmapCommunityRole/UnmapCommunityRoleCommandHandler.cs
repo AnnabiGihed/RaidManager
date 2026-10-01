@@ -2,6 +2,7 @@ using Pivot.Framework.Application.Abstractions.Messaging.Commands;
 using Pivot.Framework.Domain.Repositories;
 using Pivot.Framework.Domain.Shared;
 using RaidManager.Application.Features.Communities.Abstractions;
+using RaidManager.Domain.Features.Communities.Enums;
 using RaidManager.Domain.Features.Communities.Errors;
 using RaidManager.Domain.Features.Communities.Repositories;
 using RaidManager.Domain.Features.Identity.Repositories;
@@ -69,12 +70,13 @@ internal sealed class UnmapCommunityRoleCommandHandler : ICommandHandler<UnmapCo
             return access;
         }
 
-        if (community.RoleMappings.All(mapping => mapping.DiscordRoleId != request.DiscordRoleId))
+        var role = Enum.Parse<CommunityMemberRole>(request.Role);
+        if (!community.RoleMappings.Any(mapping => mapping.DiscordRoleId == request.DiscordRoleId && mapping.Role == role))
         {
             return Result.Success();
         }
 
-        community.UnmapDiscordRole(request.DiscordRoleId);
+        community.UnmapDiscordRole(request.DiscordRoleId, role);
         await _communities.UpdateAsync(community, cancellationToken);
         return await _unitOfWork.SaveChangesAsync(cancellationToken);
     }

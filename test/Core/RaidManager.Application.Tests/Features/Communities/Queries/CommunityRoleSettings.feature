@@ -27,6 +27,16 @@ Feature: Community role settings
         | RaidLeader    |               | 0       |
         | Member        |               | 2       |
 
+    Scenario: One Discord role counted on both rows it gives
+      Given the Discord role "Officier" gives RaidLeader
+      When "Gihed" reads the community's roles
+      Then these roles have these members
+        | role          | discord roles | members |
+        | Administrator |               | 1       |
+        | Officer       | Officier      | 1       |
+        | RaidLeader    | Officier      | 1       |
+        | Member        |               | 2       |
+
     Scenario: Another member sees the roles without editing them
       When "Malarya" reads the community's roles
       Then the roles can't be edited
@@ -53,6 +63,11 @@ Feature: Community role settings
       Then the change is saved
       And the Discord role "Veteran" gives RaidLeader
 
+    Scenario: Mapping the Officer role to Raid leader keeps it on Officer
+      When "Gihed" maps the Discord role "Officier" to RaidLeader
+      Then the change is saved
+      And the Discord role "Officier" gives Officer and RaidLeader
+
     Scenario: Another member can't map a role
       When "Malarya" maps the Discord role "Veteran" to RaidLeader
       Then the request is refused because the user is not the Administrator
@@ -64,12 +79,12 @@ Feature: Community role settings
       And nothing is saved
 
     Scenario: The Administrator removes a mapping
-      When "Gihed" removes the mapping of the Discord role "Officier"
+      When "Gihed" removes the Officer mapping of the Discord role "Officier"
       Then the change is saved
       And the Discord role "Officier" gives nothing
 
     Scenario: Removing a role that isn't mapped saves nothing
-      When "Gihed" removes the mapping of the Discord role "Veteran"
+      When "Gihed" removes the Officer mapping of the Discord role "Veteran"
       Then nothing is saved
 
   Rule: Reading the server keeps its name current

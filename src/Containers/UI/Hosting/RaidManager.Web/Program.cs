@@ -18,6 +18,7 @@ builder.Services.AddScoped<CharacterReviewViewModel>();
 builder.Services.AddScoped<OverviewViewModel>();
 builder.Services.AddScoped<ChooseRealmViewModel>();
 builder.Services.AddTransient<CommunityViewModel>();
+builder.Services.AddTransient<CommunityRolesViewModel>();
 builder.Services.AddScoped<ShellCommunityViewModel>();
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddShellNavigation();

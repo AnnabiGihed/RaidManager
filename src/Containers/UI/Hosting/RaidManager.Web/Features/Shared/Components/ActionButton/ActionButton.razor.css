@@ -41,3 +41,12 @@
     background: var(--rm-status-danger);
     color: var(--rm-status-on-danger);
 }
+
+.action-button-host ::deep .rz-button.action-button.action-button-text {
+    height: auto;
+    padding: 0;
+    border: none;
+    background: transparent;
+    color: var(--rm-brand-accent);
+    font-weight: 600;
+}

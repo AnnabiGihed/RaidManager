@@ -25,6 +25,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   owned by another player also sees the page, which says an officer will review them (#255).
 - The API lets the website list a player's character claims awaiting a decision, oldest first, and approve or reject
   one. Approving a character another player owns keeps the claim in conflict review (ADR-0010) (#85, #89, #161).
+- The community page shows its officer roles: each RaidManager role with the Discord roles that give it and how many
+  members have it, read from Discord. The Administrator adds a Discord role to Officer or Raid leader from the
+  server's roles, removes one with its ×, and sees a role deleted in Discord as missing; others see the card read-only.
+  One Discord role can give both Officer and Raid leader, and each row counts the people who get it (#289).
 - The API reads a community's Discord roles and members with the bot, giving each role's Discord roles and member
   count, and lets the Administrator map Discord roles to Officer and Raid leader. Reading the server keeps the stored
   server name current (#300).

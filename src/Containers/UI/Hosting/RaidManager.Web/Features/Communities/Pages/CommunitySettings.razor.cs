@@ -2,6 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using RaidManager.ViewModels.Features.Communities;
 using RaidManager.Web.Features.Authentication;
+using RaidManager.Web.Features.Shared.Components;
 
 namespace RaidManager.Web.Features.Communities.Pages;
 
@@ -9,7 +10,7 @@ namespace RaidManager.Web.Features.Communities.Pages;
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-01<br/>
-/// Purpose: Reached from the sidebar's community card, and right after linking with a confirmation. The officer roles card arrives with #289.
+/// Purpose: Reached from the sidebar's community card, and right after linking with a confirmation. The officer roles card reads the roles from Discord through the API; only the Administrator can change them (boards 4 and 8).
 /// </remarks>
 public sealed partial class CommunitySettings : IDisposable
 {
@@ -34,6 +35,10 @@ public sealed partial class CommunitySettings : IDisposable
     /// <summary>Gets or sets the view model.</summary>
     [Inject]
     private CommunityViewModel ViewModel { get; set; } = default!;
+
+    /// <summary>Gets or sets the view model of the officer roles card.</summary>
+    [Inject]
+    private CommunityRolesViewModel Roles { get; set; } = default!;
     #endregion Properties
 
     #region Public Methods
@@ -57,6 +62,21 @@ public sealed partial class CommunitySettings : IDisposable
     #endregion Overrides
 
     #region Private Helpers
+    /// <summary>Gives a chip's tone: a role deleted in Discord stands out.</summary>
+    /// <param name="chip">The chip.</param>
+    /// <returns>The tone.</returns>
+    private static TagChipTone ChipTone(RoleChipView chip) => chip.Missing ? TagChipTone.Danger : TagChipTone.Info;
+
+    /// <summary>Says what a chip's × does.</summary>
+    /// <param name="chip">The chip.</param>
+    /// <returns>The label, such as "Remove @Officier".</returns>
+    private static string RemoveLabel(RoleChipView chip) => $"Remove {chip.Text}";
+
+    /// <summary>Names a row's picker for screen readers.</summary>
+    /// <param name="row">The row.</param>
+    /// <returns>The label, such as "Discord role for Officer".</returns>
+    private static string PickerLabel(RoleRowView row) => $"Discord role for {row.Label}";
+
     /// <summary>Reads the signed-in user from the session.</summary>
     /// <returns>The user's id and display name, or <see langword="null"/> when the session has no user id.</returns>
     private async Task<(Guid Id, string? Name)?> SignedInUserAsync()
@@ -84,6 +104,38 @@ public sealed partial class CommunitySettings : IDisposable
         }
 
         StateHasChanged();
+        await LoadRolesAsync();
     }
+
+    /// <summary>Loads the officer roles card from Discord through the API.</summary>
+    /// <returns>A task that completes when the card is loaded.</returns>
+    private async Task LoadRolesAsync()
+    {
+        if (ViewModel.Community is { } community && await SignedInUserAsync() is { } user)
+        {
+            await Roles.LoadAsync(user.Id, community.CommunityId, _lifetime.Token);
+            StateHasChanged();
+        }
+    }
+
+    /// <summary>Gives the options of a row's picker: the mappable roles not already on it, written with "@".</summary>
+    /// <param name="role">The row's RaidManager role.</param>
+    /// <returns>The options.</returns>
+    private IReadOnlyList<ChoiceOption<string>> PickerOptions(string role) =>
+        [.. Roles.PickerOptions(role).Select(option => new ChoiceOption<string>(option.Id, $"@{option.Name}"))];
+
+    /// <summary>Records the Discord role chosen in the picker.</summary>
+    /// <param name="discordRoleId">The Discord role snowflake.</param>
+    private void PickRole(string discordRoleId) => Roles.PickedRoleId = discordRoleId;
+
+    /// <summary>Maps the picked Discord role.</summary>
+    /// <returns>A task that completes when the change was tried.</returns>
+    private Task AddAsync() => Roles.AddPickedAsync(_lifetime.Token);
+
+    /// <summary>Stops a Discord role giving a row's RaidManager role.</summary>
+    /// <param name="discordRoleId">The Discord role snowflake.</param>
+    /// <param name="role">The row's RaidManager role.</param>
+    /// <returns>A task that completes when the change was tried.</returns>
+    private Task RemoveAsync(string discordRoleId, string role) => Roles.RemoveAsync(discordRoleId, role, _lifetime.Token);
     #endregion Private Helpers
 }

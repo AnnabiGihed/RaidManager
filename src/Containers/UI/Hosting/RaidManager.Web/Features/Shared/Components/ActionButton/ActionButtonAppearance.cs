@@ -4,7 +4,7 @@ namespace RaidManager.Web.Features.Shared.Components;
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-01<br/>
-/// Purpose: The three button styles of ADR-0019: the teal primary action, the raised secondary action, and danger.
+/// Purpose: The button styles of ADR-0019: the teal primary action, the raised secondary action, danger, and an inline text action.
 /// </remarks>
 public enum ActionButtonAppearance
 {
@@ -16,4 +16,7 @@ public enum ActionButtonAppearance
 
     /// <summary>A destructive action: red with dark text.</summary>
     Danger,
+
+    /// <summary>An inline action shown as teal text, such as "+ Add Discord role".</summary>
+    Text,
 }

@@ -16,7 +16,7 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Tests.Features.Communities
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-01<br/>
-/// Purpose: Proves the mapping round-trips, a remapped or removed role replaces its row, and one Discord server links once.
+/// Purpose: Proves the mapping round-trips, one Discord role keeps several RaidManager roles, a removed mapping's row goes, and one Discord server links once.
 /// </remarks>
 [Collection(SqlServerTestGroup.Name)]
 public sealed class CommunityPersistenceTests
@@ -64,10 +64,10 @@ public sealed class CommunityPersistenceTests
         eventTypes.ShouldContain(type => type != null && type.Contains(".CommunityCreated,", StringComparison.Ordinal));
     }
 
-    /// <summary>Remaps one Discord role and removes another on a saved community.</summary>
+    /// <summary>Gives one Discord role a second RaidManager role and removes another mapping on a saved community.</summary>
     /// <returns>A task that completes when the test has run.</returns>
     [Fact]
-    public async Task RemappedAndRemovedRolesReplaceTheirRows()
+    public async Task ADiscordRoleKeepsBothRolesAndARemovedMappingGoes()
     {
         var community = Community.Link(NewGuildId(), "Frozen Throne", WarmaneRealm.Icecrown, new UserId(Guid.NewGuid()));
         community.MapDiscordRole("2001", CommunityMemberRole.Officer);
@@ -78,19 +78,18 @@ public sealed class CommunityPersistenceTests
         {
             var editable = (await editScope.ServiceProvider.GetRequiredService<ICommunityRepository>().FindByIdAsync(community.Id)).ShouldNotBeNull();
             editable.MapDiscordRole("2001", CommunityMemberRole.RaidLeader);
-            editable.UnmapDiscordRole("2002");
+            editable.UnmapDiscordRole("2002", CommunityMemberRole.Officer);
             var saved = await editScope.ServiceProvider.GetRequiredService<DomainUnitOfWork>().SaveChangesAsync();
             saved.IsSuccess.ShouldBeTrue(saved.IsFailure ? saved.Error.Message : null);
         }
 
         await using var scope = _database.Services.CreateAsyncScope();
         var reloaded = (await scope.ServiceProvider.GetRequiredService<ICommunityRepository>().FindByIdAsync(community.Id)).ShouldNotBeNull();
-        var mapping = reloaded.RoleMappings.ShouldHaveSingleItem();
-        mapping.DiscordRoleId.ShouldBe("2001");
-        mapping.Role.ShouldBe(CommunityMemberRole.RaidLeader);
+        reloaded.RoleMappings.Select(mapping => (mapping.DiscordRoleId, mapping.Role)).OrderBy(mapping => mapping.Role)
+            .ShouldBe([("2001", CommunityMemberRole.RaidLeader), ("2001", CommunityMemberRole.Officer)]);
         var rows = await scope.ServiceProvider.GetRequiredService<RaidManagerDbContext>().Database
             .SqlQuery<int>($"SELECT COUNT(*) AS Value FROM CommunityRoleMappings WHERE CommunityId = {community.Id.Value}").SingleAsync();
-        rows.ShouldBe(1);
+        rows.ShouldBe(2);
     }
 
     /// <summary>Refuses to link a Discord server that another community already links.</summary>

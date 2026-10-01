@@ -22,6 +22,15 @@ internal sealed class FakeCommunitiesApi : ICommunitiesApiClient
 
     /// <summary>Gets the links asked for, with their realm.</summary>
     public List<(PendingCommunityLink Link, string Realm)> Links { get; } = [];
+
+    /// <summary>Gets the roles cards by community.</summary>
+    public Dictionary<Guid, CommunityRoleSettings> RoleSettings { get; } = [];
+
+    /// <summary>Gets or sets how the API answers every roles call; <see cref="CommunityApiStatus.Succeeded"/> by default.</summary>
+    public CommunityApiStatus RoleStatus { get; set; } = CommunityApiStatus.Succeeded;
+
+    /// <summary>Gets the role changes asked for: the Discord role, the RaidManager role, and whether it was added or removed.</summary>
+    public List<(string DiscordRoleId, string Role, bool Added)> RoleChanges { get; } = [];
     #endregion Properties
 
     #region Public Methods
@@ -31,6 +40,22 @@ internal sealed class FakeCommunitiesApi : ICommunitiesApiClient
     /// <returns>The community.</returns>
     public static CommunitySummary Community(Guid administratorId, string guildId = "987") =>
         new(Guid.NewGuid(), guildId, "Dark Templars", "Icecrown", administratorId, "Gihed Annabi");
+
+    /// <summary>Creates a roles card with Guild Master and Officier mappable, Officier mapped to Officer.</summary>
+    /// <param name="communityId">The community.</param>
+    /// <param name="canEdit">Whether the user is the Administrator.</param>
+    /// <returns>The roles card.</returns>
+    public static CommunityRoleSettings Card(Guid communityId, bool canEdit) => new(
+        communityId,
+        "Dark Templars",
+        canEdit,
+        [new DiscordRoleOption("11", "Guild Master"), new DiscordRoleOption("12", "Officier"), new DiscordRoleOption("13", "Veteran")],
+        [
+            new CommunityRoleRow("Administrator", [], 1),
+            new CommunityRoleRow("Officer", [new MappedDiscordRole("12", "Officier", false)], 1),
+            new CommunityRoleRow("RaidLeader", [new MappedDiscordRole("99", null, true)], 0),
+            new CommunityRoleRow("Member", [], 2),
+        ]);
 
     /// <inheritdoc />
     public Task<IReadOnlyList<CommunitySummary>> GetUserCommunitiesAsync(Guid userId, CancellationToken cancellationToken) =>
@@ -61,6 +86,26 @@ internal sealed class FakeCommunitiesApi : ICommunitiesApiClient
         var community = new CommunitySummary(Guid.NewGuid(), link.DiscordGuildId, link.ServerName, realm, link.UserId, "Gihed Annabi");
         Communities.Add(community);
         return Task.FromResult<Guid?>(community.CommunityId);
+    }
+
+    /// <inheritdoc />
+    public Task<CommunityRoleSettingsAnswer> GetRoleSettingsAsync(Guid userId, Guid communityId, CancellationToken cancellationToken) =>
+        Failure is not null ? throw Failure : Task.FromResult(RoleStatus == CommunityApiStatus.Succeeded
+            ? new CommunityRoleSettingsAnswer(RoleStatus, RoleSettings[communityId])
+            : new CommunityRoleSettingsAnswer(RoleStatus, null));
+
+    /// <inheritdoc />
+    public Task<CommunityApiStatus> MapRoleAsync(Guid userId, Guid communityId, string discordRoleId, string role, CancellationToken cancellationToken)
+    {
+        RoleChanges.Add((discordRoleId, role, true));
+        return Task.FromResult(RoleStatus);
+    }
+
+    /// <inheritdoc />
+    public Task<CommunityApiStatus> UnmapRoleAsync(Guid userId, Guid communityId, string discordRoleId, string role, CancellationToken cancellationToken)
+    {
+        RoleChanges.Add((discordRoleId, role, false));
+        return Task.FromResult(RoleStatus);
     }
     #endregion Public Methods
 

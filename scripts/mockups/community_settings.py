@@ -12,6 +12,9 @@ by adding the RaidManager bot from the website, and Discord roles map to RaidMan
 6. A raid change refused because the member's Discord officer role was removed; the raid and its history stay.
 7. Board 1 after adding the bot didn't finish: the reason, such as a cancel on Discord's page, above the steps (#288).
 
+8. The Administrator changing the officer roles: a Discord role picked for Officer, each mapping with a × to remove it,
+   a mapped role deleted in Discord shown as missing, and the confirmation after saving (#289).
+
 Boards 2 and 3 aren't sidebar entries, so no navigation entry is highlighted there, as in the website's shell.
 
 Run from the repository root: python scripts/mockups/community_settings.py
@@ -45,6 +48,7 @@ OFFICER_ROLE, RAID_LEAD_ROLE, RAID_LEADER = "@Officer", "@Raid Lead", "Raid lead
 
 NO_COMMUNITY = "1 · No community yet"
 NOT_FINISHED = "7 · Adding RaidManager didn't finish"
+MAPPING = "8 · Changing the officer roles"
 CHOOSE_REALM = "2 · Choose the realm"
 ALREADY_LINKED = "3 · Server already linked"
 SETTINGS = "4 · Community settings"
@@ -157,6 +161,20 @@ def role_row(y: float, role: str, discord_roles: list[str], members: int, x: flo
     return Group(f"{role} row", items)
 
 
+def community_summary_card(top: float, width: float) -> Group:
+    """The community page's left card: the Discord server, the realm and the Administrator (boards 4 and 8)."""
+    return Group("Community card", [
+        *card(CONTENT_X, top, width, 264),
+        *section_title("Heading", CONTENT_X + 24, top + 40, "Community"),
+        text("Server label", CONTENT_X + 24, top + 80, "DISCORD SERVER", 11, 700, MUTED, None, "left", 1.2),
+        text("Server", CONTENT_X + 24, top + 102, SERVER, 14),
+        text("Realm label", CONTENT_X + 24, top + 142, "WARMANE REALM", 11, 700, MUTED, None, "left", 1.2),
+        text("Realm", CONTENT_X + 24, top + 164, REALMS[0], 14),
+        text("Owner label", CONTENT_X + 24, top + 204, "ADMINISTRATOR", 11, 700, MUTED, None, "left", 1.2),
+        text("Owner", CONTENT_X + 24, top + 226, OWNER, 14),
+    ])
+
+
 def settings() -> list[Item]:
     top = CONTENT_TOP + 120
     left_w, right_x = 400, CONTENT_X + 416
@@ -166,16 +184,7 @@ def settings() -> list[Item]:
             (RAID_LEADER, [RAID_LEAD_ROLE], 2), ("Member", ["Everyone in the Discord server"], 38)]
     return [
         page_header("Community", SERVER, f"Discord server linked to RaidManager on {REALMS[0]}."),
-        Group("Community card", [
-            *card(CONTENT_X, top, left_w, 264),
-            *section_title("Heading", CONTENT_X + 24, top + 40, "Community"),
-            text("Server label", CONTENT_X + 24, top + 80, "DISCORD SERVER", 11, 700, MUTED, None, "left", 1.2),
-            text("Server", CONTENT_X + 24, top + 102, SERVER, 14),
-            text("Realm label", CONTENT_X + 24, top + 142, "WARMANE REALM", 11, 700, MUTED, None, "left", 1.2),
-            text("Realm", CONTENT_X + 24, top + 164, REALMS[0], 14),
-            text("Owner label", CONTENT_X + 24, top + 204, "ADMINISTRATOR", 11, 700, MUTED, None, "left", 1.2),
-            text("Owner", CONTENT_X + 24, top + 226, OWNER, 14),
-        ]),
+        community_summary_card(top, left_w),
         Group("Roles card", [
             *card(right_x, top, right_w, 432),
             *section_title("Heading", right_x + 24, top + 40, "Officer roles",
@@ -189,6 +198,56 @@ def settings() -> list[Item]:
             *card(toast_x, 80, 380, 72, ACCENT),
             text("Title", toast_x + 24, 111, f"{SERVER} is linked", 14, 600),
             text("Message", toast_x + 24, 133, "Members see it at their next sign-in.", 13, 400, SECONDARY),
+        ]),
+    ]
+
+
+def mapping_roles() -> list[Item]:
+    """Board 4 while the Administrator changes the roles: chips with ×, the role picker open, a deleted role, the confirmation."""
+    top = CONTENT_TOP + 120
+    left_w, right_x = 400, CONTENT_X + 416
+    right_w = CONTENT_W - 416
+    toast_x = BOARD_W - 40 - 380
+    chip_x = right_x + 184
+
+    def row_frame(y: float, role: str, members: int) -> list[Item]:
+        return [Rect("Divider", right_x, y, right_w, 1, DIVIDER), text("Role", right_x + 24, y + 34, role, 14, 600),
+                text("Members", right_x + right_w - 104, y + 34, f"{members} member" + ("" if members == 1 else "s"),
+                     13, 400, SECONDARY, 80, "right")]
+
+    officer_y, leader_y, member_y = top + 152, top + 264, top + 328
+    picker_y = officer_y + 56
+    return [
+        page_header("Community", SERVER, f"Discord server linked to RaidManager on {REALMS[0]}."),
+        community_summary_card(top, left_w),
+        Group("Roles card", [
+            *card(right_x, top, right_w, 416),
+            *section_title("Heading", right_x + 24, top + 40, "Officer roles",
+                           "Discord roles that give RaidManager permissions. Members get them at the next check."),
+            Group("Administrator row", [*row_frame(top + 88, "Administrator", 1),
+                                        text("Source", chip_x, top + 122, "Added RaidManager to the server", 13, 400, SECONDARY)]),
+            Group("Officer row", [
+                *row_frame(officer_y, "Officer", 3),
+                badge("Discord role 1", chip_x, officer_y + 16, f"{OFFICER_ROLE}  ×", "info"),
+                Rect("Picker", chip_x, picker_y, 220, 36, P["Surface/raised"], 1, 8, DIVIDER),
+                text("Picker value", chip_x + 12, picker_y + 23, "@Veteran", 13, 400),
+                text("Picker arrow", chip_x + 196, picker_y + 23, "▾", 13, 700, SECONDARY, None, "left", 0, icon=True),
+                button("Add button", chip_x + 232, picker_y - 2, "Add", "primary", 64),
+                button("Cancel picker button", chip_x + 304, picker_y - 2, "Cancel", "secondary", 80),
+            ]),
+            Group("Raid leader row", [
+                *row_frame(leader_y, RAID_LEADER, 2),
+                badge("Discord role 1", chip_x, leader_y + 16, f"{RAID_LEAD_ROLE}  ×", "info"),
+                badge("Deleted role", chip_x + 124, leader_y + 16, "Deleted role  ×", "danger"),
+                text("Add role", chip_x + 268, leader_y + 33, "+ Add Discord role", 13, 600, ACCENT),
+            ]),
+            Group("Member row", [*row_frame(member_y, "Member", 38),
+                                 text("Source", chip_x, member_y + 34, "Everyone in the Discord server", 13, 400, SECONDARY)]),
+        ]),
+        Group("Saved notification", [
+            *card(toast_x, 80, 380, 72, ACCENT),
+            text("Title", toast_x + 24, 111, "Officer roles saved", 14, 600),
+            text("Message", toast_x + 24, 133, "Members get them at their next check.", 13, 400, SECONDARY),
         ]),
     ]
 
@@ -252,6 +311,7 @@ def boards() -> list[Board]:
         app_screen(NOT_FINISHED, 0, 2 * row, "Overview",
                    no_community(("RaidManager wasn't added", "You cancelled on Discord's page. Nothing was linked.")),
                    community=None, user=NEWCOMER),
+        app_screen(MAPPING, column, 2 * row, SECTION, mapping_roles(), user=ADMINISTRATOR),
     ]
 
 
