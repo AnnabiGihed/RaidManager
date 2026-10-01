@@ -218,8 +218,9 @@ values must not be relied on.
 ## 6. Roster import and invitations
 
 - The addon cannot receive data from the companion while the game runs, and writing SavedVariables while the client
-  is open is overwritten on logout. The import path (pasted text in an edit box versus a file prepared while the game
-  is closed) is an ADR decision — ask if none exists.
+  is open is overwritten on logout. The roster arrives as a pasted text code (ADR-0021): the website shows a versioned
+  code for the published roster, and `/raidmanager import` opens an edit box to paste it. The addon refuses a code for
+  an older published version, and the code never contains locked or unapproved characters.
 - Treat imported text as untrusted: a version prefix, strict parsing, length limits, and a clear error for any row it
   cannot parse. Never execute imported text (`loadstring` is forbidden).
 - The roster view shows who is selected, benched and already in the group. Invitations happen only on a click.

@@ -14,7 +14,7 @@ from penpot_components import (  # noqa: E402
     DISCORD_BUTTONS, DISCORD_PALETTE, DISCORD_W, DISCORD_WHITE, discord_button, discord_embed, discord_message,
     discord_screen,
     AVATAR_TONES, BADGE_TONES, BOARD_H, BOARD_W, BUTTON_STYLES, NOTICE_TONES, OFFICER_PAGES, PLAYER, PLAYER_PAGES,
-    PUBLIC_W, PUBLIC_X, WINDOW_H, WINDOW_W, app_screen, checkbox, companion_window, form_field, badge, button, notice, page_header, public_screen,
+    ADDON_H, ADDON_W, PUBLIC_W, PUBLIC_X, WINDOW_H, WINDOW_W, addon_frame, app_screen, checkbox, companion_window, form_field, badge, button, notice, page_header, public_screen,
 )
 from penpot_render import is_current, render  # noqa: E402
 from penpot_scene import (  # noqa: E402
@@ -355,6 +355,14 @@ class ComponentTests(unittest.TestCase):
         self.assertEqual(board.w, DISCORD_W)
         self.assertIn("Channel header", layer_names(board.children))
         write_penpot(self.path, "discord", "Discord", [board], palette={**HOUSE_PALETTE, **DISCORD_PALETTE})
+
+    def test_addon_frames_have_a_title_and_close_mark_but_no_website_shell(self) -> None:
+        board = addon_frame("1 · Roster", 0, 0, "RaidManager", [text("Line", 16, 70, "Group 1", 13, 700)])
+        self.assertEqual((board.w, board.h), (ADDON_W, ADDON_H))
+        names = layer_names(board.children)
+        self.assertIn("Close", names)
+        self.assertNotIn("Sidebar", names)
+        write_penpot(self.path, "addon", "Addon", [board])
 
     def test_signed_out_pages_have_the_logo_but_no_shell(self) -> None:
         board = public_screen("1 · Signed out", 0, 0, [text("Title", PUBLIC_X, 240, "Sign in", 18, 700)])
