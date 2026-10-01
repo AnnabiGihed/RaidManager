@@ -161,6 +161,20 @@ def role_row(y: float, role: str, discord_roles: list[str], members: int, x: flo
     return Group(f"{role} row", items)
 
 
+def community_summary_card(top: float, width: float) -> Group:
+    """The community page's left card: the Discord server, the realm and the Administrator (boards 4 and 8)."""
+    return Group("Community card", [
+        *card(CONTENT_X, top, width, 264),
+        *section_title("Heading", CONTENT_X + 24, top + 40, "Community"),
+        text("Server label", CONTENT_X + 24, top + 80, "DISCORD SERVER", 11, 700, MUTED, None, "left", 1.2),
+        text("Server", CONTENT_X + 24, top + 102, SERVER, 14),
+        text("Realm label", CONTENT_X + 24, top + 142, "WARMANE REALM", 11, 700, MUTED, None, "left", 1.2),
+        text("Realm", CONTENT_X + 24, top + 164, REALMS[0], 14),
+        text("Owner label", CONTENT_X + 24, top + 204, "ADMINISTRATOR", 11, 700, MUTED, None, "left", 1.2),
+        text("Owner", CONTENT_X + 24, top + 226, OWNER, 14),
+    ])
+
+
 def settings() -> list[Item]:
     top = CONTENT_TOP + 120
     left_w, right_x = 400, CONTENT_X + 416
@@ -170,16 +184,7 @@ def settings() -> list[Item]:
             (RAID_LEADER, [RAID_LEAD_ROLE], 2), ("Member", ["Everyone in the Discord server"], 38)]
     return [
         page_header("Community", SERVER, f"Discord server linked to RaidManager on {REALMS[0]}."),
-        Group("Community card", [
-            *card(CONTENT_X, top, left_w, 264),
-            *section_title("Heading", CONTENT_X + 24, top + 40, "Community"),
-            text("Server label", CONTENT_X + 24, top + 80, "DISCORD SERVER", 11, 700, MUTED, None, "left", 1.2),
-            text("Server", CONTENT_X + 24, top + 102, SERVER, 14),
-            text("Realm label", CONTENT_X + 24, top + 142, "WARMANE REALM", 11, 700, MUTED, None, "left", 1.2),
-            text("Realm", CONTENT_X + 24, top + 164, REALMS[0], 14),
-            text("Owner label", CONTENT_X + 24, top + 204, "ADMINISTRATOR", 11, 700, MUTED, None, "left", 1.2),
-            text("Owner", CONTENT_X + 24, top + 226, OWNER, 14),
-        ]),
+        community_summary_card(top, left_w),
         Group("Roles card", [
             *card(right_x, top, right_w, 432),
             *section_title("Heading", right_x + 24, top + 40, "Officer roles",
@@ -214,16 +219,7 @@ def mapping_roles() -> list[Item]:
     picker_y = officer_y + 56
     return [
         page_header("Community", SERVER, f"Discord server linked to RaidManager on {REALMS[0]}."),
-        Group("Community card", [
-            *card(CONTENT_X, top, left_w, 264),
-            *section_title("Heading", CONTENT_X + 24, top + 40, "Community"),
-            text("Server label", CONTENT_X + 24, top + 80, "DISCORD SERVER", 11, 700, MUTED, None, "left", 1.2),
-            text("Server", CONTENT_X + 24, top + 102, SERVER, 14),
-            text("Realm label", CONTENT_X + 24, top + 142, "WARMANE REALM", 11, 700, MUTED, None, "left", 1.2),
-            text("Realm", CONTENT_X + 24, top + 164, REALMS[0], 14),
-            text("Owner label", CONTENT_X + 24, top + 204, "ADMINISTRATOR", 11, 700, MUTED, None, "left", 1.2),
-            text("Owner", CONTENT_X + 24, top + 226, OWNER, 14),
-        ]),
+        community_summary_card(top, left_w),
         Group("Roles card", [
             *card(right_x, top, right_w, 416),
             *section_title("Heading", right_x + 24, top + 40, "Officer roles",
