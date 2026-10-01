@@ -1,0 +1,13 @@
+.icon-tile {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    border: 1px solid var(--rm-line-divider);
+    border-radius: var(--rm-radius-control);
+    background: var(--rm-surface-raised);
+    color: var(--rm-text-secondary);
+    font-weight: 800;
+}

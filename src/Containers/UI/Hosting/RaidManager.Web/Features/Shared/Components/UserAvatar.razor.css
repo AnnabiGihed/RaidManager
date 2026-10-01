@@ -8,8 +8,8 @@
     display: inline-flex;
     align-items: center;
     justify-content: center;
-    background: #604C80;
-    color: #F2E8FF;
+    background: var(--rm-avatar-background);
+    color: var(--rm-avatar-text);
     font-size: 12px;
     font-weight: 800;
 }

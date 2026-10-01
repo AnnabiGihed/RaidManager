@@ -50,6 +50,9 @@ Its text is set in Segoe UI, which isn't a free font and isn't available in Penp
 - **The shell comes first** (owner decision, 2026-10-01): the main layout gets the dark shell before the rest of the
   re-theme, so pages are reachable. The sidebar lists only pages that exist, and each page's pull request adds its
   entry. Page contents keep the Radzen theme until the re-theme.
+- **On the website** (owner decision, 2026-10-01): the palette and Radzen overrides live only in the project-wide
+  theme `wwwroot/theme/raidmanager-theme.css`, as `--rm-*` tokens and the `.rm-theme-dark` class, and the shell's
+  parts are standalone, generic components that pages reuse (#268).
 - This decision amends [ADR-0018](0018-generate-penpot-mockups-in-the-repository.md): generated mockups use this
   design system instead of the Radzen material look.
 

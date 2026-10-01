@@ -51,8 +51,9 @@ public sealed class MainLayoutTests : BunitContext
 
         var layout = RenderLayout();
 
-        layout.Find("[data-testid=signed-in-name]").TextContent.ShouldBe("Arthas Menethil");
-        layout.Find("[data-testid=user-card]").TextContent.ShouldContain("Player");
+        var userCard = layout.Find("[data-testid=user-card]");
+        userCard.QuerySelector(".summary-tile-title").ShouldNotBeNull().TextContent.ShouldBe("Arthas Menethil");
+        userCard.TextContent.ShouldContain("Player");
         layout.Find("[data-testid=community-card]").TextContent.ShouldContain("No community yet");
         layout.Find("form[action='/sign-out']").ShouldNotBeNull();
         layout.FindAll(".user-avatar-initials").Select(avatar => avatar.TextContent).ShouldAllBe(initials => initials == "AM");
@@ -95,7 +96,7 @@ public sealed class MainLayoutTests : BunitContext
 
         var layout = RenderLayout();
 
-        layout.Find(".shell-breadcrumb").TextContent.Trim().ShouldBe("RaidManager");
+        layout.Find(".breadcrumb").TextContent.Trim().ShouldBe("RaidManager");
     }
 
     /// <summary>Shows the Discord avatar when the session has one.</summary>

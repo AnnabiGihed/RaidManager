@@ -1,0 +1,10 @@
+<div class="@CssClass" @attributes="AdditionalAttributes">
+    @Leading
+    <span class="summary-tile-text">
+        <span class="summary-tile-title">@Title</span>
+        @if (!string.IsNullOrWhiteSpace(Subtitle))
+        {
+            <span class="summary-tile-subtitle">@Subtitle</span>
+        }
+    </span>
+</div>

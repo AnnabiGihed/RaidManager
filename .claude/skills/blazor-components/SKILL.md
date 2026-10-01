@@ -44,6 +44,22 @@ These govern the UI layer as a whole, not a single component. Every one of them 
 - **Every page is reachable.** A page players look for gets its entry in the app shell's navigation in the same PR. A
   flow page that isn't in the navigation (a sign-in failure page, a page sign-in redirects to) says in its code-behind
   summary and in the PR where it is reached from.
+- **A specific look or behavior is a standalone, generic component first — mandatory.** When a page or layout
+  needs something specific (a restyled Radzen component, a repeated visual block such as an icon-and-text tile, a
+  custom interaction), create it as its own component before using it: in `Features/Shared/Components/`, or in
+  `Features/<Feature>/Components/` only when no other feature could ever use it. Make it generic, so it serves the
+  case at hand and every similar one: content comes in through parameters (text, items, `RenderFragment` slots),
+  variants through an enum parameter rather than a copy, behavior through `EventCallback`, extra attributes through
+  `CaptureUnmatchedValues`; no data loading, no page-specific wording and no page names baked in. Never restyle a
+  Radzen component from a page's or layout's stylesheet: wrap it in a component. A layout or page then only composes
+  components. Every such component gets its own bUnit tests in the same PR.
+- **One project-wide theme — mandatory.** Colors, the font, radii and every Radzen variable override live in one
+  theme under `{Solution}.Web/wwwroot/theme/` (RaidManager: `wwwroot/theme/raidmanager-theme.css`), linked once in
+  `App.razor` after the Radzen theme: design tokens as `--rm-*` custom properties on `:root`, and a named theme class
+  (`.rm-theme-dark`) for each region that uses another palette, which also sets the Radzen variables for that region.
+  Component, layout and page stylesheets use only the tokens and the theme classes; they never declare a color value
+  (hex, `rgb()`, `hsl()`) or a `--rz-*` variable. A new theme or palette is a new class or file in that folder, never
+  styles in a page. `ThemeRulesTests` in the Web test project fails the build on a violation.
 - **C# is always separated from markup — code-behind is mandatory.** Every component and page is a pair: `Component.razor` containing markup and directives only, and `Component.razor.cs` containing a `partial class Component` with ALL the C# — fields, parameters, lifecycle methods, handlers, disposal. `@code` blocks in `.razor` files are **forbidden**, including one-liners; injected services use `[Inject]` properties in the code-behind rather than `@inject` directives when the value is used from C#. A `.razor` file is markup; if it contains a brace of C# logic, it's a defect.
 - **View models own the logic; code-behinds stay thin.** Loading, state, filtering, and command logic live in the `{Solution}.ViewModels` project as injectable classes, unit-testable without a browser. The `.razor.cs` code-behind is wiring only: parameter plumbing, delegating to the view model, lifecycle calls. A ViewModels project containing one form model while code-behinds carry the real logic is the smell to catch.
 - **No `CancellationToken.None` from components.** Every async call a component initiates passes a token tied to the component's lifetime: own a `CancellationTokenSource`, pass its token, cancel and dispose it in `Dispose`. Otherwise navigation away leaves orphaned work running against a dead circuit.
@@ -187,6 +203,7 @@ These govern the UI layer as a whole, not a single component. Every one of them 
 - The chosen render mode is actually applied and verified (no registered-but-unused interactivity), and recorded in an ADR.
 - Every component is a `.razor` (markup only) + `.razor.cs` pair — zero `@code` blocks anywhere; logic lives in view models with wiring-only code-behinds; no `IHttpContextAccessor` on circuit-reachable paths; no `CancellationToken.None` from components; `ErrorBoundary` wraps page content; shared `@using` in `_Imports.razor`.
 - The mirrored bUnit/view-model test projects exist and cover the delivered behavior in the same PR.
+- Specific looks and behaviors are standalone, generic components with their own bUnit tests; pages and layouts only compose them. Colors, fonts and Radzen overrides come only from the project-wide theme in `wwwroot/theme/`.
 - Pages live in `Features/<Feature>/Pages/`, the layout and shared components in `Features/Shared/`, with tests mirroring them; every page is reachable from the navigation or from the flow the PR names.
 - The screen matches its approved mockup (every state it shows), and the PR shows that mockup.
 - UI uses Radzen components, layout (`RadzenStack`/`RadzenRow`/`RadzenColumn`) and one theme only — no Bootstrap CSS/JS or classes, no DIFA or other component libraries; `AddRadzenComponents()`, theme, script and `<RadzenComponents />` are wired once; lists use server-side `RadzenDataGrid` `LoadData`.

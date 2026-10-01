@@ -1,0 +1,33 @@
+.summary-tile {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.summary-tile-card {
+    padding: 12px;
+    border: 1px solid var(--rm-line-card-border);
+    border-radius: var(--rm-radius-card);
+    background: var(--rm-surface-card);
+}
+
+.summary-tile-text {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.summary-tile-title {
+    overflow: hidden;
+    color: var(--rm-text-primary);
+    font-size: 14px;
+    font-weight: 600;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.summary-tile-subtitle {
+    color: var(--rm-text-muted);
+    font-size: 12px;
+}
