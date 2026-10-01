@@ -111,9 +111,9 @@ parameter that has no value yet.
 The API asks Discord for each member's roles with the bot's token
 ([ADR-0022](docs/adr/0022-check-discord-roles-at-action-time.md)):
 
-1. In the Discord Developer Portal, open the same application, then **Bot**. Turn on **Server Members Intent**, and
-   use **Reset Token** to copy a token.
-2. From the repository root, store it:
+1. Set up the bot as [Set up the Discord application and bot](docs/how-to/set-up-discord.md) describes, which also
+   checks the setup against Discord.
+2. From the repository root, store its token:
 
    ```bash
    dotnet user-secrets set "Parameters:discord-bot-token" "<bot-token>" --project src/Containers/Aspire/Hosting/RaidManager.AppHost

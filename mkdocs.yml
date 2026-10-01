@@ -15,6 +15,7 @@ nav:
   - Diagram maintenance: how-to/diagrams.md
   - Review a pull request: how-to/review-a-pull-request.md
   - Design a screen: how-to/design-a-screen.md
+  - Set up Discord: how-to/set-up-discord.md
   - Glossary: glossary.md
   - API contracts: reference/api-contracts.md
   - Project automation: reference/project-automation.md
