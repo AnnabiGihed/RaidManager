@@ -2,8 +2,12 @@ using MediatR;
 using RaidManager.ApiService.Features.Shared.Authentication;
 using RaidManager.ApiService.Features.Shared.Http;
 using RaidManager.Application.Features.Communities.Commands.LinkCommunity;
+using RaidManager.Application.Features.Communities.Commands.MapCommunityRole;
+using RaidManager.Application.Features.Communities.Commands.RefreshCommunityName;
+using RaidManager.Application.Features.Communities.Commands.UnmapCommunityRole;
 using RaidManager.Application.Features.Communities.Queries.GetCommunity;
 using RaidManager.Application.Features.Communities.Queries.GetCommunityByDiscordServer;
+using RaidManager.Application.Features.Communities.Queries.GetCommunityRoleSettings;
 using RaidManager.Application.Features.Communities.Queries.GetUserCommunities;
 
 namespace RaidManager.ApiService.Features.Communities;
@@ -22,6 +26,9 @@ public static class CommunityEndpoints
 
     /// <summary>Defines the route of a user's communities.</summary>
     public const string UserCommunitiesRoute = "/internal/users/{userId:guid}/communities";
+
+    /// <summary>Defines the route of a user's view of one community.</summary>
+    public const string UserCommunityRoute = "/internal/users/{userId:guid}/communities/{communityId:guid}";
 
     /// <summary>Defines the OpenAPI tag of these endpoints.</summary>
     private const string Tag = "Communities";
@@ -73,6 +80,43 @@ public static class CommunityEndpoints
             .ProducesValidationProblem()
             .ProducesProblem(StatusCodes.Status401Unauthorized);
 
+        var userCommunity = endpoints.MapGroup(UserCommunityRoute)
+            .RequireAuthorization(WebsiteServiceDefaults.Policy)
+            .WithTags(Tag)
+            .ProducesProblem(StatusCodes.Status401Unauthorized);
+
+        userCommunity.MapGet("/roles", GetRoleSettingsAsync)
+            .WithName("GetCommunityRoleSettings")
+            .WithSummary("Get a community's officer roles")
+            .WithDescription("Reads the Discord server's roles and members with the bot and applies the community's mappings: the mappable roles, and per RaidManager role its Discord roles and member count. Only a current member of the server may ask; only the Administrator can edit. Also refreshes the stored server name. Returns 503 when Discord can't answer.")
+            .Produces<CommunityRoleSettings>()
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status403Forbidden)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict)
+            .ProducesProblem(StatusCodes.Status503ServiceUnavailable);
+
+        userCommunity.MapPut("/role-mappings/{discordRoleId}", MapRoleAsync)
+            .WithName("MapCommunityRole")
+            .WithSummary("Map a Discord role to Officer or Raid leader")
+            .WithDescription("Only the community's Administrator, still in the server, may. The Discord role must be one of the server's mappable roles; mapping a role again replaces its RaidManager role.")
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status403Forbidden)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status503ServiceUnavailable);
+
+        userCommunity.MapDelete("/role-mappings/{discordRoleId}", UnmapRoleAsync)
+            .WithName("UnmapCommunityRole")
+            .WithSummary("Remove a Discord role's mapping")
+            .WithDescription("Only the community's Administrator, still in the server, may. Removing a role that isn't mapped changes nothing.")
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status403Forbidden)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status503ServiceUnavailable);
+
         return endpoints;
     }
     #endregion Public Methods
@@ -112,6 +156,57 @@ public static class CommunityEndpoints
     {
         var result = await sender.Send(new GetCommunityByDiscordServerQuery(discordGuildId), cancellationToken);
         return result.ToHttpResult(community => TypedResults.Ok(CommunitySummary.From(community)));
+    }
+
+    /// <summary>Gets a community's officer roles, refreshing the stored server name from Discord's answer.</summary>
+    /// <param name="userId">The signed-in user.</param>
+    /// <param name="communityId">The community.</param>
+    /// <param name="sender">The MediatR sender.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>200 with the roles card, or a problem.</returns>
+    private static async Task<IResult> GetRoleSettingsAsync(Guid userId, Guid communityId, ISender sender, CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new GetCommunityRoleSettingsQuery(communityId, userId), cancellationToken);
+        if (result.IsSuccess)
+        {
+            // Reading the server is when RaidManager learns its current name (owner decision on #14).
+            await sender.Send(new RefreshCommunityNameCommand(communityId, result.Value.ServerName), cancellationToken);
+        }
+
+        return result.ToHttpResult(settings => TypedResults.Ok(CommunityRoleSettings.From(settings)));
+    }
+
+    /// <summary>Maps a Discord role to a RaidManager role.</summary>
+    /// <param name="userId">The signed-in user.</param>
+    /// <param name="communityId">The community.</param>
+    /// <param name="discordRoleId">The Discord role snowflake.</param>
+    /// <param name="request">The RaidManager role.</param>
+    /// <param name="sender">The MediatR sender.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>204, or a problem.</returns>
+    private static async Task<IResult> MapRoleAsync(
+        Guid userId,
+        Guid communityId,
+        string discordRoleId,
+        MapDiscordRoleRequest request,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new MapCommunityRoleCommand(communityId, userId, discordRoleId, request.Role), cancellationToken);
+        return result.ToHttpResult(TypedResults.NoContent);
+    }
+
+    /// <summary>Removes a Discord role's mapping.</summary>
+    /// <param name="userId">The signed-in user.</param>
+    /// <param name="communityId">The community.</param>
+    /// <param name="discordRoleId">The Discord role snowflake.</param>
+    /// <param name="sender">The MediatR sender.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>204, or a problem.</returns>
+    private static async Task<IResult> UnmapRoleAsync(Guid userId, Guid communityId, string discordRoleId, ISender sender, CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new UnmapCommunityRoleCommand(communityId, userId, discordRoleId), cancellationToken);
+        return result.ToHttpResult(TypedResults.NoContent);
     }
 
     /// <summary>Lists a user's communities.</summary>

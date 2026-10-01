@@ -21,7 +21,7 @@ public static class DiscordServiceCollectionExtensions
     #endregion Constants
 
     #region Public Methods
-    /// <summary>Adds the Discord member lookup the role check uses, cached as <see cref="DiscordOptions.MemberCacheDuration"/> says.</summary>
+    /// <summary>Adds the Discord member lookup the role check uses, cached as <see cref="DiscordOptions.MemberCacheDuration"/> says, and the server reader.</summary>
     /// <param name="services">The service collection.</param>
     /// <param name="configuration">The configuration holding the <c>Discord</c> section.</param>
     /// <returns>The same service collection.</returns>
@@ -33,13 +33,8 @@ public static class DiscordServiceCollectionExtensions
             .ValidateDataAnnotations()
             .ValidateOnStart();
         services.AddMemoryCache();
-        services.AddHttpClient<DiscordServerMembersClient>((provider, client) =>
-        {
-            var options = provider.GetRequiredService<IOptions<DiscordOptions>>().Value;
-            client.BaseAddress = options.ApiBaseAddress;
-            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bot", options.BotToken);
-            client.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
-        });
+        services.AddHttpClient<DiscordServerMembersClient>(ConfigureBotClient);
+        services.AddHttpClient<IDiscordServers, DiscordServersClient>(ConfigureBotClient);
         services.AddScoped<IDiscordServerMembers>(provider => new CachedDiscordServerMembers(
             provider.GetRequiredService<DiscordServerMembersClient>(),
             provider.GetRequiredService<IMemoryCache>(),
@@ -47,4 +42,17 @@ public static class DiscordServiceCollectionExtensions
         return services;
     }
     #endregion Public Methods
+
+    #region Private Helpers
+    /// <summary>Addresses a client at Discord's API as the bot, with the User-Agent Discord requires.</summary>
+    /// <param name="provider">The service provider.</param>
+    /// <param name="client">The client to configure.</param>
+    private static void ConfigureBotClient(IServiceProvider provider, HttpClient client)
+    {
+        var options = provider.GetRequiredService<IOptions<DiscordOptions>>().Value;
+        client.BaseAddress = options.ApiBaseAddress;
+        client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bot", options.BotToken);
+        client.DefaultRequestHeaders.UserAgent.ParseAdd(UserAgent);
+    }
+    #endregion Private Helpers
 }

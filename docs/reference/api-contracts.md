@@ -22,6 +22,9 @@ as `Parameters:website-service-key` in your own terminal.
 | `GET /internal/communities/{communityId}` | Website only | Get a community's Discord server, realm and Administrator. |
 | `GET /internal/communities/by-discord-server/{discordGuildId}` | Website only | Get the community a Discord server links to, or 404 when it isn't linked. |
 | `GET /internal/users/{userId}/communities` | Website only | List the communities the user administers, by name. |
+| `GET /internal/users/{userId}/communities/{communityId}/roles` | Website only | Read the community's officer roles from Discord: the mappable roles and, per RaidManager role, its Discord roles and member count. Only a member of the server may; refreshes the stored server name. |
+| `PUT /internal/users/{userId}/communities/{communityId}/role-mappings/{discordRoleId}` | Website only | Map a Discord role to `Officer` or `RaidLeader`. Only the Administrator may. |
+| `DELETE /internal/users/{userId}/communities/{communityId}/role-mappings/{discordRoleId}` | Website only | Remove a Discord role's mapping. Only the Administrator may. |
 
 Operations under `/internal/` require the website key in the `X-RaidManager-Service-Key` header, as
 [ADR-0011](../adr/0011-website-session-and-api-trust.md) describes. A missing or wrong key returns 401. The website
@@ -34,6 +37,11 @@ as `Icecrown` or `Conflict`.
 A community carries its realm as a name too. Linking needs a server id that is a Discord snowflake, a name of at most
 100 characters, one of the realm names and a known user; anything else returns 400 naming the field, and an unknown
 user returns 404.
+
+The officer roles operations ask Discord with the bot ([ADR-0022](../adr/0022-check-discord-roles-at-action-time.md)).
+Someone outside the Discord server, or anyone but the Administrator changing a mapping, gets 403. A Discord role that
+isn't one of the server's mappable roles returns 400: `@everyone` and roles of other bots can't be mapped. Discord not
+answering returns 503, and a server the bot was removed from returns 409.
 
 ## Planned contract areas
 

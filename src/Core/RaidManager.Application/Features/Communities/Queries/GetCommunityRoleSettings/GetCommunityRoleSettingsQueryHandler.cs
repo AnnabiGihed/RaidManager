@@ -1,0 +1,120 @@
+using Pivot.Framework.Application.Abstractions.Messaging.Queries;
+using Pivot.Framework.Domain.Shared;
+using RaidManager.Application.Features.Communities.Abstractions;
+using RaidManager.Domain.Features.Communities.Aggregates;
+using RaidManager.Domain.Features.Communities.Enums;
+using RaidManager.Domain.Features.Communities.Errors;
+using RaidManager.Domain.Features.Communities.Repositories;
+using RaidManager.Domain.Features.Identity.Repositories;
+using RaidManager.Domain.Features.Shared.Identifiers;
+
+namespace RaidManager.Application.Features.Communities.Queries.GetCommunityRoleSettings;
+
+/// <summary>Handles <see cref="GetCommunityRoleSettingsQuery"/>: reads the server from Discord and applies the community's mappings.</summary>
+/// <remarks>
+/// Author: Gihed Annabi<br/>
+/// Date: 2026-10-01<br/>
+/// Purpose: Counts each person in the server once, under their highest role, as the role check gives it; bots aren't counted. Only a current member of the server may ask.
+/// </remarks>
+internal sealed class GetCommunityRoleSettingsQueryHandler : IQueryHandler<GetCommunityRoleSettingsQuery, CommunityRoleSettingsResponse>
+{
+    #region Fields
+    /// <summary>Stores the RaidManager roles in the card's order, highest first.</summary>
+    private static readonly CommunityMemberRole[] RowRoles =
+        [CommunityMemberRole.Administrator, CommunityMemberRole.Officer, CommunityMemberRole.RaidLeader, CommunityMemberRole.Member];
+
+    /// <summary>Stores the community repository.</summary>
+    private readonly ICommunityRepository _communities;
+
+    /// <summary>Stores the user repository.</summary>
+    private readonly IUserRepository _users;
+
+    /// <summary>Stores the Discord membership lookup.</summary>
+    private readonly IDiscordServerMembers _discordMembers;
+
+    /// <summary>Stores the Discord server reader.</summary>
+    private readonly IDiscordServers _discordServers;
+    #endregion Fields
+
+    #region Constructors
+    /// <summary>Initializes a new instance of the <see cref="GetCommunityRoleSettingsQueryHandler"/> class.</summary>
+    /// <param name="communities">The community repository.</param>
+    /// <param name="users">The user repository.</param>
+    /// <param name="discordMembers">The Discord membership lookup.</param>
+    /// <param name="discordServers">The Discord server reader.</param>
+    public GetCommunityRoleSettingsQueryHandler(
+        ICommunityRepository communities,
+        IUserRepository users,
+        IDiscordServerMembers discordMembers,
+        IDiscordServers discordServers)
+    {
+        _communities = communities;
+        _users = users;
+        _discordMembers = discordMembers;
+        _discordServers = discordServers;
+    }
+    #endregion Constructors
+
+    #region Public Methods
+    /// <summary>Reads the community's officer roles.</summary>
+    /// <param name="request">The query.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>The roles card, or <see cref="CommunityErrors.NotFound"/>, <see cref="CommunityErrors.NotAMember"/> or Discord's failure.</returns>
+    public async Task<Result<CommunityRoleSettingsResponse>> Handle(GetCommunityRoleSettingsQuery request, CancellationToken cancellationToken)
+    {
+        var community = await _communities.FindByIdAsync(new CommunityId(request.CommunityId), cancellationToken);
+        if (community is null)
+        {
+            return Result.Failure<CommunityRoleSettingsResponse>(CommunityErrors.NotFound, ResultExceptionType.NotFound);
+        }
+
+        var user = await _users.FindByIdAsync(new UserId(request.UserId), cancellationToken);
+        var access = await CommunityAccess.EnsureMemberAsync(community, user, _discordMembers, cancellationToken);
+        if (access.IsFailure)
+        {
+            return Result.Failure<CommunityRoleSettingsResponse>(access.Error, access.ResultExceptionType);
+        }
+
+        var server = await _discordServers.GetAsync(community.DiscordGuildId, cancellationToken);
+        if (server.IsFailure)
+        {
+            return Result.Failure<CommunityRoleSettingsResponse>(server.Error);
+        }
+
+        var members = await _discordServers.ListMembersAsync(community.DiscordGuildId, cancellationToken);
+        if (members.IsFailure)
+        {
+            return Result.Failure<CommunityRoleSettingsResponse>(members.Error);
+        }
+
+        var administrator = await _users.FindByIdAsync(community.AdministratorId, cancellationToken);
+        var counts = members.Value
+            .Select(member => member.UserId == administrator?.DiscordUserId.Value
+                ? CommunityMemberRole.Administrator
+                : community.MappedRoleFor(member.RoleIds))
+            .GroupBy(role => role)
+            .ToDictionary(group => group.Key, group => group.Count());
+
+        return Result.Success(new CommunityRoleSettingsResponse(
+            community.Id.Value,
+            server.Value.Name,
+            user!.Id == community.AdministratorId,
+            server.Value.Roles,
+            [.. RowRoles.Select(role => new CommunityRoleRowResponse(role, Mapped(community, server.Value, role), counts.GetValueOrDefault(role)))]));
+    }
+    #endregion Public Methods
+
+    #region Private Helpers
+    /// <summary>Lists the Discord roles mapped to a RaidManager role, with their current names.</summary>
+    /// <param name="community">The community.</param>
+    /// <param name="server">The Discord server.</param>
+    /// <param name="role">The RaidManager role.</param>
+    /// <returns>The mapped roles; a role deleted in Discord has no name.</returns>
+    private static List<MappedDiscordRoleResponse> Mapped(Community community, DiscordServer server, CommunityMemberRole role) =>
+        [.. community.RoleMappings
+            .Where(mapping => mapping.Role == role)
+            .Select(mapping => new MappedDiscordRoleResponse(
+                mapping.DiscordRoleId,
+                server.Roles.FirstOrDefault(discordRole => discordRole.Id == mapping.DiscordRoleId)?.Name))];
+    #endregion Private Helpers
+}

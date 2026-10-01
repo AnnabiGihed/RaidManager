@@ -13,5 +13,8 @@ public static class DiscordErrors
     #region Static Instances
     /// <summary>Gets the error returned when Discord couldn't be reached or refused the bot's request.</summary>
     public static readonly Error Unavailable = new("Discord.Unavailable", "Discord couldn't confirm your roles right now. Try again in a minute.");
+
+    /// <summary>Gets the error returned when the RaidManager bot is no longer in the community's Discord server.</summary>
+    public static readonly Error BotNotInServer = new("Discord.BotNotInServer", "The RaidManager bot isn't in this Discord server any more. Add it again.");
     #endregion Static Instances
 }
