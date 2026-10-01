@@ -106,6 +106,21 @@ user secrets, which live in your user profile, never in the repository:
 The AppHost passes them to the website, which refuses to start without them. The Aspire dashboard also asks for any
 parameter that has no value yet.
 
+### Give the API the Discord bot token
+
+The API asks Discord for each member's roles with the bot's token
+([ADR-0022](docs/adr/0022-check-discord-roles-at-action-time.md)):
+
+1. In the Discord Developer Portal, open the same application, then **Bot**. Turn on **Server Members Intent**, and
+   use **Reset Token** to copy a token.
+2. From the repository root, store it:
+
+   ```bash
+   dotnet user-secrets set "Parameters:discord-bot-token" "<bot-token>" --project src/Containers/Aspire/Hosting/RaidManager.AppHost
+   ```
+
+The AppHost passes it to the API, which refuses to start without it.
+
 ### Change the database schema
 
 The persistence schema is managed with Entity Framework Core migrations, using the repository's local `dotnet-ef`

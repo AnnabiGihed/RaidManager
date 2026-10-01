@@ -11,5 +11,12 @@
     <ProjectReference Include="../../Core/RaidManager.Domain/RaidManager.Domain.csproj" />
     <ProjectReference Include="../../Core/RaidManager.IntegrationEvents/RaidManager.IntegrationEvents.csproj" />
     <PackageReference Include="Pivot.Framework.Tools.DependencyInjection" />
+    <PackageReference Include="Microsoft.Extensions.Http" />
+    <PackageReference Include="Microsoft.Extensions.Caching.Memory" />
+    <PackageReference Include="Microsoft.Extensions.Options.ConfigurationExtensions" />
+    <PackageReference Include="Microsoft.Extensions.Options.DataAnnotations" />
+  </ItemGroup>
+  <ItemGroup>
+    <InternalsVisibleTo Include="RaidManager.Infrastructure.Tests" />
   </ItemGroup>
 </Project>
