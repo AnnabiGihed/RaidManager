@@ -89,6 +89,23 @@ public sealed class Community : AggregateRoot<CommunityId>
     #endregion Factory Methods
 
     #region Domain Behavior
+    /// <summary>Takes the Discord server's current name, when it was renamed in Discord.</summary>
+    /// <param name="name">The server's name as Discord reports it now.</param>
+    /// <returns><see langword="true"/> when the name changed; <see langword="false"/> when it was already current.</returns>
+    /// <exception cref="DomainException">Thrown when the name is blank or too long.</exception>
+    /// <remarks>RaidManager keeps a copy of the name and refreshes it whenever it reads the server (owner decision on #14).</remarks>
+    public bool Rename(string name)
+    {
+        var trimmedName = EnsureName(name);
+        if (trimmedName == Name)
+        {
+            return false;
+        }
+
+        Name = trimmedName;
+        return true;
+    }
+
     /// <summary>Maps a Discord role to Officer or Raid leader, replacing any earlier mapping of that Discord role.</summary>
     /// <param name="discordRoleId">The Discord role snowflake.</param>
     /// <param name="role">The RaidManager role it gives: <see cref="CommunityMemberRole.Officer"/> or <see cref="CommunityMemberRole.RaidLeader"/>.</param>
@@ -128,11 +145,14 @@ public sealed class Community : AggregateRoot<CommunityId>
     /// <remarks>Whether the user is in the server at all is checked with Discord before asking for a role.</remarks>
     public CommunityMemberRole RoleFor(UserId userId, IEnumerable<string> discordRoleIds)
     {
-        if (userId == AdministratorId)
-        {
-            return CommunityMemberRole.Administrator;
-        }
+        return userId == AdministratorId ? CommunityMemberRole.Administrator : MappedRoleFor(discordRoleIds);
+    }
 
+    /// <summary>Gives the role a set of Discord roles maps to, leaving the Administrator aside.</summary>
+    /// <param name="discordRoleIds">A member's Discord role snowflakes.</param>
+    /// <returns>The highest mapped role among them, otherwise <see cref="CommunityMemberRole.Member"/>.</returns>
+    public CommunityMemberRole MappedRoleFor(IEnumerable<string> discordRoleIds)
+    {
         var memberRoles = discordRoleIds.ToHashSet(StringComparer.Ordinal);
         return _roleMappings
             .Where(mapping => memberRoles.Contains(mapping.DiscordRoleId))

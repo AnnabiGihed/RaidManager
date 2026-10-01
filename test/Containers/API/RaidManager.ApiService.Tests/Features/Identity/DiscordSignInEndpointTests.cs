@@ -15,7 +15,8 @@ namespace RaidManager.ApiService.Tests.Features.Identity;
 /// Date: 2026-09-30<br/>
 /// Purpose: Proves only the website key opens the endpoint, that a Discord account keeps one user, and that bad input is a 400.
 /// </remarks>
-public sealed class DiscordSignInEndpointTests : IClassFixture<ApiFactory>
+[Collection(ApiTestGroup.Name)]
+public sealed class DiscordSignInEndpointTests
 {
     #region Fields
     /// <summary>Stores the API factory.</summary>

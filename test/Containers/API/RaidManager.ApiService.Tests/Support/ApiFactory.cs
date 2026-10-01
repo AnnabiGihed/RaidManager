@@ -1,5 +1,9 @@
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
+using Microsoft.AspNetCore.TestHost;
+using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.DependencyInjection.Extensions;
+using RaidManager.Application.Features.Communities.Abstractions;
 using Testcontainers.MsSql;
 using Xunit;
 
@@ -30,6 +34,9 @@ public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
     #endregion Fields
 
     #region Properties
+    /// <summary>Gets the fake Discord every Discord call goes to.</summary>
+    public FakeDiscord Discord { get; } = new();
+
     /// <summary>Gets the hosting environment the API runs in; Development applies the migrations at startup.</summary>
     protected virtual string EnvironmentName => "Development";
     #endregion Properties
@@ -54,6 +61,13 @@ public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
         builder.UseSetting("ConnectionStrings:Database", _database.GetConnectionString());
         builder.UseSetting("Website:ServiceKey", WebsiteServiceKey);
         builder.UseSetting("Discord:BotToken", PlaceholderBotToken);
+        builder.ConfigureTestServices(services =>
+        {
+            services.RemoveAll<IDiscordServerMembers>();
+            services.AddSingleton<IDiscordServerMembers>(Discord);
+            services.RemoveAll<IDiscordServers>();
+            services.AddSingleton<IDiscordServers>(Discord);
+        });
     }
     #endregion Overrides
 }

@@ -13,6 +13,12 @@ public static class ResultHttpExtensions
     #region Constants
     /// <summary>Defines the unit-of-work error for a lost optimistic-concurrency race.</summary>
     private const string ConcurrencyErrorCode = "DbUpdateConcurrencyError";
+
+    /// <summary>Defines the error code of Discord not answering.</summary>
+    private const string DiscordUnavailableCode = "Discord.Unavailable";
+
+    /// <summary>Defines the error code of the bot having been removed from the server.</summary>
+    private const string BotNotInServerCode = "Discord.BotNotInServer";
     #endregion Constants
 
     #region Fields
@@ -67,6 +73,17 @@ public static class ResultHttpExtensions
     private static int StatusCodeOf(Result result)
     {
         if (result.Error.Code == ConcurrencyErrorCode)
+        {
+            return StatusCodes.Status409Conflict;
+        }
+
+        // Discord not answering is temporary, and the bot having been removed is a state the Administrator must fix.
+        if (result.Error.Code == DiscordUnavailableCode)
+        {
+            return StatusCodes.Status503ServiceUnavailable;
+        }
+
+        if (result.Error.Code == BotNotInServerCode)
         {
             return StatusCodes.Status409Conflict;
         }

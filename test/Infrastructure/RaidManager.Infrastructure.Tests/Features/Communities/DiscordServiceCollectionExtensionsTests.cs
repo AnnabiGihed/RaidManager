@@ -46,6 +46,23 @@ public sealed class DiscordServiceCollectionExtensionsTests
         request.Headers.UserAgent.ToString().ShouldStartWith("DiscordBot (");
     }
 
+    /// <summary>Reads servers as the bot too.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task TheServerReaderCallsDiscordAsTheBot()
+    {
+        var discord = new StubDiscordHandler().Answering(HttpStatusCode.OK, """{"name":"Dark Templars"}""");
+        await using var provider = BuildProvider(new Dictionary<string, string?> { ["Discord:BotToken"] = PlaceholderBotToken }, discord);
+        var servers = provider.GetRequiredService<IDiscordServers>();
+        servers.ShouldBeOfType<DiscordServersClient>();
+
+        await servers.GetAsync("123", CancellationToken.None);
+
+        var request = discord.Requests[0];
+        request.RequestUri.ShouldBe(new Uri("https://discord.com/api/v10/guilds/123"));
+        request.Headers.Authorization!.Parameter.ShouldBe(PlaceholderBotToken);
+    }
+
     /// <summary>Refuses to start without a bot token.</summary>
     [Fact]
     public void AMissingBotTokenIsRejected()
@@ -68,6 +85,7 @@ public sealed class DiscordServiceCollectionExtensionsTests
         services.AddLogging();
         services.AddRaidManagerDiscord(configuration);
         services.AddHttpClient<DiscordServerMembersClient>().ConfigurePrimaryHttpMessageHandler(() => discord);
+        services.AddHttpClient<IDiscordServers, DiscordServersClient>().ConfigurePrimaryHttpMessageHandler(() => discord);
         return services.BuildServiceProvider();
     }
     #endregion Private Helpers

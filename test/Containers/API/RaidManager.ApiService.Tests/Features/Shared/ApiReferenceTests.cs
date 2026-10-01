@@ -11,7 +11,8 @@ namespace RaidManager.ApiService.Tests.Features.Shared;
 /// Date: 2026-09-30<br/>
 /// Purpose: Developers explore and try the API from the Scalar page (ADR-0013).
 /// </remarks>
-public sealed class ApiReferenceTests : IClassFixture<ApiFactory>
+[Collection(ApiTestGroup.Name)]
+public sealed class ApiReferenceTests
 {
     #region Fields
     /// <summary>Stores the API factory.</summary>
