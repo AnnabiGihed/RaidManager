@@ -103,7 +103,7 @@ def review() -> list[Item]:
     told = [("25 selected players", SECONDARY), ("2 benched players", SECONDARY), ("by Discord message", SECONDARY)]
     return [
         page_header(PAGE, "Review before publishing", "Draft A · " + WHEN),
-        groups(top, {name: "changed" for name in CHANGES}),
+        groups(top, dict.fromkeys(CHANGES, "changed")),
         side_panel(panel_x, top, panel_w, "Changed", [(f"{len(CHANGES)} places", ACCENT), *[
             (name, TEXT) for name in CHANGES]], 140),
         side_panel(panel_x, top + 156, panel_w, "Still open", [("2 warnings", WARNING_TEXT)], 84),
