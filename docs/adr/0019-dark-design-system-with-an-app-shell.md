@@ -29,8 +29,8 @@ Its text is set in Segoe UI, which isn't a free font and isn't available in Penp
   marks the primary action and the active page. Every text color passes WCAG AA on the surfaces it's used on;
   `Text/muted` is lighter than in the reference so it passes on cards.
 - **Font:** Open Sans, the free Google font closest to Segoe UI, with the same humanist shapes and similar widths.
-  Penpot offers it, and the website loads it. Headings are bold, and small uppercase labels carry letter spacing.
-  `TYPE_SCALE` names each style.
+  Penpot offers it, and the website serves it from its own files under the Open Font License (#265). Headings
+  are bold, and small uppercase labels carry letter spacing. `TYPE_SCALE` names each style.
 - **App shell on every website screen:** a 1440 x 900 board with a 240-pixel sidebar and a 64-pixel top bar, drawn by
   `app_screen` in `scripts/penpot_components.py`:
   - the sidebar holds the logo, the community card, the Player section (Overview, Raids, My characters, Readiness,
