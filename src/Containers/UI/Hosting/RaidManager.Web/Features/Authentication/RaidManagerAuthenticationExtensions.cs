@@ -1,10 +1,12 @@
 using AspNet.Security.OAuth.Discord;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
+using RaidManager.ViewModels.Features.Characters;
+using RaidManager.Web.Features.Characters;
 
 namespace RaidManager.Web.Features.Authentication;
 
-/// <summary>Registers Discord sign-in, the cookie session, and the API client the website uses.</summary>
+/// <summary>Registers Discord sign-in, the cookie session, and the API clients the website uses.</summary>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-09-30<br/>
@@ -38,7 +40,7 @@ public static class RaidManagerAuthenticationExtensions
     #endregion Fields
 
     #region Public Methods
-    /// <summary>Adds the cookie session, Discord sign-in, and the identity API client.</summary>
+    /// <summary>Adds the cookie session, Discord sign-in, and the identity and character claims API clients.</summary>
     /// <param name="services">The service collection.</param>
     /// <param name="configuration">The configuration holding the Discord credentials and the website key.</param>
     /// <returns>The same service collection.</returns>
@@ -82,11 +84,14 @@ public static class RaidManagerAuthenticationExtensions
         services.AddAuthorization();
         services.AddCascadingAuthenticationState();
 
-        services.AddHttpClient<IIdentityApiClient, IdentityApiClient>(client =>
+        void AddressApi(HttpClient client)
         {
             client.BaseAddress = new Uri(ApiBaseAddress);
             client.DefaultRequestHeaders.Add(ServiceKeyHeader, serviceKey);
-        });
+        }
+
+        services.AddHttpClient<IIdentityApiClient, IdentityApiClient>(AddressApi);
+        services.AddHttpClient<ICharacterClaimsApiClient, CharacterClaimsApiClient>(AddressApi);
         return services;
     }
     #endregion Public Methods

@@ -11,7 +11,8 @@ Four boards in RaidManager's design system (ADR-0019), seen by a player, linked 
 
 The page shows only what the claims API returns (#161): name, realm, class, race, level, claim state and when the
 companion found the character. "Decide later" leaves the page; undecided characters stay pending and the page
-appears again at the next sign-in (story #18).
+appears again at the next sign-in (story #18). Continue on board 3 returns to the page the player asked for, as the
+website does (task #253).
 
 Run from the repository root: python scripts/mockups/character_review.py
 Once the owner edits the design in Penpot, the downloaded file replaces docs/mockups/character-review.penpot and this
@@ -154,7 +155,7 @@ def all_set() -> list[Item]:
                  SECONDARY, CONTENT_W, "center"),
             text("Conflict reminder", CONTENT_X, top + 212, "Sylvanash stays in conflict review until an officer decides.",
                  13, 400, MUTED, CONTENT_W, "center"),
-            button("Go to characters button", middle - 80, top + 240, "Go to my characters", "primary", 160),
+            button("Continue button", middle - 56, top + 240, "Continue", "primary", 112),
         ]),
         Group("Approved notification", [
             *card(toast_x, toast_y, toast_w, 72, P["Brand/accent"]),

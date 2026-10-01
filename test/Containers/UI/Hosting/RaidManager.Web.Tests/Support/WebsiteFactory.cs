@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
+using RaidManager.ViewModels.Features.Characters;
 using RaidManager.Web.Features.Authentication;
 
 namespace RaidManager.Web.Tests.Support;
@@ -24,6 +25,9 @@ public sealed class WebsiteFactory : WebApplicationFactory<Program>
     #region Properties
     /// <summary>Gets the fake API the website calls.</summary>
     public FakeIdentityApiClient IdentityApi { get; } = new();
+
+    /// <summary>Gets the fake character claims API the website calls.</summary>
+    public FakeCharacterClaimsApiClient ClaimsApi { get; } = new();
     #endregion Properties
 
     #region Public Methods
@@ -49,6 +53,8 @@ public sealed class WebsiteFactory : WebApplicationFactory<Program>
         {
             services.RemoveAll<IIdentityApiClient>();
             services.AddSingleton<IIdentityApiClient>(IdentityApi);
+            services.RemoveAll<ICharacterClaimsApiClient>();
+            services.AddSingleton<ICharacterClaimsApiClient>(ClaimsApi);
             services.PostConfigure<DiscordAuthenticationOptions>(
                 DiscordAuthenticationDefaults.AuthenticationScheme,
                 options => options.Backchannel = new HttpClient(new DiscordBackchannelStub()));

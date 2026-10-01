@@ -1,6 +1,8 @@
 using System.Security.Claims;
 using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.OAuth;
+using RaidManager.ViewModels.Features.Characters;
+using RaidManager.Web.Features.Characters;
 
 namespace RaidManager.Web.Features.Authentication;
 
@@ -9,7 +11,8 @@ namespace RaidManager.Web.Features.Authentication;
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-09-30<br/>
 /// Purpose: Resolves the Discord identity to its local user through the API before the cookie is issued, so a player is
-/// only signed in when the API knows them. Any failure leads to the retry page instead of a half-signed-in state.
+/// only signed in when the API knows them. Any failure leads to the retry page instead of a half-signed-in state. A
+/// player with characters awaiting their decision lands on the review page first (story #18).
 /// </remarks>
 internal sealed partial class DiscordSignInEvents : OAuthEvents
 {
@@ -22,6 +25,9 @@ internal sealed partial class DiscordSignInEvents : OAuthEvents
     /// <summary>Stores the API client that resolves the local user.</summary>
     private readonly IIdentityApiClient _identityApi;
 
+    /// <summary>Stores the API client that lists the player's character claims.</summary>
+    private readonly ICharacterClaimsApiClient _claimsApi;
+
     /// <summary>Stores the logger.</summary>
     private readonly ILogger<DiscordSignInEvents> _logger;
     #endregion Fields
@@ -29,10 +35,12 @@ internal sealed partial class DiscordSignInEvents : OAuthEvents
     #region Constructors
     /// <summary>Initializes a new instance of the <see cref="DiscordSignInEvents"/> class.</summary>
     /// <param name="identityApi">The API client that resolves the local user.</param>
+    /// <param name="claimsApi">The API client that lists the player's character claims.</param>
     /// <param name="logger">The logger.</param>
-    public DiscordSignInEvents(IIdentityApiClient identityApi, ILogger<DiscordSignInEvents> logger)
+    public DiscordSignInEvents(IIdentityApiClient identityApi, ICharacterClaimsApiClient claimsApi, ILogger<DiscordSignInEvents> logger)
     {
         _identityApi = identityApi;
+        _claimsApi = claimsApi;
         _logger = logger;
     }
     #endregion Constructors
@@ -63,6 +71,8 @@ internal sealed partial class DiscordSignInEvents : OAuthEvents
         {
             identity.AddClaim(new Claim(RaidManagerClaimTypes.AvatarUrl, avatarUrl));
         }
+
+        context.Properties.RedirectUri = await RedirectAfterSignInAsync(userId, context.Properties.RedirectUri, context.HttpContext.RequestAborted);
     }
 
     /// <inheritdoc />
@@ -84,10 +94,41 @@ internal sealed partial class DiscordSignInEvents : OAuthEvents
     #endregion Overrides
 
     #region Private Helpers
+    /// <summary>Logs a pending-claims check that failed during sign-in; the review page shows the error.</summary>
+    /// <param name="logger">The logger.</param>
+    /// <param name="failure">The failure.</param>
+    [LoggerMessage(Level = LogLevel.Warning, Message = "Checking the player's pending character claims failed during sign-in.")]
+    private static partial void LogPendingCheckFailed(ILogger logger, Exception failure);
+
     /// <summary>Logs a sign-in that could not complete; the redirect sends the player to the retry page.</summary>
     /// <param name="logger">The logger.</param>
     /// <param name="failure">The failure, if the handler reported one.</param>
     [LoggerMessage(Level = LogLevel.Warning, Message = "Discord sign-in failed.")]
     private static partial void LogSignInFailed(ILogger logger, Exception? failure);
+
+    /// <summary>Sends a player with characters awaiting their decision to the review page, keeping the requested page.</summary>
+    /// <param name="userId">The signed-in player.</param>
+    /// <param name="requested">The page the player asked for.</param>
+    /// <param name="cancellationToken">A token to cancel the call.</param>
+    /// <returns>The review page when a claim is pending or the check fails; otherwise the requested page.</returns>
+    /// <remarks>A failed check still opens the review page, which shows the error and a retry, so no review is skipped.</remarks>
+    private async Task<string?> RedirectAfterSignInAsync(Guid userId, string? requested, CancellationToken cancellationToken)
+    {
+        try
+        {
+            var claims = await _claimsApi.GetPendingAsync(userId, cancellationToken);
+            if (!claims.Any(claim => claim.IsPending))
+            {
+                return requested;
+            }
+        }
+        catch (Exception exception) when (exception is HttpRequestException
+            || (exception is TaskCanceledException && !cancellationToken.IsCancellationRequested))
+        {
+            LogPendingCheckFailed(_logger, exception);
+        }
+
+        return CharacterRoutes.ReviewFor(requested);
+    }
     #endregion Private Helpers
 }

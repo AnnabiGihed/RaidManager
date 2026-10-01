@@ -4,6 +4,7 @@ using Microsoft.AspNetCore.WebUtilities;
 using Shouldly;
 using Xunit;
 using RaidManager.Web.Features.Authentication;
+using RaidManager.Web.Features.Characters;
 using RaidManager.Web.Tests.Support;
 
 namespace RaidManager.Web.Tests.Features.Authentication;
@@ -62,6 +63,70 @@ public sealed partial class DiscordSignInFlowTests
         var home = await browser.GetStringAsync("/");
         home.ShouldContain(DiscordBackchannelStub.GlobalName);
         home.ShouldContain("Sign out");
+    }
+
+    /// <summary>Signs in with a character awaiting the player's decision.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task PendingClaimLeadsToTheReviewPageKeepingTheRequestedPage()
+    {
+        await using var site = new WebsiteFactory();
+        site.ClaimsApi.Claims = [FakeCharacterClaimsApiClient.Claim("Arthasdk"), FakeCharacterClaimsApiClient.Claim("Sylvanash", "Conflict")];
+        using var browser = site.CreateBrowser();
+        var state = await StartSignInAsync(browser, "/raids?week=40");
+
+        var callback = await browser.GetAsync($"{AuthenticationRoutes.DiscordCallback}?code=test-code&state={Uri.EscapeDataString(state)}");
+
+        callback.Headers.Location.ShouldNotBeNull().OriginalString.ShouldBe(CharacterRoutes.ReviewFor("/raids?week=40"));
+        SessionCookieWasIssued(callback).ShouldBeTrue();
+        var review = await browser.GetAsync(CharacterRoutes.ReviewFor("/raids?week=40"));
+        review.StatusCode.ShouldBe(HttpStatusCode.OK);
+        (await review.Content.ReadAsStringAsync()).ShouldContain("Review your new characters");
+    }
+
+    /// <summary>Signs in while only a conflict waits, which the player can't decide.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task OnlyAConflictLeadsToTheRequestedPage()
+    {
+        await using var site = new WebsiteFactory();
+        site.ClaimsApi.Claims = [FakeCharacterClaimsApiClient.Claim("Sylvanash", "Conflict")];
+        using var browser = site.CreateBrowser();
+        var state = await StartSignInAsync(browser, "/raids");
+
+        var callback = await browser.GetAsync($"{AuthenticationRoutes.DiscordCallback}?code=test-code&state={Uri.EscapeDataString(state)}");
+
+        callback.Headers.Location.ShouldNotBeNull().OriginalString.ShouldBe("/raids");
+    }
+
+    /// <summary>Signs in while the claims can't be checked.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task FailedPendingCheckStillSignsInAndOpensTheReviewPage()
+    {
+        await using var site = new WebsiteFactory();
+        site.ClaimsApi.Fails = true;
+        using var browser = site.CreateBrowser();
+        var state = await StartSignInAsync(browser, "/");
+
+        var callback = await browser.GetAsync($"{AuthenticationRoutes.DiscordCallback}?code=test-code&state={Uri.EscapeDataString(state)}");
+
+        callback.Headers.Location.ShouldNotBeNull().OriginalString.ShouldBe(CharacterRoutes.ReviewFor("/"));
+        SessionCookieWasIssued(callback).ShouldBeTrue();
+    }
+
+    /// <summary>Opens the review page without a session.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task ReviewPageRequiresSignIn()
+    {
+        await using var site = new WebsiteFactory();
+        using var browser = site.CreateBrowser();
+
+        var review = await browser.GetAsync(CharacterRoutes.Review);
+
+        review.StatusCode.ShouldBe(HttpStatusCode.Redirect);
+        review.Headers.Location.ShouldNotBeNull().GetLeftPart(UriPartial.Path).ShouldBe("https://discord.com/api/oauth2/authorize");
     }
 
     /// <summary>Declines consent on Discord.</summary>

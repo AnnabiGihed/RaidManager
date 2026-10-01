@@ -310,8 +310,8 @@
 <text x="840" y="1364" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#eff5fa" text-anchor="middle">You&#x27;re all set</text>
 <text x="840" y="1392" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="middle">No characters are waiting for your decision.</text>
 <text x="840" y="1416" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#8394aa" text-anchor="middle">Sylvanash stays in conflict review until an officer decides.</text>
-<rect x="760" y="1444" width="160" height="40" rx="8" fill="#5de0c1"/>
-<text x="840" y="1469" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#102830" text-anchor="middle">Go to my characters</text>
+<rect x="784" y="1444" width="112" height="40" rx="8" fill="#5de0c1"/>
+<text x="840" y="1469" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#102830" text-anchor="middle">Continue</text>
 <rect x="980.5" y="1060.5" width="419" height="71" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
 <rect x="980" y="1072" width="4" height="48" rx="2" fill="#5de0c1"/>
 <text x="1004" y="1091" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Thrallsham approved</text>
