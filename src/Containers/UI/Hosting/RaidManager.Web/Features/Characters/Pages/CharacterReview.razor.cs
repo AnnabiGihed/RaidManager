@@ -6,7 +6,7 @@ using RaidManager.ViewModels.Features.Characters;
 using RaidManager.Web.Features.Authentication;
 using RaidManager.Web.Features.Characters;
 
-namespace RaidManager.Web.Components.Pages;
+namespace RaidManager.Web.Features.Characters.Pages;
 
 /// <summary>Lets a signed-in player approve or reject the characters their companion found.</summary>
 /// <remarks>

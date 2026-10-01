@@ -4,9 +4,9 @@ using Microsoft.Extensions.DependencyInjection;
 using Radzen;
 using Shouldly;
 using Xunit;
-using RaidManager.Web.Components.Layout;
+using RaidManager.Web.Features.Shared.Layout;
 
-namespace RaidManager.Web.Tests.Components;
+namespace RaidManager.Web.Tests.Features.Shared.Layout;
 
 /// <summary>Verifies the session controls the layout shows to visitors and to signed-in players.</summary>
 /// <remarks>

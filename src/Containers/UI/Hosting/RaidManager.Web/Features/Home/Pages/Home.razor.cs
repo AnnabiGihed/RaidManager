@@ -1,4 +1,4 @@
-namespace RaidManager.Web.Components.Pages;
+namespace RaidManager.Web.Features.Home.Pages;
 
 /// <summary>Greets the visitor or the signed-in player.</summary>
 /// <remarks>

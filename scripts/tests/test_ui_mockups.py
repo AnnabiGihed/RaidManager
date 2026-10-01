@@ -84,7 +84,7 @@ class PullRequestRuleTests(unittest.TestCase):
         (self.root / "docs/mockups/character-review.svg").write_text("<svg/>", encoding="utf-8")
 
     def test_ui_files_are_website_addon_markup_and_styles(self) -> None:
-        for path in ("src/Containers/UI/Hosting/RaidManager.Web/Components/Pages/Home.razor.cs",
+        for path in ("src/Containers/UI/Hosting/RaidManager.Web/Features/Home/Pages/Home.razor.cs",
                      "src/Containers/UI/RaidManager.ViewModels/Features/Claims/ReviewViewModel.cs",
                      "addon/RaidManager/Core.lua", "src/Other/Page.razor"):
             with self.subTest(path=path):

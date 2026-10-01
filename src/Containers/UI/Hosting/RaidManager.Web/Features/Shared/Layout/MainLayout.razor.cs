@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Web;
 using RaidManager.Web.Features.Authentication;
 
-namespace RaidManager.Web.Components.Layout;
+namespace RaidManager.Web.Features.Shared.Layout;
 
 /// <summary>Frames every page with the header, the player's session controls, and an error boundary.</summary>
 /// <remarks>
