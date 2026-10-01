@@ -84,13 +84,27 @@ public sealed partial class DiscordSignInFlowTests
         (await review.Content.ReadAsStringAsync()).ShouldContain("Review your new characters");
     }
 
-    /// <summary>Signs in while only a conflict waits, which the player can't decide.</summary>
+    /// <summary>Signs in while only a conflict waits for an officer.</summary>
     /// <returns>A task that completes when the test has run.</returns>
     [Fact]
-    public async Task OnlyAConflictLeadsToTheRequestedPage()
+    public async Task OnlyAConflictStillLeadsToTheReviewPage()
     {
         await using var site = new WebsiteFactory();
         site.ClaimsApi.Claims = [FakeCharacterClaimsApiClient.Claim("Sylvanash", "Conflict")];
+        using var browser = site.CreateBrowser();
+        var state = await StartSignInAsync(browser, "/raids");
+
+        var callback = await browser.GetAsync($"{AuthenticationRoutes.DiscordCallback}?code=test-code&state={Uri.EscapeDataString(state)}");
+
+        callback.Headers.Location.ShouldNotBeNull().OriginalString.ShouldBe(CharacterRoutes.ReviewFor("/raids"));
+    }
+
+    /// <summary>Signs in with no claim waiting.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task NoWaitingClaimLeadsToTheRequestedPage()
+    {
+        await using var site = new WebsiteFactory();
         using var browser = site.CreateBrowser();
         var state = await StartSignInAsync(browser, "/raids");
 

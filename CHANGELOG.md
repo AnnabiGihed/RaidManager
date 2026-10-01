@@ -15,7 +15,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   Only the website can call it, with a key the Aspire AppHost generates (ADR-0011) (#92, #95).
 - After sign-in, a player with characters awaiting their decision lands on the character review page. They approve
   or reject each one, with a confirmation before rejecting, or decide later. A character another player owns waits
-  for an officer, and a page that can't load offers a retry (#253).
+  for an officer, and a page that can't load offers a retry (#253). A player whose only waiting characters are
+  owned by another player also sees the page, which says an officer will review them (#255).
 - The API lets the website list a player's character claims awaiting a decision, oldest first, and approve or reject
   one. Approving a character another player owns keeps the claim in conflict review (ADR-0010) (#85, #89, #161).
 - Characters are stored in SQL Server with EF Core: claims, loadouts and raid saves, with domain events recorded in an
