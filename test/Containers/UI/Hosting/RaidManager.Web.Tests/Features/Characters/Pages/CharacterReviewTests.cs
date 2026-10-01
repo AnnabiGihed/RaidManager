@@ -7,11 +7,11 @@ using Radzen.Blazor;
 using Shouldly;
 using Xunit;
 using RaidManager.ViewModels.Features.Characters;
-using RaidManager.Web.Components.Pages;
+using RaidManager.Web.Features.Characters.Pages;
 using RaidManager.Web.Features.Authentication;
 using RaidManager.Web.Tests.Support;
 
-namespace RaidManager.Web.Tests.Components;
+namespace RaidManager.Web.Tests.Features.Characters.Pages;
 
 /// <summary>Verifies the character review page a player sees after sign-in.</summary>
 /// <remarks>

@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components;
 using RaidManager.ViewModels.Features.Authentication;
 using RaidManager.Web.Features.Authentication;
 
-namespace RaidManager.Web.Components.Pages;
+namespace RaidManager.Web.Features.Authentication.Pages;
 
 /// <summary>Explains why a Discord sign-in did not complete and offers a retry.</summary>
 /// <remarks>

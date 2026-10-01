@@ -5,9 +5,9 @@ using Radzen;
 using Shouldly;
 using Xunit;
 using RaidManager.ViewModels.Features.Authentication;
-using RaidManager.Web.Components.Pages;
+using RaidManager.Web.Features.Authentication.Pages;
 
-namespace RaidManager.Web.Tests.Components;
+namespace RaidManager.Web.Tests.Features.Authentication.Pages;
 
 /// <summary>Verifies the page shown after a failed or cancelled Discord sign-in.</summary>
 /// <remarks>

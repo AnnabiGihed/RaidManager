@@ -117,6 +117,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- The website's pages, layout and their tests are organized by feature (`Features/<Feature>/Pages`, `Features/Shared/Layout`),
+  and the Blazor and DDD skills make that layout mandatory (#261).
 - A pull request merges only after its operator posts a meaningful review comment and marks it ready, and a peer
   then approves it with a meaningful comment. The review workflow squash-merges it with the workflow token, closes
   its tasks and deletes the branch; no personal token is involved, and a comment copied from another reviewer fails
