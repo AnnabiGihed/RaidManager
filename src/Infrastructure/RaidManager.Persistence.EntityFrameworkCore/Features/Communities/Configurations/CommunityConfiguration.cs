@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Metadata.Builders;
 using RaidManager.Domain.Features.Communities.Aggregates;
+using RaidManager.Domain.Features.Communities.ValueObjects;
 using RaidManager.Domain.Features.Shared.Identifiers;
 
 namespace RaidManager.Persistence.EntityFrameworkCore.Features.Communities.Configurations;
@@ -41,8 +42,8 @@ internal sealed class CommunityConfiguration : IEntityTypeConfiguration<Communit
             mappings.ToTable("CommunityRoleMappings");
             mappings.WithOwner().HasForeignKey("CommunityId");
 
-            // A Discord role maps to one RaidManager role, so the role id identifies the row within its community.
-            mappings.HasKey("CommunityId", "DiscordRoleId");
+            // One Discord role can give several RaidManager roles, so a row is a community, a Discord role and a role.
+            mappings.HasKey("CommunityId", nameof(DiscordRoleMapping.DiscordRoleId), nameof(DiscordRoleMapping.Role));
             mappings.Property(mapping => mapping.DiscordRoleId).HasMaxLength(SnowflakeLength).IsUnicode(false);
             mappings.Property(mapping => mapping.Role).HasConversion<string>().HasMaxLength(EnumLength);
         });

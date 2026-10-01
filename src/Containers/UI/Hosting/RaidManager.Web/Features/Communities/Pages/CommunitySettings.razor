@@ -6,30 +6,85 @@
     @switch (ViewModel.Status)
     {
         case CommunityPageStatus.Ready:
-            @if (JustLinked)
+            @if (Roles.JustSaved)
             {
-                <div class="community-linked" role="status">
-                    <SurfaceCard Title="@ViewModel.LinkedTitle" Accent="CardAccent.Brand" HeadingLevel="HeadingLevel.H3" data-testid="linked-confirmation">
-                        <ChildContent>Members see it at their next sign-in.</ChildContent>
-                    </SurfaceCard>
-                </div>
+                <Toast Title="@CommunityRolesViewModel.SavedTitle" Message="@CommunityRolesViewModel.SavedMessage" data-testid="saved-confirmation" />
+            }
+            else if (JustLinked)
+            {
+                <Toast Title="@ViewModel.LinkedTitle" Message="Members see it at their next sign-in." data-testid="linked-confirmation" />
             }
             <PageHeading Eyebrow="Community" Title="@ViewModel.Community!.Name" Subtitle="@ViewModel.LinkedOn" />
-            <div class="community-column">
-            <SurfaceCard Title="Community" data-testid="community-summary">
-                <div class="community-values">
-                    <LabeledValue Label="Discord server" Value="@ViewModel.Community.Name" />
-                    <LabeledValue Label="Warmane realm" Value="@ViewModel.Community.Realm" />
-                    <LabeledValue Label="Administrator" Value="@ViewModel.Community.AdministratorName" />
+            <div class="community-columns">
+                <div class="community-summary-column">
+                    <SurfaceCard Title="Community" data-testid="community-summary">
+                        <div class="community-values">
+                            <LabeledValue Label="Discord server" Value="@ViewModel.Community.Name" />
+                            <LabeledValue Label="Warmane realm" Value="@ViewModel.Community.Realm" />
+                            <LabeledValue Label="Administrator" Value="@ViewModel.Community.AdministratorName" />
+                        </div>
+                    </SurfaceCard>
                 </div>
-            </SurfaceCard>
+                <div class="community-roles-column">
+                    <SurfaceCard Title="Officer roles" data-testid="officer-roles">
+                        <div class="roles-content">
+                            <p class="roles-caption">Discord roles that give RaidManager permissions. Members get them at the next check.</p>
+                            @if (Roles.Problem is { } problem)
+                            {
+                                <Notice Tone="NoticeTone.Danger" Title="@problem.Title" Message="@problem.Message" data-testid="roles-problem" />
+                            }
+                            @if (Roles.Status == CommunityPageStatus.Failed)
+                            {
+                                <div>
+                                    <ActionButton Text="Try again" Appearance="ActionButtonAppearance.Secondary" Click="LoadRolesAsync" />
+                                </div>
+                            }
+                            @foreach (var row in Roles.Rows)
+                            {
+                                <div @key="row.Role" class="role-row" data-testid="role-row-@row.Role">
+                                    <span class="role-row-label">@row.Label</span>
+                                    <div class="role-row-sources">
+                                        @if (row.Source is not null)
+                                        {
+                                            <span class="role-row-source">@row.Source</span>
+                                        }
+                                        @foreach (var chip in row.Chips)
+                                        {
+                                            @if (row.Editable)
+                                            {
+                                                <TagChip @key="chip.DiscordRoleId" Text="@chip.Text" Tone="@ChipTone(chip)" RemoveLabel="@RemoveLabel(chip)" OnRemove="@(() => RemoveAsync(chip.DiscordRoleId, row.Role))" />
+                                            }
+                                            else
+                                            {
+                                                <TagChip @key="chip.DiscordRoleId" Text="@chip.Text" Tone="@ChipTone(chip)" />
+                                            }
+                                        }
+                                        @if (row.Editable && Roles.PickingFor == row.Role)
+                                        {
+                                            <div class="role-picker" data-testid="role-picker">
+                                                <OptionSelect TValue="string" Label="@PickerLabel(row)" Options="@PickerOptions(row.Role)" Value="@Roles.PickedRoleId" ValueChanged="PickRole" />
+                                                <ActionButton Text="Add" Disabled="@(Roles.PickedRoleId is null || Roles.IsSaving)" Click="AddAsync" />
+                                                <ActionButton Text="Cancel" Appearance="ActionButtonAppearance.Secondary" Click="Roles.ClosePicker" />
+                                            </div>
+                                        }
+                                        else if (row.Editable && PickerOptions(row.Role).Count > 0)
+                                        {
+                                            <ActionButton Text="+ Add Discord role" Appearance="ActionButtonAppearance.Text" Click="@(() => Roles.OpenPicker(row.Role))" />
+                                        }
+                                    </div>
+                                    <span class="role-row-members">@row.MembersLabel</span>
+                                </div>
+                            }
+                        </div>
+                    </SurfaceCard>
+                </div>
             </div>
             break;
         case CommunityPageStatus.Failed:
-        <Notice Tone="NoticeTone.Danger" Title="The community couldn't be shown" Message="Try again in a moment." data-testid="load-failed" />
-        <div>
-            <ActionButton Text="Try again" Appearance="ActionButtonAppearance.Secondary" Click="LoadAsync" />
-        </div>
+            <Notice Tone="NoticeTone.Danger" Title="The community couldn't be shown" Message="Try again in a moment." data-testid="load-failed" />
+            <div>
+                <ActionButton Text="Try again" Appearance="ActionButtonAppearance.Secondary" Click="LoadAsync" />
+            </div>
             break;
     }
 </div>

@@ -44,15 +44,18 @@ public sealed class CommunityRoleEndpointTests
         using var client = WebsiteClient();
         var server = await LinkedServerAsync(client);
 
-        var map = await client.PutAsJsonAsync($"{server.Route(server.Administrator)}/role-mappings/{server.OfficerRoleId}", new MapDiscordRoleRequest("Officer"));
+        var map = await client.PutAsync($"{server.Route(server.Administrator)}/role-mappings/Officer/{server.OfficerRoleId}", content: null);
+        var secondRole = await client.PutAsync($"{server.Route(server.Administrator)}/role-mappings/RaidLeader/{server.OfficerRoleId}", content: null);
         var card = await client.GetFromJsonAsync<CommunityRoleSettings>($"{server.Route(server.Administrator)}/roles");
 
         map.StatusCode.ShouldBe(HttpStatusCode.NoContent);
+        secondRole.StatusCode.ShouldBe(HttpStatusCode.NoContent);
         card.ShouldNotBeNull();
         card.CanEdit.ShouldBeTrue();
         card.ServerName.ShouldBe("Dark Templars Reborn");
         card.MappableRoles.Select(role => role.Name).ShouldBe(["Guild Master", "Officier"]);
-        card.Rows.Select(row => (row.Role, row.Members)).ShouldBe([("Administrator", 1), ("Officer", 1), ("RaidLeader", 0), ("Member", 1)]);
+        card.Rows.Select(row => (row.Role, row.Members)).ShouldBe([("Administrator", 1), ("Officer", 1), ("RaidLeader", 1), ("Member", 1)]);
+        card.Rows[2].DiscordRoles.ShouldHaveSingleItem().DiscordRoleId.ShouldBe(server.OfficerRoleId);
         card.Rows[1].DiscordRoles.ShouldHaveSingleItem().ShouldBe(new MappedDiscordRole(server.OfficerRoleId, "Officier", false));
         (await client.GetFromJsonAsync<CommunitySummary>($"{CommunityEndpoints.CommunitiesRoute}/{server.CommunityId}")).ShouldNotBeNull().Name.ShouldBe("Dark Templars Reborn");
     }
@@ -66,8 +69,8 @@ public sealed class CommunityRoleEndpointTests
         var server = await LinkedServerAsync(client);
 
         var memberCard = await client.GetFromJsonAsync<CommunityRoleSettings>($"{server.Route(server.Member)}/roles");
-        var memberMap = await client.PutAsJsonAsync($"{server.Route(server.Member)}/role-mappings/{server.OfficerRoleId}", new MapDiscordRoleRequest("Officer"));
-        var memberUnmap = await client.DeleteAsync($"{server.Route(server.Member)}/role-mappings/{server.OfficerRoleId}");
+        var memberMap = await client.PutAsync($"{server.Route(server.Member)}/role-mappings/Officer/{server.OfficerRoleId}", content: null);
+        var memberUnmap = await client.DeleteAsync($"{server.Route(server.Member)}/role-mappings/Officer/{server.OfficerRoleId}");
         var outsiderCard = await client.GetAsync($"{server.Route(server.Outsider)}/roles");
 
         memberCard.ShouldNotBeNull().CanEdit.ShouldBeFalse();
@@ -84,11 +87,11 @@ public sealed class CommunityRoleEndpointTests
         using var client = WebsiteClient();
         var server = await LinkedServerAsync(client);
         var route = server.Route(server.Administrator);
-        (await client.PutAsJsonAsync($"{route}/role-mappings/{server.OfficerRoleId}", new MapDiscordRoleRequest("RaidLeader"))).StatusCode.ShouldBe(HttpStatusCode.NoContent);
+        (await client.PutAsync($"{route}/role-mappings/RaidLeader/{server.OfficerRoleId}", content: null)).StatusCode.ShouldBe(HttpStatusCode.NoContent);
 
-        var unmap = await client.DeleteAsync($"{route}/role-mappings/{server.OfficerRoleId}");
-        var unknownRole = await client.PutAsJsonAsync($"{route}/role-mappings/999", new MapDiscordRoleRequest("Officer"));
-        var wrongRaidManagerRole = await client.PutAsJsonAsync($"{route}/role-mappings/{server.OfficerRoleId}", new MapDiscordRoleRequest("Administrator"));
+        var unmap = await client.DeleteAsync($"{route}/role-mappings/RaidLeader/{server.OfficerRoleId}");
+        var unknownRole = await client.PutAsync($"{route}/role-mappings/Officer/999", content: null);
+        var wrongRaidManagerRole = await client.PutAsync($"{route}/role-mappings/Administrator/{server.OfficerRoleId}", content: null);
 
         unmap.StatusCode.ShouldBe(HttpStatusCode.NoContent);
         (await client.GetFromJsonAsync<CommunityRoleSettings>($"{route}/roles")).ShouldNotBeNull().Rows.ShouldAllBe(row => row.DiscordRoles.Count == 0);
@@ -109,7 +112,7 @@ public sealed class CommunityRoleEndpointTests
         try
         {
             (await client.GetAsync($"{route}/roles")).StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
-            (await client.PutAsJsonAsync($"{route}/role-mappings/{server.OfficerRoleId}", new MapDiscordRoleRequest("Officer"))).StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
+            (await client.PutAsync($"{route}/role-mappings/Officer/{server.OfficerRoleId}", content: null)).StatusCode.ShouldBe(HttpStatusCode.ServiceUnavailable);
         }
         finally
         {
@@ -130,7 +133,7 @@ public sealed class CommunityRoleEndpointTests
         var document = await client.GetStringAsync("/openapi/v1.json");
 
         document.ShouldContain("/internal/users/{userId}/communities/{communityId}/roles");
-        document.ShouldContain("/internal/users/{userId}/communities/{communityId}/role-mappings/{discordRoleId}");
+        document.ShouldContain("/internal/users/{userId}/communities/{communityId}/role-mappings/{role}/{discordRoleId}");
     }
     #endregion Tests
 

@@ -547,4 +547,111 @@
 <text x="454" y="2529" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#102830" text-anchor="middle">Add RaidManager to a Discord server</text>
 <text x="280" y="2604" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#8394aa" text-anchor="start">Is your server already linked? Its community appears here once you&#x27;re a member of the server.</text>
 </g>
+<text x="1520" y="1946" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">8 · Changing the officer roles</text>
+<clipPath id="clip8"><rect x="1520" y="1960" width="1440" height="900"/></clipPath>
+<rect x="1520" y="1960" width="1440" height="900" fill="#0b111c"/>
+<g clip-path="url(#clip8)">
+<rect x="1520" y="1960" width="240" height="900" fill="#0f1825"/>
+<rect x="1759" y="1960" width="1" height="900" fill="#2b3b50"/>
+<rect x="1540" y="1976" width="32" height="32" rx="8" fill="#0c2931"/>
+<rect x="1548" y="1984" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="1582" y="1998" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#eff5fa" text-anchor="start" letter-spacing="0.5">RAID</text>
+<text x="1624" y="1998" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#5de0c1" text-anchor="start" letter-spacing="0.5">MANAGER</text>
+<rect x="1536.5" y="2028.5" width="207" height="59" rx="10" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<rect x="1548" y="2042" width="32" height="32" rx="8" fill="#9077b3"/>
+<text x="1564" y="2062" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#0b111c" text-anchor="middle">CV</text>
+<text x="1590" y="2055" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Citadel Vanguard</text>
+<text x="1590" y="2074" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Icecrown · Community</text>
+<text x="1544" y="2124" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">PLAYER</text>
+<rect x="1532" y="2136" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="2154" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="2159" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Overview</text>
+<rect x="1532" y="2176" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="2194" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="2199" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Raids</text>
+<rect x="1532" y="2216" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="2234" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="2239" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">My characters</text>
+<rect x="1532" y="2256" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="2274" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="2279" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Readiness</text>
+<rect x="1532" y="2296" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="2314" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="2319" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Companion &amp; sync</text>
+<text x="1544" y="2364" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">OFFICER</text>
+<rect x="1532" y="2376" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="2394" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="2399" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Schedule</text>
+<rect x="1532" y="2416" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="2434" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="2439" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Roster builder</text>
+<rect x="1532" y="2456" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="2474" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="2479" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Raid night</text>
+<rect x="1532" y="2496" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="1554" cy="2514" rx="4" ry="4" fill="#8394aa"/>
+<text x="1570" y="2519" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Conflicts</text>
+<rect x="1520" y="2788" width="239" height="1" fill="#2b3b50"/>
+<ellipse cx="1556" cy="2824" rx="16" ry="16" fill="#604c80"/>
+<text x="1556" y="2828" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#f2e8ff" text-anchor="middle">GA</text>
+<text x="1582" y="2820" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Gihed Annabi</text>
+<text x="1582" y="2839" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Administrator</text>
+<rect x="1760" y="1960" width="1200" height="64" fill="#111c2a"/>
+<rect x="1760" y="2023" width="1200" height="1" fill="#2b3b50"/>
+<text x="1800" y="1997" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">CITADEL VANGUARD</text>
+<text x="1940.3" y="1997" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">/</text>
+<text x="1956.3" y="1997" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#eff5fa" text-anchor="start" letter-spacing="1.2">COMMUNITY SETTINGS</text>
+<ellipse cx="2644" cy="1992" rx="4" ry="4" fill="#5de0c1"/>
+<text x="2656" y="1997" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.2">REALM ONLINE</text>
+<ellipse cx="2792" cy="1992" rx="16" ry="16" fill="#604c80"/>
+<text x="2792" y="1996" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#f2e8ff" text-anchor="middle">GA</text>
+<rect x="2824.5" y="1972.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2872" y="1997" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Sign out</text>
+<text x="1800" y="2078" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.5">COMMUNITY</text>
+<text x="1800" y="2120" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#eff5fa" text-anchor="start">Citadel Vanguard</text>
+<text x="1800" y="2150" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="400" fill="#9eadc1" text-anchor="start">Discord server linked to RaidManager on Icecrown.</text>
+<rect x="1800.5" y="2184.5" width="399" height="263" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="1824" y="2224" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#eff5fa" text-anchor="start">Community</text>
+<text x="1824" y="2264" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">DISCORD SERVER</text>
+<text x="1824" y="2286" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#eff5fa" text-anchor="start">Citadel Vanguard</text>
+<text x="1824" y="2326" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">WARMANE REALM</text>
+<text x="1824" y="2348" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#eff5fa" text-anchor="start">Icecrown</text>
+<text x="1824" y="2388" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">ADMINISTRATOR</text>
+<text x="1824" y="2410" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#eff5fa" text-anchor="start">Gihed Annabi</text>
+<rect x="2216.5" y="2184.5" width="703" height="415" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="2240" y="2224" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="600" fill="#eff5fa" text-anchor="start">Officer roles</text>
+<text x="2240" y="2246" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Discord roles that give RaidManager permissions. Members get them at the next check.</text>
+<rect x="2216" y="2272" width="704" height="1" fill="#2b3b50"/>
+<text x="2240" y="2306" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Administrator</text>
+<text x="2896" y="2306" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="end">1 member</text>
+<text x="2400" y="2306" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Added RaidManager to the server</text>
+<rect x="2216" y="2336" width="704" height="1" fill="#2b3b50"/>
+<text x="2240" y="2370" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Officer</text>
+<text x="2896" y="2370" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="end">3 members</text>
+<rect x="2400" y="2352" width="101" height="24" rx="12" fill="#1b2e4a"/>
+<text x="2450.5" y="2368" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#8fb3f6" text-anchor="middle">@Officer  ×</text>
+<rect x="2400.5" y="2392.5" width="219" height="35" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2412" y="2415" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#eff5fa" text-anchor="start">@Veteran</text>
+<text x="2596" y="2415" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#9eadc1" text-anchor="start">▾</text>
+<rect x="2632" y="2390" width="64" height="40" rx="8" fill="#5de0c1"/>
+<text x="2664" y="2415" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#102830" text-anchor="middle">Add</text>
+<rect x="2704.5" y="2390.5" width="79" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="2744" y="2415" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Cancel</text>
+<rect x="2216" y="2448" width="704" height="1" fill="#2b3b50"/>
+<text x="2240" y="2482" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Raid leader</text>
+<text x="2896" y="2482" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="end">2 members</text>
+<rect x="2400" y="2464" width="115" height="24" rx="12" fill="#1b2e4a"/>
+<text x="2457.5" y="2480" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#8fb3f6" text-anchor="middle">@Raid Lead  ×</text>
+<rect x="2524" y="2464" width="129" height="24" rx="12" fill="#3f2329"/>
+<text x="2588.5" y="2480" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#f4a7ab" text-anchor="middle">Deleted role  ×</text>
+<text x="2668" y="2481" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="600" fill="#5de0c1" text-anchor="start">+ Add Discord role</text>
+<rect x="2216" y="2512" width="704" height="1" fill="#2b3b50"/>
+<text x="2240" y="2546" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Member</text>
+<text x="2896" y="2546" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="end">38 members</text>
+<text x="2400" y="2546" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Everyone in the Discord server</text>
+<rect x="2540.5" y="2040.5" width="379" height="71" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<rect x="2540" y="2052" width="4" height="48" rx="2" fill="#5de0c1"/>
+<text x="2564" y="2071" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Officer roles saved</text>
+<text x="2564" y="2093" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Members get them at their next check.</text>
+</g>
 </svg>

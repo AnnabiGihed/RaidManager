@@ -1,0 +1,8 @@
+@namespace RaidManager.Web.Features.Shared.Components
+<span class="@CssClass" @attributes="AdditionalAttributes">
+    <span class="tag-chip-text">@Text</span>
+    @if (OnRemove.HasDelegate)
+    {
+        <button type="button" class="tag-chip-remove" aria-label="@RemoveLabel" title="@RemoveLabel" @onclick="OnRemove">×</button>
+    }
+</span>

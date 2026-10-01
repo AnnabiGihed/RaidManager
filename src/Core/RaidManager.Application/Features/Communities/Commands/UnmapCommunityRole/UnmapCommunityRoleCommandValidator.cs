@@ -1,4 +1,5 @@
 using FluentValidation;
+using RaidManager.Domain.Features.Communities.Enums;
 
 namespace RaidManager.Application.Features.Communities.Commands.UnmapCommunityRole;
 
@@ -17,6 +18,9 @@ public sealed class UnmapCommunityRoleCommandValidator : AbstractValidator<Unmap
         RuleFor(command => command.CommunityId).NotEmpty();
         RuleFor(command => command.UserId).NotEmpty();
         RuleFor(command => command.DiscordRoleId).NotEmpty().MaximumLength(20).Matches("^[0-9]+$").WithMessage("A Discord role id is a numeric snowflake.");
+        RuleFor(command => command.Role)
+            .Must(role => role is nameof(CommunityMemberRole.Officer) or nameof(CommunityMemberRole.RaidLeader))
+            .WithMessage("A Discord role can only give Officer or RaidLeader.");
     }
     #endregion Constructors
 }

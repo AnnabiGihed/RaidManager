@@ -14,7 +14,7 @@ namespace RaidManager.Application.Features.Communities.Queries.GetCommunityRoleS
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-01<br/>
-/// Purpose: Counts each person in the server once, under their highest role, as the role check gives it; bots aren't counted. Only a current member of the server may ask.
+/// Purpose: Counts, per row, the people who get that role from their Discord roles (one Discord role can give several, owner decision on #289); bots aren't counted. Only a current member of the server may ask.
 /// </remarks>
 internal sealed class GetCommunityRoleSettingsQueryHandler : IQueryHandler<GetCommunityRoleSettingsQuery, CommunityRoleSettingsResponse>
 {
@@ -87,13 +87,16 @@ internal sealed class GetCommunityRoleSettingsQueryHandler : IQueryHandler<GetCo
             return Result.Failure<CommunityRoleSettingsResponse>(members.Error);
         }
 
+        // Each row counts the people who get that role from their Discord roles; Member counts those who get none.
         var administrator = await _users.FindByIdAsync(community.AdministratorId, cancellationToken);
-        var counts = members.Value
-            .Select(member => member.UserId == administrator?.DiscordUserId.Value
-                ? CommunityMemberRole.Administrator
-                : community.MappedRoleFor(member.RoleIds))
-            .GroupBy(role => role)
-            .ToDictionary(group => group.Key, group => group.Count());
+        var people = members.Value.Where(member => member.UserId != administrator?.DiscordUserId.Value).ToList();
+        var counts = new Dictionary<CommunityMemberRole, int>
+        {
+            [CommunityMemberRole.Administrator] = members.Value.Count - people.Count,
+            [CommunityMemberRole.Officer] = people.Count(member => Gives(community, member, CommunityMemberRole.Officer)),
+            [CommunityMemberRole.RaidLeader] = people.Count(member => Gives(community, member, CommunityMemberRole.RaidLeader)),
+            [CommunityMemberRole.Member] = people.Count(member => community.MappedRoleFor(member.RoleIds) == CommunityMemberRole.Member),
+        };
 
         return Result.Success(new CommunityRoleSettingsResponse(
             community.Id.Value,
@@ -105,6 +108,14 @@ internal sealed class GetCommunityRoleSettingsQueryHandler : IQueryHandler<GetCo
     #endregion Public Methods
 
     #region Private Helpers
+    /// <summary>Tells whether a member's Discord roles give a RaidManager role.</summary>
+    /// <param name="community">The community.</param>
+    /// <param name="member">The member.</param>
+    /// <param name="role">The RaidManager role.</param>
+    /// <returns><see langword="true"/> when one of the member's Discord roles is mapped to it.</returns>
+    private static bool Gives(Community community, DiscordServerMember member, CommunityMemberRole role) =>
+        community.RoleMappings.Any(mapping => mapping.Role == role && member.RoleIds.Contains(mapping.DiscordRoleId, StringComparer.Ordinal));
+
     /// <summary>Lists the Discord roles mapped to a RaidManager role, with their current names.</summary>
     /// <param name="community">The community.</param>
     /// <param name="server">The Discord server.</param>

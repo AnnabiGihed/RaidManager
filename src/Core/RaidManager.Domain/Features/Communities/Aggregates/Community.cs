@@ -106,7 +106,7 @@ public sealed class Community : AggregateRoot<CommunityId>
         return true;
     }
 
-    /// <summary>Maps a Discord role to Officer or Raid leader, replacing any earlier mapping of that Discord role.</summary>
+    /// <summary>Maps a Discord role to Officer or Raid leader; one Discord role can give both (owner decision on #289).</summary>
     /// <param name="discordRoleId">The Discord role snowflake.</param>
     /// <param name="role">The RaidManager role it gives: <see cref="CommunityMemberRole.Officer"/> or <see cref="CommunityMemberRole.RaidLeader"/>.</param>
     /// <exception cref="DomainException">Thrown when the role id is not a snowflake or the role can't be mapped.</exception>
@@ -119,17 +119,17 @@ public sealed class Community : AggregateRoot<CommunityId>
             return;
         }
 
-        _roleMappings.RemoveAll(existing => existing.DiscordRoleId == mapping.DiscordRoleId);
         _roleMappings.Add(mapping);
         RaiseDomainEvent(new CommunityRoleMappingsChanged(Id));
     }
 
-    /// <summary>Removes a Discord role's mapping, so it no longer gives a RaidManager role.</summary>
+    /// <summary>Stops a Discord role giving one RaidManager role; any other role it gives stays.</summary>
     /// <param name="discordRoleId">The Discord role snowflake.</param>
-    /// <remarks>Raises <see cref="CommunityRoleMappingsChanged"/> only when the role was mapped.</remarks>
-    public void UnmapDiscordRole(string discordRoleId)
+    /// <param name="role">The RaidManager role it should no longer give.</param>
+    /// <remarks>Raises <see cref="CommunityRoleMappingsChanged"/> only when that mapping existed.</remarks>
+    public void UnmapDiscordRole(string discordRoleId, CommunityMemberRole role)
     {
-        if (_roleMappings.RemoveAll(existing => existing.DiscordRoleId == discordRoleId) > 0)
+        if (_roleMappings.RemoveAll(existing => existing.DiscordRoleId == discordRoleId && existing.Role == role) > 0)
         {
             RaiseDomainEvent(new CommunityRoleMappingsChanged(Id));
         }

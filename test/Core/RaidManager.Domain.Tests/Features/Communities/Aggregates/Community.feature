@@ -36,12 +36,14 @@ Feature: Community linking and roles
       When the Administrator maps the Discord role "111" to Officer
       Then the role mappings did not change
 
-    Scenario: Mapping a Discord role to another role replaces its mapping
+    Scenario: One Discord role can give both Officer and Raid leader
       Given a linked community
       And the Discord role "111" gives Officer
       When the Administrator maps the Discord role "111" to RaidLeader
       Then the Discord role "111" gives RaidLeader
-      And the community has 1 role mapping
+      And the Discord role "111" gives Officer
+      And the community has 2 role mappings
+      And the role mappings changed once
 
     Scenario: Only Officer and Raid leader can be mapped
       Given a linked community
@@ -56,16 +58,31 @@ Feature: Community linking and roles
     Scenario: Removing a mapping reports a change
       Given a linked community
       And the Discord role "111" gives Officer
-      When the Administrator removes the mapping of the Discord role "111"
+      When the Administrator removes the Officer mapping of the Discord role "111"
       Then the community has 0 role mappings
       And the role mappings changed once
 
+    Scenario: Removing one of a Discord role's mappings keeps the other
+      Given a linked community
+      And the Discord role "111" gives Officer
+      And the Discord role "111" gives RaidLeader
+      When the Administrator removes the Officer mapping of the Discord role "111"
+      Then the Discord role "111" gives RaidLeader
+      And the community has 1 role mapping
+
     Scenario: Removing a role that was not mapped changes nothing
       Given a linked community
-      When the Administrator removes the mapping of the Discord role "111"
+      When the Administrator removes the Officer mapping of the Discord role "111"
       Then the role mappings did not change
 
   Rule: A member's role follows their Discord roles
+
+    Scenario: A Discord role that gives both roles gives the higher one
+      Given a linked community
+      And the Discord role "111" gives Officer
+      And the Discord role "111" gives RaidLeader
+      When a member has the Discord roles "111"
+      Then the member's role is Officer
 
     Scenario Outline: The highest mapped role applies
       Given a linked community

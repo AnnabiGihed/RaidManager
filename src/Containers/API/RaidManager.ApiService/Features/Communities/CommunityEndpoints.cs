@@ -96,10 +96,10 @@ public static class CommunityEndpoints
             .ProducesProblem(StatusCodes.Status409Conflict)
             .ProducesProblem(StatusCodes.Status503ServiceUnavailable);
 
-        userCommunity.MapPut("/role-mappings/{discordRoleId}", MapRoleAsync)
+        userCommunity.MapPut("/role-mappings/{role}/{discordRoleId}", MapRoleAsync)
             .WithName("MapCommunityRole")
             .WithSummary("Map a Discord role to Officer or Raid leader")
-            .WithDescription("Only the community's Administrator, still in the server, may. The Discord role must be one of the server's mappable roles; mapping a role again replaces its RaidManager role.")
+            .WithDescription("Only the community's Administrator, still in the server, may. The Discord role must be one of the server's mappable roles. One Discord role can give both Officer and Raid leader; mapping it to one keeps the other.")
             .Produces(StatusCodes.Status204NoContent)
             .ProducesValidationProblem()
             .ProducesProblem(StatusCodes.Status400BadRequest)
@@ -107,10 +107,10 @@ public static class CommunityEndpoints
             .ProducesProblem(StatusCodes.Status404NotFound)
             .ProducesProblem(StatusCodes.Status503ServiceUnavailable);
 
-        userCommunity.MapDelete("/role-mappings/{discordRoleId}", UnmapRoleAsync)
+        userCommunity.MapDelete("/role-mappings/{role}/{discordRoleId}", UnmapRoleAsync)
             .WithName("UnmapCommunityRole")
-            .WithSummary("Remove a Discord role's mapping")
-            .WithDescription("Only the community's Administrator, still in the server, may. Removing a role that isn't mapped changes nothing.")
+            .WithSummary("Stop a Discord role giving a RaidManager role")
+            .WithDescription("Only the community's Administrator, still in the server, may. Any other RaidManager role the Discord role gives stays; removing a mapping that doesn't exist changes nothing.")
             .Produces(StatusCodes.Status204NoContent)
             .ProducesValidationProblem()
             .ProducesProblem(StatusCodes.Status403Forbidden)
@@ -179,33 +179,34 @@ public static class CommunityEndpoints
     /// <summary>Maps a Discord role to a RaidManager role.</summary>
     /// <param name="userId">The signed-in user.</param>
     /// <param name="communityId">The community.</param>
+    /// <param name="role">The RaidManager role's name: <c>Officer</c> or <c>RaidLeader</c>.</param>
     /// <param name="discordRoleId">The Discord role snowflake.</param>
-    /// <param name="request">The RaidManager role.</param>
     /// <param name="sender">The MediatR sender.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>204, or a problem.</returns>
     private static async Task<IResult> MapRoleAsync(
         Guid userId,
         Guid communityId,
+        string role,
         string discordRoleId,
-        MapDiscordRoleRequest request,
         ISender sender,
         CancellationToken cancellationToken)
     {
-        var result = await sender.Send(new MapCommunityRoleCommand(communityId, userId, discordRoleId, request.Role), cancellationToken);
+        var result = await sender.Send(new MapCommunityRoleCommand(communityId, userId, discordRoleId, role), cancellationToken);
         return result.ToHttpResult(TypedResults.NoContent);
     }
 
-    /// <summary>Removes a Discord role's mapping.</summary>
+    /// <summary>Stops a Discord role giving a RaidManager role.</summary>
     /// <param name="userId">The signed-in user.</param>
     /// <param name="communityId">The community.</param>
+    /// <param name="role">The RaidManager role's name: <c>Officer</c> or <c>RaidLeader</c>.</param>
     /// <param name="discordRoleId">The Discord role snowflake.</param>
     /// <param name="sender">The MediatR sender.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>204, or a problem.</returns>
-    private static async Task<IResult> UnmapRoleAsync(Guid userId, Guid communityId, string discordRoleId, ISender sender, CancellationToken cancellationToken)
+    private static async Task<IResult> UnmapRoleAsync(Guid userId, Guid communityId, string role, string discordRoleId, ISender sender, CancellationToken cancellationToken)
     {
-        var result = await sender.Send(new UnmapCommunityRoleCommand(communityId, userId, discordRoleId), cancellationToken);
+        var result = await sender.Send(new UnmapCommunityRoleCommand(communityId, userId, discordRoleId, role), cancellationToken);
         return result.ToHttpResult(TypedResults.NoContent);
     }
 

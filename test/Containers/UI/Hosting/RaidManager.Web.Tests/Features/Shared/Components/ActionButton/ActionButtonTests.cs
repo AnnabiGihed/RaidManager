@@ -49,6 +49,7 @@ public sealed class ActionButtonTests : BunitContext
     [InlineData(ActionButtonAppearance.Primary, "action-button-primary")]
     [InlineData(ActionButtonAppearance.Secondary, "action-button-secondary")]
     [InlineData(ActionButtonAppearance.Danger, "action-button-danger")]
+    [InlineData(ActionButtonAppearance.Text, "action-button-text")]
     public void ActionButtonAppliesItsAppearance(ActionButtonAppearance appearance, string expectedClass)
     {
         var button = Render<ActionButton>(parameters => parameters

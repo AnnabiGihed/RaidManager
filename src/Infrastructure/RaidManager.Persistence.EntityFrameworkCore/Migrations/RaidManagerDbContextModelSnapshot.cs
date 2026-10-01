@@ -671,11 +671,10 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                                 .HasColumnType("varchar(20)");
 
                             b1.Property<string>("Role")
-                                .IsRequired()
                                 .HasMaxLength(32)
                                 .HasColumnType("nvarchar(32)");
 
-                            b1.HasKey("CommunityId", "DiscordRoleId");
+                            b1.HasKey("CommunityId", "DiscordRoleId", "Role");
 
                             b1.ToTable("CommunityRoleMappings", (string)null);
 

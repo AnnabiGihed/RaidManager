@@ -23,8 +23,8 @@ as `Parameters:website-service-key` in your own terminal.
 | `GET /internal/communities/by-discord-server/{discordGuildId}` | Website only | Get the community a Discord server links to, or 404 when it isn't linked. |
 | `GET /internal/users/{userId}/communities` | Website only | List the communities the user administers, by name. |
 | `GET /internal/users/{userId}/communities/{communityId}/roles` | Website only | Read the community's officer roles from Discord: the mappable roles and, per RaidManager role, its Discord roles and member count. Only a member of the server may; refreshes the stored server name. |
-| `PUT /internal/users/{userId}/communities/{communityId}/role-mappings/{discordRoleId}` | Website only | Map a Discord role to `Officer` or `RaidLeader`. Only the Administrator may. |
-| `DELETE /internal/users/{userId}/communities/{communityId}/role-mappings/{discordRoleId}` | Website only | Remove a Discord role's mapping. Only the Administrator may. |
+| `PUT /internal/users/{userId}/communities/{communityId}/role-mappings/{role}/{discordRoleId}` | Website only | Make a Discord role give `Officer` or `RaidLeader`. One Discord role can give both. Only the Administrator may. |
+| `DELETE /internal/users/{userId}/communities/{communityId}/role-mappings/{role}/{discordRoleId}` | Website only | Stop a Discord role giving that role; any other role it gives stays. Only the Administrator may. |
 
 Operations under `/internal/` require the website key in the `X-RaidManager-Service-Key` header, as
 [ADR-0011](../adr/0011-website-session-and-api-trust.md) describes. A missing or wrong key returns 401. The website
