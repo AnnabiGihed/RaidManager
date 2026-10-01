@@ -16,7 +16,8 @@ namespace RaidManager.ApiService.Tests.Features.Communities;
 /// Date: 2026-10-01<br/>
 /// Purpose: Proves a server links once, with its installer as Administrator, and reads back the same way from every route.
 /// </remarks>
-public sealed class CommunityEndpointTests : IClassFixture<ApiFactory>
+[Collection(ApiTestGroup.Name)]
+public sealed class CommunityEndpointTests
 {
     #region Fields
     /// <summary>Stores the API host.</summary>

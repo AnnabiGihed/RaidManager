@@ -18,7 +18,8 @@ namespace RaidManager.ApiService.Tests.Features.Communities;
 /// Purpose: Proves members read the roles card, only the Administrator changes mappings, the stored server name follows
 /// Discord, and Discord's failures answer 503 or 409.
 /// </remarks>
-public sealed class CommunityRoleEndpointTests : IClassFixture<ApiFactory>
+[Collection(ApiTestGroup.Name)]
+public sealed class CommunityRoleEndpointTests
 {
     #region Fields
     /// <summary>Stores the API host.</summary>

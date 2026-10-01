@@ -25,7 +25,8 @@ namespace RaidManager.ApiService.Tests.Features.Characters;
 /// Purpose: Proves the website key guards the endpoints, that only a player's undecided claims are listed, and that
 /// approve and reject map every domain outcome to the right status, including a kept conflict review.
 /// </remarks>
-public sealed class CharacterClaimEndpointTests : IClassFixture<ApiFactory>
+[Collection(ApiTestGroup.Name)]
+public sealed class CharacterClaimEndpointTests
 {
     #region Fields
     /// <summary>Stores the API factory.</summary>
