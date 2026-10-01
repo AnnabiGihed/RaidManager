@@ -51,9 +51,9 @@ secrets inside the command, so it never appears on screen.
 
 All calls go to `https://discord.com/api/v10`.
 
-When a developer team owns the application, the `owner` that `GET /applications/@me` returns is the team's own
-account, not a person, so it is in no server. Check the member call with a real member's id instead, such as one from
-`GET /guilds/{server}/members?limit=10`.
+Discord can place an application under a developer team, even one with a single member. Then the `owner` that
+`GET /applications/@me` returns is the team's own account, which is in no server, and your account is
+`team.owner_user_id`. Check the member call with that id, the id of the person who added the bot.
 
 Then run the AppHost (see the README). The API refuses to start without the token, so a running API confirms the
 AppHost passes it.
