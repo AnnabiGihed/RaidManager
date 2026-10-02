@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- Planning records: Sprint 1 (2026-10-02 to 2026-10-16, adopting the work management specification) and a draft
+  release v1.0 record with its goal, acceptance criteria, scope and sprint sequence awaiting owner approval (#330).
 - The community page manages roles: one roles card with each role's Discord roles, what it allows and its members;
   Create role, Edit and Delete with a confirmation; a role manager sees the roles they can't change as locked and
   can't let a role manage roles; other members see the card read-only (#314).
