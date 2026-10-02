@@ -1,0 +1,11 @@
+@namespace RaidManager.Web.Features.Shared.Components
+<label class="@CssClass" @attributes="AdditionalAttributes">
+    <input class="check-option-box" type="checkbox" checked="@Checked" disabled="@Disabled" @onchange="ChangeAsync" />
+    <span class="check-option-text">
+        <span class="check-option-title">@Title</span>
+        @if (!string.IsNullOrWhiteSpace(Detail))
+        {
+            <span class="check-option-detail">@Detail</span>
+        }
+    </span>
+</label>

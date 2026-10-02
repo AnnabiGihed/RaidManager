@@ -14,21 +14,26 @@
             {
                 <Toast Title="@ViewModel.LinkedTitle" Message="Members see it at their next sign-in." data-testid="linked-confirmation" />
             }
-            <PageHeading Eyebrow="Community" Title="@ViewModel.Community!.Name" Subtitle="@ViewModel.LinkedOn" />
-            <div class="community-columns">
-                <div class="community-summary-column">
-                    <SurfaceCard Title="Community" data-testid="community-summary">
-                        <div class="community-values">
-                            <LabeledValue Label="Discord server" Value="@ViewModel.Community.Name" />
-                            <LabeledValue Label="Warmane realm" Value="@ViewModel.Community.Realm" />
-                            <LabeledValue Label="Administrator" Value="@ViewModel.Community.AdministratorName" />
+            <PageHeading Eyebrow="Community" Title="@ViewModel.Community!.Name" Subtitle="@ViewModel.Overview">
+                <Actions>
+                    @if (Roles.HasLockedRoles)
+                    {
+                        <div class="locked-notice">
+                            <Notice Title="Some roles are locked" Message="Only the Administrator changes a role that manages roles." data-testid="locked-notice" />
                         </div>
-                    </SurfaceCard>
-                </div>
-                <div class="community-roles-column">
-                    <SurfaceCard Title="Officer roles" data-testid="officer-roles">
+                    }
+                </Actions>
+            </PageHeading>
+            <div class="community-roles">
+                <SurfaceCard Title="Roles" Subtitle="Discord roles give RaidManager roles. Members get them at the next check." data-testid="roles-card">
+                    <HeaderActions>
+                        @if (Roles.CanCreate)
+                        {
+                            <ActionButton Text="Create role" Click="Roles.OpenCreate" data-testid="create-role" />
+                        }
+                    </HeaderActions>
+                    <ChildContent>
                         <div class="roles-content">
-                            <p class="roles-caption">Discord roles that give RaidManager permissions. Members get them at the next check.</p>
                             @if (Roles.Problem is { } problem)
                             {
                                 <Notice Tone="NoticeTone.Danger" Title="@problem.Title" Message="@problem.Message" data-testid="roles-problem" />
@@ -39,42 +44,60 @@
                                     <ActionButton Text="Try again" Appearance="ActionButtonAppearance.Secondary" Click="LoadRolesAsync" />
                                 </div>
                             }
-                            @foreach (var row in Roles.Rows)
-                            {
-                                <div @key="row.Role" class="role-row" data-testid="role-row-@row.Role">
-                                    <span class="role-row-label">@row.Label</span>
-                                    <div class="role-row-sources">
-                                        @if (row.Source is not null)
-                                        {
-                                            <span class="role-row-source">@row.Source</span>
-                                        }
-                                        @foreach (var chip in row.Chips)
-                                        {
+                            <div class="role-rows">
+                                @foreach (var row in Roles.Rows)
+                                {
+                                    <div @key="row.Role" class="role-row" data-testid="role-row-@row.Role">
+                                        <span class="role-row-label">@row.Label</span>
+                                        <div class="role-row-details">
+                                            <div class="role-row-sources">
+                                                @if (row.Source is not null)
+                                                {
+                                                    <span class="role-row-source">@row.Source</span>
+                                                }
+                                                @foreach (var chip in row.Chips)
+                                                {
+                                                    @if (row.Editable)
+                                                    {
+                                                        <TagChip @key="chip.DiscordRoleId" Text="@chip.Text" Tone="@ChipTone(chip)" RemoveLabel="@RemoveLabel(chip)" OnRemove="@(() => RemoveAsync(chip.DiscordRoleId, row.Role))" />
+                                                    }
+                                                    else
+                                                    {
+                                                        <TagChip @key="chip.DiscordRoleId" Text="@chip.Text" Tone="@ChipTone(chip)" />
+                                                    }
+                                                }
+                                                @if (row.Editable && Roles.PickingFor == row.Role)
+                                                {
+                                                    <div class="role-picker" data-testid="role-picker">
+                                                        <OptionSelect TValue="string" Label="@PickerLabel(row)" Options="@PickerOptions(row.Role)" Value="@Roles.PickedRoleId" ValueChanged="PickRole" />
+                                                        <ActionButton Text="Add" Disabled="@(Roles.PickedRoleId is null || Roles.IsSaving)" Click="AddAsync" />
+                                                        <ActionButton Text="Cancel" Appearance="ActionButtonAppearance.Secondary" Click="Roles.ClosePicker" />
+                                                    </div>
+                                                }
+                                                else if (row.Editable && PickerOptions(row.Role).Count > 0)
+                                                {
+                                                    <ActionButton Text="+ Add Discord role" Appearance="ActionButtonAppearance.Text" Click="@(() => Roles.OpenPicker(row.Role))" />
+                                                }
+                                            </div>
+                                            @if (row.Allows is not null)
+                                            {
+                                                <span class="role-row-allows">@row.Allows</span>
+                                            }
+                                        </div>
+                                        <span class="role-row-members">@row.MembersLabel</span>
+                                        <span class="role-row-action">
                                             @if (row.Editable)
                                             {
-                                                <TagChip @key="chip.DiscordRoleId" Text="@chip.Text" Tone="@ChipTone(chip)" RemoveLabel="@RemoveLabel(chip)" OnRemove="@(() => RemoveAsync(chip.DiscordRoleId, row.Role))" />
+                                                <ActionButton Text="Edit" Appearance="ActionButtonAppearance.Text" Click="@(() => Roles.OpenEdit(row.Role))" aria-label="@EditLabel(row)" />
                                             }
-                                            else
+                                            else if (row.Locked)
                                             {
-                                                <TagChip @key="chip.DiscordRoleId" Text="@chip.Text" Tone="@ChipTone(chip)" />
+                                                <span class="role-row-locked">Locked</span>
                                             }
-                                        }
-                                        @if (row.Editable && Roles.PickingFor == row.Role)
-                                        {
-                                            <div class="role-picker" data-testid="role-picker">
-                                                <OptionSelect TValue="string" Label="@PickerLabel(row)" Options="@PickerOptions(row.Role)" Value="@Roles.PickedRoleId" ValueChanged="PickRole" />
-                                                <ActionButton Text="Add" Disabled="@(Roles.PickedRoleId is null || Roles.IsSaving)" Click="AddAsync" />
-                                                <ActionButton Text="Cancel" Appearance="ActionButtonAppearance.Secondary" Click="Roles.ClosePicker" />
-                                            </div>
-                                        }
-                                        else if (row.Editable && PickerOptions(row.Role).Count > 0)
-                                        {
-                                            <ActionButton Text="+ Add Discord role" Appearance="ActionButtonAppearance.Text" Click="@(() => Roles.OpenPicker(row.Role))" />
-                                        }
+                                        </span>
                                     </div>
-                                    <span class="role-row-members">@row.MembersLabel</span>
-                                </div>
-                            }
+                                }
+                            </div>
                             @if (Roles.Status == CommunityPageStatus.Ready)
                             {
                                 <div>
@@ -82,9 +105,48 @@
                                 </div>
                             }
                         </div>
-                    </SurfaceCard>
-                </div>
+                    </ChildContent>
+                </SurfaceCard>
             </div>
+            @if (Roles.Form is { } form)
+            {
+                @if (Roles.ConfirmingDelete)
+                {
+                    <ConfirmDialog Title="@Roles.DeleteTitle" Message="@Roles.DeleteMessage" Detail="Its Discord roles stay in Discord, and its raid history stays in RaidManager."
+                                   ConfirmText="Delete role" ConfirmAppearance="ActionButtonAppearance.Danger" OnConfirm="DeleteAsync" OnCancel="Roles.CancelDelete"
+                                   data-testid="delete-dialog" />
+                }
+                else
+                {
+                    <FormDialog Title="@form.Title" OnCancel="Roles.CloseForm" data-testid="role-form">
+                        <ChildContent>
+                            <TextField Label="Name" Value="@form.Name" ValueChanged="@(name => form.Name = name)" MaxLength="RoleForm.MaximumNameLength" data-testid="role-name" />
+                            <fieldset class="role-permissions">
+                                <legend class="role-permissions-legend">Permissions</legend>
+                                @foreach (var permission in RolePermissionOption.All)
+                                {
+                                    <CheckOption @key="permission.Name" Title="@permission.Title" Detail="@permission.Detail" Checked="@form.Permissions.Contains(permission.Name)"
+                                                 Disabled="@(permission.Name == RolePermissionOption.ManageCommunityRoles && !form.CanGrantRoleManagement)"
+                                                 CheckedChanged="@(allowed => form.Set(permission.Name, allowed))" data-testid="@($"permission-{permission.Name}")" />
+                                }
+                            </fieldset>
+                            @if (form.Problem is { } formProblem)
+                            {
+                                <Notice Tone="NoticeTone.Danger" Title="The role wasn't saved" Message="@formProblem" data-testid="role-form-problem" />
+                            }
+                        </ChildContent>
+                        <Actions>
+                            @if (form.IsEditing)
+                            {
+                                <ActionButton Text="Delete role" Appearance="ActionButtonAppearance.Danger" Click="Roles.AskDelete" data-testid="delete-role" />
+                            }
+                            <span class="role-form-spacer"></span>
+                            <ActionButton Text="Cancel" Appearance="ActionButtonAppearance.Secondary" Click="Roles.CloseForm" />
+                            <ActionButton Text="@form.SaveLabel" Disabled="@(!form.CanSave || Roles.IsSaving)" Click="SaveAsync" data-testid="save-role" />
+                        </Actions>
+                    </FormDialog>
+                }
+            }
             break;
         case CommunityPageStatus.Failed:
             <Notice Tone="NoticeTone.Danger" Title="The community couldn't be shown" Message="Try again in a moment." data-testid="load-failed" />

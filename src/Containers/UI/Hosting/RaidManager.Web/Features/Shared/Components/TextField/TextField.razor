@@ -1,0 +1,5 @@
+@namespace RaidManager.Web.Features.Shared.Components
+<div class="text-field">
+    <label class="text-field-label" for="@_id">@Label</label>
+    <input id="@_id" class="text-field-input" type="text" value="@Value" maxlength="@MaxLength" @oninput="ChangeAsync" @attributes="AdditionalAttributes" />
+</div>

@@ -40,6 +40,15 @@ internal sealed class FakeCommunitiesApi : ICommunitiesApiClient
     /// <summary>Gets the role changes asked for: the Discord role, the community role's id, and whether it was added or removed.</summary>
     public List<(string DiscordRoleId, Guid RoleId, bool Added)> RoleChanges { get; } = [];
 
+    /// <summary>Gets the role writes asked for: <c>create</c>, <c>update</c> or <c>delete</c>, the role, its name and permissions.</summary>
+    public List<(string Action, Guid? RoleId, string? Name, IReadOnlyCollection<string>? Permissions)> RoleWrites { get; } = [];
+
+    /// <summary>Gets or sets how the API answers role writes; <see cref="CommunityApiStatus.Succeeded"/> by default.</summary>
+    public CommunityApiStatus RoleWriteStatus { get; set; } = CommunityApiStatus.Succeeded;
+
+    /// <summary>Gets or sets the exception role writes throw, if any.</summary>
+    public Exception? RoleWriteFailure { get; set; }
+
     /// <summary>Gets the members pages by community; a community without one gets a sample page.</summary>
     public Dictionary<Guid, CommunityMembers> MemberLists { get; } = [];
     #endregion Properties
@@ -145,6 +154,32 @@ internal sealed class FakeCommunitiesApi : ICommunitiesApiClient
     {
         RoleChanges.Add((discordRoleId, roleId, false));
         return Task.FromResult(RoleStatus);
+    }
+
+    /// <inheritdoc />
+    public Task<CommunityApiStatus> CreateRoleAsync(Guid userId, Guid communityId, string name, IReadOnlyCollection<string> permissions, CancellationToken cancellationToken) =>
+        WriteRole(("create", null, name, permissions));
+
+    /// <inheritdoc />
+    public Task<CommunityApiStatus> UpdateRoleAsync(Guid userId, Guid communityId, Guid roleId, string name, IReadOnlyCollection<string> permissions, CancellationToken cancellationToken) =>
+        WriteRole(("update", roleId, name, permissions));
+
+    /// <inheritdoc />
+    public Task<CommunityApiStatus> DeleteRoleAsync(Guid userId, Guid communityId, Guid roleId, CancellationToken cancellationToken) =>
+        WriteRole(("delete", roleId, null, null));
+
+    /// <summary>Records a role write and answers it, or throws when set to fail.</summary>
+    /// <param name="write">The write.</param>
+    /// <returns>The configured answer.</returns>
+    private Task<CommunityApiStatus> WriteRole((string Action, Guid? RoleId, string? Name, IReadOnlyCollection<string>? Permissions) write)
+    {
+        if (RoleWriteFailure is { } failure)
+        {
+            throw failure;
+        }
+
+        RoleWrites.Add(write);
+        return Task.FromResult(RoleWriteStatus);
     }
     #endregion Public Methods
 

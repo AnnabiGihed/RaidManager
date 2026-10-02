@@ -1,0 +1,63 @@
+.check-option {
+    display: flex;
+    gap: 14px;
+    align-items: flex-start;
+    font-family: var(--rm-font-family);
+    cursor: pointer;
+}
+
+/* The design system's 18 px box: outlined when clear, teal with a check mark when ticked. */
+.check-option-box {
+    display: grid;
+    flex: none;
+    place-content: center;
+    box-sizing: border-box;
+    width: 18px;
+    height: 18px;
+    margin: 2px 0 0;
+    border: 1px solid var(--rm-text-secondary);
+    border-radius: 4px;
+    background: var(--rm-surface-card);
+    cursor: inherit;
+    appearance: none;
+}
+
+.check-option-box:checked {
+    border-color: var(--rm-brand-accent);
+    background: var(--rm-brand-accent);
+}
+
+.check-option-box:checked::before {
+    content: "\2713";
+    color: var(--rm-brand-on-accent);
+    font-size: 12px;
+    font-weight: 800;
+    line-height: 1;
+}
+
+.check-option-box:focus-visible {
+    outline: 2px solid var(--rm-brand-accent);
+    outline-offset: 2px;
+}
+
+.check-option-text {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.check-option-title {
+    color: var(--rm-text-primary);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.check-option-detail {
+    color: var(--rm-text-secondary);
+    font-size: 12px;
+}
+
+.check-option-disabled {
+    cursor: not-allowed;
+    opacity: 0.55;
+}

@@ -42,7 +42,7 @@ public sealed class CommunitySettingsTests : BunitContext
     #endregion Constructors
 
     #region Tests
-    /// <summary>Shows the server, realm and Administrator, and the confirmation right after linking.</summary>
+    /// <summary>Shows the server, realm and Administrator in the heading, and the confirmation right after linking.</summary>
     [Fact]
     public void JustLinkedCommunityShowsItsCardAndTheConfirmation()
     {
@@ -54,11 +54,7 @@ public sealed class CommunitySettingsTests : BunitContext
 
         page.WaitForAssertion(() => page.Find("h1").TextContent.ShouldBe("Dark Templars"));
         page.Find(".page-heading-eyebrow").TextContent.ShouldBe("Community");
-        page.Find(".page-heading-subtitle").TextContent.ShouldBe("Discord server linked to RaidManager on Icecrown.");
-        page.FindAll("[data-testid=community-summary] .labeled-value-label").Select(label => label.TextContent)
-            .ShouldBe(["Discord server", "Warmane realm", "Administrator"]);
-        page.FindAll("[data-testid=community-summary] .labeled-value-value").Select(value => value.TextContent)
-            .ShouldBe(["Dark Templars", "Icecrown", "Gihed Annabi"]);
+        page.Find(".page-heading-subtitle").TextContent.ShouldBe("Discord server linked to RaidManager on Icecrown. Administrator: Gihed Annabi.");
         page.Find("[data-testid=linked-confirmation] .toast-title").TextContent.ShouldBe("Dark Templars is linked");
         page.Find("[data-testid=linked-confirmation] .toast-message").TextContent.ShouldBe("Members see it at their next sign-in.");
     }
@@ -85,7 +81,10 @@ public sealed class CommunitySettingsTests : BunitContext
 
         page.FindAll("[data-testid^=role-row-] .role-row-label").Select(label => label.TextContent).ShouldBe(["Administrator", "Officer", "Raid leader", "Member"]);
         page.FindAll("[data-testid^=role-row-] .role-row-members").Select(count => count.TextContent).ShouldBe(["1 member", "1 member", "0 members", "2 members"]);
-        page.Find("[data-testid=role-row-Administrator] .role-row-source").TextContent.ShouldBe("Added RaidManager to the server");
+        page.Find("[data-testid=role-row-Administrator] .role-row-source").TextContent.ShouldBe("Added RaidManager to the server; allows everything");
+        page.Find($"[data-testid=role-row-{FakeCommunitiesApiClient.OfficerId}] .role-row-allows").TextContent.ShouldBe("Allows raids, rosters, raid night, conflicts");
+        page.FindAll("[data-testid=create-role]").ShouldHaveSingleItem();
+        page.FindAll("[data-testid=locked-notice]").ShouldBeEmpty();
         page.Find($"[data-testid=role-row-{FakeCommunitiesApiClient.OfficerId}] .tag-chip-text").TextContent.ShouldBe("@Officier");
         page.Find($"[data-testid=role-row-{FakeCommunitiesApiClient.OfficerId}] .tag-chip-remove").GetAttribute("aria-label").ShouldBe("Remove @Officier");
         page.Find($"[data-testid=role-row-{FakeCommunitiesApiClient.RaidLeaderId}] .tag-chip").ClassList.ShouldContain("tag-chip-danger");
@@ -119,7 +118,7 @@ public sealed class CommunitySettingsTests : BunitContext
         page.FindAll("[data-testid=role-picker] button").First(button => button.TextContent.Contains("Add", StringComparison.Ordinal)).Click();
 
         _communities.RoleChanges.ShouldHaveSingleItem().ShouldBe(("13", FakeCommunitiesApiClient.OfficerId, true));
-        page.WaitForAssertion(() => page.Find("[data-testid=saved-confirmation] .toast-title").TextContent.ShouldBe("Officer roles saved"));
+        page.WaitForAssertion(() => page.Find("[data-testid=saved-confirmation] .toast-title").TextContent.ShouldBe("Roles saved"));
         page.FindAll("[data-testid=role-picker]").ShouldBeEmpty();
     }
 
@@ -169,10 +168,10 @@ public sealed class CommunitySettingsTests : BunitContext
     {
         _communities.RoleStatus = ViewModels.Features.Communities.CommunityApiStatus.DiscordUnavailable;
         var page = OpenAdministratorPage(waitForRows: false);
-        page.WaitForAssertion(() => page.Find("[data-testid=roles-problem] .notice-title").TextContent.ShouldBe("The officer roles couldn't be shown"));
+        page.WaitForAssertion(() => page.Find("[data-testid=roles-problem] .notice-title").TextContent.ShouldBe("The roles couldn't be shown"));
 
         _communities.RoleStatus = ViewModels.Features.Communities.CommunityApiStatus.Succeeded;
-        page.Find("[data-testid=officer-roles] button").Click();
+        page.Find("[data-testid=roles-card] button").Click();
 
         page.WaitForAssertion(() => page.FindAll("[data-testid^=role-row-]").Count.ShouldBe(4));
     }
@@ -204,6 +203,79 @@ public sealed class CommunitySettingsTests : BunitContext
         page.Find("button").Click();
 
         page.WaitForAssertion(() => page.Find("h1").TextContent.ShouldBe("Dark Templars"));
+    }
+
+    /// <summary>Creates a role from the dialog: a name and a permission, then the confirmation.</summary>
+    [Fact]
+    public void CreatingARoleSavesItAndConfirms()
+    {
+        var page = OpenAdministratorPage();
+
+        page.Find("[data-testid=create-role]").Click();
+        page.Find("[data-testid=role-form] h2").TextContent.ShouldBe("Create a role");
+        page.Find("[data-testid=role-name]").Input("Veteran");
+        page.Find("[data-testid=permission-RunRaidNight] input").Change(true);
+        page.Find("[data-testid=save-role]").Click();
+
+        page.WaitForAssertion(() => page.Find("[data-testid=saved-confirmation] .toast-title").TextContent.ShouldBe("Roles saved"));
+        _communities.RoleWrites.ShouldHaveSingleItem().ShouldSatisfyAllConditions(
+            write => write.Action.ShouldBe("create"),
+            write => write.Name.ShouldBe("Veteran"),
+            write => write.Permissions.ShouldNotBeNull().ShouldBe(["RunRaidNight"]));
+        page.FindAll("[data-testid=role-form]").ShouldBeEmpty();
+    }
+
+    /// <summary>Keeps the dialog open with the reason when another role has the name.</summary>
+    [Fact]
+    public void ATakenNameIsExplainedInTheDialog()
+    {
+        var page = OpenAdministratorPage();
+        _communities.RoleWriteStatus = ViewModels.Features.Communities.CommunityApiStatus.NameTaken;
+
+        page.Find("[data-testid=create-role]").Click();
+        page.Find("[data-testid=role-name]").Input("Officer");
+        page.Find("[data-testid=save-role]").Click();
+
+        page.WaitForAssertion(() => page.Find("[data-testid=role-form-problem] .notice-message").TextContent.ShouldBe("Another role already has this name."));
+        page.FindAll("button").First(button => button.TextContent.Trim() == "Cancel").Click();
+        page.FindAll("[data-testid=role-form]").ShouldBeEmpty();
+    }
+
+    /// <summary>Edits a role, then deletes it after the confirmation.</summary>
+    [Fact]
+    public void EditingThenDeletingARole()
+    {
+        var page = OpenAdministratorPage();
+
+        page.Find($"[data-testid=role-row-{FakeCommunitiesApiClient.RaidLeaderId}] [aria-label='Edit Raid leader']").Click();
+        page.Find("[data-testid=role-form] h2").TextContent.ShouldBe("Edit Raid leader");
+        page.Find("[data-testid=role-name]").GetAttribute("value").ShouldBe("Raid leader");
+        page.Find("[data-testid=permission-ManageRaids] input").HasAttribute("checked").ShouldBeTrue();
+        page.Find("[data-testid=delete-role]").Click();
+        var dialog = page.Find("[data-testid=delete-dialog]");
+        dialog.QuerySelector("h2")!.TextContent.ShouldBe("Delete Raid leader?");
+        page.FindAll("[data-testid=delete-dialog] button").First(button => button.TextContent.Trim() == "Delete role").Click();
+
+        page.WaitForAssertion(() => _communities.RoleWrites.ShouldHaveSingleItem().ShouldBe(("delete", FakeCommunitiesApiClient.RaidLeaderId, null, null)));
+        page.WaitForAssertion(() => page.FindAll("[data-testid=role-form]").ShouldBeEmpty());
+    }
+
+    /// <summary>Shows a role manager the locked role and keeps Manage community roles out of their reach.</summary>
+    [Fact]
+    public void ARoleManagerSeesLockedRoles()
+    {
+        var community = FakeCommunitiesApiClient.Community(_userId);
+        _communities.Communities.Add(community);
+        var card = FakeCommunitiesApiClient.Card(community.CommunityId, canEdit: true) with { CanGrantRoleManagement = false };
+        _communities.RoleSettings[community.CommunityId] = card with { Rows = [.. card.Rows.Select(row => row.RoleId == FakeCommunitiesApiClient.RaidLeaderId ? row with { CanChange = false } : row)] };
+        SignIn();
+        var page = Render<CommunitySettings>();
+
+        page.WaitForAssertion(() => page.Find("[data-testid=locked-notice] .notice-title").TextContent.ShouldBe("Some roles are locked"));
+        page.Find($"[data-testid=role-row-{FakeCommunitiesApiClient.RaidLeaderId}] .role-row-locked").TextContent.ShouldBe("Locked");
+        page.FindAll($"[data-testid=role-row-{FakeCommunitiesApiClient.RaidLeaderId}] [aria-label='Edit Raid leader']").ShouldBeEmpty();
+        page.Find("[data-testid=create-role]").Click();
+        page.Find("[data-testid=permission-ManageCommunityRoles] input").HasAttribute("disabled").ShouldBeTrue();
     }
     #endregion Tests
 

@@ -121,6 +121,27 @@ internal sealed class CommunitiesApiClient : ICommunitiesApiClient
         using var response = await _httpClient.DeleteAsync(MappingRoute(userId, communityId, roleId, discordRoleId), cancellationToken);
         return StatusOf(response);
     }
+
+    /// <inheritdoc />
+    public async Task<CommunityApiStatus> CreateRoleAsync(Guid userId, Guid communityId, string name, IReadOnlyCollection<string> permissions, CancellationToken cancellationToken)
+    {
+        using var response = await _httpClient.PostAsJsonAsync($"{UserCommunityRoute(userId, communityId)}/roles", new RoleRequest(name, permissions), cancellationToken);
+        return RoleChangeStatusOf(response);
+    }
+
+    /// <inheritdoc />
+    public async Task<CommunityApiStatus> UpdateRoleAsync(Guid userId, Guid communityId, Guid roleId, string name, IReadOnlyCollection<string> permissions, CancellationToken cancellationToken)
+    {
+        using var response = await _httpClient.PutAsJsonAsync($"{UserCommunityRoute(userId, communityId)}/roles/{roleId}", new RoleRequest(name, permissions), cancellationToken);
+        return RoleChangeStatusOf(response);
+    }
+
+    /// <inheritdoc />
+    public async Task<CommunityApiStatus> DeleteRoleAsync(Guid userId, Guid communityId, Guid roleId, CancellationToken cancellationToken)
+    {
+        using var response = await _httpClient.DeleteAsync($"{UserCommunityRoute(userId, communityId)}/roles/{roleId}", cancellationToken);
+        return RoleChangeStatusOf(response);
+    }
     #endregion Public Methods
 
     #region Private Helpers
@@ -129,6 +150,16 @@ internal sealed class CommunitiesApiClient : ICommunitiesApiClient
     /// <param name="communityId">The community.</param>
     /// <returns>The route.</returns>
     private static string UserCommunityRoute(Guid userId, Guid communityId) => $"internal/users/{userId}/communities/{communityId}";
+
+    /// <summary>Reads how the API answered a role change: 409 means the name is taken, 404 that the role is gone.</summary>
+    /// <param name="response">The response.</param>
+    /// <returns>The status.</returns>
+    private static CommunityApiStatus RoleChangeStatusOf(HttpResponseMessage response) => response.StatusCode switch
+    {
+        HttpStatusCode.Conflict => CommunityApiStatus.NameTaken,
+        HttpStatusCode.NotFound => CommunityApiStatus.Refused,
+        _ => StatusOf(response),
+    };
 
     /// <summary>Builds the route of a Discord role's mapping to one of the community's roles.</summary>
     /// <param name="userId">The signed-in user.</param>
@@ -168,6 +199,11 @@ internal sealed class CommunitiesApiClient : ICommunitiesApiClient
     #endregion Private Helpers
 
     #region Nested Types
+    /// <summary>Writes the API's role request.</summary>
+    /// <param name="Name">The role name.</param>
+    /// <param name="Permissions">What it allows, by API name.</param>
+    private sealed record RoleRequest(string Name, IReadOnlyCollection<string> Permissions);
+
     /// <summary>Writes the API's request for the communities of a user's Discord servers.</summary>
     /// <param name="DiscordGuildIds">The Discord server snowflakes.</param>
     private sealed record DiscordServersRequest(IReadOnlyCollection<string> DiscordGuildIds);

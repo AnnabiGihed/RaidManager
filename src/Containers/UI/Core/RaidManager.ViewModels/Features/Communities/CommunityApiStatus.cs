@@ -19,4 +19,7 @@ public enum CommunityApiStatus
 
     /// <summary>The RaidManager bot is no longer in the server (409).</summary>
     BotRemoved,
+
+    /// <summary>Another role of the community already has the name.</summary>
+    NameTaken,
 }

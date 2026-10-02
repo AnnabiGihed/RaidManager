@@ -5,20 +5,32 @@
         <span class="@AccentClass" aria-hidden="true"></span>
     }
     <div class="surface-card-content">
-        @if (!string.IsNullOrWhiteSpace(Title))
+        @if (!string.IsNullOrWhiteSpace(Title) || HeaderActions is not null)
         {
-            @switch (HeadingLevel)
-            {
-                case HeadingLevel.H1:
-                    <h1 class="surface-card-title">@Title</h1>
-                    break;
-                case HeadingLevel.H3:
-                    <h3 class="surface-card-title">@Title</h3>
-                    break;
-                default:
-                    <h2 class="surface-card-title">@Title</h2>
-                    break;
-            }
+            <div class="surface-card-header">
+                <div class="surface-card-heading">
+                    @switch (HeadingLevel)
+                    {
+                        case HeadingLevel.H1:
+                            <h1 class="surface-card-title">@Title</h1>
+                            break;
+                        case HeadingLevel.H3:
+                            <h3 class="surface-card-title">@Title</h3>
+                            break;
+                        default:
+                            <h2 class="surface-card-title">@Title</h2>
+                            break;
+                    }
+                    @if (!string.IsNullOrWhiteSpace(Subtitle))
+                    {
+                        <p class="surface-card-subtitle">@Subtitle</p>
+                    }
+                </div>
+                @if (HeaderActions is not null)
+                {
+                    <div class="surface-card-header-actions">@HeaderActions</div>
+                }
+            </div>
         }
         <div class="surface-card-body">@ChildContent</div>
         @if (Actions is not null)
