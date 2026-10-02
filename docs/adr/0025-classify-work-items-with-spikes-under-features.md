@@ -1,6 +1,6 @@
 # ADR-0025: Classify work items by intent, with spikes under features
 
-- Status: Proposed
+- Status: Proposed, superseded in part by [ADR-0026](0026-adopt-the-work-management-specification.md)
 - Date: 2026-10-02
 - Deciders: Gihed Annabi
 - Supersedes: [ADR-0016](0016-epic-feature-story-task-hierarchy.md)
