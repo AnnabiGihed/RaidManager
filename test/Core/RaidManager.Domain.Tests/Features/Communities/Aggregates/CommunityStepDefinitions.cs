@@ -1,4 +1,5 @@
 using Pivot.Framework.Domain.Exceptions;
+using Pivot.Framework.Domain.Shared;
 using Reqnroll;
 using Shouldly;
 using RaidManager.Domain.Features.Communities.Aggregates;
@@ -34,6 +35,9 @@ public sealed class CommunityStepDefinitions
     /// <summary>Stores the Discord roles of the member the last check was for.</summary>
     private string[] _memberDiscordRoles = [];
 
+    /// <summary>Stores the result of the last role change.</summary>
+    private Result? _roleChange;
+
     /// <summary>Stores how many role-mapping changes the community had reported when the scenario's setup ended.</summary>
     private int _changesBeforeAction;
     #endregion Fields
@@ -58,6 +62,13 @@ public sealed class CommunityStepDefinitions
         Community.MapDiscordRole(discordRoleId, RoleNamed(role));
         _changesBeforeAction = RoleMappingChanges();
     }
+
+    /// <summary>Creates a role as the Administrator before the scenario's action.</summary>
+    /// <param name="name">The role name.</param>
+    /// <param name="permissions">What the role allows.</param>
+    [Given("the community has the role {string} allowing {string}")]
+    public void GivenTheCommunityHasTheRole(string name, string permissions) =>
+        Community.CreateRole(name, Enum.Parse<CommunityPermissions>(permissions), byAdministrator: true).IsSuccess.ShouldBeTrue();
     #endregion Given Steps
 
     #region When Steps
@@ -99,6 +110,29 @@ public sealed class CommunityStepDefinitions
     [When("a member has the Discord roles {string}")]
     public void WhenAMemberHasTheDiscordRoles(string discordRoleIds) =>
         _memberDiscordRoles = discordRoleIds.Split(',', StringSplitOptions.RemoveEmptyEntries);
+
+    /// <summary>Creates a role as the Administrator or as a role manager.</summary>
+    /// <param name="who">Who asks: <c>the Administrator</c> or <c>a role manager</c>.</param>
+    /// <param name="name">The role name.</param>
+    /// <param name="permissions">What the role should allow.</param>
+    [When(@"^(the Administrator|a role manager) creates the role ""(.*)"" allowing ""(.*)""$")]
+    public void WhenCreatesTheRole(string who, string name, string permissions) =>
+        _roleChange = Community.CreateRole(name, Enum.Parse<CommunityPermissions>(permissions), IsAdministrator(who));
+
+    /// <summary>Changes a role as the Administrator or as a role manager.</summary>
+    /// <param name="who">Who asks.</param>
+    /// <param name="role">The role's current name; an unknown name stands for a role the community doesn't have.</param>
+    /// <param name="name">The new name.</param>
+    /// <param name="permissions">What the role should allow.</param>
+    [When(@"^(the Administrator|a role manager) changes the role ""(.*)"" to ""(.*)"" allowing ""(.*)""$")]
+    public void WhenChangesTheRole(string who, string role, string name, string permissions) =>
+        _roleChange = Community.UpdateRole(RoleOrUnknown(role), name, Enum.Parse<CommunityPermissions>(permissions), IsAdministrator(who));
+
+    /// <summary>Deletes a role as the Administrator or as a role manager.</summary>
+    /// <param name="who">Who asks.</param>
+    /// <param name="role">The role's name; an unknown name stands for a role the community doesn't have.</param>
+    [When(@"^(the Administrator|a role manager) deletes the role ""(.*)""$")]
+    public void WhenDeletesTheRole(string who, string role) => _roleChange = Community.DeleteRole(RoleOrUnknown(role), IsAdministrator(who));
     #endregion When Steps
 
     #region Then Steps
@@ -161,9 +195,44 @@ public sealed class CommunityStepDefinitions
     [Then("the member's permissions are {string}")]
     public void ThenTheMembersPermissionsAre(string permissions) =>
         Community.PermissionsFor(new UserId(Guid.NewGuid()), _memberDiscordRoles).ShouldBe(Enum.Parse<CommunityPermissions>(permissions));
+
+    /// <summary>Checks that the last role change succeeded.</summary>
+    [Then("the role change succeeds")]
+    public void ThenTheRoleChangeSucceeds()
+    {
+        var change = _roleChange.ShouldNotBeNull();
+        change.IsSuccess.ShouldBeTrue(change.IsFailure ? change.Error.Code : null);
+    }
+
+    /// <summary>Checks the error the last role change failed with.</summary>
+    /// <param name="code">The error code.</param>
+    [Then("the role change fails with {string}")]
+    public void ThenTheRoleChangeFailsWith(string code)
+    {
+        var change = _roleChange.ShouldNotBeNull();
+        change.IsFailure.ShouldBeTrue();
+        change.Error.Code.ShouldBe(code);
+    }
+
+    /// <summary>Checks what a member with some Discord roles may do.</summary>
+    /// <param name="discordRoleIds">The member's Discord role snowflakes, comma-separated.</param>
+    /// <param name="permissions">The expected permissions.</param>
+    [Then("a member with the Discord roles {string} may {string}")]
+    public void ThenAMemberWithTheDiscordRolesMay(string discordRoleIds, string permissions) =>
+        Community.PermissionsFor(new UserId(Guid.NewGuid()), discordRoleIds.Split(',')).ShouldBe(Enum.Parse<CommunityPermissions>(permissions));
     #endregion Then Steps
 
     #region Private Helpers
+    /// <summary>Tells whether the scenario's wording means the Administrator.</summary>
+    /// <param name="who">The wording.</param>
+    /// <returns><see langword="true"/> for the Administrator.</returns>
+    private static bool IsAdministrator(string who) => who == "the Administrator";
+
+    /// <summary>Finds one of the community's roles by name, or makes up an id for a name it doesn't have.</summary>
+    /// <param name="name">The role name.</param>
+    /// <returns>The role's identifier.</returns>
+    private CommunityRoleId RoleOrUnknown(string name) => Community.Roles.FirstOrDefault(role => role.Name == name)?.Id ?? new CommunityRoleId(Guid.NewGuid());
+
     /// <summary>Finds one of the community's roles by name.</summary>
     /// <param name="name">The role name.</param>
     /// <returns>The role's identifier.</returns>

@@ -6,6 +6,7 @@ namespace RaidManager.ViewModels.Features.Communities;
 /// <param name="Name">The role's name.</param>
 /// <param name="Permissions">What the role allows, by permission name.</param>
 /// <param name="DiscordRoles">The Discord roles mapped to it.</param>
+/// <param name="CanChange">Whether the signed-in user may edit, delete and map this role.</param>
 /// <param name="Members">How many people get it; for Member, how many get no role.</param>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
@@ -18,6 +19,7 @@ public sealed record CommunityRoleRow(
     string Name,
     IReadOnlyList<string> Permissions,
     IReadOnlyList<MappedDiscordRole> DiscordRoles,
+    bool CanChange,
     int Members)
 {
     #region Constants

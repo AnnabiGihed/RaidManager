@@ -101,3 +101,83 @@ Feature: Community linking and roles
         | 222,333       | Raid leader          | ManageRaids, BuildRosters, RunRaidNight                  |
         | 333           |                      | None                                                     |
         |               |                      | None                                                     |
+
+  Rule: The Administrator and role managers shape the community's roles
+
+    Scenario: A created role goes to the end of the list with what it allows
+      Given a linked community
+      When the Administrator creates the role "  Veteran  " allowing "RunRaidNight"
+      Then the role change succeeds
+      And the community's roles are
+        | role        | permissions                                              |
+        | Officer     | ManageRaids, BuildRosters, RunRaidNight, ReviewConflicts |
+        | Raid leader | ManageRaids, BuildRosters, RunRaidNight                  |
+        | Veteran     | RunRaidNight                                             |
+
+    Scenario Outline: A role that can't be created is refused
+      Given a linked community
+      When <who> creates the role "<name>" allowing "<permissions>"
+      Then the role change fails with "<error>"
+
+      Examples:
+        | who               | name                                                | permissions          | error                                |
+        | the Administrator |                                                     | RunRaidNight         | Community.RoleNameInvalid            |
+        | the Administrator | 123456789012345678901234567890123456789012345678901 | RunRaidNight         | Community.RoleNameInvalid            |
+        | the Administrator | officer                                             | RunRaidNight         | Community.RoleNameTaken              |
+        | the Administrator | Veteran                                             | 64                   | Community.RolePermissionsInvalid     |
+        | a role manager    | Council                                             | ManageCommunityRoles | Community.CannotGrantRoleManagement  |
+
+    Scenario: Only the Administrator lets a role manage roles
+      Given a linked community
+      When the Administrator creates the role "Council" allowing "ManageCommunityRoles, ManageRaids"
+      Then the role change succeeds
+
+    Scenario: Changing a role renames it and changes what it allows
+      Given a linked community
+      And the Discord role "222" gives "Raid leader"
+      When the Administrator changes the role "Raid leader" to "Raid lead" allowing "RunRaidNight"
+      Then the role change succeeds
+      And the role mappings changed once
+      And a member with the Discord roles "222" may "RunRaidNight"
+
+    Scenario: A role keeps its own name when it changes
+      Given a linked community
+      When the Administrator changes the role "Officer" to "OFFICER" allowing "ManageRaids"
+      Then the role change succeeds
+
+    Scenario Outline: A role change that isn't allowed is refused
+      Given a linked community
+      And the community has the role "Council" allowing "ManageCommunityRoles"
+      When <who> changes the role "<role>" to "<name>" allowing "<permissions>"
+      Then the role change fails with "<error>"
+
+      Examples:
+        | who               | role    | name        | permissions          | error                               |
+        | the Administrator | Officer | Raid leader | ManageRaids          | Community.RoleNameTaken             |
+        | the Administrator | Ghost   | Ghost       | ManageRaids          | Community.RoleNotFound              |
+        | a role manager    | Council | Council     | ManageRaids          | Community.RoleLocked                |
+        | a role manager    | Officer | Officer     | ManageCommunityRoles | Community.CannotGrantRoleManagement |
+
+    Scenario: Deleting a role removes its mappings
+      Given a linked community
+      And the Discord role "222" gives "Raid leader"
+      When the Administrator deletes the role "Raid leader"
+      Then the role change succeeds
+      And the community has 0 role mappings
+      And a member with the Discord roles "222" may "None"
+
+    Scenario Outline: A role deletion that isn't allowed is refused
+      Given a linked community
+      And the community has the role "Council" allowing "ManageCommunityRoles"
+      When <who> deletes the role "<role>"
+      Then the role change fails with "<error>"
+
+      Examples:
+        | who               | role    | error                  |
+        | the Administrator | Ghost   | Community.RoleNotFound |
+        | a role manager    | Council | Community.RoleLocked   |
+
+    Scenario: A role manager deletes a role that doesn't manage roles
+      Given a linked community
+      When a role manager deletes the role "Raid leader"
+      Then the role change succeeds

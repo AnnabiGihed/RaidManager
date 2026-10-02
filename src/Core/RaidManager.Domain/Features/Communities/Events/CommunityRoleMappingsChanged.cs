@@ -2,7 +2,7 @@ using RaidManager.Domain.Features.Shared.Identifiers;
 
 namespace RaidManager.Domain.Features.Communities.Events;
 
-/// <summary>Signals that the Discord roles giving Officer or Raid leader in a community changed.</summary>
+/// <summary>Signals that a community's roles or the Discord roles giving them changed.</summary>
 /// <param name="CommunityId">The community identifier.</param>
 /// <remarks>
 /// Author: Gihed Annabi<br/>

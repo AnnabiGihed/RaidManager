@@ -1,4 +1,6 @@
+using Pivot.Framework.Domain.Shared;
 using RaidManager.Domain.Features.Communities.Enums;
+using RaidManager.Domain.Features.Communities.Errors;
 using RaidManager.Domain.Features.Communities.Events;
 using RaidManager.Domain.Features.Communities.ValueObjects;
 using RaidManager.Domain.Features.Shared.Discord;
@@ -99,6 +101,16 @@ public sealed class Community : AggregateRoot<CommunityId>
     #endregion Factory Methods
 
     #region Domain Behavior
+    /// <summary>Tells whether someone may change a role: only the Administrator changes a role that grants Manage community roles.</summary>
+    /// <param name="role">The role.</param>
+    /// <param name="byAdministrator">Whether the Administrator is asking.</param>
+    /// <returns><see langword="true"/> when they may edit, delete or map it (owner decision on #308).</returns>
+    public static bool CanChange(CommunityRole role, bool byAdministrator)
+    {
+        ArgumentNullException.ThrowIfNull(role);
+        return byAdministrator || !role.Allows(CommunityPermissions.ManageCommunityRoles);
+    }
+
     /// <summary>Takes the Discord server's current name, when it was renamed in Discord.</summary>
     /// <param name="name">The server's name as Discord reports it now.</param>
     /// <returns><see langword="true"/> when the name changed; <see langword="false"/> when it was already current.</returns>
@@ -114,6 +126,69 @@ public sealed class Community : AggregateRoot<CommunityId>
 
         Name = trimmedName;
         return true;
+    }
+
+    /// <summary>Creates a role with a name and the permissions it allows, at the end of the list.</summary>
+    /// <param name="name">The role name.</param>
+    /// <param name="permissions">What the role allows.</param>
+    /// <param name="byAdministrator">Whether the Administrator is asking; only they can allow Manage community roles.</param>
+    /// <returns>The role, or a failure: <see cref="CommunityErrors.CannotGrantRoleManagement"/>, <see cref="CommunityErrors.RoleNameInvalid"/>, <see cref="CommunityErrors.RolePermissionsInvalid"/> or <see cref="CommunityErrors.RoleNameTaken"/>.</returns>
+    public Result<CommunityRole> CreateRole(string name, CommunityPermissions permissions, bool byAdministrator)
+    {
+        var checkedName = CheckRole(name, permissions, byAdministrator, null);
+        if (checkedName.IsFailure)
+        {
+            return Result.Failure<CommunityRole>(checkedName.Error, checkedName.ResultExceptionType);
+        }
+
+        var role = CommunityRole.Create(checkedName.Value, permissions, _roles.Select(existing => existing.Position).DefaultIfEmpty(0).Max() + 1);
+        _roles.Add(role);
+        return Result.Success(role);
+    }
+
+    /// <summary>Renames one of the community's roles and changes what it allows.</summary>
+    /// <param name="roleId">The role.</param>
+    /// <param name="name">The new name.</param>
+    /// <param name="permissions">What the role allows now.</param>
+    /// <param name="byAdministrator">Whether the Administrator is asking.</param>
+    /// <returns>Success, or a failure: <see cref="CommunityErrors.RoleNotFound"/>, <see cref="CommunityErrors.RoleLocked"/>, or the failures of <see cref="CreateRole"/>.</returns>
+    /// <remarks>Raises <see cref="CommunityRoleMappingsChanged"/>, so cached checks pick up the new permissions.</remarks>
+    public Result UpdateRole(CommunityRoleId roleId, string name, CommunityPermissions permissions, bool byAdministrator)
+    {
+        var role = ChangeableRole(roleId, byAdministrator);
+        if (role.IsFailure)
+        {
+            return role;
+        }
+
+        var checkedName = CheckRole(name, permissions, byAdministrator, roleId);
+        if (checkedName.IsFailure)
+        {
+            return checkedName;
+        }
+
+        role.Value.Change(checkedName.Value, permissions);
+        RaiseDomainEvent(new CommunityRoleMappingsChanged(Id));
+        return Result.Success();
+    }
+
+    /// <summary>Deletes one of the community's roles; the Discord roles mapped to it stop giving it.</summary>
+    /// <param name="roleId">The role.</param>
+    /// <param name="byAdministrator">Whether the Administrator is asking.</param>
+    /// <returns>Success, or <see cref="CommunityErrors.RoleNotFound"/> or <see cref="CommunityErrors.RoleLocked"/>.</returns>
+    /// <remarks>Raises <see cref="CommunityRoleMappingsChanged"/>, so its members lose what it allowed at their next check.</remarks>
+    public Result DeleteRole(CommunityRoleId roleId, bool byAdministrator)
+    {
+        var role = ChangeableRole(roleId, byAdministrator);
+        if (role.IsFailure)
+        {
+            return role;
+        }
+
+        _roles.Remove(role.Value);
+        _roleMappings.RemoveAll(mapping => mapping.RoleId == roleId);
+        RaiseDomainEvent(new CommunityRoleMappingsChanged(Id));
+        return Result.Success();
     }
 
     /// <summary>Finds one of the community's roles.</summary>
@@ -201,6 +276,52 @@ public sealed class Community : AggregateRoot<CommunityId>
         }
 
         return trimmed;
+    }
+
+    /// <summary>Checks a role's name and permissions, and that the person asking may give those permissions.</summary>
+    /// <param name="name">The requested name.</param>
+    /// <param name="permissions">The requested permissions.</param>
+    /// <param name="byAdministrator">Whether the Administrator is asking.</param>
+    /// <param name="roleId">The role being changed, which may keep its own name; <see langword="null"/> for a new role.</param>
+    /// <returns>The trimmed name, or the failure.</returns>
+    private Result<string> CheckRole(string name, CommunityPermissions permissions, bool byAdministrator, CommunityRoleId? roleId)
+    {
+        if ((permissions & ~CommunityPermissions.All) != CommunityPermissions.None)
+        {
+            return Result.Failure<string>(CommunityErrors.RolePermissionsInvalid);
+        }
+
+        if (!byAdministrator && (permissions & CommunityPermissions.ManageCommunityRoles) != CommunityPermissions.None)
+        {
+            return Result.Failure<string>(CommunityErrors.CannotGrantRoleManagement, ResultExceptionType.AccessDenied);
+        }
+
+        var trimmed = name?.Trim() ?? string.Empty;
+        if (trimmed.Length == 0 || trimmed.Length > CommunityRole.MaximumNameLength)
+        {
+            return Result.Failure<string>(CommunityErrors.RoleNameInvalid);
+        }
+
+        return _roles.Exists(role => role.Id != roleId && string.Equals(role.Name, trimmed, StringComparison.OrdinalIgnoreCase))
+            ? Result.Failure<string>(CommunityErrors.RoleNameTaken, ResultExceptionType.Conflict)
+            : Result.Success(trimmed);
+    }
+
+    /// <summary>Finds a role the person asking may change.</summary>
+    /// <param name="roleId">The role.</param>
+    /// <param name="byAdministrator">Whether the Administrator is asking.</param>
+    /// <returns>The role, or <see cref="CommunityErrors.RoleNotFound"/> or <see cref="CommunityErrors.RoleLocked"/>.</returns>
+    private Result<CommunityRole> ChangeableRole(CommunityRoleId roleId, bool byAdministrator)
+    {
+        var role = FindRole(roleId);
+        if (role is null)
+        {
+            return Result.Failure<CommunityRole>(CommunityErrors.RoleNotFound, ResultExceptionType.NotFound);
+        }
+
+        return CanChange(role, byAdministrator)
+            ? Result.Success(role)
+            : Result.Failure<CommunityRole>(CommunityErrors.RoleLocked, ResultExceptionType.AccessDenied);
     }
     #endregion Invariants
 }

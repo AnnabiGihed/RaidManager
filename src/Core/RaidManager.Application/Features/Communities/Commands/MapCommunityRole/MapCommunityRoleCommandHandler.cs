@@ -2,6 +2,7 @@ using Pivot.Framework.Application.Abstractions.Messaging.Commands;
 using Pivot.Framework.Domain.Repositories;
 using Pivot.Framework.Domain.Shared;
 using RaidManager.Application.Features.Communities.Abstractions;
+using RaidManager.Domain.Features.Communities.Aggregates;
 using RaidManager.Domain.Features.Communities.Errors;
 using RaidManager.Domain.Features.Communities.Repositories;
 using RaidManager.Domain.Features.Identity.Repositories;
@@ -55,7 +56,7 @@ internal sealed class MapCommunityRoleCommandHandler : ICommandHandler<MapCommun
     /// <summary>Applies the command.</summary>
     /// <param name="request">The command.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>Success, or <see cref="CommunityErrors.NotFound"/>, <see cref="CommunityErrors.NotAdministrator"/>, <see cref="CommunityErrors.NotAMember"/>, <see cref="CommunityErrors.RoleNotMappable"/> or Discord's failure.</returns>
+    /// <returns>Success, or <see cref="CommunityErrors.NotFound"/>, <see cref="CommunityErrors.NotRoleManager"/>, <see cref="CommunityErrors.RoleNotFound"/>, <see cref="CommunityErrors.RoleLocked"/>, <see cref="CommunityErrors.NotAMember"/>, <see cref="CommunityErrors.RoleNotMappable"/> or Discord's failure.</returns>
     public async Task<Result> Handle(MapCommunityRoleCommand request, CancellationToken cancellationToken)
     {
         var community = await _communities.FindByIdAsync(new CommunityId(request.CommunityId), cancellationToken);
@@ -64,19 +65,26 @@ internal sealed class MapCommunityRoleCommandHandler : ICommandHandler<MapCommun
             return Result.Failure(CommunityErrors.NotFound, ResultExceptionType.NotFound);
         }
 
-        var access = await CommunityAccess.EnsureAdministratorAsync(
+        var access = await CommunityAccess.EnsureRoleManagerAsync(
             community,
             await _users.FindByIdAsync(new UserId(request.UserId), cancellationToken),
             _discordMembers,
             cancellationToken);
         if (access.IsFailure)
         {
-            return access;
+            return Result.Failure(access.Error, access.ResultExceptionType);
         }
 
-        if (community.FindRole(new CommunityRoleId(request.RoleId)) is null)
+        // Only the Administrator maps a role that manages roles (owner decision on #308).
+        var role = community.FindRole(new CommunityRoleId(request.RoleId));
+        if (role is null)
         {
             return Result.Failure(CommunityErrors.RoleNotFound, ResultExceptionType.NotFound);
+        }
+
+        if (!Community.CanChange(role, access.Value))
+        {
+            return Result.Failure(CommunityErrors.RoleLocked, ResultExceptionType.AccessDenied);
         }
 
         var server = await _discordServers.GetAsync(community.DiscordGuildId, cancellationToken);
@@ -90,7 +98,7 @@ internal sealed class MapCommunityRoleCommandHandler : ICommandHandler<MapCommun
             return Result.Failure(CommunityErrors.RoleNotMappable);
         }
 
-        community.MapDiscordRole(request.DiscordRoleId, new CommunityRoleId(request.RoleId));
+        community.MapDiscordRole(request.DiscordRoleId, role.Id);
         await _communities.UpdateAsync(community, cancellationToken);
         return await _unitOfWork.SaveChangesAsync(cancellationToken);
     }

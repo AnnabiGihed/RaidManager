@@ -1,12 +1,13 @@
+using RaidManager.Application.Features.Communities.Abstractions;
 using RaidManager.Application.Features.Communities.Queries.GetCommunityRoleSettings;
-using RaidManager.Domain.Features.Communities.Enums;
 
 namespace RaidManager.ApiService.Features.Communities;
 
 /// <summary>Describes a community's officer roles to the website.</summary>
 /// <param name="CommunityId">The community.</param>
 /// <param name="ServerName">The Discord server's current name.</param>
-/// <param name="CanEdit">Whether the asking user is the Administrator, who may change the mappings.</param>
+/// <param name="CanEdit">Whether the user may change roles: the Administrator, or a member whose role manages roles.</param>
+/// <param name="CanGrantRoleManagement">Whether the user may let a role manage roles: only the Administrator.</param>
 /// <param name="MappableRoles">The server's roles that can be mapped, highest first.</param>
 /// <param name="Rows">One row per RaidManager role, from Administrator to Member.</param>
 /// <remarks>
@@ -18,6 +19,7 @@ public sealed record CommunityRoleSettings(
     Guid CommunityId,
     string ServerName,
     bool CanEdit,
+    bool CanGrantRoleManagement,
     IReadOnlyList<DiscordRoleOption> MappableRoles,
     IReadOnlyList<CommunityRoleRow> Rows)
 {
@@ -32,24 +34,16 @@ public sealed record CommunityRoleSettings(
             settings.CommunityId,
             settings.ServerName,
             settings.CanEdit,
+            settings.CanGrantRoleManagement,
             [.. settings.MappableRoles.Select(role => new DiscordRoleOption(role.Id, role.Name))],
             [.. settings.Rows.Select(row => new CommunityRoleRow(
                 row.Kind,
                 row.RoleId,
                 row.Name,
-                PermissionNames(row.Permissions),
+                CommunityPermissionNames.Of(row.Permissions),
                 [.. row.DiscordRoles.Select(role => new MappedDiscordRole(role.DiscordRoleId, role.Name, role.Missing))],
+                row.CanChange,
                 row.Members))]);
     }
     #endregion Public Methods
-
-    #region Private Helpers
-    /// <summary>Names each permission a role allows, in the list's order.</summary>
-    /// <param name="permissions">The permissions.</param>
-    /// <returns>The names, such as <c>ManageRaids</c>; empty for none.</returns>
-    private static List<string> PermissionNames(CommunityPermissions permissions) =>
-        [.. Enum.GetValues<CommunityPermissions>()
-            .Where(permission => permission is not (CommunityPermissions.None or CommunityPermissions.All) && permissions.HasFlag(permission))
-            .Select(permission => permission.ToString())];
-    #endregion Private Helpers
 }

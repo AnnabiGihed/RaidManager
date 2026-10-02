@@ -67,11 +67,14 @@ internal sealed class GetCommunityRoleSettingsQueryHandler : IQueryHandler<GetCo
         }
 
         var user = await _users.FindByIdAsync(new UserId(request.UserId), cancellationToken);
-        var access = await CommunityAccess.EnsureMemberAsync(community, user, _discordMembers, cancellationToken);
+        var access = await CommunityAccess.PermissionsAsync(community, user, _discordMembers, cancellationToken);
         if (access.IsFailure)
         {
             return Result.Failure<CommunityRoleSettingsResponse>(access.Error, access.ResultExceptionType);
         }
+
+        var isAdministrator = user!.Id == community.AdministratorId;
+        var canEdit = access.Value.HasFlag(CommunityPermissions.ManageCommunityRoles);
 
         var server = await _discordServers.GetAsync(community.DiscordGuildId, cancellationToken);
         if (server.IsFailure)
@@ -90,21 +93,23 @@ internal sealed class GetCommunityRoleSettingsQueryHandler : IQueryHandler<GetCo
         var people = members.Value.Where(member => member.UserId != administrator?.DiscordUserId.Value).ToList();
         List<CommunityRoleRowResponse> rows =
         [
-            new(CommunityRoleKinds.Administrator, null, CommunityRoleKinds.Administrator, CommunityPermissions.All, [], members.Value.Count - people.Count),
+            new(CommunityRoleKinds.Administrator, null, CommunityRoleKinds.Administrator, CommunityPermissions.All, [], false, members.Value.Count - people.Count),
             .. community.Roles.Select(role => new CommunityRoleRowResponse(
                 CommunityRoleKinds.Role,
                 role.Id.Value,
                 role.Name,
                 role.Permissions,
                 Mapped(community, server.Value, role.Id),
+                canEdit && Community.CanChange(role, isAdministrator),
                 people.Count(member => Gives(community, member, role.Id)))),
-            new(CommunityRoleKinds.Member, null, CommunityRoleKinds.Member, CommunityPermissions.None, [], people.Count(member => community.RolesFor(member.RoleIds).Count == 0)),
+            new(CommunityRoleKinds.Member, null, CommunityRoleKinds.Member, CommunityPermissions.None, [], false, people.Count(member => community.RolesFor(member.RoleIds).Count == 0)),
         ];
 
         return Result.Success(new CommunityRoleSettingsResponse(
             community.Id.Value,
             server.Value.Name,
-            user!.Id == community.AdministratorId,
+            canEdit,
+            isAdministrator,
             server.Value.Roles,
             rows));
     }

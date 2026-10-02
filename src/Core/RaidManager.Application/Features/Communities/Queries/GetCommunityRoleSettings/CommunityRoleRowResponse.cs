@@ -8,6 +8,7 @@ namespace RaidManager.Application.Features.Communities.Queries.GetCommunityRoleS
 /// <param name="Name">The role's name.</param>
 /// <param name="Permissions">What the role allows; every permission for the Administrator, none for Member.</param>
 /// <param name="DiscordRoles">The Discord roles mapped to it; empty for Administrator and Member.</param>
+/// <param name="CanChange">Whether the user may edit, delete and map this role.</param>
 /// <param name="Members">How many people get it from their Discord roles; for Member, how many get no role.</param>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
@@ -20,4 +21,5 @@ public sealed record CommunityRoleRowResponse(
     string Name,
     CommunityPermissions Permissions,
     IReadOnlyList<MappedDiscordRoleResponse> DiscordRoles,
+    bool CanChange,
     int Members);

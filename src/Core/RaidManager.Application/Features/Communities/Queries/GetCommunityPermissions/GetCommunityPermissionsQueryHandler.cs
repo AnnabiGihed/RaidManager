@@ -58,25 +58,11 @@ internal sealed class GetCommunityPermissionsQueryHandler : IQueryHandler<GetCom
             return Result.Failure<CommunityPermissions>(CommunityErrors.NotFound, ResultExceptionType.NotFound);
         }
 
-        // A user RaidManager doesn't know has no Discord account to check, so they can't be in the server.
-        var user = await _users.FindByIdAsync(new UserId(request.UserId), cancellationToken);
-        if (user is null)
-        {
-            return Result.Failure<CommunityPermissions>(CommunityErrors.NotAMember, ResultExceptionType.AccessDenied);
-        }
-
-        var membership = await _discordMembers.FindAsync(community.DiscordGuildId, user.DiscordUserId.Value, cancellationToken);
-        if (membership.IsFailure)
-        {
-            return Result.Failure<CommunityPermissions>(membership.Error);
-        }
-
-        if (!membership.Value.IsMember)
-        {
-            return Result.Failure<CommunityPermissions>(CommunityErrors.NotAMember, ResultExceptionType.AccessDenied);
-        }
-
-        return Result.Success(community.PermissionsFor(user.Id, membership.Value.RoleIds));
+        return await CommunityAccess.PermissionsAsync(
+            community,
+            await _users.FindByIdAsync(new UserId(request.UserId), cancellationToken),
+            _discordMembers,
+            cancellationToken);
     }
     #endregion Public Methods
 }

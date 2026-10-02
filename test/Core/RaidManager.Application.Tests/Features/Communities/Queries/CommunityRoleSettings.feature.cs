@@ -24,9 +24,9 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
         
         private static string[] featureTags = ((string[])(null));
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Communities/Queries", "Community role settings", "  As a community Administrator\r\n  I want to see and change which Discord roles gi" +
-                "ve Officer and Raid leader\r\n  So that RaidManager permissions follow the roles m" +
-                "y server already uses", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Communities/Queries", "Community role settings", "  As a community Administrator\r\n  I want to see and change the community\'s roles " +
+                "and which Discord roles give them\r\n  So that RaidManager permissions follow the " +
+                "roles my server already uses", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
         private global::Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
@@ -141,7 +141,7 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Communities/Queries/CommunityRoleSettings.feature.ndjson", 23);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Communities/Queries/CommunityRoleSettings.feature.ndjson", 38);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -533,7 +533,7 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
       await testRunner.WhenAsync("\"Malarya\" maps the Discord role \"Veteran\" to RaidLeader", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 73
-      await testRunner.ThenAsync("the request is refused because the user is not the Administrator", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+      await testRunner.ThenAsync("the request is refused because the user can\'t manage roles", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
 #line 74
       await testRunner.AndAsync("nothing is saved", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
@@ -995,6 +995,517 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
 #line hidden
 #line 141
       await testRunner.ThenAsync("the request fails because the community doesn\'t exist", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="The Administrator creates a role")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Community role settings")]
+        [global::Xunit.TraitAttribute("Description", "The Administrator creates a role")]
+        public async global::System.Threading.Tasks.Task TheAdministratorCreatesARole()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "21";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("The Administrator creates a role", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator and role managers create, change and delete roles", null, tagsOfRule);
+#line 145
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 146
+      await testRunner.WhenAsync("\"Gihed\" creates the role \"Recruiter\" allowing \"ReviewConflicts, ManageRaids\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 147
+      await testRunner.ThenAsync("the change is saved", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 148
+      await testRunner.AndAsync("the community has the role \"Recruiter\" allowing \"ManageRaids, ReviewConflicts\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="A role manager creates a role")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Community role settings")]
+        [global::Xunit.TraitAttribute("Description", "A role manager creates a role")]
+        public async global::System.Threading.Tasks.Task ARoleManagerCreatesARole()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "22";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A role manager creates a role", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator and role managers create, change and delete roles", null, tagsOfRule);
+#line 150
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 151
+      await testRunner.GivenAsync("the Discord role \"Veteran\" gives a new role \"Council\" allowing \"ManageCommunityRo" +
+                        "les\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 152
+      await testRunner.WhenAsync("\"Daymox\" creates the role \"Recruiter\" allowing \"ReviewConflicts\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 153
+      await testRunner.ThenAsync("the change is saved", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 154
+      await testRunner.AndAsync("the community has the role \"Recruiter\" allowing \"ReviewConflicts\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="A role manager maps a Discord role to Raid leader")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Community role settings")]
+        [global::Xunit.TraitAttribute("Description", "A role manager maps a Discord role to Raid leader")]
+        public async global::System.Threading.Tasks.Task ARoleManagerMapsADiscordRoleToRaidLeader()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "23";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A role manager maps a Discord role to Raid leader", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator and role managers create, change and delete roles", null, tagsOfRule);
+#line 156
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 157
+      await testRunner.GivenAsync("the Discord role \"Veteran\" gives a new role \"Council\" allowing \"ManageCommunityRo" +
+                        "les\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 158
+      await testRunner.WhenAsync("\"Daymox\" maps the Discord role \"Guild Master\" to RaidLeader", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 159
+      await testRunner.ThenAsync("the change is saved", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 160
+      await testRunner.AndAsync("the Discord role \"Guild Master\" gives RaidLeader", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="A role manager sees which roles they can change")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Community role settings")]
+        [global::Xunit.TraitAttribute("Description", "A role manager sees which roles they can change")]
+        public async global::System.Threading.Tasks.Task ARoleManagerSeesWhichRolesTheyCanChange()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "24";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A role manager sees which roles they can change", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator and role managers create, change and delete roles", null, tagsOfRule);
+#line 162
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 163
+      await testRunner.GivenAsync("the Discord role \"Veteran\" gives a new role \"Council\" allowing \"ManageCommunityRo" +
+                        "les\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 164
+      await testRunner.WhenAsync("\"Daymox\" reads the community\'s roles", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 165
+      await testRunner.ThenAsync("the roles can be edited", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 166
+      await testRunner.AndAsync("the roles can\'t let a role manage roles", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 167
+      await testRunner.AndAsync("the \"Officer\" role can be changed", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 168
+      await testRunner.AndAsync("the \"Council\" role can\'t be changed", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="A role manager can\'t change, delete or map a role that manages roles")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Community role settings")]
+        [global::Xunit.TraitAttribute("Description", "A role manager can\'t change, delete or map a role that manages roles")]
+        public async global::System.Threading.Tasks.Task ARoleManagerCantChangeDeleteOrMapARoleThatManagesRoles()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "25";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A role manager can\'t change, delete or map a role that manages roles", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator and role managers create, change and delete roles", null, tagsOfRule);
+#line 170
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 171
+      await testRunner.GivenAsync("the Discord role \"Veteran\" gives a new role \"Council\" allowing \"ManageCommunityRo" +
+                        "les\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 172
+      await testRunner.WhenAsync("\"Daymox\" changes the role \"Council\" to \"Council\" allowing \"ManageRaids\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 173
+      await testRunner.ThenAsync("the request is refused because the role is locked", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 174
+      await testRunner.WhenAsync("\"Daymox\" deletes the role \"Council\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 175
+      await testRunner.ThenAsync("the request is refused because the role is locked", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 176
+      await testRunner.WhenAsync("\"Daymox\" maps the Discord role \"Guild Master\" to the role \"Council\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 177
+      await testRunner.ThenAsync("the request is refused because the role is locked", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="A role manager can\'t let a role manage roles")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Community role settings")]
+        [global::Xunit.TraitAttribute("Description", "A role manager can\'t let a role manage roles")]
+        public async global::System.Threading.Tasks.Task ARoleManagerCantLetARoleManageRoles()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "26";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A role manager can\'t let a role manage roles", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator and role managers create, change and delete roles", null, tagsOfRule);
+#line 179
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 180
+      await testRunner.GivenAsync("the Discord role \"Veteran\" gives a new role \"Council\" allowing \"ManageCommunityRo" +
+                        "les\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 181
+      await testRunner.WhenAsync("\"Daymox\" changes the role \"Officer\" to \"Officer\" allowing \"ManageCommunityRoles\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 182
+      await testRunner.ThenAsync("the request is refused because only the Administrator can let a role manage roles" +
+                        "", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 183
+      await testRunner.AndAsync("nothing is saved", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="A member whose roles don\'t manage roles can\'t create one")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Community role settings")]
+        [global::Xunit.TraitAttribute("Description", "A member whose roles don\'t manage roles can\'t create one")]
+        public async global::System.Threading.Tasks.Task AMemberWhoseRolesDontManageRolesCantCreateOne()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "27";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A member whose roles don\'t manage roles can\'t create one", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator and role managers create, change and delete roles", null, tagsOfRule);
+#line 185
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 186
+      await testRunner.WhenAsync("\"Malarya\" creates the role \"Recruiter\" allowing \"ReviewConflicts\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 187
+      await testRunner.ThenAsync("the request is refused because the user can\'t manage roles", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 188
+      await testRunner.AndAsync("nothing is saved", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="The Administrator changes a role")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Community role settings")]
+        [global::Xunit.TraitAttribute("Description", "The Administrator changes a role")]
+        public async global::System.Threading.Tasks.Task TheAdministratorChangesARole()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "28";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("The Administrator changes a role", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator and role managers create, change and delete roles", null, tagsOfRule);
+#line 190
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 191
+      await testRunner.WhenAsync("\"Gihed\" changes the role \"Raid leader\" to \"Raid lead\" allowing \"RunRaidNight\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 192
+      await testRunner.ThenAsync("the change is saved", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 193
+      await testRunner.AndAsync("the community has the role \"Raid lead\" allowing \"RunRaidNight\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="The Administrator deletes a role")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Community role settings")]
+        [global::Xunit.TraitAttribute("Description", "The Administrator deletes a role")]
+        public async global::System.Threading.Tasks.Task TheAdministratorDeletesARole()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "29";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("The Administrator deletes a role", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator and role managers create, change and delete roles", null, tagsOfRule);
+#line 195
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 196
+      await testRunner.WhenAsync("\"Gihed\" deletes the role \"Raid leader\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 197
+      await testRunner.ThenAsync("the change is saved", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 198
+      await testRunner.AndAsync("the community has no role \"Raid leader\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="A name another role has is refused")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Community role settings")]
+        [global::Xunit.TraitAttribute("Description", "A name another role has is refused")]
+        public async global::System.Threading.Tasks.Task ANameAnotherRoleHasIsRefused()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "30";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A name another role has is refused", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator and role managers create, change and delete roles", null, tagsOfRule);
+#line 200
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 201
+      await testRunner.WhenAsync("\"Gihed\" creates the role \"officer\" allowing \"ManageRaids\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 202
+      await testRunner.ThenAsync("the request fails because the role name is taken", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="Deleting a role the community doesn\'t have is not found")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Community role settings")]
+        [global::Xunit.TraitAttribute("Description", "Deleting a role the community doesn\'t have is not found")]
+        public async global::System.Threading.Tasks.Task DeletingARoleTheCommunityDoesntHaveIsNotFound()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "31";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Deleting a role the community doesn\'t have is not found", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator and role managers create, change and delete roles", null, tagsOfRule);
+#line 204
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 205
+      await testRunner.WhenAsync("\"Gihed\" deletes the role \"Ghost\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 206
+      await testRunner.ThenAsync("the request fails because the role doesn\'t exist", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="Changing a role in a community that doesn\'t exist is not found")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Community role settings")]
+        [global::Xunit.TraitAttribute("Description", "Changing a role in a community that doesn\'t exist is not found")]
+        public async global::System.Threading.Tasks.Task ChangingARoleInACommunityThatDoesntExistIsNotFound()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "32";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Changing a role in a community that doesn\'t exist is not found", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator and role managers create, change and delete roles", null, tagsOfRule);
+#line 208
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 209
+      await testRunner.WhenAsync("\"Gihed\" changes a role of a community that doesn\'t exist", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 210
+      await testRunner.ThenAsync("the request fails because the community doesn\'t exist", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableTheoryAttribute(DisplayName="A malformed role is rejected before the handler runs")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Community role settings")]
+        [global::Xunit.TraitAttribute("Description", "A malformed role is rejected before the handler runs")]
+        [global::Xunit.InlineDataAttribute("", "ManageRaids", "Name", "33", new string[0])]
+        [global::Xunit.InlineDataAttribute("123456789012345678901234567890123456789012345678901", "ManageRaids", "Name", "34", new string[0])]
+        [global::Xunit.InlineDataAttribute("Veteran", "FlyMounts", "Permissions[0]", "35", new string[0])]
+        public async global::System.Threading.Tasks.Task AMalformedRoleIsRejectedBeforeTheHandlerRuns(string name, string permissions, string property, string @__pickleIndex, string[] exampleTags)
+        {
+            string[] tagsOfScenario = exampleTags;
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("name", name);
+            argumentsOfScenario.Add("permissions", permissions);
+            argumentsOfScenario.Add("property", property);
+            string pickleIndex = @__pickleIndex;
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A malformed role is rejected before the handler runs", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator and role managers create, change and delete roles", null, tagsOfRule);
+#line 212
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 213
+      await testRunner.WhenAsync(string.Format("a role named \"{0}\" allowing \"{1}\" is validated", name, permissions), ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 214
+      await testRunner.ThenAsync(string.Format("the role is rejected on \"{0}\"", property), ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
