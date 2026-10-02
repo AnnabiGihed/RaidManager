@@ -14,8 +14,30 @@
 
 .summary-tile-text {
     display: flex;
+    flex: 1;
     flex-direction: column;
     min-width: 0;
+}
+
+.summary-tile-link {
+    cursor: pointer;
+}
+
+.summary-tile-link.summary-tile-card:hover {
+    border-color: var(--rm-line-divider);
+    background: var(--rm-surface-raised);
+}
+
+.summary-tile-chevron {
+    flex: none;
+    color: var(--rm-text-muted);
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.summary-tile-link:hover .summary-tile-chevron {
+    color: var(--rm-brand-accent);
 }
 
 .summary-tile-title {

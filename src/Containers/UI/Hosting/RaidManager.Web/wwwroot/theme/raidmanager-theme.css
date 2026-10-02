@@ -84,9 +84,8 @@
     background: transparent;
 }
 
-/* A signed-in page built on the design system marks its root with this class, and the content area around it takes
-   the dark page background. Pages without it keep the Radzen theme until the re-theme (#203). */
-.rm-theme-dark .rz-body:has(.rm-design-page) {
+/* The signed-in content area takes the dark page background; every page is built on the design system (#203). */
+.rm-theme-dark .rz-body {
     background: var(--rm-surface-page);
 }
 

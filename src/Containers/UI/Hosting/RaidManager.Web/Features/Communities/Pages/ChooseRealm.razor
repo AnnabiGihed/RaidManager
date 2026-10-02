@@ -4,7 +4,7 @@
 
 @if (ViewModel.Status == CommunityPageStatus.Ready)
 {
-    <div class="community-page rm-design-page">
+    <div class="community-page">
         <PageHeading Eyebrow="Almost done" Title="@ViewModel.Title" Subtitle="RaidManager was added to your Discord server. Choose the Warmane realm your community plays on." />
         <div class="community-column">
         @if (ViewModel.Failure is { } failure)

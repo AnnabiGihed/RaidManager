@@ -9,7 +9,7 @@
                     <div class="shell-top-bar">
                         <Breadcrumb Items="@BreadcrumbItems" />
                         <div class="shell-session">
-                            <UserAvatar Name="@context.User.Identity?.Name" ImageUrl="@AvatarUrl(context.User)" />
+                            <UserAvatar Name="@context.User.Identity?.Name" ImageUrl="@context.User.AvatarUrl()" />
                             <SignOutButton />
                         </div>
                     </div>
@@ -18,7 +18,7 @@
                     <div class="shell-sidebar">
                         <BrandLogo />
                         <a class="shell-community-link" href="@CommunityHref">
-                            <SummaryTile Title="@Community.CardTitle" Subtitle="@Community.CardSubtitle" data-testid="community-card">
+                            <SummaryTile Title="@Community.CardTitle" Subtitle="@Community.CardSubtitle" ShowsLink="true" data-testid="community-card">
                                 <Leading>
                                     <IconTile Glyph="@Community.CardGlyph" Appearance="@CommunityGlyphAppearance" />
                                 </Leading>
@@ -33,7 +33,7 @@
                         <div class="shell-user">
                             <SummaryTile Title="@(context.User.Identity?.Name ?? string.Empty)" Subtitle="@Community.RoleLabel" Appearance="SummaryTileAppearance.Plain" data-testid="user-card">
                                 <Leading>
-                                    <UserAvatar Name="@context.User.Identity?.Name" ImageUrl="@AvatarUrl(context.User)" />
+                                    <UserAvatar Name="@context.User.Identity?.Name" ImageUrl="@context.User.AvatarUrl()" />
                                 </Leading>
                             </SummaryTile>
                         </div>
@@ -45,11 +45,13 @@
                             @Body
                         </ChildContent>
                         <ErrorContent Context="error">
-                            <RadzenStack Gap="1rem" class="rz-p-4">
-                                <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H1">Something went wrong</RadzenText>
-                                <RadzenText TextStyle="TextStyle.Body1">This page could not be shown. Try again, or go back to the home page.</RadzenText>
-                                <RadzenButton Text="Try again" Click="Recover" />
-                            </RadzenStack>
+                            <div class="shell-error" data-testid="page-error">
+                                <PageHeading Title="Something went wrong" />
+                                <Notice Tone="NoticeTone.Danger" Title="This page could not be shown" Message="Try again, or go back to the home page." />
+                                <div>
+                                    <ActionButton Text="Try again" Click="Recover" />
+                                </div>
+                            </div>
                         </ErrorContent>
                     </ErrorBoundary>
                 </RadzenBody>

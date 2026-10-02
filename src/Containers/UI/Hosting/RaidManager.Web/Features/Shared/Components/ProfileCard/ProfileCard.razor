@@ -1,0 +1,11 @@
+@namespace RaidManager.Web.Features.Shared.Components
+<div class="profile-card" @attributes="AdditionalAttributes">
+    <UserAvatar Name="@Name" ImageUrl="@ImageUrl" Size="40" />
+    <div class="profile-card-text">
+        <p class="profile-card-name">@Name</p>
+        @if (!string.IsNullOrWhiteSpace(Detail))
+        {
+            <p class="profile-card-detail">@Detail</p>
+        }
+    </div>
+</div>

@@ -64,3 +64,12 @@
     width: 100%;
     max-width: 480px;
 }
+
+/* A page that fails shows the error in the design system, placed like a page's content. */
+.shell-error {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    max-width: 720px;
+    padding: 24px;
+}

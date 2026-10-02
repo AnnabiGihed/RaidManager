@@ -28,11 +28,16 @@ public sealed partial class SummaryTile
     [Parameter]
     public SummaryTileAppearance Appearance { get; set; } = SummaryTileAppearance.Card;
 
+    /// <summary>Gets or sets a value indicating whether the tile leads somewhere: a › chevron, a pointer and a hover highlight.</summary>
+    [Parameter]
+    public bool ShowsLink { get; set; }
+
     /// <summary>Gets or sets extra attributes for the tile, such as a test id.</summary>
     [Parameter(CaptureUnmatchedValues = true)]
     public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
 
     /// <summary>Gets the CSS classes for the chosen appearance.</summary>
-    private string CssClass => Appearance == SummaryTileAppearance.Card ? "summary-tile summary-tile-card" : "summary-tile";
+    private string CssClass => (Appearance == SummaryTileAppearance.Card ? "summary-tile summary-tile-card" : "summary-tile")
+        + (ShowsLink ? " summary-tile-link" : string.Empty);
     #endregion Properties
 }

@@ -133,6 +133,8 @@ def community_card(community: Community | None, target: str | None) -> Group:
                   text("Initials", 28, 102, community.initials, 12, 800, PAGE_BACKGROUND, 32, "center"),
                   text("Name", 70, 95, community.name, 14, 600),
                   text("Realm", 70, 114, f"{community.realm} · Community", 12, 400, MUTED)]
+    # The card leads to the community page (or the Overview without one): the chevron says so (owner decision, #306).
+    items.append(text("Chevron", SIDEBAR_W - 44, 104, "›", 18, 700, MUTED, 16, "center"))
     return Group("Community card", items, Click("navigate", target) if target else None)
 
 
