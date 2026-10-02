@@ -306,13 +306,20 @@ def report(items: dict[int, Item], open_pull_requests: list[tuple[int, str]], no
             found[SPRINT_RELEASE].append((item.number, mismatch))
         if item.state == "open" and item.kind is not None:
             check_open_item(item, items, found)
+    found[SCHEDULING] += pull_request_findings(items, open_pull_requests, now)
+    return found
+
+
+def pull_request_findings(items: dict[int, Item], open_pull_requests: list[tuple[int, str]],
+                          now: datetime) -> list[tuple[int, str]]:
+    """An open pull request for a task without an active sprint may not change or merge (A5)."""
+    found: list[tuple[int, str]] = []
     for number, body in open_pull_requests:
         for task_number in closing_numbers(body):
             task = items.get(task_number)
             if task and (task.sprint is None or not task.sprint.active(now)):
-                found[SCHEDULING].append(
-                    (task_number, f"Pull request #{number} is open, but the task has no active sprint; it may "
-                                  "not change or merge until the task is selected into one (A5)."))
+                found.append((task_number, f"Pull request #{number} is open, but the task has no active sprint; it "
+                                           "may not change or merge until the task is selected into one (A5)."))
     return found
 
 
