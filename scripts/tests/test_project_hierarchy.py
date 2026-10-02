@@ -47,6 +47,20 @@ class ParentRuleTests(unittest.TestCase):
         self.assertEqual(parent_problem(issue(37, "spike"), issue(15, "story")),
                          "Its parent #15 is a story; a spike belongs under a feature.")
 
+    def test_a_child_on_another_milestone_than_its_parent_fails(self) -> None:
+        task = Issue(261, "closed", frozenset({"type:task"}), "completed", milestone="v1.0")
+        improvement = Issue(260, "closed", frozenset({"type:improvement"}), "completed")
+        self.assertEqual(parent_problem(task, improvement),
+                         "Its milestone is `v1.0` but its parent #260's is none; give both the same milestone, so a "
+                         "milestone view shows it under its parent.")
+        feature = Issue(259, "open", frozenset({"type:feature"}), milestone="v1.0")
+        self.assertIn("Its milestone is none but its parent #259's is `v1.0`", parent_problem(improvement, feature) or "")
+
+    def test_a_child_on_its_parents_milestone_passes(self) -> None:
+        feature = Issue(259, "open", frozenset({"type:feature"}), milestone="v1.0")
+        self.assertIsNone(parent_problem(Issue(283, "open", frozenset({"type:improvement"}), milestone="v1.0"),
+                                         feature))
+
     def test_two_type_labels_fail(self) -> None:
         both = Issue(5, "open", frozenset({"type:task", "type:bug"}))
         self.assertEqual(parent_problem(both, None), "Use exactly one type label, not type:bug, type:task.")
@@ -112,6 +126,12 @@ class CompletionRuleTests(unittest.TestCase):
                  "stateReason": "COMPLETED"}
         self.assertFalse(Issue.from_api(rest).completed)
         self.assertTrue(Issue.from_api(graph).completed)
+
+    def test_milestone_is_read_from_either_shape(self) -> None:
+        rest = {"number": 13, "state": "open", "labels": [], "milestone": {"title": "v1.0"}}
+        graph = {"number": 13, "state": "OPEN", "labels": {"nodes": []}, "milestone": None}
+        self.assertEqual(Issue.from_api(rest).milestone, "v1.0")
+        self.assertIsNone(Issue.from_api(graph).milestone)
 
 
 class PullRequestTests(unittest.TestCase):

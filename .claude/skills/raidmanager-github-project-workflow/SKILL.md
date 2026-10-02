@@ -50,6 +50,9 @@ Epic
 - Only an epic has no parent. Give every issue exactly one type label, and link it to its parent as soon as it is
   created; after 10 minutes the `project-hierarchy` workflow labels an unlinked, misplaced or untyped open item
   `needs-parent`.
+- **Every item carries its parent's milestone.** A milestone view such as **Release v1.0** filters out a parent on
+  another milestone (or none) and shows its children as if they were standalone. When you set or change a milestone,
+  set it on the whole chain: the parent, its parent, up to the epic. The guard flags a mismatch `needs-parent`.
 - A task describes how bounded work is done and verified; its parent says why the work exists: deliver a capability
   (story), enhance something (improvement), correct a defect (bug) or answer a research question (spike).
 - Before creating any issue, classify it with the guide below and check its parent exists. When no feature fits,

@@ -28,7 +28,9 @@ personal token or repository secret.
 ## Rules
 
 - **Parent:** every open issue has exactly one type label, every item except an epic has a parent of the type in
-  the table, and an epic has none.
+  the table, and an epic has none. An item carries its parent's milestone; otherwise a milestone view such as
+  **Release v1.0** drops the parent and shows the child on its own. A milestone change is checked at once on the
+  changed issue, and on its children by the next audit.
 - **Completion:** an epic, feature, story, improvement, bug or spike may be closed as completed only when at least one
   child of the level below is closed as completed and every child is closed. A story, improvement, bug or spike
   therefore never closes without a completed task.
