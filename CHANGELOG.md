@@ -178,6 +178,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- Release v0.3 is approved and Planned, and Sprint 5 (3 to 17 October) is planned: Discord sign-in proven on evidence,
+  the SonarCloud findings on `main` fixed, and the companion threat model and deployed secrets spikes, 10 points and
+  two 3-day spikes (#361).
 - Every sprint now holds one release: finished items moved to the release in which their work was done, items with
   tasks in two releases were split into one item per release (#349 to #358), every story, improvement, bug and spike
   has Story Points, every task has a Delivery Stage, and the Sprints view lists outcome items. The board report and
