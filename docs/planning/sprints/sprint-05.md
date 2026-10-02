@@ -52,7 +52,8 @@ Not selected, with the reason:
 ## Dependencies and delivery risk
 
 No selected item depends on another. The three spikes run first, since #15, #153, #374 and #375 in Sprint 6 depend on
-their findings; #380 needs the server's specifications from the owner. Risk: #209's 14 vulnerabilities may need more than one pull request.
+their findings; #380 needs the server's specifications from the owner. Risk: #209's 14 vulnerabilities may need more
+than one pull request.
 
 ## Assignment history
 
