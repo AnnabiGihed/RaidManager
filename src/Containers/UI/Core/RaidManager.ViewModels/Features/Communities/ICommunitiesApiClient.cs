@@ -59,18 +59,18 @@ public interface ICommunitiesApiClient
     /// <param name="userId">The signed-in user; only the Administrator may.</param>
     /// <param name="communityId">The community.</param>
     /// <param name="discordRoleId">The Discord role snowflake.</param>
-    /// <param name="role">The RaidManager role's name: <c>Officer</c> or <c>RaidLeader</c>.</param>
+    /// <param name="roleId">The community role.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>How the API answered.</returns>
-    Task<CommunityApiStatus> MapRoleAsync(Guid userId, Guid communityId, string discordRoleId, string role, CancellationToken cancellationToken);
+    Task<CommunityApiStatus> MapRoleAsync(Guid userId, Guid communityId, string discordRoleId, Guid roleId, CancellationToken cancellationToken);
 
     /// <summary>Stops a Discord role giving one RaidManager role; any other role it gives stays.</summary>
     /// <param name="userId">The signed-in user; only the Administrator may.</param>
     /// <param name="communityId">The community.</param>
     /// <param name="discordRoleId">The Discord role snowflake.</param>
-    /// <param name="role">The RaidManager role's name: <c>Officer</c> or <c>RaidLeader</c>.</param>
+    /// <param name="roleId">The community role.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>How the API answered.</returns>
-    Task<CommunityApiStatus> UnmapRoleAsync(Guid userId, Guid communityId, string discordRoleId, string role, CancellationToken cancellationToken);
+    Task<CommunityApiStatus> UnmapRoleAsync(Guid userId, Guid communityId, string discordRoleId, Guid roleId, CancellationToken cancellationToken);
     #endregion Methods
 }

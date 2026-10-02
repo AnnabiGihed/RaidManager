@@ -10,6 +10,14 @@ namespace RaidManager.Web.Tests.Support;
 /// </remarks>
 public sealed class FakeCommunitiesApiClient : ICommunitiesApiClient
 {
+    #region Fields
+    /// <summary>Stores the Officer preset's id in the sample roles card.</summary>
+    public static readonly Guid OfficerId = Guid.Parse("0a6f3c1e-1111-4c55-9a8e-0d3c1b2a4f5e");
+
+    /// <summary>Stores the Raid leader preset's id in the sample roles card.</summary>
+    public static readonly Guid RaidLeaderId = Guid.Parse("0a6f3c1e-2222-4c55-9a8e-0d3c1b2a4f5e");
+    #endregion Fields
+
     #region Properties
     /// <summary>Gets the linked communities.</summary>
     public List<CommunitySummary> Communities { get; } = [];
@@ -26,8 +34,8 @@ public sealed class FakeCommunitiesApiClient : ICommunitiesApiClient
     /// <summary>Gets or sets how the API answers every roles call; <see cref="CommunityApiStatus.Succeeded"/> by default.</summary>
     public CommunityApiStatus RoleStatus { get; set; } = CommunityApiStatus.Succeeded;
 
-    /// <summary>Gets the role changes asked for: the Discord role, the RaidManager role, and whether it was added or removed.</summary>
-    public List<(string DiscordRoleId, string Role, bool Added)> RoleChanges { get; } = [];
+    /// <summary>Gets the role changes asked for: the Discord role, the community role's id, and whether it was added or removed.</summary>
+    public List<(string DiscordRoleId, Guid RoleId, bool Added)> RoleChanges { get; } = [];
 
     /// <summary>Gets the Discord servers each sign-in asked about.</summary>
     public List<IReadOnlyList<string>> ServerLookups { get; } = [];
@@ -54,8 +62,8 @@ public sealed class FakeCommunitiesApiClient : ICommunitiesApiClient
         "Dark Templars",
         checkedAtUtc,
         [
-            new CommunityMember("1", "Malarya", "https://cdn.discordapp.com/avatars/1/a.png", [new DiscordRoleOption("12", "Officier"), new DiscordRoleOption("13", "Veteran")], "Officer"),
-            new CommunityMember("2", "OrlkDemon", null, [], "Member"),
+            new CommunityMember("1", "Malarya", "https://cdn.discordapp.com/avatars/1/a.png", [new DiscordRoleOption("12", "Officier"), new DiscordRoleOption("13", "Veteran")], ["Officer", "Raid leader"]),
+            new CommunityMember("2", "OrlkDemon", null, [], ["Member"]),
         ]);
 
     /// <summary>Creates a roles card with Guild Master and Officier mappable, Officier mapped to Officer.</summary>
@@ -68,10 +76,10 @@ public sealed class FakeCommunitiesApiClient : ICommunitiesApiClient
         canEdit,
         [new DiscordRoleOption("11", "Guild Master"), new DiscordRoleOption("12", "Officier"), new DiscordRoleOption("13", "Veteran")],
         [
-            new CommunityRoleRow("Administrator", [], 1),
-            new CommunityRoleRow("Officer", [new MappedDiscordRole("12", "Officier", false)], 1),
-            new CommunityRoleRow("RaidLeader", [new MappedDiscordRole("99", null, true)], 0),
-            new CommunityRoleRow("Member", [], 2),
+            new CommunityRoleRow("Administrator", null, "Administrator", ["ManageRaids", "BuildRosters", "RunRaidNight", "ReviewConflicts", "ManageCommunityRoles"], [], 1),
+            new CommunityRoleRow("Role", OfficerId, "Officer", ["ManageRaids", "BuildRosters", "RunRaidNight", "ReviewConflicts"], [new MappedDiscordRole("12", "Officier", false)], 1),
+            new CommunityRoleRow("Role", RaidLeaderId, "Raid leader", ["ManageRaids", "BuildRosters", "RunRaidNight"], [new MappedDiscordRole("99", null, true)], 0),
+            new CommunityRoleRow("Member", null, "Member", [], [], 2),
         ]);
 
     /// <inheritdoc />
@@ -130,16 +138,16 @@ public sealed class FakeCommunitiesApiClient : ICommunitiesApiClient
             : new CommunityRoleSettingsAnswer(RoleStatus, null));
 
     /// <inheritdoc />
-    public Task<CommunityApiStatus> MapRoleAsync(Guid userId, Guid communityId, string discordRoleId, string role, CancellationToken cancellationToken)
+    public Task<CommunityApiStatus> MapRoleAsync(Guid userId, Guid communityId, string discordRoleId, Guid roleId, CancellationToken cancellationToken)
     {
-        RoleChanges.Add((discordRoleId, role, true));
+        RoleChanges.Add((discordRoleId, roleId, true));
         return Task.FromResult(RoleStatus);
     }
 
     /// <inheritdoc />
-    public Task<CommunityApiStatus> UnmapRoleAsync(Guid userId, Guid communityId, string discordRoleId, string role, CancellationToken cancellationToken)
+    public Task<CommunityApiStatus> UnmapRoleAsync(Guid userId, Guid communityId, string discordRoleId, Guid roleId, CancellationToken cancellationToken)
     {
-        RoleChanges.Add((discordRoleId, role, false));
+        RoleChanges.Add((discordRoleId, roleId, false));
         return Task.FromResult(RoleStatus);
     }
     #endregion Public Methods

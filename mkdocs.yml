@@ -45,6 +45,7 @@ nav:
       - Addon roster import: adr/0021-import-the-roster-into-the-addon-by-pasting-a-code.md
       - Discord role checks: adr/0022-check-discord-roles-at-action-time.md
       - Discord servers at sign-in: adr/0023-read-a-players-discord-servers-at-sign-in.md
+      - Community roles: adr/0024-give-each-community-its-own-roles.md
 theme:
   name: material
 markdown_extensions:

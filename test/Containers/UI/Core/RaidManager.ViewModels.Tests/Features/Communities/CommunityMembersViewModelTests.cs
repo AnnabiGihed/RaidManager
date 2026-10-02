@@ -35,7 +35,7 @@ public sealed class CommunityMembersViewModelTests
         await members.LoadAsync(Guid.NewGuid(), CommunityId, CancellationToken.None);
 
         members.Status.ShouldBe(CommunityPageStatus.Ready);
-        members.Rows.Select(row => (row.DisplayName, row.DiscordRoles, row.RoleLabel)).ShouldBe([("Malarya", "@Officier, @Veteran", "Officer"), ("OrlkDemon", "No roles", "Member")]);
+        members.Rows.Select(row => (row.DisplayName, row.DiscordRoles, string.Join(", ", row.Roles))).ShouldBe([("Malarya", "@Officier, @Veteran", "Officer, Raid leader"), ("OrlkDemon", "No roles", "Member")]);
         members.Rows[0].AvatarUrl.ShouldBe("https://cdn.discordapp.com/avatars/1/a.png");
         members.CheckedNote.ShouldBe("Last checked with Discord today at 18:40 UTC.");
     }

@@ -149,9 +149,9 @@ public sealed class CommunityRoleSettingsStepDefinitions
 
     /// <summary>Maps a Discord role before the scenario's action.</summary>
     /// <param name="role">The Discord role name.</param>
-    /// <param name="raidManagerRole">The RaidManager role.</param>
-    [Given("the Discord role {string} gives {CommunityMemberRole}")]
-    public void GivenTheDiscordRoleGives(string role, CommunityMemberRole raidManagerRole) => Community.MapDiscordRole(RoleId(role), raidManagerRole);
+    /// <param name="raidManagerRole">The preset role, such as <c>Officer</c> or <c>RaidLeader</c>.</param>
+    [Given("the Discord role {string} gives {word}")]
+    public void GivenTheDiscordRoleGives(string role, string raidManagerRole) => Community.MapDiscordRole(RoleId(role), Preset(raidManagerRole));
 
     /// <summary>Puts people in the server with their Discord roles.</summary>
     /// <param name="people">Table with the columns <c>name</c> and <c>roles</c> (comma-separated, may be empty).</param>
@@ -167,10 +167,10 @@ public sealed class CommunityRoleSettingsStepDefinitions
 
     /// <summary>Maps a role that Discord no longer has.</summary>
     /// <param name="role">The Discord role name.</param>
-    /// <param name="raidManagerRole">The RaidManager role.</param>
-    [Given("the Discord role {string} was mapped to {CommunityMemberRole} and deleted in Discord")]
-    public void GivenTheDiscordRoleWasMappedAndDeleted(string role, CommunityMemberRole raidManagerRole) =>
-        Community.MapDiscordRole(RoleId(role), raidManagerRole);
+    /// <param name="raidManagerRole">The preset role, such as <c>Officer</c> or <c>RaidLeader</c>.</param>
+    [Given("the Discord role {string} was mapped to {word} and deleted in Discord")]
+    public void GivenTheDiscordRoleWasMappedAndDeleted(string role, string raidManagerRole) =>
+        Community.MapDiscordRole(RoleId(role), Preset(raidManagerRole));
 
     /// <summary>Registers a user who isn't in the server.</summary>
     /// <param name="name">The user's name.</param>
@@ -224,26 +224,37 @@ public sealed class CommunityRoleSettingsStepDefinitions
     /// <summary>Maps a Discord role as a user.</summary>
     /// <param name="name">The user's name.</param>
     /// <param name="role">The Discord role name.</param>
-    /// <param name="raidManagerRole">The RaidManager role.</param>
+    /// <param name="raidManagerRole">The preset role, such as <c>Officer</c> or <c>RaidLeader</c>.</param>
     /// <returns>A task that completes when the change has run.</returns>
-    [When("{string} maps the Discord role {string} to {CommunityMemberRole}")]
-    public async Task WhenMapsTheDiscordRole(string name, string role, CommunityMemberRole raidManagerRole)
+    [When("{string} maps the Discord role {string} to {word}")]
+    public async Task WhenMapsTheDiscordRole(string name, string role, string raidManagerRole)
     {
         var handler = new MapCommunityRoleCommandHandler(_communities.Object, _userRepository.Object, _discordMembers.Object, _discordServers.Object, _unitOfWork.Object);
-        _change = await handler.Handle(new MapCommunityRoleCommand(Community.Id.Value, UserNamed(name).Id.Value, RoleId(role), raidManagerRole.ToString()), CancellationToken.None);
+        _change = await handler.Handle(new MapCommunityRoleCommand(Community.Id.Value, UserNamed(name).Id.Value, RoleId(role), Preset(raidManagerRole).Value), CancellationToken.None);
+    }
+
+    /// <summary>Maps a Discord role to a role id the community doesn't have, as a user.</summary>
+    /// <param name="name">The user's name.</param>
+    /// <param name="role">The Discord role name.</param>
+    /// <returns>A task that completes when the change has run.</returns>
+    [When("{string} maps the Discord role {string} to a role the community doesn't have")]
+    public async Task WhenMapsTheDiscordRoleToAnUnknownRole(string name, string role)
+    {
+        var handler = new MapCommunityRoleCommandHandler(_communities.Object, _userRepository.Object, _discordMembers.Object, _discordServers.Object, _unitOfWork.Object);
+        _change = await handler.Handle(new MapCommunityRoleCommand(Community.Id.Value, UserNamed(name).Id.Value, RoleId(role), Guid.NewGuid()), CancellationToken.None);
     }
 
     /// <summary>Stops a Discord role giving a RaidManager role, as a user.</summary>
     /// <param name="name">The user's name.</param>
-    /// <param name="raidManagerRole">The RaidManager role.</param>
+    /// <param name="raidManagerRole">The preset role, such as <c>Officer</c> or <c>RaidLeader</c>.</param>
     /// <param name="role">The Discord role name.</param>
     /// <returns>A task that completes when the change has run.</returns>
-    [When("{string} removes the {CommunityMemberRole} mapping of the Discord role {string}")]
-    public async Task WhenRemovesTheMapping(string name, CommunityMemberRole raidManagerRole, string role)
+    [When("{string} removes the {word} mapping of the Discord role {string}")]
+    public async Task WhenRemovesTheMapping(string name, string raidManagerRole, string role)
     {
         var handler = new UnmapCommunityRoleCommandHandler(_communities.Object, _userRepository.Object, _discordMembers.Object, _unitOfWork.Object);
         _change = await handler.Handle(
-            new UnmapCommunityRoleCommand(Community.Id.Value, UserNamed(name).Id.Value, RoleId(role), raidManagerRole.ToString()),
+            new UnmapCommunityRoleCommand(Community.Id.Value, UserNamed(name).Id.Value, RoleId(role), Preset(raidManagerRole).Value),
             CancellationToken.None);
     }
 
@@ -269,7 +280,7 @@ public sealed class CommunityRoleSettingsStepDefinitions
         foreach (var (actual, expected) in members.Zip(rows.Rows))
         {
             string.Join(",", actual.DiscordRoles.Select(role => role.Name)).ShouldBe(expected["discord roles"]);
-            actual.Role.ToString().ShouldBe(expected["role"]);
+            string.Join(", ", actual.Roles).ShouldBe(expected["roles"]);
         }
     }
 
@@ -297,7 +308,7 @@ public sealed class CommunityRoleSettingsStepDefinitions
     public void ThenTheseRolesHaveTheseMembers(DataTable rows)
     {
         Read.Value.ServerName.ShouldBe("Dark Templars");
-        Read.Value.Rows.Select(row => row.Role.ToString()).ShouldBe(rows.Rows.Select(row => row["role"]));
+        Read.Value.Rows.Select(row => row.Name).ShouldBe(rows.Rows.Select(row => row["role"]));
         foreach (var (actual, expected) in Read.Value.Rows.Zip(rows.Rows))
         {
             string.Join(",", actual.DiscordRoles.Select(role => role.Name)).ShouldBe(expected["discord roles"]);
@@ -307,13 +318,17 @@ public sealed class CommunityRoleSettingsStepDefinitions
 
     /// <summary>Checks that a row shows a missing Discord role.</summary>
     /// <param name="role">The RaidManager role.</param>
-    [Then("the {CommunityMemberRole} role shows a missing Discord role")]
-    public void ThenTheRoleShowsAMissingDiscordRole(CommunityMemberRole role)
+    [Then("the {word} role shows a missing Discord role")]
+    public void ThenTheRoleShowsAMissingDiscordRole(string role)
     {
-        var missing = Read.Value.Rows.Single(row => row.Role == role).DiscordRoles.ShouldHaveSingleItem();
+        var missing = Read.Value.Rows.Single(row => row.RoleId == Preset(role).Value).DiscordRoles.ShouldHaveSingleItem();
         missing.Missing.ShouldBeTrue();
         missing.Name.ShouldBeNull();
     }
+
+    /// <summary>Checks that the request failed because the community has no such role.</summary>
+    [Then("the request fails because the role doesn't exist")]
+    public void ThenTheRequestFailsBecauseTheRoleDoesntExist() => ShouldFail(CommunityErrors.RoleNotFound, ResultExceptionType.NotFound);
 
     /// <summary>Checks that the request was refused because the user isn't in the server.</summary>
     [Then("the request is refused because the user is not a member")]
@@ -358,17 +373,17 @@ public sealed class CommunityRoleSettingsStepDefinitions
     /// <summary>Checks the RaidManager role a Discord role gives.</summary>
     /// <param name="role">The Discord role name.</param>
     /// <param name="raidManagerRole">The expected RaidManager role.</param>
-    [Then("the Discord role {string} gives {CommunityMemberRole}")]
-    public void ThenTheDiscordRoleGives(string role, CommunityMemberRole raidManagerRole) =>
-        Community.MappedRoleFor([RoleId(role)]).ShouldBe(raidManagerRole);
+    [Then(@"^the Discord role ""(.*)"" gives (Officer|RaidLeader)$")]
+    public void ThenTheDiscordRoleGives(string role, string raidManagerRole) =>
+        Community.RolesFor([RoleId(role)]).Select(given => given.Id).ShouldBe([Preset(raidManagerRole)]);
 
     /// <summary>Checks that a Discord role gives two RaidManager roles.</summary>
     /// <param name="role">The Discord role name.</param>
     /// <param name="first">The first RaidManager role.</param>
     /// <param name="second">The second RaidManager role.</param>
-    [Then("the Discord role {string} gives {CommunityMemberRole} and {CommunityMemberRole}")]
-    public void ThenTheDiscordRoleGivesBoth(string role, CommunityMemberRole first, CommunityMemberRole second) =>
-        Community.RoleMappings.Where(mapping => mapping.DiscordRoleId == RoleId(role)).Select(mapping => mapping.Role).ShouldBe([first, second], ignoreOrder: true);
+    [Then("the Discord role {string} gives {word} and {word}")]
+    public void ThenTheDiscordRoleGivesBoth(string role, string first, string second) =>
+        Community.RolesFor([RoleId(role)]).Select(given => given.Id).ShouldBe([Preset(first), Preset(second)], ignoreOrder: true);
 
     /// <summary>Checks that a Discord role gives no RaidManager role.</summary>
     /// <param name="role">The Discord role name.</param>
@@ -395,6 +410,11 @@ public sealed class CommunityRoleSettingsStepDefinitions
 
         return user;
     }
+
+    /// <summary>Finds one of the community's preset roles by its name without spaces, as the scenarios write it.</summary>
+    /// <param name="name">The name, such as <c>Officer</c> or <c>RaidLeader</c>.</param>
+    /// <returns>The role's identifier.</returns>
+    private CommunityRoleId Preset(string name) => Community.Roles.Single(role => string.Equals(role.Name.Replace(" ", string.Empty, StringComparison.Ordinal), name, StringComparison.OrdinalIgnoreCase)).Id;
 
     /// <summary>Gets or assigns the snowflake of a Discord role name.</summary>
     /// <param name="name">The role name.</param>

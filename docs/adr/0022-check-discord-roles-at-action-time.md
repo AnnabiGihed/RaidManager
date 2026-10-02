@@ -1,6 +1,7 @@
 # ADR-0022: Check Discord roles at action time
 
-- Status: Proposed
+- Status: Proposed; the fixed Officer and Raid leader roles and the highest-role rule are replaced by
+  [ADR-0024](0024-give-each-community-its-own-roles.md)
 - Date: 2026-10-01
 - Deciders: Gihed Annabi
 

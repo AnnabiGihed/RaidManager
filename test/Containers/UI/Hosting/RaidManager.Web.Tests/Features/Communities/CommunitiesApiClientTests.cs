@@ -96,16 +96,20 @@ public sealed class CommunitiesApiClientTests : IDisposable
         var user = Guid.Parse("0b5f3d2c-7a1e-4b8f-9c6d-1e2f3a4b5c6d");
         var community = Guid.Parse("6f1c3f4e-1d3a-4c55-9a8e-0d3c1b2a4f5e");
         var route = $"/internal/users/{user}/communities/{community}";
-        _api.Answer($"{route}/roles", HttpStatusCode.OK, """{"communityId":"6f1c3f4e-1d3a-4c55-9a8e-0d3c1b2a4f5e","serverName":"Dark Templars","canEdit":true,"mappableRoles":[{"id":"12","name":"Officier"}],"rows":[{"role":"Officer","discordRoles":[{"discordRoleId":"12","name":"Officier","missing":false}],"members":1}]}""")
-            .Answer($"{route}/role-mappings/Officer/12", HttpStatusCode.NoContent);
+        var officer = Guid.Parse("0a6f3c1e-1111-4c55-9a8e-0d3c1b2a4f5e");
+        _api.Answer($"{route}/roles", HttpStatusCode.OK, """{"communityId":"6f1c3f4e-1d3a-4c55-9a8e-0d3c1b2a4f5e","serverName":"Dark Templars","canEdit":true,"mappableRoles":[{"id":"12","name":"Officier"}],"rows":[{"kind":"Role","roleId":"0a6f3c1e-1111-4c55-9a8e-0d3c1b2a4f5e","name":"Officer","permissions":["ManageRaids"],"discordRoles":[{"discordRoleId":"12","name":"Officier","missing":false}],"members":1}]}""")
+            .Answer($"{route}/role-mappings/{officer}/12", HttpStatusCode.NoContent);
         var client = Client();
 
         var card = await client.GetRoleSettingsAsync(user, community, CancellationToken.None);
         card.Status.ShouldBe(CommunityApiStatus.Succeeded);
-        card.Settings.ShouldNotBeNull().Rows.ShouldHaveSingleItem().DiscordRoles.ShouldHaveSingleItem().Name.ShouldBe("Officier");
-        (await client.MapRoleAsync(user, community, "12", "Officer", CancellationToken.None)).ShouldBe(CommunityApiStatus.Succeeded);
+        var row = card.Settings.ShouldNotBeNull().Rows.ShouldHaveSingleItem();
+        row.DiscordRoles.ShouldHaveSingleItem().Name.ShouldBe("Officier");
+        row.Key.ShouldBe(officer.ToString());
+        row.Permissions.ShouldBe(["ManageRaids"]);
+        (await client.MapRoleAsync(user, community, "12", officer, CancellationToken.None)).ShouldBe(CommunityApiStatus.Succeeded);
         _api.Requests[^1].Request.Method.ShouldBe(HttpMethod.Put);
-        (await client.UnmapRoleAsync(user, community, "12", "Officer", CancellationToken.None)).ShouldBe(CommunityApiStatus.Succeeded);
+        (await client.UnmapRoleAsync(user, community, "12", officer, CancellationToken.None)).ShouldBe(CommunityApiStatus.Succeeded);
         _api.Requests[^1].Request.Method.ShouldBe(HttpMethod.Delete);
 
         foreach (var (status, outcome) in new[]
@@ -121,8 +125,8 @@ public sealed class CommunitiesApiClientTests : IDisposable
             refused.ShouldBe(new CommunityRoleSettingsAnswer(outcome, null));
         }
 
-        _api.Answer($"{route}/members", HttpStatusCode.OK, """{"communityId":"6f1c3f4e-1d3a-4c55-9a8e-0d3c1b2a4f5e","serverName":"Dark Templars","checkedAtUtc":"2026-10-01T18:40:00+00:00","members":[{"discordUserId":"1","displayName":"Malarya","avatarUrl":null,"discordRoles":[],"role":"Officer"}]}""");
-        (await client.GetMembersAsync(user, community, CancellationToken.None)).Members.ShouldNotBeNull().Members.ShouldHaveSingleItem().Role.ShouldBe("Officer");
+        _api.Answer($"{route}/members", HttpStatusCode.OK, """{"communityId":"6f1c3f4e-1d3a-4c55-9a8e-0d3c1b2a4f5e","serverName":"Dark Templars","checkedAtUtc":"2026-10-01T18:40:00+00:00","members":[{"discordUserId":"1","displayName":"Malarya","avatarUrl":null,"discordRoles":[],"roles":["Officer","Veteran"]}]}""");
+        (await client.GetMembersAsync(user, community, CancellationToken.None)).Members.ShouldNotBeNull().Members.ShouldHaveSingleItem().Roles.ShouldBe(["Officer", "Veteran"]);
         _api.Answer($"{route}/members", HttpStatusCode.ServiceUnavailable);
         (await client.GetMembersAsync(user, community, CancellationToken.None)).ShouldBe(new CommunityMembersAnswer(CommunityApiStatus.DiscordUnavailable, null));
 

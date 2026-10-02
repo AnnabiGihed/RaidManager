@@ -3,7 +3,7 @@ using Pivot.Framework.Domain.Shared;
 using Reqnroll;
 using Shouldly;
 using RaidManager.Application.Features.Communities.Abstractions;
-using RaidManager.Application.Features.Communities.Queries.GetCommunityRole;
+using RaidManager.Application.Features.Communities.Queries.GetCommunityPermissions;
 using RaidManager.Domain.Features.Communities.Aggregates;
 using RaidManager.Domain.Features.Communities.Enums;
 using RaidManager.Domain.Features.Communities.Errors;
@@ -16,16 +16,16 @@ using RaidManager.Domain.Features.Shared.Identifiers;
 
 namespace RaidManager.Application.Tests.Features.Communities.Queries;
 
-/// <summary>Defines business-readable steps for the community role check.</summary>
+/// <summary>Defines business-readable steps for the community permission check.</summary>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-01<br/>
-/// Purpose: Verifies that the role comes from Discord's current answer and that every check Discord can't answer fails
-/// closed (ADR-0022).
+/// Purpose: Verifies that permissions come from Discord's current answer and that every check Discord can't answer
+/// fails closed (ADR-0022).
 /// </remarks>
 [Binding]
-[Scope(Feature = "Community role check")]
-public sealed class CommunityRoleStepDefinitions
+[Scope(Feature = "Community permission check")]
+public sealed class CommunityPermissionsStepDefinitions
 {
     #region Fields
     /// <summary>Stores one registered user per name used in the scenario.</summary>
@@ -47,15 +47,15 @@ public sealed class CommunityRoleStepDefinitions
     private Community? _community;
 
     /// <summary>Stores the result of the latest check.</summary>
-    private Result<CommunityMemberRole>? _result;
+    private Result<CommunityPermissions>? _result;
 
     /// <summary>Stores the result of the latest validation.</summary>
     private FluentValidation.Results.ValidationResult? _validation;
     #endregion Fields
 
     #region Constructors
-    /// <summary>Initializes a new instance of the <see cref="CommunityRoleStepDefinitions"/> class.</summary>
-    public CommunityRoleStepDefinitions()
+    /// <summary>Initializes a new instance of the <see cref="CommunityPermissionsStepDefinitions"/> class.</summary>
+    public CommunityPermissionsStepDefinitions()
     {
         // Unknown ids are found nowhere; Given steps make the community and the users known.
         _userRepository
@@ -72,7 +72,7 @@ public sealed class CommunityRoleStepDefinitions
     private Community Community => _community ?? throw new InvalidOperationException("No community was linked in this scenario.");
 
     /// <summary>Gets the captured check result, failing the scenario if no check ran.</summary>
-    private Result<CommunityMemberRole> CheckResult => _result ?? throw new InvalidOperationException("No check ran in this scenario.");
+    private Result<CommunityPermissions> CheckResult => _result ?? throw new InvalidOperationException("No check ran in this scenario.");
     #endregion Properties
 
     #region Given Steps
@@ -82,7 +82,7 @@ public sealed class CommunityRoleStepDefinitions
     public void GivenALinkedCommunityWhoseDiscordRoleGivesOfficer(string discordRoleId)
     {
         _community = Community.Link("123456789012345678", "Citadel Vanguard", WarmaneRealm.Icecrown, _administrator.Id);
-        _community.MapDiscordRole(discordRoleId, CommunityMemberRole.Officer);
+        _community.MapDiscordRole(discordRoleId, _community.Roles.Single(role => role.Name == CommunityRole.OfficerName).Id);
     }
 
     /// <summary>Makes Discord report a user in the server with the listed roles.</summary>
@@ -114,23 +114,23 @@ public sealed class CommunityRoleStepDefinitions
     /// <summary>Checks a named user's role in the linked community.</summary>
     /// <param name="name">The user's name.</param>
     /// <returns>A task that completes when the check has run.</returns>
-    [When("the role of {string} is checked")]
+    [When("the permissions of {string} are checked")]
     public Task WhenTheRoleOfIsChecked(string name) => CheckAsync(Community.Id.Value, UserNamed(name).Id.Value);
 
     /// <summary>Checks the Administrator's role in the linked community.</summary>
     /// <returns>A task that completes when the check has run.</returns>
-    [When("the role of the Administrator is checked")]
+    [When("the permissions of the Administrator are checked")]
     public Task WhenTheRoleOfTheAdministratorIsChecked() => CheckAsync(Community.Id.Value, _administrator.Id.Value);
 
     /// <summary>Checks a named user's role in a community that doesn't exist.</summary>
     /// <param name="name">The user's name.</param>
     /// <returns>A task that completes when the check has run.</returns>
-    [When("the role of {string} is checked in an unknown community")]
+    [When("the permissions of {string} are checked in an unknown community")]
     public Task WhenTheRoleOfIsCheckedInAnUnknownCommunity(string name) => CheckAsync(Guid.NewGuid(), UserNamed(name).Id.Value);
 
     /// <summary>Checks the role of a user RaidManager doesn't know.</summary>
     /// <returns>A task that completes when the check has run.</returns>
-    [When("the role of an unknown user is checked")]
+    [When("the permissions of an unknown user are checked")]
     public Task WhenTheRoleOfAnUnknownUserIsChecked() => CheckAsync(Community.Id.Value, Guid.NewGuid());
 
     /// <summary>Validates a check with one identifier missing.</summary>
@@ -139,20 +139,20 @@ public sealed class CommunityRoleStepDefinitions
     public void WhenTheCheckIsValidatedWithoutA(string field)
     {
         var query = field == "community"
-            ? new GetCommunityRoleQuery(Guid.Empty, Guid.NewGuid())
-            : new GetCommunityRoleQuery(Guid.NewGuid(), Guid.Empty);
-        _validation = new GetCommunityRoleQueryValidator().Validate(query);
+            ? new GetCommunityPermissionsQuery(Guid.Empty, Guid.NewGuid())
+            : new GetCommunityPermissionsQuery(Guid.NewGuid(), Guid.Empty);
+        _validation = new GetCommunityPermissionsQueryValidator().Validate(query);
     }
     #endregion When Steps
 
     #region Then Steps
-    /// <summary>Checks the role the check gave.</summary>
-    /// <param name="role">The expected role.</param>
-    [Then("the check gives {CommunityMemberRole}")]
-    public void ThenTheCheckGives(CommunityMemberRole role)
+    /// <summary>Checks what the check allowed.</summary>
+    /// <param name="permissions">The expected permissions.</param>
+    [Then("the check allows {string}")]
+    public void ThenTheCheckAllows(string permissions)
     {
         CheckResult.IsSuccess.ShouldBeTrue(CheckResult.IsFailure ? CheckResult.Error.Code : null);
-        CheckResult.Value.ShouldBe(role);
+        CheckResult.Value.ShouldBe(Enum.Parse<CommunityPermissions>(permissions));
     }
 
     /// <summary>Checks that a named user was refused as not a member.</summary>
@@ -221,8 +221,8 @@ public sealed class CommunityRoleStepDefinitions
     /// <returns>A task that completes when the check has run.</returns>
     private async Task CheckAsync(Guid communityId, Guid userId)
     {
-        var handler = new GetCommunityRoleQueryHandler(_communities.Object, _userRepository.Object, _discord.Object);
-        _result = await handler.Handle(new GetCommunityRoleQuery(communityId, userId), CancellationToken.None);
+        var handler = new GetCommunityPermissionsQueryHandler(_communities.Object, _userRepository.Object, _discord.Object);
+        _result = await handler.Handle(new GetCommunityPermissionsQuery(communityId, userId), CancellationToken.None);
     }
 
     /// <summary>Asserts that the check was refused because the user isn't in the server.</summary>

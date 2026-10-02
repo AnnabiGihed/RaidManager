@@ -33,3 +33,10 @@
     color: var(--rm-text-secondary);
     font-size: 13px;
 }
+
+/* A member can have several roles, one badge each. */
+.member-roles {
+    display: inline-flex;
+    flex-wrap: wrap;
+    gap: 8px;
+}

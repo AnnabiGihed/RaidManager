@@ -70,7 +70,7 @@ public sealed class CommunityRolesViewModel
     /// <returns>The roles, highest first.</returns>
     public IReadOnlyList<DiscordRoleOption> PickerOptions(string role)
     {
-        var mapped = Settings?.Rows.FirstOrDefault(row => row.Role == role)?.DiscordRoles.Select(discordRole => discordRole.DiscordRoleId).ToHashSet(StringComparer.Ordinal) ?? [];
+        var mapped = Settings?.Rows.FirstOrDefault(row => row.Key == role)?.DiscordRoles.Select(discordRole => discordRole.DiscordRoleId).ToHashSet(StringComparer.Ordinal) ?? [];
         return [.. (Settings?.MappableRoles ?? []).Where(option => !mapped.Contains(option.Id))];
     }
 
@@ -121,7 +121,7 @@ public sealed class CommunityRolesViewModel
     /// <returns>A task that completes when the change was tried.</returns>
     public Task AddPickedAsync(CancellationToken cancellationToken) =>
         PickingFor is { } role && PickedRoleId is { } discordRoleId
-            ? ChangeAsync(() => _api.MapRoleAsync(_userId, _communityId, discordRoleId, role, cancellationToken), cancellationToken)
+            ? ChangeAsync(() => _api.MapRoleAsync(_userId, _communityId, discordRoleId, Guid.Parse(role), cancellationToken), cancellationToken)
             : Task.CompletedTask;
 
     /// <summary>Stops a Discord role giving a row's RaidManager role, then reloads the card; the role stays on other rows.</summary>
@@ -130,7 +130,7 @@ public sealed class CommunityRolesViewModel
     /// <param name="cancellationToken">The page's token.</param>
     /// <returns>A task that completes when the change was tried.</returns>
     public Task RemoveAsync(string discordRoleId, string role, CancellationToken cancellationToken) =>
-        ChangeAsync(() => _api.UnmapRoleAsync(_userId, _communityId, discordRoleId, role, cancellationToken), cancellationToken);
+        ChangeAsync(() => _api.UnmapRoleAsync(_userId, _communityId, discordRoleId, Guid.Parse(role), cancellationToken), cancellationToken);
     #endregion Public Methods
 
     #region Private Helpers
@@ -159,19 +159,19 @@ public sealed class CommunityRolesViewModel
     /// <returns>The view.</returns>
     private static RoleRowView View(CommunityRoleRow row, bool canEdit)
     {
-        var source = row.Role switch
+        var source = row.Kind switch
         {
             "Administrator" => "Added RaidManager to the server",
             "Member" => "Everyone in the Discord server",
             _ => null,
         };
         return new RoleRowView(
-            row.Role,
-            CommunityRoleLabels.For(row.Role),
+            row.Key,
+            row.Name,
             source,
             [.. row.DiscordRoles.Select(role => new RoleChipView(role.DiscordRoleId, role.Missing ? "Deleted role" : $"@{role.Name}", role.Missing))],
             string.Create(CultureInfo.InvariantCulture, $"{row.Members} member{(row.Members == 1 ? string.Empty : "s")}"),
-            canEdit && source is null);
+            canEdit && row.Kind == CommunityRoleRow.RoleKind);
     }
 
     /// <summary>Sends a change, reloads the card when it was saved, and words the outcome.</summary>

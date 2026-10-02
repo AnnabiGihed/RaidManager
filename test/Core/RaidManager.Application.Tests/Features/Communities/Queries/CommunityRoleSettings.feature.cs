@@ -141,7 +141,7 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Communities/Queries/CommunityRoleSettings.feature.ndjson", 22);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Communities/Queries/CommunityRoleSettings.feature.ndjson", 23);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -215,7 +215,7 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
                             "Officier",
                             "1"});
                 table2.AddRow(new string[] {
-                            "RaidLeader",
+                            "Raid leader",
                             "",
                             "0"});
                 table2.AddRow(new string[] {
@@ -272,7 +272,7 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
                             "Officier",
                             "1"});
                 table3.AddRow(new string[] {
-                            "RaidLeader",
+                            "Raid leader",
                             "Officier",
                             "1"});
                 table3.AddRow(new string[] {
@@ -579,15 +579,15 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="The Administrator removes a mapping")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="A role the community doesn\'t have can\'t be mapped")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Community role settings")]
-        [global::Xunit.TraitAttribute("Description", "The Administrator removes a mapping")]
-        public async global::System.Threading.Tasks.Task TheAdministratorRemovesAMapping()
+        [global::Xunit.TraitAttribute("Description", "A role the community doesn\'t have can\'t be mapped")]
+        public async global::System.Threading.Tasks.Task ARoleTheCommunityDoesntHaveCantBeMapped()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "10";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("The Administrator removes a mapping", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A role the community doesn\'t have can\'t be mapped", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("Only the Administrator maps Discord roles", null, tagsOfRule);
 #line 81
@@ -604,27 +604,27 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
   await this.FeatureBackgroundAsync();
 #line hidden
 #line 82
-      await testRunner.WhenAsync("\"Gihed\" removes the Officer mapping of the Discord role \"Officier\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+      await testRunner.WhenAsync("\"Gihed\" maps the Discord role \"Veteran\" to a role the community doesn\'t have", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 83
-      await testRunner.ThenAsync("the change is saved", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+      await testRunner.ThenAsync("the request fails because the role doesn\'t exist", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
 #line 84
-      await testRunner.AndAsync("the Discord role \"Officier\" gives nothing", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+      await testRunner.AndAsync("nothing is saved", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Removing a role that isn\'t mapped saves nothing")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="The Administrator removes a mapping")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Community role settings")]
-        [global::Xunit.TraitAttribute("Description", "Removing a role that isn\'t mapped saves nothing")]
-        public async global::System.Threading.Tasks.Task RemovingARoleThatIsntMappedSavesNothing()
+        [global::Xunit.TraitAttribute("Description", "The Administrator removes a mapping")]
+        public async global::System.Threading.Tasks.Task TheAdministratorRemovesAMapping()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "11";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Removing a role that isn\'t mapped saves nothing", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("The Administrator removes a mapping", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("Only the Administrator maps Discord roles", null, tagsOfRule);
 #line 86
@@ -641,9 +641,46 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
   await this.FeatureBackgroundAsync();
 #line hidden
 #line 87
-      await testRunner.WhenAsync("\"Gihed\" removes the Officer mapping of the Discord role \"Veteran\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+      await testRunner.WhenAsync("\"Gihed\" removes the Officer mapping of the Discord role \"Officier\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 88
+      await testRunner.ThenAsync("the change is saved", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 89
+      await testRunner.AndAsync("the Discord role \"Officier\" gives nothing", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="Removing a role that isn\'t mapped saves nothing")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Community role settings")]
+        [global::Xunit.TraitAttribute("Description", "Removing a role that isn\'t mapped saves nothing")]
+        public async global::System.Threading.Tasks.Task RemovingARoleThatIsntMappedSavesNothing()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "12";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Removing a role that isn\'t mapped saves nothing", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("Only the Administrator maps Discord roles", null, tagsOfRule);
+#line 91
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 92
+      await testRunner.WhenAsync("\"Gihed\" removes the Officer mapping of the Discord role \"Veteran\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 93
       await testRunner.ThenAsync("nothing is saved", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
@@ -657,45 +694,8 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "12";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A renamed server\'s name is refreshed", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("Reading the server keeps its name current", null, tagsOfRule);
-#line 92
-    this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 6
-  await this.FeatureBackgroundAsync();
-#line hidden
-#line 93
-      await testRunner.WhenAsync("the community\'s name is refreshed to \"Dark Templars Reborn\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 94
-      await testRunner.ThenAsync("the change is saved", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
-#line hidden
-#line 95
-      await testRunner.AndAsync("the community is named \"Dark Templars Reborn\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Xunit.SkippableFactAttribute(DisplayName="An unchanged name saves nothing")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Community role settings")]
-        [global::Xunit.TraitAttribute("Description", "An unchanged name saves nothing")]
-        public async global::System.Threading.Tasks.Task AnUnchangedNameSavesNothing()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "13";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("An unchanged name saves nothing", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A renamed server\'s name is refreshed", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("Reading the server keeps its name current", null, tagsOfRule);
 #line 97
@@ -712,9 +712,46 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
   await this.FeatureBackgroundAsync();
 #line hidden
 #line 98
-      await testRunner.WhenAsync("the community\'s name is refreshed to \"Dark Templars\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+      await testRunner.WhenAsync("the community\'s name is refreshed to \"Dark Templars Reborn\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 99
+      await testRunner.ThenAsync("the change is saved", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 100
+      await testRunner.AndAsync("the community is named \"Dark Templars Reborn\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="An unchanged name saves nothing")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Community role settings")]
+        [global::Xunit.TraitAttribute("Description", "An unchanged name saves nothing")]
+        public async global::System.Threading.Tasks.Task AnUnchangedNameSavesNothing()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "14";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("An unchanged name saves nothing", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("Reading the server keeps its name current", null, tagsOfRule);
+#line 102
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 103
+      await testRunner.WhenAsync("the community\'s name is refreshed to \"Dark Templars\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 104
       await testRunner.ThenAsync("nothing is saved", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
@@ -728,11 +765,11 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "14";
+            string pickleIndex = "15";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Members are listed by role, each with their Discord roles", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A member of the server sees its people with the role each one gets", null, tagsOfRule);
-#line 103
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A member of the server sees its people with the roles each one has", null, tagsOfRule);
+#line 108
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -745,16 +782,16 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-#line 104
+#line 109
       await testRunner.GivenAsync("the Discord role \"Officier\" gives RaidLeader", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 105
+#line 110
       await testRunner.WhenAsync("\"Daymox\" lists the community\'s members", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
                 global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "discord roles",
-                            "role"});
+                            "roles"});
                 table4.AddRow(new string[] {
                             "Gihed",
                             "Guild Master",
@@ -762,7 +799,7 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
                 table4.AddRow(new string[] {
                             "Malarya",
                             "Officier",
-                            "Officer"});
+                            "Officer, Raid leader"});
                 table4.AddRow(new string[] {
                             "Daymox",
                             "Veteran",
@@ -771,10 +808,10 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
                             "Orlk",
                             "",
                             "Member"});
-#line 106
+#line 111
       await testRunner.ThenAsync("the members are listed as", ((string)(null)), table4, "Then ");
 #line hidden
-#line 112
+#line 117
       await testRunner.AndAsync("the list says when Discord was asked", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
@@ -788,47 +825,10 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "15";
+            string pickleIndex = "16";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Someone outside the server can\'t list the members", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A member of the server sees its people with the role each one gets", null, tagsOfRule);
-#line 114
-    this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 6
-  await this.FeatureBackgroundAsync();
-#line hidden
-#line 115
-      await testRunner.GivenAsync("\"Stranger\" is not in the Discord server", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
-#line hidden
-#line 116
-      await testRunner.WhenAsync("\"Stranger\" lists the community\'s members", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 117
-      await testRunner.ThenAsync("the request is refused because the user is not a member", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Xunit.SkippableFactAttribute(DisplayName="Discord being unavailable refuses the list")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Community role settings")]
-        [global::Xunit.TraitAttribute("Description", "Discord being unavailable refuses the list")]
-        public async global::System.Threading.Tasks.Task DiscordBeingUnavailableRefusesTheList()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "16";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Discord being unavailable refuses the list", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A member of the server sees its people with the role each one gets", null, tagsOfRule);
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A member of the server sees its people with the roles each one has", null, tagsOfRule);
 #line 119
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
@@ -843,29 +843,29 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
   await this.FeatureBackgroundAsync();
 #line hidden
 #line 120
-      await testRunner.GivenAsync("Discord can\'t be reached", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+      await testRunner.GivenAsync("\"Stranger\" is not in the Discord server", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
 #line 121
-      await testRunner.WhenAsync("\"Gihed\" lists the community\'s members", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+      await testRunner.WhenAsync("\"Stranger\" lists the community\'s members", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 122
-      await testRunner.ThenAsync("the request fails because Discord is unavailable", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+      await testRunner.ThenAsync("the request is refused because the user is not a member", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Discord failing to read the server refuses the list")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Discord being unavailable refuses the list")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Community role settings")]
-        [global::Xunit.TraitAttribute("Description", "Discord failing to read the server refuses the list")]
-        public async global::System.Threading.Tasks.Task DiscordFailingToReadTheServerRefusesTheList()
+        [global::Xunit.TraitAttribute("Description", "Discord being unavailable refuses the list")]
+        public async global::System.Threading.Tasks.Task DiscordBeingUnavailableRefusesTheList()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "17";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Discord failing to read the server refuses the list", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Discord being unavailable refuses the list", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A member of the server sees its people with the role each one gets", null, tagsOfRule);
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A member of the server sees its people with the roles each one has", null, tagsOfRule);
 #line 124
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
@@ -880,7 +880,7 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
   await this.FeatureBackgroundAsync();
 #line hidden
 #line 125
-      await testRunner.GivenAsync("Discord can\'t read the server", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+      await testRunner.GivenAsync("Discord can\'t be reached", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
 #line 126
       await testRunner.WhenAsync("\"Gihed\" lists the community\'s members", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
@@ -892,17 +892,17 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Discord failing to list the people refuses the list")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Discord failing to read the server refuses the list")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Community role settings")]
-        [global::Xunit.TraitAttribute("Description", "Discord failing to list the people refuses the list")]
-        public async global::System.Threading.Tasks.Task DiscordFailingToListThePeopleRefusesTheList()
+        [global::Xunit.TraitAttribute("Description", "Discord failing to read the server refuses the list")]
+        public async global::System.Threading.Tasks.Task DiscordFailingToReadTheServerRefusesTheList()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "18";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Discord failing to list the people refuses the list", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Discord failing to read the server refuses the list", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A member of the server sees its people with the role each one gets", null, tagsOfRule);
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A member of the server sees its people with the roles each one has", null, tagsOfRule);
 #line 129
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
@@ -917,7 +917,7 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
   await this.FeatureBackgroundAsync();
 #line hidden
 #line 130
-      await testRunner.GivenAsync("Discord can\'t list the server\'s people", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+      await testRunner.GivenAsync("Discord can\'t read the server", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
 #line 131
       await testRunner.WhenAsync("\"Gihed\" lists the community\'s members", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
@@ -929,17 +929,17 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="A community that doesn\'t exist can\'t be listed")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Discord failing to list the people refuses the list")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Community role settings")]
-        [global::Xunit.TraitAttribute("Description", "A community that doesn\'t exist can\'t be listed")]
-        public async global::System.Threading.Tasks.Task ACommunityThatDoesntExistCantBeListed()
+        [global::Xunit.TraitAttribute("Description", "Discord failing to list the people refuses the list")]
+        public async global::System.Threading.Tasks.Task DiscordFailingToListThePeopleRefusesTheList()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "19";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A community that doesn\'t exist can\'t be listed", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Discord failing to list the people refuses the list", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A member of the server sees its people with the role each one gets", null, tagsOfRule);
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A member of the server sees its people with the roles each one has", null, tagsOfRule);
 #line 134
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
@@ -954,9 +954,46 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
   await this.FeatureBackgroundAsync();
 #line hidden
 #line 135
-      await testRunner.WhenAsync("\"Gihed\" lists the members of an unknown community", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+      await testRunner.GivenAsync("Discord can\'t list the server\'s people", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
 #line 136
+      await testRunner.WhenAsync("\"Gihed\" lists the community\'s members", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 137
+      await testRunner.ThenAsync("the request fails because Discord is unavailable", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="A community that doesn\'t exist can\'t be listed")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Community role settings")]
+        [global::Xunit.TraitAttribute("Description", "A community that doesn\'t exist can\'t be listed")]
+        public async global::System.Threading.Tasks.Task ACommunityThatDoesntExistCantBeListed()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "20";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A community that doesn\'t exist can\'t be listed", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A member of the server sees its people with the roles each one has", null, tagsOfRule);
+#line 139
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 140
+      await testRunner.WhenAsync("\"Gihed\" lists the members of an unknown community", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 141
       await testRunner.ThenAsync("the request fails because the community doesn\'t exist", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }

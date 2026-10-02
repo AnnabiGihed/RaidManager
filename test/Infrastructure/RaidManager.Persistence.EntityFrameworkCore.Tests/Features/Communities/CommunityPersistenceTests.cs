@@ -3,7 +3,6 @@ using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Xunit;
 using RaidManager.Domain.Features.Communities.Aggregates;
-using RaidManager.Domain.Features.Communities.Enums;
 using RaidManager.Domain.Features.Communities.Repositories;
 using RaidManager.Domain.Features.Shared.Enums;
 using RaidManager.Domain.Features.Shared.Identifiers;
@@ -16,7 +15,7 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Tests.Features.Communities
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-01<br/>
-/// Purpose: Proves the mapping round-trips, one Discord role keeps several RaidManager roles, a removed mapping's row goes, and one Discord server links once.
+/// Purpose: Proves the roles and mappings round-trip, one Discord role keeps several roles, a removed mapping's row goes, and one Discord server links once.
 /// </remarks>
 [Collection(SqlServerTestGroup.Name)]
 public sealed class CommunityPersistenceTests
@@ -43,8 +42,10 @@ public sealed class CommunityPersistenceTests
     {
         var administrator = new UserId(Guid.NewGuid());
         var community = Community.Link(NewGuildId(), "Citadel Vanguard", WarmaneRealm.Lordaeron, administrator);
-        community.MapDiscordRole("1001", CommunityMemberRole.Officer);
-        community.MapDiscordRole("1002", CommunityMemberRole.RaidLeader);
+        var officer = community.Roles[0].Id;
+        var raidLeader = community.Roles[1].Id;
+        community.MapDiscordRole("1001", officer);
+        community.MapDiscordRole("1002", raidLeader);
         (await SaveNewAsync(community)).ShouldBeTrue();
 
         await using var scope = _database.Services.CreateAsyncScope();
@@ -53,7 +54,9 @@ public sealed class CommunityPersistenceTests
         reloaded.Name.ShouldBe("Citadel Vanguard");
         reloaded.Realm.ShouldBe(WarmaneRealm.Lordaeron);
         reloaded.AdministratorId.ShouldBe(administrator);
-        reloaded.RoleFor(new UserId(Guid.NewGuid()), ["1002"]).ShouldBe(CommunityMemberRole.RaidLeader);
+        reloaded.Roles.Select(role => (role.Id, role.Name, role.Permissions))
+            .ShouldBe([(officer, CommunityRole.OfficerName, CommunityRole.OfficerPermissions), (raidLeader, CommunityRole.RaidLeaderName, CommunityRole.RaidLeaderPermissions)]);
+        reloaded.PermissionsFor(new UserId(Guid.NewGuid()), ["1002"]).ShouldBe(CommunityRole.RaidLeaderPermissions);
         reloaded.RoleMappings.Count.ShouldBe(2);
         reloaded.Audit.ShouldNotBeNull();
 
@@ -70,23 +73,25 @@ public sealed class CommunityPersistenceTests
     public async Task ADiscordRoleKeepsBothRolesAndARemovedMappingGoes()
     {
         var community = Community.Link(NewGuildId(), "Frozen Throne", WarmaneRealm.Icecrown, new UserId(Guid.NewGuid()));
-        community.MapDiscordRole("2001", CommunityMemberRole.Officer);
-        community.MapDiscordRole("2002", CommunityMemberRole.Officer);
+        var officer = community.Roles[0].Id;
+        var raidLeader = community.Roles[1].Id;
+        community.MapDiscordRole("2001", officer);
+        community.MapDiscordRole("2002", officer);
         (await SaveNewAsync(community)).ShouldBeTrue();
 
         await using (var editScope = _database.Services.CreateAsyncScope())
         {
             var editable = (await editScope.ServiceProvider.GetRequiredService<ICommunityRepository>().FindByIdAsync(community.Id)).ShouldNotBeNull();
-            editable.MapDiscordRole("2001", CommunityMemberRole.RaidLeader);
-            editable.UnmapDiscordRole("2002", CommunityMemberRole.Officer);
+            editable.MapDiscordRole("2001", raidLeader);
+            editable.UnmapDiscordRole("2002", officer);
             var saved = await editScope.ServiceProvider.GetRequiredService<DomainUnitOfWork>().SaveChangesAsync();
             saved.IsSuccess.ShouldBeTrue(saved.IsFailure ? saved.Error.Message : null);
         }
 
         await using var scope = _database.Services.CreateAsyncScope();
         var reloaded = (await scope.ServiceProvider.GetRequiredService<ICommunityRepository>().FindByIdAsync(community.Id)).ShouldNotBeNull();
-        reloaded.RoleMappings.Select(mapping => (mapping.DiscordRoleId, mapping.Role)).OrderBy(mapping => mapping.Role)
-            .ShouldBe([("2001", CommunityMemberRole.RaidLeader), ("2001", CommunityMemberRole.Officer)]);
+        reloaded.RolesFor(["2001"]).Select(role => role.Id).ShouldBe([officer, raidLeader]);
+        reloaded.RolesFor(["2002"]).ShouldBeEmpty();
         var rows = await scope.ServiceProvider.GetRequiredService<RaidManagerDbContext>().Database
             .SqlQuery<int>($"SELECT COUNT(*) AS Value FROM CommunityRoleMappings WHERE CommunityId = {community.Id.Value}").SingleAsync();
         rows.ShouldBe(2);

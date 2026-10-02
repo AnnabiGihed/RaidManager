@@ -13,8 +13,9 @@ namespace RaidManager.Domain.Tests.Features.Communities.Aggregates;
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-01<br/>
-/// Purpose: Verifies that the installer administers the community, that role mappings report real changes only, and
-/// that a member gets the highest role their Discord roles map to.
+/// Purpose: Verifies that the installer administers the community, that it starts with the Officer and Raid leader
+/// presets, that role mappings report real changes only, and that a member gets every role and permission their
+/// Discord roles map to.
 /// </remarks>
 [Binding]
 [Scope(Feature = "Community linking and roles")]
@@ -30,8 +31,8 @@ public sealed class CommunityStepDefinitions
     /// <summary>Stores the domain exception raised when a change was rejected.</summary>
     private DomainException? _rejection;
 
-    /// <summary>Stores the role the last member check gave.</summary>
-    private CommunityMemberRole? _memberRole;
+    /// <summary>Stores the Discord roles of the member the last check was for.</summary>
+    private string[] _memberDiscordRoles = [];
 
     /// <summary>Stores how many role-mapping changes the community had reported when the scenario's setup ended.</summary>
     private int _changesBeforeAction;
@@ -51,10 +52,10 @@ public sealed class CommunityStepDefinitions
     /// <summary>Maps a Discord role before the scenario's action, which then counts only its own changes.</summary>
     /// <param name="discordRoleId">The Discord role snowflake.</param>
     /// <param name="role">The RaidManager role it gives.</param>
-    [Given("the Discord role {string} gives {CommunityMemberRole}")]
-    public void GivenTheDiscordRoleGives(string discordRoleId, CommunityMemberRole role)
+    [Given("the Discord role {string} gives {string}")]
+    public void GivenTheDiscordRoleGives(string discordRoleId, string role)
     {
-        Community.MapDiscordRole(discordRoleId, role);
+        Community.MapDiscordRole(discordRoleId, RoleNamed(role));
         _changesBeforeAction = RoleMappingChanges();
     }
     #endregion Given Steps
@@ -77,21 +78,27 @@ public sealed class CommunityStepDefinitions
     /// <summary>Attempts to map a Discord role.</summary>
     /// <param name="discordRoleId">The Discord role snowflake.</param>
     /// <param name="role">The RaidManager role it should give.</param>
-    [When("the Administrator maps the Discord role {string} to {CommunityMemberRole}")]
-    public void WhenTheAdministratorMapsTheDiscordRole(string discordRoleId, CommunityMemberRole role) =>
-        Attempt(() => Community.MapDiscordRole(discordRoleId, role));
+    [When("the Administrator maps the Discord role {string} to {string}")]
+    public void WhenTheAdministratorMapsTheDiscordRole(string discordRoleId, string role) =>
+        Attempt(() => Community.MapDiscordRole(discordRoleId, RoleNamed(role)));
 
-    /// <summary>Stops a Discord role giving one RaidManager role.</summary>
-    /// <param name="role">The RaidManager role.</param>
+    /// <summary>Attempts to map a Discord role to a role id the community doesn't have.</summary>
     /// <param name="discordRoleId">The Discord role snowflake.</param>
-    [When("the Administrator removes the {CommunityMemberRole} mapping of the Discord role {string}")]
-    public void WhenTheAdministratorRemovesTheMapping(CommunityMemberRole role, string discordRoleId) => Community.UnmapDiscordRole(discordRoleId, role);
+    [When("the Administrator maps the Discord role {string} to a role the community doesn't have")]
+    public void WhenTheAdministratorMapsTheDiscordRoleToAnUnknownRole(string discordRoleId) =>
+        Attempt(() => Community.MapDiscordRole(discordRoleId, new CommunityRoleId(Guid.NewGuid())));
 
-    /// <summary>Gives the role of a member other than the Administrator from their Discord roles.</summary>
+    /// <summary>Stops a Discord role giving one of the community's roles.</summary>
+    /// <param name="role">The role name.</param>
+    /// <param name="discordRoleId">The Discord role snowflake.</param>
+    [When("the Administrator removes the {string} mapping of the Discord role {string}")]
+    public void WhenTheAdministratorRemovesTheMapping(string role, string discordRoleId) => Community.UnmapDiscordRole(discordRoleId, RoleNamed(role));
+
+    /// <summary>Records the Discord roles of a member other than the Administrator.</summary>
     /// <param name="discordRoleIds">The member's Discord role snowflakes, comma-separated; empty for none.</param>
     [When("a member has the Discord roles {string}")]
     public void WhenAMemberHasTheDiscordRoles(string discordRoleIds) =>
-        _memberRole = Community.RoleFor(new UserId(Guid.NewGuid()), discordRoleIds.Split(',', StringSplitOptions.RemoveEmptyEntries));
+        _memberDiscordRoles = discordRoleIds.Split(',', StringSplitOptions.RemoveEmptyEntries);
     #endregion When Steps
 
     #region Then Steps
@@ -100,13 +107,20 @@ public sealed class CommunityStepDefinitions
     [Then("the community is named {string}")]
     public void ThenTheCommunityIsNamed(string name) => Community.Name.ShouldBe(name);
 
-    /// <summary>Checks that the installer administers the community, whatever their Discord roles.</summary>
-    [Then("the installer's role is Administrator")]
-    public void ThenTheInstallersRoleIsAdministrator()
+    /// <summary>Checks that the installer administers the community with every permission, whatever their Discord roles.</summary>
+    [Then("the installer has every permission")]
+    public void ThenTheInstallerHasEveryPermission()
     {
         Community.AdministratorId.ShouldBe(Installer);
-        Community.RoleFor(Installer, []).ShouldBe(CommunityMemberRole.Administrator);
+        Community.PermissionsFor(Installer, []).ShouldBe(CommunityPermissions.All);
     }
+
+    /// <summary>Checks the community's roles, in their list order, with what each allows.</summary>
+    /// <param name="table">The expected roles: role name and permissions.</param>
+    [Then("the community's roles are")]
+    public void ThenTheCommunitysRolesAre(Table table) =>
+        Community.Roles.Select(role => (role.Name, role.Permissions))
+            .ShouldBe(table.Rows.Select(row => (row["role"], Enum.Parse<CommunityPermissions>(row["permissions"]))));
 
     /// <summary>Checks that the last change was rejected.</summary>
     [Then("the community change is rejected")]
@@ -115,9 +129,9 @@ public sealed class CommunityStepDefinitions
     /// <summary>Checks the role a Discord role gives.</summary>
     /// <param name="discordRoleId">The Discord role snowflake.</param>
     /// <param name="role">The expected RaidManager role.</param>
-    [Then("the Discord role {string} gives {CommunityMemberRole}")]
-    public void ThenTheDiscordRoleGives(string discordRoleId, CommunityMemberRole role) =>
-        Community.RoleMappings.ShouldContain(mapping => mapping.DiscordRoleId == discordRoleId && mapping.Role == role);
+    [Then("the Discord role {string} gives {string}")]
+    public void ThenTheDiscordRoleGives(string discordRoleId, string role) =>
+        Community.RoleMappings.ShouldContain(mapping => mapping.DiscordRoleId == discordRoleId && mapping.RoleId == RoleNamed(role));
 
     /// <summary>Checks the number of mapped Discord roles.</summary>
     /// <param name="count">The expected count.</param>
@@ -136,13 +150,25 @@ public sealed class CommunityStepDefinitions
     [Then("the role mappings did not change")]
     public void ThenTheRoleMappingsDidNotChange() => RoleMappingChanges().ShouldBe(_changesBeforeAction);
 
-    /// <summary>Checks the role the last member check gave.</summary>
-    /// <param name="role">The expected role.</param>
-    [Then("the member's role is {CommunityMemberRole}")]
-    public void ThenTheMembersRoleIs(CommunityMemberRole role) => _memberRole.ShouldBe(role);
+    /// <summary>Checks the roles the member's Discord roles give, in list order.</summary>
+    /// <param name="roles">The expected role names, comma-separated; empty for none.</param>
+    [Then("the member's roles are {string}")]
+    public void ThenTheMembersRolesAre(string roles) =>
+        string.Join(", ", Community.RolesFor(_memberDiscordRoles).Select(role => role.Name)).ShouldBe(roles);
+
+    /// <summary>Checks the permissions the member's Discord roles give.</summary>
+    /// <param name="permissions">The expected permissions.</param>
+    [Then("the member's permissions are {string}")]
+    public void ThenTheMembersPermissionsAre(string permissions) =>
+        Community.PermissionsFor(new UserId(Guid.NewGuid()), _memberDiscordRoles).ShouldBe(Enum.Parse<CommunityPermissions>(permissions));
     #endregion Then Steps
 
     #region Private Helpers
+    /// <summary>Finds one of the community's roles by name.</summary>
+    /// <param name="name">The role name.</param>
+    /// <returns>The role's identifier.</returns>
+    private CommunityRoleId RoleNamed(string name) => Community.Roles.Single(role => role.Name == name).Id;
+
     /// <summary>Counts the role-mapping changes the community has reported so far.</summary>
     /// <returns>The number of <see cref="CommunityRoleMappingsChanged"/> events.</returns>
     private int RoleMappingChanges() => Community.GetDomainEvents().OfType<CommunityRoleMappingsChanged>().Count();

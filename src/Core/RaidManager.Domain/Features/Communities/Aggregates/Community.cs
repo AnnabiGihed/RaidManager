@@ -11,9 +11,9 @@ namespace RaidManager.Domain.Features.Communities.Aggregates;
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-09-29<br/>
-/// Purpose: Keeps what RaidManager owns about a community: its server, realm, Administrator and the Discord roles that
-/// give RaidManager permissions. Membership and each member's Discord roles stay in Discord and are read at check time
-/// (ADR-0022), so the community gives a role from them rather than storing members.
+/// Purpose: Keeps what RaidManager owns about a community: its server, realm, Administrator, its roles with what each
+/// allows, and the Discord roles that give them. Membership and each member's Discord roles stay in Discord and are read
+/// at check time (ADR-0022), so the community gives roles and permissions from them rather than storing members.
 /// </remarks>
 public sealed class Community : AggregateRoot<CommunityId>
 {
@@ -23,7 +23,10 @@ public sealed class Community : AggregateRoot<CommunityId>
     #endregion Constants
 
     #region Fields
-    /// <summary>Stores the Discord roles mapped to an Officer or Raid leader role.</summary>
+    /// <summary>Stores the community's roles.</summary>
+    private readonly List<CommunityRole> _roles = [];
+
+    /// <summary>Stores the Discord roles mapped to the community's roles.</summary>
     private readonly List<DiscordRoleMapping> _roleMappings = [];
     #endregion Fields
 
@@ -66,7 +69,10 @@ public sealed class Community : AggregateRoot<CommunityId>
     /// <summary>Gets the user who added RaidManager to the server and administers the community.</summary>
     public UserId AdministratorId { get; private set; }
 
-    /// <summary>Gets the Discord roles that give an Officer or Raid leader role.</summary>
+    /// <summary>Gets the community's roles, in their list order.</summary>
+    public IReadOnlyList<CommunityRole> Roles => [.. _roles.OrderBy(role => role.Position)];
+
+    /// <summary>Gets the Discord roles that give the community's roles.</summary>
     public IReadOnlyCollection<DiscordRoleMapping> RoleMappings => _roleMappings.AsReadOnly();
     #endregion Properties
 
@@ -83,6 +89,10 @@ public sealed class Community : AggregateRoot<CommunityId>
         var guildId = DiscordSnowflake.Ensure(discordGuildId, "Discord server");
         var trimmedName = EnsureName(name);
         var community = new Community(new CommunityId(Guid.NewGuid()), guildId, trimmedName, realm, administratorId);
+
+        // Every community starts with the Officer and Raid leader presets (owner decision on #308).
+        community._roles.Add(CommunityRole.Create(CommunityRole.OfficerName, CommunityRole.OfficerPermissions, 1));
+        community._roles.Add(CommunityRole.Create(CommunityRole.RaidLeaderName, CommunityRole.RaidLeaderPermissions, 2));
         community.RaiseDomainEvent(new CommunityCreated(community.Id, community.DiscordGuildId, community.Name));
         return community;
     }
@@ -106,14 +116,24 @@ public sealed class Community : AggregateRoot<CommunityId>
         return true;
     }
 
-    /// <summary>Maps a Discord role to Officer or Raid leader; one Discord role can give both (owner decision on #289).</summary>
+    /// <summary>Finds one of the community's roles.</summary>
+    /// <param name="roleId">The role.</param>
+    /// <returns>The role, or <see langword="null"/> when the community has no such role.</returns>
+    public CommunityRole? FindRole(CommunityRoleId roleId) => _roles.Find(role => role.Id == roleId);
+
+    /// <summary>Maps a Discord role to one of the community's roles; one Discord role can give several (owner decision on #289).</summary>
     /// <param name="discordRoleId">The Discord role snowflake.</param>
-    /// <param name="role">The RaidManager role it gives: <see cref="CommunityMemberRole.Officer"/> or <see cref="CommunityMemberRole.RaidLeader"/>.</param>
-    /// <exception cref="DomainException">Thrown when the role id is not a snowflake or the role can't be mapped.</exception>
+    /// <param name="roleId">The community role it gives.</param>
+    /// <exception cref="DomainException">Thrown when the Discord role id is not a snowflake or the community has no such role.</exception>
     /// <remarks>Raises <see cref="CommunityRoleMappingsChanged"/> unless the mapping already existed.</remarks>
-    public void MapDiscordRole(string discordRoleId, CommunityMemberRole role)
+    public void MapDiscordRole(string discordRoleId, CommunityRoleId roleId)
     {
-        var mapping = DiscordRoleMapping.Create(discordRoleId, role);
+        if (FindRole(roleId) is null)
+        {
+            throw new UnknownDomainException("The community has no such role.");
+        }
+
+        var mapping = DiscordRoleMapping.Create(discordRoleId, roleId);
         if (_roleMappings.Contains(mapping))
         {
             return;
@@ -123,43 +143,43 @@ public sealed class Community : AggregateRoot<CommunityId>
         RaiseDomainEvent(new CommunityRoleMappingsChanged(Id));
     }
 
-    /// <summary>Stops a Discord role giving one RaidManager role; any other role it gives stays.</summary>
+    /// <summary>Stops a Discord role giving one of the community's roles; any other role it gives stays.</summary>
     /// <param name="discordRoleId">The Discord role snowflake.</param>
-    /// <param name="role">The RaidManager role it should no longer give.</param>
+    /// <param name="roleId">The community role it should no longer give.</param>
     /// <remarks>Raises <see cref="CommunityRoleMappingsChanged"/> only when that mapping existed.</remarks>
-    public void UnmapDiscordRole(string discordRoleId, CommunityMemberRole role)
+    public void UnmapDiscordRole(string discordRoleId, CommunityRoleId roleId)
     {
-        if (_roleMappings.RemoveAll(existing => existing.DiscordRoleId == discordRoleId && existing.Role == role) > 0)
+        if (_roleMappings.RemoveAll(existing => existing.DiscordRoleId == discordRoleId && existing.RoleId == roleId) > 0)
         {
             RaiseDomainEvent(new CommunityRoleMappingsChanged(Id));
         }
     }
 
-    /// <summary>Gives the RaidManager role of a member of the Discord server from their current Discord roles.</summary>
+    /// <summary>Gives the community's roles a set of Discord roles maps to, leaving the Administrator aside.</summary>
+    /// <param name="discordRoleIds">A member's current Discord role snowflakes, as Discord reports them.</param>
+    /// <returns>The roles, in their list order; empty for a Member.</returns>
+    public IReadOnlyList<CommunityRole> RolesFor(IEnumerable<string> discordRoleIds)
+    {
+        var memberRoles = discordRoleIds.ToHashSet(StringComparer.Ordinal);
+        var mapped = _roleMappings
+            .Where(mapping => memberRoles.Contains(mapping.DiscordRoleId))
+            .Select(mapping => mapping.RoleId)
+            .ToHashSet();
+        return [.. Roles.Where(role => mapped.Contains(role.Id))];
+    }
+
+    /// <summary>Gives what a member of the Discord server may do, from their current Discord roles.</summary>
     /// <param name="userId">The member.</param>
     /// <param name="discordRoleIds">The member's current Discord role snowflakes, as Discord reports them.</param>
     /// <returns>
-    /// <see cref="CommunityMemberRole.Administrator"/> for the Administrator, otherwise the highest mapped role among the
-    /// member's Discord roles, otherwise <see cref="CommunityMemberRole.Member"/>.
+    /// <see cref="CommunityPermissions.All"/> for the Administrator, otherwise every permission of every role their
+    /// Discord roles give them; <see cref="CommunityPermissions.None"/> for a Member.
     /// </returns>
-    /// <remarks>Whether the user is in the server at all is checked with Discord before asking for a role.</remarks>
-    public CommunityMemberRole RoleFor(UserId userId, IEnumerable<string> discordRoleIds)
-    {
-        return userId == AdministratorId ? CommunityMemberRole.Administrator : MappedRoleFor(discordRoleIds);
-    }
-
-    /// <summary>Gives the role a set of Discord roles maps to, leaving the Administrator aside.</summary>
-    /// <param name="discordRoleIds">A member's Discord role snowflakes.</param>
-    /// <returns>The highest mapped role among them, otherwise <see cref="CommunityMemberRole.Member"/>.</returns>
-    public CommunityMemberRole MappedRoleFor(IEnumerable<string> discordRoleIds)
-    {
-        var memberRoles = discordRoleIds.ToHashSet(StringComparer.Ordinal);
-        return _roleMappings
-            .Where(mapping => memberRoles.Contains(mapping.DiscordRoleId))
-            .Select(mapping => mapping.Role)
-            .DefaultIfEmpty(CommunityMemberRole.Member)
-            .Max();
-    }
+    /// <remarks>Whether the user is in the server at all is checked with Discord before asking (ADR-0022).</remarks>
+    public CommunityPermissions PermissionsFor(UserId userId, IEnumerable<string> discordRoleIds) =>
+        userId == AdministratorId
+            ? CommunityPermissions.All
+            : RolesFor(discordRoleIds).Aggregate(CommunityPermissions.None, (permissions, role) => permissions | role.Permissions);
     #endregion Domain Behavior
 
     #region Invariants

@@ -25,5 +25,8 @@ public static class CommunityErrors
 
     /// <summary>Gets the error returned when a Discord role can't be mapped: it doesn't exist, is @everyone, or belongs to another bot.</summary>
     public static readonly Error RoleNotMappable = new("Community.RoleNotMappable", "That Discord role can't give a RaidManager role.");
+
+    /// <summary>Gets the error for a role the community doesn't have.</summary>
+    public static readonly Error RoleNotFound = new("Community.RoleNotFound", "The community has no such role.");
     #endregion Static Instances
 }

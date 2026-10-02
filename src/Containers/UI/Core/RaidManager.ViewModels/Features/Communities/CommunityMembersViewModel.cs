@@ -86,8 +86,7 @@ public sealed class CommunityMembersViewModel
         member.DisplayName,
         member.AvatarUrl,
         member.DiscordRoles.Count == 0 ? "No roles" : string.Join(", ", member.DiscordRoles.Select(role => $"@{role.Name}")),
-        member.Role,
-        CommunityRoleLabels.For(member.Role));
+        member.Roles);
 
     /// <summary>Words when Discord was asked: today's time, or the date for an older answer.</summary>
     /// <param name="checkedAtUtc">When Discord was asked.</param>

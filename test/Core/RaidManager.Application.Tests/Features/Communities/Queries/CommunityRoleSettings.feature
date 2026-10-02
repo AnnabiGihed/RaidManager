@@ -24,7 +24,7 @@ Feature: Community role settings
         | role          | discord roles | members |
         | Administrator |               | 1       |
         | Officer       | Officier      | 1       |
-        | RaidLeader    |               | 0       |
+        | Raid leader   |               | 0       |
         | Member        |               | 2       |
 
     Scenario: One Discord role counted on both rows it gives
@@ -34,7 +34,7 @@ Feature: Community role settings
         | role          | discord roles | members |
         | Administrator |               | 1       |
         | Officer       | Officier      | 1       |
-        | RaidLeader    | Officier      | 1       |
+        | Raid leader   | Officier      | 1       |
         | Member        |               | 2       |
 
     Scenario: Another member sees the roles without editing them
@@ -78,6 +78,11 @@ Feature: Community role settings
       Then the request is refused because the role can't be mapped
       And nothing is saved
 
+    Scenario: A role the community doesn't have can't be mapped
+      When "Gihed" maps the Discord role "Veteran" to a role the community doesn't have
+      Then the request fails because the role doesn't exist
+      And nothing is saved
+
     Scenario: The Administrator removes a mapping
       When "Gihed" removes the Officer mapping of the Discord role "Officier"
       Then the change is saved
@@ -98,17 +103,17 @@ Feature: Community role settings
       When the community's name is refreshed to "Dark Templars"
       Then nothing is saved
 
-  Rule: A member of the server sees its people with the role each one gets
+  Rule: A member of the server sees its people with the roles each one has
 
     Scenario: Members are listed by role, each with their Discord roles
       Given the Discord role "Officier" gives RaidLeader
       When "Daymox" lists the community's members
       Then the members are listed as
-        | name    | discord roles | role          |
-        | Gihed   | Guild Master  | Administrator |
-        | Malarya | Officier      | Officer       |
-        | Daymox  | Veteran       | Member        |
-        | Orlk    |               | Member        |
+        | name    | discord roles | roles                |
+        | Gihed   | Guild Master  | Administrator        |
+        | Malarya | Officier      | Officer, Raid leader |
+        | Daymox  | Veteran       | Member               |
+        | Orlk    |               | Member               |
       And the list says when Discord was asked
 
     Scenario: Someone outside the server can't list the members

@@ -30,7 +30,7 @@ public sealed record CommunityMembers(Guid CommunityId, string ServerName, DateT
                 member.DisplayName,
                 member.AvatarUrl,
                 [.. member.DiscordRoles.Select(role => new DiscordRoleOption(role.Id, role.Name))],
-                member.Role.ToString()))]);
+                member.Roles))]);
     }
     #endregion Public Methods
 }
