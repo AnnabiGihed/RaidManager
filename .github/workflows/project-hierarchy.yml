@@ -6,6 +6,9 @@ on:
     # Opening or editing an issue can add its mockup link or its form answer, so those events re-check it too.
     # A milestone change can split an item from its parent's milestone.
     types: [opened, edited, closed, reopened, labeled, unlabeled, milestoned, demilestoned]
+  milestone:
+    # Closing a release milestone is checked against its release record at once.
+    types: [closed]
   schedule:
     - cron: '7,22,37,52 * * * *'
   workflow_dispatch:
@@ -34,12 +37,18 @@ jobs:
           python-version: '3.12'
       - name: Ensure the rule labels exist
         run: |
-          gh label create needs-parent --repo "$GITHUB_REPOSITORY" --color d93f0b --force             --description "Standalone or misplaced: every item needs one type label and its parent (ADR-0025)"
+          gh label create needs-parent --repo "$GITHUB_REPOSITORY" --color d93f0b --force             --description "Standalone or misplaced: one type label and a parent of the allowed type (work management spec)"
           gh label create ui --repo "$GITHUB_REPOSITORY" --color 1d76db --force             --description "Changes what users see; must link or show its Penpot mockup (ADR-0017)"
           gh label create needs-mockup --repo "$GITHUB_REPOSITORY" --color fbca04 --force             --description "UI work without a linked or shown mockup (ADR-0017)"
+          gh label create needs-contract --repo "$GITHUB_REPOSITORY" --color c5def5 --force \
+            --description "Missing part of the issue contract (work management specification section 4)"
+          gh label create dependency-problem --repo "$GITHUB_REPOSITORY" --color b60205 --force \
+            --description "Dependency cycle or canceled prerequisite (work management specification section 10)"
       - name: Check parents and completion, and the ancestors of a changed issue
         run: |
-          if [ "${{ github.event_name }}" = issues ]; then
+          if [ "${{ github.event_name }}" = milestone ]; then
+            python scripts/project_hierarchy.py --repository "$GITHUB_REPOSITORY" --releases
+          elif [ "${{ github.event_name }}" = issues ]; then
             python scripts/project_hierarchy.py --repository "$GITHUB_REPOSITORY" --issue "${{ github.event.issue.number }}"
           else
             python scripts/project_hierarchy.py --repository "$GITHUB_REPOSITORY"

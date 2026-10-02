@@ -1,11 +1,17 @@
-"""Keep RaidManager's work items in one Epic -> Feature -> Story/Improvement/Bug/Spike -> Task hierarchy (ADR-0025).
+"""Keep RaidManager's work items in one Epic -> Feature -> Story/Improvement/Bug/Spike -> Task hierarchy.
 
-Four rules, all checked with the built-in GITHUB_TOKEN:
+The rules come from the Work Management and Delivery Specification (ADR-0026) and are all checked with the built-in
+GITHUB_TOKEN; the rules that need Project fields run in the agent preflight instead (specification section 22):
 
-- Parent: every item has exactly one type label and, except an epic, a parent of the level above on the same
-  milestone; an epic has none.
-  Nothing is standalone. A violation adds the needs-parent label and one explanatory comment; fixing the item removes
-  the label.
+- Parent: every item has exactly one type label and, except an epic, a parent of the level above; an epic has none.
+  A task shares its parent's milestone; a feature or epic has a milestone only when all its children are in that
+  release (section 15, A2). Nothing is standalone. A violation adds the needs-parent label and one explanatory
+  comment; fixing the item removes the label.
+- Contract: an open item created since adoption answers every section 4 heading, or gets needs-contract.
+- Dependencies (audit only): a dependency cycle, or an open item waiting on a canceled prerequisite, gets
+  dependency-problem (section 10).
+- Releases (audit and milestone events): a release milestone closed before its record shows it Released with a
+  delivery date is reopened (sections 6 and 13).
 - Completion: an epic, feature, story, improvement, bug or spike closed as completed is reopened unless at least one
   child of the level below is completed and every child is closed.
 - Pull requests: each "Closes #N" names a task whose chain reaches an epic.
@@ -27,13 +33,17 @@ from pathlib import Path
 from typing import Callable
 
 from ui_mockups import NEEDS_MOCKUP, UI_LABEL, mockup_problem, ui_requested
+from work_contracts import (BUG, EPIC, FEATURE, IMPROVEMENT, SPIKE, STORY, TASK, canceled_prerequisites,
+                            contract_problem, dependency_cycles, release_record_problem, scope_milestone_problem,
+                            task_milestone_problem)
 
 
 NEEDS_PARENT = "needs-parent"
+NEEDS_CONTRACT = "needs-contract"
+DEPENDENCY_PROBLEM = "dependency-problem"
+RELEASES = Path("docs/planning/releases")
 # A new issue usually gets its parent a moment after it is created, so the parent rule waits before flagging it.
 GRACE = timedelta(minutes=10)
-EPIC, FEATURE, STORY, IMPROVEMENT, BUG, SPIKE, TASK = (
-    "type:epic", "type:feature", "type:story", "type:improvement", "type:bug", "type:spike", "type:task")
 # A spike is a peer of stories, improvements and bugs under a feature, and has tasks like them (ADR-0025).
 WORK_ITEMS = frozenset({TASK})
 BACKLOG_ITEMS = frozenset({STORY, IMPROVEMENT, BUG, SPIKE})
@@ -56,7 +66,8 @@ DEPTH = {TASK: 0, **dict.fromkeys(BACKLOG_ITEMS, 1), FEATURE: 2, EPIC: 3}
 ANCESTOR_LEVELS = 3
 CLOSING_LINE = re.compile(r"^Closes #(\d+)[ \t]*$", re.IGNORECASE)
 FIELDS = "number state stateReason createdAt milestone { title } labels(first: 20) { nodes { name } }"
-NODE = f"{FIELDS} body parent {{ {FIELDS} }} subIssues(first: 100) {{ nodes {{ {FIELDS} }} }}"
+NODE = (f"{FIELDS} body parent {{ {FIELDS} }} subIssues(first: 100) {{ nodes {{ {FIELDS} }} }} "
+        f"blockedBy(first: 50) {{ nodes {{ {FIELDS} }} }}")
 
 
 @dataclass(frozen=True)
@@ -107,12 +118,14 @@ class Node:
     issue: Issue
     parent: Issue | None = None
     children: list[Issue] = field(default_factory=list)
+    prerequisites: list[Issue] = field(default_factory=list)
 
     @classmethod
     def from_api(cls, value: dict) -> Node:
         parent = Issue.from_api(value["parent"]) if value.get("parent") else None
         children = [Issue.from_api(child) for child in value["subIssues"]["nodes"]]
-        return cls(Issue.from_api(value), parent, children)
+        prerequisites = [Issue.from_api(item) for item in (value.get("blockedBy") or {}).get("nodes", [])]
+        return cls(Issue.from_api(value), parent, children, prerequisites)
 
 
 ORDER = list(NAMES)
@@ -151,15 +164,34 @@ def parent_problem(issue: Issue, parent: Issue | None) -> str | None:
     if parent.kind not in allowed:
         found = NAMES.get(parent.kind or "", "item without one type label")
         return f"Its parent #{parent.number} is {a(found)}; {a(NAMES[kind])} belongs under {a(names(allowed))}."
-    if issue.milestone != parent.milestone:
-        # A milestone view filters out a parent on another milestone and shows its children as if standalone.
-        return (f"Its milestone is {milestone(issue)} but its parent #{parent.number}'s is {milestone(parent)}; "
-                "give both the same milestone, so a milestone view shows it under its parent.")
+    if kind == TASK:
+        return task_milestone_problem(issue.milestone, parent.number, parent.milestone)
     return None
 
 
-def milestone(issue: Issue) -> str:
-    return f"`{issue.milestone}`" if issue.milestone else "none"
+def placement_problem(node: Node) -> str | None:
+    """The parent rule, then the milestone a feature or epic may carry for its scope (A2)."""
+    problem = parent_problem(node.issue, node.parent)
+    if problem or node.issue.abandoned or node.issue.kind not in (FEATURE, EPIC):
+        return problem
+    children = [(child.number, child.milestone) for child in node.children if not child.abandoned]
+    return scope_milestone_problem(node.issue.milestone, children)
+
+
+def prerequisite_problem(node: Node, cycles: list[list[int]]) -> str | None:
+    """A dependency cycle, or an open item waiting on a canceled prerequisite (section 10)."""
+    if node.issue.state != "open":
+        return None
+    cycle = next((cycle for cycle in cycles if node.issue.number in cycle), None)
+    if cycle:
+        chain = " -> ".join(f"#{number}" for number in cycle + cycle[:1])
+        return f"It is part of a dependency cycle: {chain} (each blocked by the next). Remove one link."
+    canceled = canceled_prerequisites([(item.number, item.state, item.state_reason) for item in node.prerequisites])
+    if canceled:
+        listed = ", ".join(f"#{number}" for number in canceled)
+        return (f"Its prerequisite {listed} was closed without being completed. Record an owner decision that it is "
+                "no longer required and remove the link, or replace it with the work that is.")
+    return None
 
 
 def completion_problem(issue: Issue, children: list[Issue]) -> str | None:
@@ -272,7 +304,29 @@ class Guard:
             print(f"Cleared #{issue.number} {label}")
 
     def check_parent(self, node: Node) -> None:
-        self.flag(node.issue, NEEDS_PARENT, parent_problem(node.issue, node.parent), "Hierarchy rule (ADR-0025)")
+        self.flag(node.issue, NEEDS_PARENT, placement_problem(node), "Hierarchy rule (specification sections 2, 15)")
+
+    def check_contract(self, node: Node) -> None:
+        issue = node.issue
+        problem = None if len(issue.kinds) > 1 else contract_problem(issue.kind, issue.state, issue.created_at,
+                                                                      issue.body)
+        self.flag(issue, NEEDS_CONTRACT, problem, "Contract rule (specification section 4)")
+
+    def check_dependencies(self, node: Node, cycles: list[list[int]]) -> None:
+        self.flag(node.issue, DEPENDENCY_PROBLEM, prerequisite_problem(node, cycles),
+                  "Dependency rule (specification section 10)")
+
+    def check_releases(self) -> None:
+        """Reopens a release milestone closed before its record shows the delivery (sections 6 and 13)."""
+        milestones = json.loads(gh("api", f"repos/{self.repository}/milestones?state=closed&per_page=100"))
+        for milestone in milestones:
+            path = self.root / RELEASES / f"{milestone['title']}.md"
+            record = path.read_text(encoding="utf-8") if path.is_file() else None
+            problem = release_record_problem(record)
+            if problem:
+                gh("api", "-X", "PATCH", f"repos/{self.repository}/milestones/{milestone['number']}",
+                   "-f", "state=open")
+                print(f"Reopened milestone {milestone['title']}: {problem} ({RELEASES / (milestone['title'] + '.md')})")
 
     def check_mockup(self, node: Node) -> None:
         issue = node.issue
@@ -295,6 +349,7 @@ class Guard:
 
     def check(self, node: Node) -> None:
         self.check_parent(node)
+        self.check_contract(node)
         self.check_mockup(node)
         self.check_completion(node)
 
@@ -314,10 +369,14 @@ def main() -> int:
     parser.add_argument("--repository", required=True)
     parser.add_argument("--issue", type=int, help="check one issue and its ancestors")
     parser.add_argument("--pull-request", action="store_true", help="check the work items PR_BODY closes")
+    parser.add_argument("--releases", action="store_true", help="check closed release milestones only")
     args = parser.parse_args()
     if args.pull_request:
         return check_pull_request(args.repository, os.environ.get("PR_BODY", ""))
     guard = Guard(args.repository)
+    if args.releases:
+        guard.check_releases()
+        return 0
     if args.issue:
         number: int = args.issue
         for _ in range(ANCESTOR_LEVELS + 1):
@@ -330,6 +389,13 @@ def main() -> int:
     nodes = fetch_all(args.repository)
     for node in sorted(nodes, key=lambda node: DEPTH.get(node.issue.kind or "", -1)):
         guard.check(node)
+    open_numbers = {node.issue.number for node in nodes if node.issue.state == "open"}
+    cycles = dependency_cycles({node.issue.number: [item.number for item in node.prerequisites
+                                                    if item.number in open_numbers]
+                                for node in nodes if node.issue.number in open_numbers})
+    for node in nodes:
+        guard.check_dependencies(node, cycles)
+    guard.check_releases()
     return 0
 
 

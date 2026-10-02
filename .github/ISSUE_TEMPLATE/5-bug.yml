@@ -1,16 +1,16 @@
 name: Bug
-description: "Something that doesn't work as specified, under a feature."
+description: "Behavior that contradicts agreed expected behavior, under a feature."
 title: "Bug: "
 labels: ["type:bug"]
 body:
   - type: markdown
     attributes:
-      value: "Every item sits in one chain: Epic → Feature → User Story, Improvement, Bug or Spike → Task (ADR-0025). Nothing is standalone: after creating this issue, add it as a sub-issue of its parent; an item without the right parent or type gets the `needs-parent` label. Classify by intent first, then scope: choose a bug when actual behavior contradicts agreed requirements or intended behavior; if the expected behavior was never agreed, clarify it first. Its children are the tasks that fix it. Work that changes what users see must link or show its Penpot mockup (ADR-0017)."
+      value: "Work items follow the Work Management and Delivery Specification (docs/reference/work-management-specification.md, ADR-0026): Epic → Feature → User Story, Improvement, Bug or Spike → Task, and nothing is standalone. Classify by intent first, then scope (section 3). Choose a bug when actual behavior contradicts agreed expected behavior. Its parent is a feature. After creating this issue, add it as a sub-issue of its parent at once. Answer every field; write `Unknown: needs clarification` for what isn't known yet, and such an item stays in Backlog until it is clarified (section 4). Work that changes what users see must link or show its Penpot mockup (ADR-0017)."
   - type: input
     id: parent
     attributes:
       label: Parent
-      description: "The feature this item belongs to, for example #13."
+      description: "The feature this bug belongs to, for example #156."
       placeholder: "#"
     validations:
       required: true
@@ -33,24 +33,65 @@ body:
     validations:
       required: false
   - type: textarea
-    id: problem
+    id: purpose
     attributes:
-      label: Problem
-      description: "What happens, and what should happen instead."
+      label: Purpose
+      description: "Why the defect matters to users or the release."
     validations:
       required: true
   - type: textarea
-    id: reproduce
+    id: expected-behavior
     attributes:
-      label: Steps to reproduce
-      description: "1. …
-2. …"
+      label: Expected behavior
+      description: "The agreed behavior, and where it was agreed. If it was never agreed, clarify it before filing a bug."
     validations:
       required: true
   - type: textarea
-    id: criteria
+    id: actual-behavior
+    attributes:
+      label: Actual behavior
+      description: "What happens instead."
+    validations:
+      required: true
+  - type: textarea
+    id: reproduction-steps
+    attributes:
+      label: Reproduction steps
+      description: "Numbered steps that reproduce the defect."
+    validations:
+      required: true
+  - type: textarea
+    id: affected-environment
+    attributes:
+      label: Affected environment
+      description: "Where it happens: version, browser, realm, operating system."
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: "What the fix covers."
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance-criteria
     attributes:
       label: Acceptance criteria
-      description: "How we know it's fixed."
+      description: "Restored behavior, including regression coverage."
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: "Prerequisites as #N (also linked as blocked-by), or None. Parents are not dependencies."
+    validations:
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification
+      description: "How the fix and the regression test are verified."
     validations:
       required: true

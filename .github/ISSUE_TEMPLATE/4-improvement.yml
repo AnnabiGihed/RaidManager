@@ -1,16 +1,16 @@
 name: Improvement
-description: "A change that improves existing behaviour or tooling, under a feature."
+description: "A verifiable enhancement to something that meets its specification, under a feature."
 title: "Improvement: "
 labels: ["type:improvement"]
 body:
   - type: markdown
     attributes:
-      value: "Every item sits in one chain: Epic → Feature → User Story, Improvement, Bug or Spike → Task (ADR-0025). Nothing is standalone: after creating this issue, add it as a sub-issue of its parent; an item without the right parent or type gets the `needs-parent` label. Classify by intent first, then scope: choose an improvement when existing behavior, tooling, documentation or process works as specified but needs to become better; not a bug (it meets its requirements), not a spike (the enhancement is understood). Its children are tasks. Work that changes what users see must link or show its Penpot mockup (ADR-0017)."
+      value: "Work items follow the Work Management and Delivery Specification (docs/reference/work-management-specification.md, ADR-0026): Epic → Feature → User Story, Improvement, Bug or Spike → Task, and nothing is standalone. Classify by intent first, then scope (section 3). Choose an improvement when existing behavior meets its specification but should become better. Its parent is a feature. After creating this issue, add it as a sub-issue of its parent at once. Answer every field; write `Unknown: needs clarification` for what isn't known yet, and such an item stays in Backlog until it is clarified (section 4). Work that changes what users see must link or show its Penpot mockup (ADR-0017)."
   - type: input
     id: parent
     attributes:
       label: Parent
-      description: "The feature this item belongs to, for example #13."
+      description: "The feature this improvement belongs to, for example #156."
       placeholder: "#"
     validations:
       required: true
@@ -33,16 +33,51 @@ body:
     validations:
       required: false
   - type: textarea
-    id: outcome
+    id: purpose
     attributes:
-      label: Outcome
-      description: "What gets better, and for whom."
+      label: Purpose
+      description: "Why the enhancement is worth making."
     validations:
       required: true
   - type: textarea
-    id: criteria
+    id: current-situation
+    attributes:
+      label: Current situation
+      description: "What exists today and works as specified."
+    validations:
+      required: true
+  - type: textarea
+    id: desired-enhancement
+    attributes:
+      label: Desired enhancement
+      description: "What should become better: quality, usability, performance, tooling, documentation or process."
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: "What is in and out of this improvement."
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance-criteria
     attributes:
       label: Acceptance criteria
-      description: "Verifiable criteria for the improvement."
+      description: "Verifiable conditions that show the enhancement."
+    validations:
+      required: true
+  - type: textarea
+    id: dependencies
+    attributes:
+      label: Dependencies
+      description: "Prerequisites as #N (also linked as blocked-by), or None. Parents are not dependencies."
+    validations:
+      required: true
+  - type: textarea
+    id: verification-method
+    attributes:
+      label: Verification method
+      description: "How the enhancement is measured or demonstrated."
     validations:
       required: true
