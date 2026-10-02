@@ -176,6 +176,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- Release 1 is split into five releases: v0.1 Delivery foundation and v0.2 Design system and process group the
+  finished work by day in one-day history sprints (Sprints 1 to 4); v0.3 Identity and characters, v0.4 Raid scheduling
+  and readiness, and v1.0 Rosters and raid night are planned in two-week sprints (Sprints 5 to 16), each ending in a
+  stabilization sprint. Every item is on its release milestone, and each release and sprint has a record (#339).
 - The issue forms ask for each type's contract from the work management specification, and the type labels describe
   when to choose each type. The hierarchy guard applies the specification's milestone rule (a task shares its
   parent's release; a feature or epic has a milestone only when all its scope is in it), labels new items missing
