@@ -55,5 +55,17 @@ public sealed class SummaryTileTests : BunitContext
         tile.FindAll(".summary-tile-subtitle").ShouldBeEmpty();
     }
 
+    /// <summary>Shows a chevron and the link look only for a tile that leads somewhere.</summary>
+    [Fact]
+    public void ALinkTileShowsAChevron()
+    {
+        var link = Render<SummaryTile>(parameters => parameters.Add(component => component.Title, "Dark Templars").Add(component => component.ShowsLink, true));
+        var plain = Render<SummaryTile>(parameters => parameters.Add(component => component.Title, "Anguish"));
+
+        link.Find(".summary-tile").ClassList.ShouldContain("summary-tile-link");
+        link.Find(".summary-tile-chevron").GetAttribute("aria-hidden").ShouldBe("true");
+        plain.Find(".summary-tile").ClassList.ShouldNotContain("summary-tile-link");
+        plain.FindAll(".summary-tile-chevron").ShouldBeEmpty();
+    }
     #endregion Tests
 }

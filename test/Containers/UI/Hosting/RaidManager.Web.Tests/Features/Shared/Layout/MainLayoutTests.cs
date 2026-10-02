@@ -65,6 +65,7 @@ public sealed class MainLayoutTests : BunitContext
         userCard.QuerySelector(".summary-tile-title").ShouldNotBeNull().TextContent.ShouldBe("Arthas Menethil");
         userCard.TextContent.ShouldContain("Player");
         layout.Find("[data-testid=community-card]").TextContent.ShouldContain("No community yet");
+        layout.Find("[data-testid=community-card] .summary-tile-chevron").ShouldNotBeNull();
         layout.Find("form[action='/sign-out']").ShouldNotBeNull();
         layout.FindAll(".user-avatar-initials").Select(avatar => avatar.TextContent).ShouldAllBe(initials => initials == "AM");
         layout.FindAll("[data-testid=public-frame]").ShouldBeEmpty();
