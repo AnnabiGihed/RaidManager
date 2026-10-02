@@ -40,18 +40,18 @@ BACKLOG_ITEMS = frozenset({STORY, IMPROVEMENT, BUG, SPIKE})
 PARENTS: dict[str, frozenset[str]] = {
     EPIC: frozenset(),
     FEATURE: frozenset({EPIC}),
-    **{kind: frozenset({FEATURE}) for kind in BACKLOG_ITEMS},
-    **{kind: BACKLOG_ITEMS for kind in WORK_ITEMS},
+    **dict.fromkeys(BACKLOG_ITEMS, frozenset({FEATURE})),
+    **dict.fromkeys(WORK_ITEMS, BACKLOG_ITEMS),
 }
 CHILDREN: dict[str, frozenset[str]] = {
     EPIC: frozenset({FEATURE}),
     FEATURE: BACKLOG_ITEMS,
-    **{kind: WORK_ITEMS for kind in BACKLOG_ITEMS},
+    **dict.fromkeys(BACKLOG_ITEMS, WORK_ITEMS),
 }
 # Type names in hierarchy order.
 NAMES = {kind: kind.removeprefix("type:") for kind in (EPIC, FEATURE, STORY, IMPROVEMENT, BUG, SPIKE, TASK)}
 # Leaves first, so a parent is judged after the children the same run reopened.
-DEPTH = {TASK: 0, **{kind: 1 for kind in BACKLOG_ITEMS}, FEATURE: 2, EPIC: 3}
+DEPTH = {TASK: 0, **dict.fromkeys(BACKLOG_ITEMS, 1), FEATURE: 2, EPIC: 3}
 ANCESTOR_LEVELS = 3
 CLOSING_LINE = re.compile(r"^Closes #(\d+)[ \t]*$", re.IGNORECASE)
 FIELDS = "number state stateReason createdAt labels(first: 20) { nodes { name } }"
