@@ -108,19 +108,33 @@ def sprint_state(sprint: Sprint, root: Path) -> str | None:
     return None
 
 
+def sequence_rows(text: str) -> list[str]:
+    """Returns the table rows of a release record's Sprint sequence section."""
+    rows: list[str] = []
+    in_sequence = False
+    for line in text.splitlines():
+        if line.startswith("## "):
+            in_sequence = line.strip() == "## Sprint sequence"
+        elif in_sequence and line.startswith("|"):
+            rows.append(line)
+    return rows
+
+
+def row_sprint(row: str) -> str | None:
+    """Reads "Sprint N" from a sequence row's first cell, plain or linked; None for the header and divider."""
+    first = row.strip("|").split("|")[0]
+    digits = "".join(character for character in first.split("](")[0] if character.isdigit())
+    return f"Sprint {int(digits)}" if "Sprint" in first and digits else None
+
+
 def sprint_releases(root: Path) -> dict[str, str]:
     """Maps each sprint to its release, from the Sprint sequence section of each release record (owner rule, #346)."""
     found: dict[str, str] = {}
     for record in sorted((root / RELEASES).glob("*.md")):
-        in_sequence = False
-        for line in record.read_text(encoding="utf-8").splitlines():
-            if line.startswith("## "):
-                in_sequence = line.strip() == "## Sprint sequence"
-            elif in_sequence and line.startswith("|"):
-                first = line.strip("|").split("|")[0]
-                digits = "".join(character for character in first.split("](")[0] if character.isdigit())
-                if "Sprint" in first and digits:
-                    found[f"Sprint {int(digits)}"] = record.stem
+        for row in sequence_rows(record.read_text(encoding="utf-8")):
+            sprint = row_sprint(row)
+            if sprint:
+                found[sprint] = record.stem
     return found
 
 
