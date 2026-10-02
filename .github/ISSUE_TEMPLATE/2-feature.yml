@@ -5,7 +5,7 @@ labels: ["type:feature"]
 body:
   - type: markdown
     attributes:
-      value: "Every item sits in one chain: Epic → Feature → Story, Improvement or Bug → Task or Spike (ADR-0016). After creating this issue, add it as a sub-issue of its parent; an item without the right parent gets the `needs-parent` label. Work that changes what users see must link or show its Penpot mockup (ADR-0017)."
+      value: "Every item sits in one chain: Epic → Feature → User Story, Improvement, Bug or Spike → Task (ADR-0025). Nothing is standalone: after creating this issue, add it as a sub-issue of its parent; an item without the right parent or type gets the `needs-parent` label. Classify by intent first, then scope: choose a feature when several related outcomes are needed to deliver one coherent capability. Its children are user stories, improvements, bugs and spikes. Work that changes what users see must link or show its Penpot mockup (ADR-0017)."
   - type: input
     id: parent
     attributes:

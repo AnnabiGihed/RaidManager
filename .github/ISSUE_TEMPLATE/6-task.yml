@@ -1,16 +1,16 @@
 name: Task
-description: "One bounded piece of work under a story, improvement or bug."
+description: "One bounded piece of work under a story, improvement, bug or spike."
 title: "Task: "
 labels: ["type:task"]
 body:
   - type: markdown
     attributes:
-      value: "Every item sits in one chain: Epic → Feature → Story, Improvement or Bug → Task or Spike (ADR-0016). After creating this issue, add it as a sub-issue of its parent; an item without the right parent gets the `needs-parent` label. Work that changes what users see must link or show its Penpot mockup (ADR-0017)."
+      value: "Every item sits in one chain: Epic → Feature → User Story, Improvement, Bug or Spike → Task (ADR-0025). Nothing is standalone: after creating this issue, add it as a sub-issue of its parent; an item without the right parent or type gets the `needs-parent` label. Classify by intent first, then scope: a task is bounded work that delivers or verifies part of its parent; its parent says why it exists. A task is the only item a pull request closes, and it has no children. Work that changes what users see must link or show its Penpot mockup (ADR-0017)."
   - type: input
     id: parent
     attributes:
       label: Parent
-      description: "The story, improvement or bug this item belongs to, for example #13."
+      description: "The story, improvement, bug or spike this task belongs to, for example #13."
       placeholder: "#"
     validations:
       required: true

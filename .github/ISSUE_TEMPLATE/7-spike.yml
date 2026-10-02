@@ -1,16 +1,16 @@
 name: Spike
-description: "Time-boxed research under a story, improvement or bug."
+description: "Time-boxed research under a feature, done through its tasks."
 title: "Spike: "
 labels: ["type:spike"]
 body:
   - type: markdown
     attributes:
-      value: "Every item sits in one chain: Epic → Feature → Story, Improvement or Bug → Task or Spike (ADR-0016). After creating this issue, add it as a sub-issue of its parent; an item without the right parent gets the `needs-parent` label. Work that changes what users see must link or show its Penpot mockup (ADR-0017)."
+      value: "Every item sits in one chain: Epic → Feature → User Story, Improvement, Bug or Spike → Task (ADR-0025). Nothing is standalone: after creating this issue, add it as a sub-issue of its parent; an item without the right parent or type gets the `needs-parent` label. Classify by intent first, then scope: choose a spike when an unknown must be resolved before choosing a direction or implementing; it delivers evidence, findings or a recommendation, not usable behavior. Its children are the tasks that produce the evidence. Work that changes what users see must link or show its Penpot mockup (ADR-0017)."
   - type: input
     id: parent
     attributes:
       label: Parent
-      description: "The story, improvement or bug this item belongs to, for example #13."
+      description: "The feature this spike belongs to, for example #13."
       placeholder: "#"
     validations:
       required: true
@@ -37,6 +37,13 @@ body:
     attributes:
       label: Question
       description: "What must be learned or decided."
+    validations:
+      required: true
+  - type: input
+    id: time-box
+    attributes:
+      label: Time box
+      description: "The most time this spike may take, for example 2 days."
     validations:
       required: true
   - type: textarea

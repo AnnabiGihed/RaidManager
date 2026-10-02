@@ -1,7 +1,8 @@
 # Project automation
 
 The [Raid Manager Project](https://github.com/users/AnnabiGihed/projects/2) tracks every work item in one hierarchy of
-native sub-issues ([ADR-0016](../adr/0016-epic-feature-story-task-hierarchy.md)). Automation enforces it without a
+native sub-issues ([ADR-0025](../adr/0025-classify-work-items-with-spikes-under-features.md)). Nothing is
+standalone. Automation enforces it without a
 personal token or repository secret.
 
 ## Hierarchy
@@ -9,28 +10,30 @@ personal token or repository secret.
 | Type | Label | Parent | Children |
 | --- | --- | --- | --- |
 | Epic | `type:epic` | none | features |
-| Feature | `type:feature` | an epic | stories, improvements and bugs |
-| Story | `type:story` | a feature | tasks and spikes |
-| Improvement | `type:improvement` | a feature | tasks and spikes |
-| Bug | `type:bug` | a feature | tasks and spikes |
-| Task | `type:task` | a story, improvement or bug | none |
-| Spike | `type:spike` | a story, improvement or bug | none |
+| Feature | `type:feature` | an epic | stories, improvements, bugs and spikes |
+| Story | `type:story` | a feature | tasks |
+| Improvement | `type:improvement` | a feature | tasks |
+| Bug | `type:bug` | a feature | tasks |
+| Spike | `type:spike` | a feature | tasks |
+| Task | `type:task` | a story, improvement, bug or spike | none |
 
-- A **story** adds a capability for a user. An **improvement** makes existing behavior or tooling better. A **bug**
-  fixes something that doesn't work as specified.
-- A **task** is one bounded piece of work, delivered by one pull request. A **spike** is time-boxed research; it
-  counts as a task.
+- Classify by intent first, then scope. A **story** adds a capability a user can't perform today. An **improvement**
+  makes existing behavior, tooling, documentation or process better. A **bug** restores agreed or intended behavior.
+  A **spike** answers a question, within a time box, before a direction is chosen. ADR-0025 has the identifying
+  question and the "choose this, not that" rules for each type.
+- A **task** is one bounded piece of work, delivered by one pull request; its parent says why the work exists.
 - Every issue has exactly one type label. The issue forms set it and ask for the parent; add the new issue as a
   sub-issue of that parent.
 
 ## Rules
 
-- **Parent:** every item except an epic has a parent of the type in the table, and an epic has none.
-- **Completion:** an epic, feature, story, improvement or bug may be closed as completed only when at least one child
-  of the level below is closed as completed and every child is closed. A story, improvement or bug therefore never
-  closes without a completed task or spike.
-- **Pull requests:** a pull request closes tasks and spikes only (`Closes #N`), and each one must reach an epic
-  through a story, improvement or bug and a feature. Reference other items with `Refs #N`.
+- **Parent:** every open issue has exactly one type label, every item except an epic has a parent of the type in
+  the table, and an epic has none.
+- **Completion:** an epic, feature, story, improvement, bug or spike may be closed as completed only when at least one
+  child of the level below is closed as completed and every child is closed. A story, improvement, bug or spike
+  therefore never closes without a completed task.
+- **Pull requests:** a pull request closes tasks only (`Closes #N`), and each one must reach an epic through a
+  story, improvement, bug or spike and a feature. Reference other items with `Refs #N`.
 - A child closed as *not planned* or *duplicate* counts as closed but not as completed. An item closed that way is
   abandoned, so the completion and parent rules don't apply to it.
 
@@ -55,13 +58,13 @@ runs with the built-in `GITHUB_TOKEN`:
 - Every 15 minutes it audits every issue, as a safety net for events it missed and for sub-issue changes, which
   start no workflow.
 - It reopens an invalid parent with a comment that names the missing or open children.
-- It labels a misplaced item `needs-parent` with one comment that says where it belongs, and a `ui` item without a
-  mockup `needs-mockup`. It removes each label once the item is fixed. A new issue gets 10 minutes to be linked
-  before it is flagged.
+- It labels a misplaced item, or one without a type label, `needs-parent` with one comment that says where it
+  belongs, and a `ui` item without a mockup `needs-mockup`. It removes each label once the item is fixed. A new issue
+  gets 10 minutes to be linked before it is flagged.
 
 The docs `validate` check runs the pull-request rules on every pull request, so a task without a full chain, or a
 user-interface change without its mockup, can't merge. After you fix a parent link, re-run that check from the pull
-request's Checks tab. The review workflow closes only tasks and spikes when it merges.
+request's Checks tab. The review workflow closes only tasks when it merges.
 
 The Project keeps `Status` in step with the issue through its built-in workflows, which run on GitHub's side and
 need no token:

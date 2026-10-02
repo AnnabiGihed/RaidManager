@@ -7,15 +7,17 @@ Story development requires an accepted story and a child task with measurable ac
 or implementation. Complete the task through its own issue-linked pull request.
 
 Every work item sits in one chain of native sub-issues
-([ADR-0016](docs/adr/0016-epic-feature-story-task-hierarchy.md)): an **epic** holds **features**; a feature holds
-**stories** (new capabilities), **improvements** (better existing behavior or tooling) and **bugs**; each of those
-holds **tasks** or **spikes**. Only an epic has no parent. Create issues with the issue forms, which set the type
-label, and add each new issue as a sub-issue of its parent right away.
+([ADR-0025](docs/adr/0025-classify-work-items-with-spikes-under-features.md)): an **epic** holds **features**; a
+feature holds **stories** (new capabilities), **improvements** (better existing behavior, tooling, documentation or
+process), **bugs** (behavior that contradicts what was agreed) and **spikes** (time-boxed research); each of those
+holds **tasks**. Only an epic has no parent, and nothing is standalone. Classify by intent first, then scope, with
+the identifying questions in ADR-0025. Create issues with the issue forms, which set the type label, and add each new
+issue as a sub-issue of its parent right away.
 
 A parent closes as completed only when at least one child is completed and every child is closed, so a story,
-improvement or bug never closes without a completed task. The
+improvement, bug or spike never closes without a completed task. The
 [hierarchy workflow](.github/workflows/project-hierarchy.yml) reopens an invalid closure and its ancestors, and labels
-a misplaced item `needs-parent`. The Project's built-in
+a misplaced item, or one without a type label, `needs-parent`. The Project's built-in
 workflows move a reopened item back to `In Progress`. Items closed as *not planned* or *duplicate* are exempt. No
 personal token, repository secret or manual status correction is involved. See
 [Project automation](docs/reference/project-automation.md) for the rules and the one-time Project setting.
@@ -36,8 +38,8 @@ Do not combine unrelated refactors and feature behavior in one commit.
 Every pull request must:
 
 - target `main`, link its task, and include the required five-section description and author checklist;
-- put `Closes #<task-number>` on its own line before the first heading; it closes only a task or spike whose chain
-  reaches an epic through a story, improvement or bug and a feature. Use `Refs` for those parents;
+- put `Closes #<task-number>` on its own line before the first heading; it closes only a task whose chain reaches
+  an epic through a story, improvement, bug or spike and a feature. Use `Refs` for those parents;
 - show the Penpot mockup it implements when it changes what users see, or state `No visual change: <reason>`
   ([ADR-0017](docs/adr/0017-penpot-mockups-for-ui-work.md), [Design a screen](docs/how-to/design-a-screen.md));
 - pass the coverage gate: tests cover at least 80% of the changed source lines, and total line coverage stays at or
