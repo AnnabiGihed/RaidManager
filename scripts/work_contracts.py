@@ -19,33 +19,40 @@ EPIC, FEATURE, STORY, IMPROVEMENT, BUG, SPIKE, TASK = (
 ADOPTED = datetime(2026, 10, 2, 9, 55, 18, tzinfo=timezone.utc)
 UNKNOWN = "unknown: needs clarification"
 EMPTY_ANSWERS = {"", "_no response_", "none yet", "tbd", "to be created"}
-HEADING = re.compile(r"^#{2,3}[ \t]+(.+?)[ \t]*#*[ \t]*$")
+HEADING = re.compile(r"^#{2,3}[ \t]+(\S.*)$")
 
 # Section 4: what every item contains, then what each type adds. Each requirement lists the headings that satisfy it,
 # so a form asks once for, say, "Acceptance criteria" and that also states the completion conditions.
 Requirement = tuple[str, tuple[str, ...]]
+ACCEPTANCE_CRITERIA, CAPABILITY_BOUNDARIES = "Acceptance criteria", "Capability boundaries"
+EXECUTION_SCOPE = "Execution scope"
+EXIT_CRITERIA, SUCCESS_MEASURES, VERIFICATION_METHOD = "Exit criteria", "Success measures", "Verification method"
+
+
+def heading(name: str) -> Requirement:
+    """A requirement answered by the heading of the same name."""
+    return name, (name,)
+
+
 COMMON: tuple[Requirement, ...] = (
     ("Purpose", ("Purpose", "Objective", "Benefit")),
-    ("Scope", ("Scope", "Execution scope", "Capability boundaries")),
-    ("Completion conditions", ("Completion conditions", "Acceptance criteria", "Exit criteria", "Success measures")),
-    ("Dependencies", ("Dependencies",)),
-    ("Verification", ("Verification", "Verification method")),
+    ("Scope", ("Scope", EXECUTION_SCOPE, CAPABILITY_BOUNDARIES)),
+    ("Completion conditions", ("Completion conditions", ACCEPTANCE_CRITERIA, EXIT_CRITERIA, SUCCESS_MEASURES)),
+    heading("Dependencies"),
+    ("Verification", ("Verification", VERIFICATION_METHOD)),
 )
-PARENT: Requirement = ("Parent", ("Parent",))
+PARENT = heading("Parent")
 BY_TYPE: dict[str, tuple[Requirement, ...]] = {
-    EPIC: (("Objective", ("Objective",)), ("Success measures", ("Success measures",))),
-    FEATURE: (("Capability boundaries", ("Capability boundaries",)), ("Expected outcomes", ("Expected outcomes",))),
-    STORY: (("User", ("User",)), ("Need", ("Need",)), ("Benefit", ("Benefit",)),
-            ("Acceptance criteria", ("Acceptance criteria",))),
-    IMPROVEMENT: (("Current situation", ("Current situation",)), ("Desired enhancement", ("Desired enhancement",)),
-                  ("Verification method", ("Verification method",))),
-    BUG: (("Expected behavior", ("Expected behavior",)), ("Actual behavior", ("Actual behavior",)),
-          ("Reproduction steps", ("Reproduction steps",)), ("Affected environment", ("Affected environment",))),
-    SPIKE: (("Research question", ("Research question",)), ("Timebox", ("Timebox",)),
-            ("Exit criteria", ("Exit criteria",)),
-            ("Findings or decision deliverable", ("Findings or decision deliverable",))),
-    TASK: (("Bounded deliverable", ("Bounded deliverable",)), ("Execution scope", ("Execution scope",)),
-           ("Delivery Stage", ("Delivery Stage",)), ("Verification method", ("Verification method",))),
+    EPIC: (heading("Objective"), heading(SUCCESS_MEASURES)),
+    FEATURE: (heading(CAPABILITY_BOUNDARIES), heading("Expected outcomes")),
+    STORY: (heading("User"), heading("Need"), heading("Benefit"), heading(ACCEPTANCE_CRITERIA)),
+    IMPROVEMENT: (heading("Current situation"), heading("Desired enhancement"), heading(VERIFICATION_METHOD)),
+    BUG: (heading("Expected behavior"), heading("Actual behavior"), heading("Reproduction steps"),
+          heading("Affected environment")),
+    SPIKE: (heading("Research question"), heading("Timebox"), heading(EXIT_CRITERIA),
+            heading("Findings or decision deliverable")),
+    TASK: (heading("Bounded deliverable"), heading(EXECUTION_SCOPE), heading("Delivery Stage"),
+           heading(VERIFICATION_METHOD)),
 }
 
 
@@ -59,7 +66,7 @@ def sections(body: str) -> dict[str, str]:
         if match:
             if current is not None:
                 found[current] = "\n".join(lines).strip()
-            current, lines = match.group(1).strip().lower(), []
+            current, lines = match.group(1).rstrip("# \t").lower(), []
         elif current is not None:
             lines.append(line)
     if current is not None:
