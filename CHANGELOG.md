@@ -178,6 +178,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- Sprint 4 has its review: goal achieved, 11 items completed (18 Story Points of stories and 38 of improvements,
+  retrospective), nothing unfinished. The item lists of Sprints 1 to 4 and of releases v0.1 and v0.2 now match the
+  Project, including the parts split from mixed-release items (#400).
 - Every item records who works on it and when: it is assigned to its author and its Start date set when work starts,
   and its Target date set to the day it closes. The 188 closed items and 30 started items now have them too, and the
   `work-task-execution-and-completion` skill makes it part of starting and closing work (#397).

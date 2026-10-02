@@ -28,7 +28,6 @@ None recorded at the time. The sprint is reconstructed from completed work.
 
 Completed outcome items, by close date (their tasks closed with them):
 
-- #190 (user story) Design the mockup for draft compositions and the bench
 - #191 (user story) Design the mockup for coverage and composition warnings
 - #192 (user story) Design the mockup for roster review and publication
 - #193 (user story) Design the mockup for raid-night attendance and swaps
@@ -37,12 +36,17 @@ Completed outcome items, by close date (their tasks closed with them):
 - #196 (user story) Design the mockup for gear warnings and attendance history
 - #197 (user story) Design the mockup for character ownership conflicts
 - #201 (improvement) Adopt the Command Center design system for mockups
-- #260 (improvement) Organize the website by feature
 - #267 (improvement) Reusable Blazor components and one project-wide theme
+- #260 (improvement) Organize the website by feature
 - #270 (improvement) Clean up branches after every merge
 - #273 (bug) the AppHost logs a timeout exception every minute on Aspire 13.6.0
 - #278 (improvement) Keep the agent's working practices in the repository
 - #283 (improvement) Give every Blazor component its own folder
+- #352 (user story) Review new characters and resolve ownership conflicts (part delivered in v0.2)
+- #353 (user story) Browse, create, and edit scheduled raids (part delivered in v0.2)
+
+Corrected on 2026-10-03 to match the Project (#401): the list now follows each item's Sprint field, including
+the parts split from mixed-release items (#347).
 
 Unfinished work: items worked on during this day but not finished stay open on their planned release, with their
 finished tasks recorded in this sprint. No Story Points were recorded for these days.
