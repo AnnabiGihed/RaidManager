@@ -1,4 +1,5 @@
 using MediatR;
+using Microsoft.AspNetCore.Mvc;
 using RaidManager.ApiService.Features.Shared.Authentication;
 using RaidManager.ApiService.Features.Shared.Http;
 using RaidManager.Application.Features.Communities.Commands.LinkCommunity;
@@ -10,6 +11,7 @@ using RaidManager.Application.Features.Communities.Queries.GetCommunityByDiscord
 using RaidManager.Application.Features.Communities.Queries.GetCommunityMembers;
 using RaidManager.Application.Features.Communities.Queries.GetCommunityRoleSettings;
 using RaidManager.Application.Features.Communities.Queries.GetUserCommunities;
+using RaidManager.Application.Features.Communities.Queries.ListCommunitiesByDiscordServers;
 
 namespace RaidManager.ApiService.Features.Communities;
 
@@ -71,12 +73,19 @@ public static class CommunityEndpoints
             .ProducesValidationProblem()
             .ProducesProblem(StatusCodes.Status404NotFound);
 
+        communities.MapPost("/by-discord-servers", ListByDiscordServersAsync)
+            .WithName("ListCommunitiesByDiscordServers")
+            .WithSummary("List the communities a user's Discord servers link to")
+            .WithDescription("Called by the website at sign-in with the servers Discord lists for the user. Returns the linked ones, by name; servers that aren't linked are left out.")
+            .Produces<IReadOnlyList<CommunitySummary>>()
+            .ProducesValidationProblem();
+
         endpoints.MapGet(UserCommunitiesRoute, GetUserCommunitiesAsync)
             .RequireAuthorization(WebsiteServiceDefaults.Policy)
             .WithTags(Tag)
             .WithName("GetUserCommunities")
             .WithSummary("List a user's communities")
-            .WithDescription("Returns the communities the user administers, by name. An empty list means the user has no community yet.")
+            .WithDescription("Returns the communities the user administers, then those listed in memberOf, the communities the user's Discord servers matched at sign-in; each group by name. An empty list means the user has no community yet.")
             .Produces<IReadOnlyList<CommunitySummary>>()
             .ProducesValidationProblem()
             .ProducesProblem(StatusCodes.Status401Unauthorized);
@@ -239,14 +248,26 @@ public static class CommunityEndpoints
         return result.ToHttpResult(TypedResults.NoContent);
     }
 
-    /// <summary>Lists a user's communities.</summary>
-    /// <param name="userId">The user.</param>
+    /// <summary>Lists the communities a user's Discord servers link to.</summary>
+    /// <param name="request">The servers.</param>
     /// <param name="sender">The MediatR sender.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>200 with the communities, or a problem.</returns>
-    private static async Task<IResult> GetUserCommunitiesAsync(Guid userId, ISender sender, CancellationToken cancellationToken)
+    private static async Task<IResult> ListByDiscordServersAsync(FindCommunitiesByDiscordServersRequest request, ISender sender, CancellationToken cancellationToken)
     {
-        var result = await sender.Send(new GetUserCommunitiesQuery(userId), cancellationToken);
+        var result = await sender.Send(new ListCommunitiesByDiscordServersQuery(request.DiscordGuildIds ?? []), cancellationToken);
+        return result.ToHttpResult(communities => TypedResults.Ok(communities.Select(CommunitySummary.From).ToList()));
+    }
+
+    /// <summary>Lists a user's communities.</summary>
+    /// <param name="userId">The user.</param>
+    /// <param name="memberOf">The communities the user's Discord servers matched at sign-in.</param>
+    /// <param name="sender">The MediatR sender.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>200 with the communities, or a problem.</returns>
+    private static async Task<IResult> GetUserCommunitiesAsync(Guid userId, [FromQuery] Guid[]? memberOf, ISender sender, CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new GetUserCommunitiesQuery(userId, memberOf ?? []), cancellationToken);
         return result.ToHttpResult(communities => TypedResults.Ok(communities.Select(CommunitySummary.From).ToList()));
     }
     #endregion Private Helpers

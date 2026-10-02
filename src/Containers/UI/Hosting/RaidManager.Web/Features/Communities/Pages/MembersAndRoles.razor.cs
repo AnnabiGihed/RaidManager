@@ -78,7 +78,7 @@ public sealed partial class MembersAndRoles : IDisposable
             return;
         }
 
-        await Community.LoadForUserAsync(userId, _lifetime.Token);
+        await Community.LoadForUserAsync(userId, state!.User.MemberCommunityIds(), _lifetime.Token);
         if (Community.Status == CommunityPageStatus.Missing)
         {
             Navigation.NavigateTo("/");

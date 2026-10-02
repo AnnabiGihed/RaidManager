@@ -11,9 +11,16 @@ public interface ICommunitiesApiClient
     #region Methods
     /// <summary>Lists the communities a user belongs to.</summary>
     /// <param name="userId">The signed-in user.</param>
+    /// <param name="memberOf">The communities the user's Discord servers matched at sign-in.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>The communities, by name; empty when the user has none.</returns>
-    Task<IReadOnlyList<CommunitySummary>> GetUserCommunitiesAsync(Guid userId, CancellationToken cancellationToken);
+    /// <returns>The communities the user administers, then the others, each by name; empty when the user has none.</returns>
+    Task<IReadOnlyList<CommunitySummary>> GetUserCommunitiesAsync(Guid userId, IReadOnlyCollection<Guid> memberOf, CancellationToken cancellationToken);
+
+    /// <summary>Lists the communities a user's Discord servers link to.</summary>
+    /// <param name="discordGuildIds">The Discord server snowflakes.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>The linked communities; empty when none of the servers is linked.</returns>
+    Task<IReadOnlyList<CommunitySummary>> FindByDiscordServersAsync(IReadOnlyCollection<string> discordGuildIds, CancellationToken cancellationToken);
 
     /// <summary>Gets a community.</summary>
     /// <param name="communityId">The community.</param>

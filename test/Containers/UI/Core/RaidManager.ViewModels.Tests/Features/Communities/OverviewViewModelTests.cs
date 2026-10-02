@@ -43,7 +43,7 @@ public sealed class OverviewViewModelTests
     {
         var overview = new OverviewViewModel(_api);
 
-        await overview.LoadAsync(UserId, "cancelled", CancellationToken.None);
+        await overview.LoadAsync(UserId, [], "cancelled", CancellationToken.None);
 
         overview.Status.ShouldBe(CommunityPageStatus.Ready);
         overview.Community.ShouldBeNull();
@@ -59,10 +59,30 @@ public sealed class OverviewViewModelTests
         _api.Communities.Add(FakeCommunitiesApi.Community(UserId));
         var overview = new OverviewViewModel(_api);
 
-        await overview.LoadAsync(UserId, null, CancellationToken.None);
+        await overview.LoadAsync(UserId, [], null, CancellationToken.None);
 
         overview.Community.ShouldNotBeNull().Name.ShouldBe("Dark Templars");
         overview.Failure.ShouldBeNull();
+    }
+
+    /// <summary>Finds the community of a server the user is a member of, and prefers the one they administer.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task MemberCommunityIsFoundAfterTheAdministeredOne()
+    {
+        var member = FakeCommunitiesApi.Community(Guid.NewGuid(), "555");
+        _api.Communities.Add(member);
+        var overview = new OverviewViewModel(_api);
+
+        await overview.LoadAsync(UserId, [member.CommunityId], null, CancellationToken.None);
+
+        overview.Community.ShouldBe(member);
+
+        var administered = FakeCommunitiesApi.Community(UserId);
+        _api.Communities.Add(administered);
+        await overview.LoadAsync(UserId, [member.CommunityId], null, CancellationToken.None);
+
+        overview.Community.ShouldBe(administered);
     }
 
     /// <summary>Reports an unreachable API instead of showing no community.</summary>
@@ -73,7 +93,7 @@ public sealed class OverviewViewModelTests
         _api.Failure = new HttpRequestException("down");
         var overview = new OverviewViewModel(_api);
 
-        await overview.LoadAsync(UserId, null, CancellationToken.None);
+        await overview.LoadAsync(UserId, [], null, CancellationToken.None);
 
         overview.Status.ShouldBe(CommunityPageStatus.Failed);
     }

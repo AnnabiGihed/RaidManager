@@ -31,8 +31,17 @@ internal sealed class GetUserCommunitiesQueryHandler : IQueryHandler<GetUserComm
     /// <summary>Answers the query.</summary>
     /// <param name="request">The query.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>The communities the user administers, by name; empty when there are none.</returns>
-    public async Task<Result<IReadOnlyList<CommunitySummaryResponse>>> Handle(GetUserCommunitiesQuery request, CancellationToken cancellationToken) =>
-        Result.Success(await _reader.ListAdministeredByAsync(new UserId(request.UserId), cancellationToken));
+    /// <returns>The communities the user administers, then the ones they are a member of, each by name; empty when there are none.</returns>
+    public async Task<Result<IReadOnlyList<CommunitySummaryResponse>>> Handle(GetUserCommunitiesQuery request, CancellationToken cancellationToken)
+    {
+        var administered = await _reader.ListAdministeredByAsync(new UserId(request.UserId), cancellationToken);
+        var memberOf = request.MemberOf
+            .Where(id => administered.All(community => community.CommunityId != id))
+            .Distinct()
+            .Select(id => new CommunityId(id))
+            .ToList();
+        var member = await _reader.ListAsync(memberOf, cancellationToken);
+        return Result.Success<IReadOnlyList<CommunitySummaryResponse>>([.. administered, .. member]);
+    }
     #endregion Public Methods
 }

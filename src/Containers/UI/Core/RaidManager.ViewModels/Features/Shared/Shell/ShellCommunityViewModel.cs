@@ -55,14 +55,15 @@ public sealed class ShellCommunityViewModel
     #region Public Methods
     /// <summary>Loads the signed-in user's community.</summary>
     /// <param name="userId">The signed-in user.</param>
+    /// <param name="memberOf">The communities the user's Discord servers matched at sign-in.</param>
     /// <param name="cancellationToken">The shell's token.</param>
     /// <returns>A task that completes when the community is loaded.</returns>
-    public async Task LoadAsync(Guid userId, CancellationToken cancellationToken)
+    public async Task LoadAsync(Guid userId, IReadOnlyCollection<Guid> memberOf, CancellationToken cancellationToken)
     {
         _userId = userId;
         try
         {
-            var communities = await _api.GetUserCommunitiesAsync(userId, cancellationToken);
+            var communities = await _api.GetUserCommunitiesAsync(userId, memberOf, cancellationToken);
             Community = communities.Count > 0 ? communities[0] : null;
         }
         catch (Exception exception) when (exception is HttpRequestException or System.Text.Json.JsonException

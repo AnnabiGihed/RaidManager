@@ -21,7 +21,8 @@ as `Parameters:website-service-key` in your own terminal.
 | `POST /internal/communities` | Website only | Link a Discord server as a community, with the user who added the bot as its Administrator. Returns 201 with the community id, or 409 when the server is already linked. |
 | `GET /internal/communities/{communityId}` | Website only | Get a community's Discord server, realm and Administrator. |
 | `GET /internal/communities/by-discord-server/{discordGuildId}` | Website only | Get the community a Discord server links to, or 404 when it isn't linked. |
-| `GET /internal/users/{userId}/communities` | Website only | List the communities the user administers, by name. |
+| `POST /internal/communities/by-discord-servers` | Website only | At sign-in, list the linked communities of the Discord servers the user is in, by name; servers that aren't linked are left out. |
+| `GET /internal/users/{userId}/communities?memberOf={communityId}` | Website only | List the communities the user administers, then those in `memberOf` (repeatable), the ones the user's servers matched at sign-in; each group by name. |
 | `GET /internal/users/{userId}/communities/{communityId}/roles` | Website only | Read the community's officer roles from Discord: the mappable roles and, per RaidManager role, its Discord roles and member count. Only a member of the server may; refreshes the stored server name. |
 | `GET /internal/users/{userId}/communities/{communityId}/members` | Website only | List the server's members from Discord, without bots: each one's display name, avatar, Discord roles and RaidManager role, Administrator first, with the time Discord was asked. Only a member of the server may; refreshes the stored server name. |
 | `PUT /internal/users/{userId}/communities/{communityId}/role-mappings/{role}/{discordRoleId}` | Website only | Make a Discord role give `Officer` or `RaidLeader`. One Discord role can give both. Only the Administrator may. |

@@ -34,9 +34,22 @@ internal sealed class CommunitiesApiClient : ICommunitiesApiClient
 
     #region Public Methods
     /// <inheritdoc />
-    public async Task<IReadOnlyList<CommunitySummary>> GetUserCommunitiesAsync(Guid userId, CancellationToken cancellationToken) =>
-        await _httpClient.GetFromJsonAsync<List<CommunitySummary>>($"internal/users/{userId}/communities", cancellationToken)
+    public async Task<IReadOnlyList<CommunitySummary>> GetUserCommunitiesAsync(Guid userId, IReadOnlyCollection<Guid> memberOf, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(memberOf);
+        var query = memberOf.Count == 0 ? string.Empty : "?" + string.Join("&", memberOf.Select(id => $"memberOf={id}"));
+        return await _httpClient.GetFromJsonAsync<List<CommunitySummary>>($"internal/users/{userId}/communities{query}", cancellationToken)
             ?? throw new HttpRequestException("The API returned an empty communities response.");
+    }
+
+    /// <inheritdoc />
+    public async Task<IReadOnlyList<CommunitySummary>> FindByDiscordServersAsync(IReadOnlyCollection<string> discordGuildIds, CancellationToken cancellationToken)
+    {
+        using var response = await _httpClient.PostAsJsonAsync($"{CommunitiesRoute}/by-discord-servers", new DiscordServersRequest(discordGuildIds), cancellationToken);
+        response.EnsureSuccessStatusCode();
+        return await response.Content.ReadFromJsonAsync<List<CommunitySummary>>(cancellationToken)
+            ?? throw new HttpRequestException("The API returned an empty communities response.");
+    }
 
     /// <inheritdoc />
     public Task<CommunitySummary?> GetAsync(Guid communityId, CancellationToken cancellationToken) =>
@@ -155,6 +168,10 @@ internal sealed class CommunitiesApiClient : ICommunitiesApiClient
     #endregion Private Helpers
 
     #region Nested Types
+    /// <summary>Writes the API's request for the communities of a user's Discord servers.</summary>
+    /// <param name="DiscordGuildIds">The Discord server snowflakes.</param>
+    private sealed record DiscordServersRequest(IReadOnlyCollection<string> DiscordGuildIds);
+
     /// <summary>Writes the API's link request.</summary>
     /// <param name="DiscordGuildId">The Discord server snowflake.</param>
     /// <param name="Name">The server name.</param>

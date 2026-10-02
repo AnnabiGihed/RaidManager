@@ -56,11 +56,12 @@ public sealed class CommunityViewModel
 
     /// <summary>Loads the signed-in user's community.</summary>
     /// <param name="userId">The signed-in user.</param>
+    /// <param name="memberOf">The communities the user's Discord servers matched at sign-in.</param>
     /// <param name="cancellationToken">The page's token.</param>
     /// <returns>A task that completes when the state is loaded.</returns>
-    public Task LoadForUserAsync(Guid userId, CancellationToken cancellationToken) =>
+    public Task LoadForUserAsync(Guid userId, IReadOnlyCollection<Guid> memberOf, CancellationToken cancellationToken) =>
         LoadWithAsync(
-            async () => await _api.GetUserCommunitiesAsync(userId, cancellationToken) is { Count: > 0 } communities ? communities[0] : null,
+            async () => await _api.GetUserCommunitiesAsync(userId, memberOf, cancellationToken) is { Count: > 0 } communities ? communities[0] : null,
             cancellationToken);
     #endregion Public Methods
 

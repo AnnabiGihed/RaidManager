@@ -47,7 +47,7 @@ public sealed class CommunityViewModelTests
         _api.Communities.Add(FakeCommunitiesApi.Community(UserId));
         var page = new CommunityViewModel(_api);
 
-        await page.LoadForUserAsync(UserId, CancellationToken.None);
+        await page.LoadForUserAsync(UserId, [], CancellationToken.None);
 
         page.Community.ShouldNotBeNull().Name.ShouldBe("Dark Templars");
     }
@@ -65,7 +65,7 @@ public sealed class CommunityViewModelTests
         page.Status.ShouldBe(CommunityPageStatus.Missing);
         await page.LoadAsync(Guid.NewGuid(), CancellationToken.None);
         page.Status.ShouldBe(CommunityPageStatus.Missing);
-        await page.LoadForUserAsync(UserId, CancellationToken.None);
+        await page.LoadForUserAsync(UserId, [], CancellationToken.None);
         page.Status.ShouldBe(CommunityPageStatus.Missing);
         page.AlreadyLinkedTitle.ShouldBeEmpty();
         page.AdministratorLine.ShouldBeEmpty();
@@ -81,7 +81,7 @@ public sealed class CommunityViewModelTests
         _api.Failure = new TaskCanceledException("timeout");
         var page = new CommunityViewModel(_api);
 
-        await page.LoadForUserAsync(UserId, CancellationToken.None);
+        await page.LoadForUserAsync(UserId, [], CancellationToken.None);
 
         page.Status.ShouldBe(CommunityPageStatus.Failed);
     }

@@ -82,6 +82,9 @@ public static class RaidManagerAuthenticationExtensions
                 options.CallbackPath = AuthenticationRoutes.DiscordCallback;
                 options.Scope.Clear();
                 options.Scope.Add("identify");
+
+                // The servers the player is in, read once at sign-in to find their communities (ADR-0023).
+                options.Scope.Add("guilds");
                 options.SaveTokens = false;
                 options.ClaimActions.MapJsonKey(RaidManagerClaimTypes.DiscordGlobalName, "global_name");
                 options.EventsType = typeof(DiscordSignInEvents);

@@ -9,6 +9,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- A member of a linked Discord server sees its community after signing in, on the Overview and in the sidebar's
+  community card. Sign-in also asks Discord for the servers the player is in and keeps only the matching
+  communities until the next sign-in; if Discord or the API can't answer, sign-in still completes. The API matches
+  Discord servers to communities and lists a user's matched communities after the ones they administer (ADR-0023)
+  (#296).
 - Players sign in to the website with Discord and sign out; a canceled or failed sign-in explains why and offers a
   retry. The website runs in Interactive Server mode with Radzen (ADR-0012) (#99).
 - The API resolves a Discord sign-in to exactly one local user for the website, refreshing a changed Discord profile.

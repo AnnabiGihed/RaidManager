@@ -87,7 +87,7 @@ public sealed partial class MainLayout : IDisposable
         var user = (await Authentication.GetAuthenticationStateAsync()).User;
         if (Guid.TryParse(user.FindFirst(RaidManagerClaimTypes.UserId)?.Value, out var userId))
         {
-            await Community.LoadAsync(userId, _lifetime.Token);
+            await Community.LoadAsync(userId, user.MemberCommunityIds(), _lifetime.Token);
             StateHasChanged();
         }
     }

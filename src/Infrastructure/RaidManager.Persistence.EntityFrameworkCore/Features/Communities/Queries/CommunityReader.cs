@@ -41,6 +41,22 @@ internal sealed class CommunityReader : ICommunityReader
     /// <inheritdoc />
     public async Task<IReadOnlyList<CommunitySummaryResponse>> ListAdministeredByAsync(UserId userId, CancellationToken cancellationToken) =>
         await SummariesAsync(community => community.AdministratorId == userId, cancellationToken);
+
+    /// <inheritdoc />
+    public async Task<IReadOnlyList<CommunitySummaryResponse>> ListAsync(IReadOnlyCollection<CommunityId> communityIds, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(communityIds);
+        var ids = communityIds.ToList();
+        return ids.Count == 0 ? [] : await SummariesAsync(community => ids.Contains(community.Id), cancellationToken);
+    }
+
+    /// <inheritdoc />
+    public async Task<IReadOnlyList<CommunitySummaryResponse>> ListByDiscordGuildsAsync(IReadOnlyCollection<string> discordGuildIds, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(discordGuildIds);
+        var ids = discordGuildIds.ToList();
+        return ids.Count == 0 ? [] : await SummariesAsync(community => ids.Contains(community.DiscordGuildId), cancellationToken);
+    }
     #endregion Public Methods
 
     #region Private Helpers

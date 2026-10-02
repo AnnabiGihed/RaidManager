@@ -29,5 +29,17 @@ public interface ICommunityReader
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>The communities.</returns>
     Task<IReadOnlyList<CommunitySummaryResponse>> ListAdministeredByAsync(UserId userId, CancellationToken cancellationToken);
+
+    /// <summary>Lists the communities with these identifiers, by name; unknown identifiers are skipped.</summary>
+    /// <param name="communityIds">The communities.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>The communities that exist.</returns>
+    Task<IReadOnlyList<CommunitySummaryResponse>> ListAsync(IReadOnlyCollection<CommunityId> communityIds, CancellationToken cancellationToken);
+
+    /// <summary>Lists the communities these Discord servers link to, by name; servers that aren't linked are skipped.</summary>
+    /// <param name="discordGuildIds">The Discord server snowflakes.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>The linked communities.</returns>
+    Task<IReadOnlyList<CommunitySummaryResponse>> ListByDiscordGuildsAsync(IReadOnlyCollection<string> discordGuildIds, CancellationToken cancellationToken);
     #endregion Methods
 }
