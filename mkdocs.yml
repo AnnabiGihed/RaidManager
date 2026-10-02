@@ -22,8 +22,16 @@ nav:
   - Work management specification: reference/work-management-specification.md
   - Warmane lockout evidence: reference/warmane-lockout-rules.md
   - Planning:
+      - Release v0.1: planning/releases/v0.1.md
+      - Release v0.2: planning/releases/v0.2.md
+      - Release v0.3: planning/releases/v0.3.md
+      - Release v0.4: planning/releases/v0.4.md
       - Release v1.0: planning/releases/v1.0.md
       - Sprint 1: planning/sprints/sprint-01.md
+      - Sprint 2: planning/sprints/sprint-02.md
+      - Sprint 3: planning/sprints/sprint-03.md
+      - Sprint 4: planning/sprints/sprint-04.md
+      - Sprint 5: planning/sprints/sprint-05.md
   - Decisions:
       - Index: adr/README.md
       - Foundation and authentication: adr/0001-foundation-and-authentication.md
