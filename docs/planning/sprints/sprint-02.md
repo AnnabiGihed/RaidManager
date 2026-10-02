@@ -31,17 +31,17 @@ Completed outcome items, by close date (their tasks closed with them):
 - #144 (improvement) Merge approved pull requests automatically
 - #145 (improvement) Require an operator review, then a peer review
 - #146 (bug) A ready pull request stayed open after GitHub refused the merge
-- #148 (improvement) Enforce documentation quality gates
 - #149 (improvement) Publish the documentation to the GitHub Wiki
 - #151 (improvement) Run the product locally with the Aspire AppHost
 - #152 (improvement) Browse the API in an interactive reference
 - #155 (improvement) Gate pull requests on test coverage
 - #157 (improvement) Codify the Project workflow and completion rules
+- #181 (user story) Design the mockup for character review after sign-in
+- #207 (improvement) Fail pull requests on SonarCloud findings
 - #177 (user story) Design the mockup for Discord sign-in and session
 - #178 (user story) Design the mockup for community linking and officer permissions
 - #179 (user story) Design the mockup for companion pairing and revocation
 - #180 (user story) Design the mockup for companion account discovery and upload
-- #181 (user story) Design the mockup for character review after sign-in
 - #182 (user story) Design the mockup for character profiles
 - #183 (user story) Design the mockup for the raid list and raid editor
 - #184 (user story) Design the mockup for raid templates and recurrence
@@ -50,7 +50,18 @@ Completed outcome items, by close date (their tasks closed with them):
 - #187 (user story) Design the mockup for raid changes and reminders
 - #188 (user story) Design the mockup for readiness re-evaluation and exceptions
 - #189 (user story) Design the mockup for the candidate workspace
-- #207 (improvement) Fail pull requests on SonarCloud findings
+- #190 (user story) Design the mockup for draft compositions and the bench
+- #164 (improvement) Require a Penpot mockup for every UI work item
+- #168 (improvement) Generate Penpot mockups and render their SVGs in the repository
+- #172 (bug) documentation spelling errors pass CI but show in the editor
+- #198 (bug) a mockup path counts as a mockup before the file exists
+- #349 (user story) Sign in with Discord and keep a secure session (part delivered in v0.1)
+- #351 (user story) Review new characters and resolve ownership conflicts (part delivered in v0.1)
+- #357 (improvement) Enforce the Epic, Feature, Story and Task hierarchy (part delivered in v0.1)
+- #358 (improvement) Adopt the Command Center design system for mockups (part delivered in v0.1)
+
+Corrected on 2026-10-03 to match the Project (#401): the list now follows each item's Sprint field, including
+the parts split from mixed-release items (#347).
 
 Unfinished work: items worked on during this day but not finished stay open on their planned release, with their
 finished tasks recorded in this sprint. No Story Points were recorded for these days.
