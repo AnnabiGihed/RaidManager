@@ -178,6 +178,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- Every item records who works on it and when: it is assigned to its author and its Start date set when work starts,
+  and its Target date set to the day it closes. The 188 closed items and 30 started items now have them too, and the
+  `work-task-execution-and-completion` skill makes it part of starting and closing work (#397).
 - Sprint 5 holds every doable v0.3 item, 75 Story Points in dependency order, against a capacity assumption raised
   to 70 points per sprint; the Project records a Delivery Stage on stories, improvements, bugs and spikes, a new Risk
   field with its reason on each item, and a planned Start and Target date on every open item (#390, #394).

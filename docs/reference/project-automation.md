@@ -22,7 +22,8 @@ new issue as a sub-issue of that parent at once.
 | Story Points | Number | 1, 2, 3, 5, 8 or 13, on stories, improvements, bugs and spikes, never on tasks (#346) | §9 |
 | Priority | Single select | P0 Critical, P1 High, P2 Normal, P3 Later, ordered highest first | §15 |
 | Risk | Single select | Low, Medium, High, on open stories, improvements, bugs and spikes, the reason in a comment on the item | §10, §14 (owner decision, #394) |
-| Start date, Target date | Date | The planned window of an open item: a selected item's window follows its sprint's dependency order, an unselected item takes its release's sprint window | §14 (owner decision, #394) |
+| Start date, Target date | Date | Planned, then actual. Until work starts, the planned window: a selected item's window follows its sprint's dependency order, an unselected item takes its release's sprint window (#394). When work starts, Start date becomes that day, and a parent starts with its first child; when the item closes, Target date becomes the closing day (Europe/Brussels) (#397) | §14 (owner decisions, #394, #397) |
+| Assignees | Issue assignees | The author, `@AnnabiGihed`, on every item from the day work on it starts (#397) | §4, §14 |
 | Area | Single select | Product areas, kept from before the specification | not in the specification |
 | Milestone | Repository milestone | One per release, its due date the target date, its description linking the release record | §6, §15 |
 
