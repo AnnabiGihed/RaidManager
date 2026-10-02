@@ -170,6 +170,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- The issue forms ask for each type's contract from the work management specification, and the type labels describe
+  when to choose each type. The hierarchy guard applies the specification's milestone rule (a task shares its
+  parent's release; a feature or epic has a milestone only when all its scope is in it), labels new items missing
+  part of their contract `needs-contract`, labels dependency cycles and canceled prerequisites `dependency-problem`,
+  and reopens a release milestone closed before its record shows the delivery (#326).
 - The Work Management and Delivery Specification is adopted as the authority for RaidManager's work management,
   with the owner's amendments: release milestones per level, a Canceled status, deliberate Status on close and
   reopen, merging as execution, and RaidManager's project policies such as two-week sprints in Europe/Brussels

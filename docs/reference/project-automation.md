@@ -27,10 +27,19 @@ personal token or repository secret.
 
 ## Rules
 
-- **Parent:** every open issue has exactly one type label, every item except an epic has a parent of the type in
-  the table, and an epic has none. An item carries its parent's milestone; otherwise a milestone view such as
-  **Release v1.0** drops the parent and shows the child on its own. A milestone change is checked at once on the
-  changed issue, and on its children by the next audit.
+- **Parent:** every open issue has exactly one type label, every item except an epic has a parent of the allowed
+  type, and an epic has none (specification §2).
+- **Milestones** (specification §15, A2): a task shares its parent's milestone. Stories, improvements, bugs and
+  spikes choose their release independently of their feature. A feature or epic has a milestone only when all its
+  children are in that release; one that spans releases has none. A milestone change is checked at once on the
+  changed issue, and on its parent by the next audit.
+- **Contract** (specification §4): an open item created since the specification's adoption answers every heading its
+  type requires, or `Unknown: needs clarification`. The issue forms ask exactly those headings. Older open items are
+  completed by the migration (A7).
+- **Dependencies** (specification §10): no dependency cycle, and no open item waiting on a prerequisite closed without
+  being completed.
+- **Releases** (specification §6, §13): a release milestone closes only after its record,
+  `docs/planning/releases/<milestone>.md`, shows the state Released and an actual delivery date.
 - **Completion:** an epic, feature, story, improvement, bug or spike may be closed as completed only when at least one
   child of the level below is closed as completed and every child is closed. A story, improvement, bug or spike
   therefore never closes without a completed task.
@@ -61,8 +70,14 @@ runs with the built-in `GITHUB_TOKEN`:
   start no workflow.
 - It reopens an invalid parent with a comment that names the missing or open children.
 - It labels a misplaced item, or one without a type label, `needs-parent` with one comment that says where it
-  belongs, and a `ui` item without a mockup `needs-mockup`. It removes each label once the item is fixed. A new issue
-  gets 10 minutes to be linked before it is flagged.
+  belongs; an item missing part of its contract `needs-contract`; an item in a dependency cycle or waiting on a
+  canceled prerequisite `dependency-problem` (audit only); and a `ui` item without a mockup `needs-mockup`. It removes
+  each label once the item is fixed. A new issue gets 10 minutes before it is flagged.
+- When a milestone is closed, and in every audit, it reopens a release milestone whose record doesn't show the
+  delivery yet.
+- Rules that need Project fields, such as the active-sprint gate, Status against the close reason, estimates and
+  Delivery Stage, run in the agent preflight and board report instead, because the token can't read a user-owned
+  Project (specification §22).
 
 The docs `validate` check runs the pull-request rules on every pull request, so a task without a full chain, or a
 user-interface change without its mockup, can't merge. After you fix a parent link, re-run that check from the pull

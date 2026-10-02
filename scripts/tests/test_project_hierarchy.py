@@ -1,4 +1,4 @@
-"""Tests for the Epic -> Feature -> Story/Improvement/Bug/Spike -> Task hierarchy rules (ADR-0025)."""
+"""Tests for the hierarchy guard: the work management specification's rules it checks with GITHUB_TOKEN."""
 
 from __future__ import annotations
 
@@ -11,8 +11,10 @@ from unittest import mock
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import project_hierarchy  # noqa: E402
 from project_hierarchy import (  # noqa: E402
-    NEEDS_PARENT, Guard, Issue, Node, chain_problem, closing_numbers, completion_problem, parent_problem,
+    DEPENDENCY_PROBLEM, NEEDS_CONTRACT, NEEDS_PARENT, Guard, Issue, Node, chain_problem, closing_numbers,
+    completion_problem, parent_problem, placement_problem, prerequisite_problem,
 )
+from work_contracts import ADOPTED  # noqa: E402
 
 
 def issue(number: int, kind: str, state: str = "open", reason: str | None = None, *extra: str) -> Issue:
@@ -47,19 +49,34 @@ class ParentRuleTests(unittest.TestCase):
         self.assertEqual(parent_problem(issue(37, "spike"), issue(15, "story")),
                          "Its parent #15 is a story; a spike belongs under a feature.")
 
-    def test_a_child_on_another_milestone_than_its_parent_fails(self) -> None:
+    def test_a_task_on_another_milestone_than_its_parent_fails(self) -> None:
         task = Issue(261, "closed", frozenset({"type:task"}), "completed", milestone="v1.0")
         improvement = Issue(260, "closed", frozenset({"type:improvement"}), "completed")
         self.assertEqual(parent_problem(task, improvement),
-                         "Its milestone is `v1.0` but its parent #260's is none; give both the same milestone, so a "
-                         "milestone view shows it under its parent.")
-        feature = Issue(259, "open", frozenset({"type:feature"}), milestone="v1.0")
-        self.assertIn("Its milestone is none but its parent #259's is `v1.0`", parent_problem(improvement, feature) or "")
+                         "This task's milestone is `v1.0` but its parent #260's is none; a task shares its parent's "
+                         "release milestone (specification section 15).")
 
-    def test_a_child_on_its_parents_milestone_passes(self) -> None:
-        feature = Issue(259, "open", frozenset({"type:feature"}), milestone="v1.0")
+    def test_an_outcome_item_chooses_its_release_independently_of_its_feature(self) -> None:
+        feature = Issue(259, "open", frozenset({"type:feature"}))
         self.assertIsNone(parent_problem(Issue(283, "open", frozenset({"type:improvement"}), milestone="v1.0"),
                                          feature))
+        self.assertIsNone(parent_problem(Issue(284, "open", frozenset({"type:story"})),
+                                         Issue(259, "open", frozenset({"type:feature"}), milestone="v1.0")))
+
+    def test_a_feature_milestone_must_cover_its_whole_scope(self) -> None:
+        feature = Issue(259, "open", frozenset({"type:feature"}), milestone="v1.0")
+        node = Node(feature, issue(142, "epic"), [Issue(283, "open", frozenset({"type:improvement"}), milestone="v1.0"),
+                                                 Issue(284, "open", frozenset({"type:story"}), milestone="v1.1"),
+                                                 Issue(285, "closed", frozenset({"type:bug"}), "not_planned")])
+        self.assertIn("but #284 is not in that release", placement_problem(node) or "")
+        node.children[1] = Issue(284, "open", frozenset({"type:story"}), milestone="v1.0")
+        self.assertIsNone(placement_problem(node))
+
+    def test_a_feature_spanning_releases_has_no_milestone(self) -> None:
+        node = Node(issue(259, "feature"), issue(142, "epic"),
+                    [Issue(283, "open", frozenset({"type:improvement"}), milestone="v1.0"),
+                     Issue(284, "open", frozenset({"type:story"}), milestone="v1.1")])
+        self.assertIsNone(placement_problem(node))
 
     def test_two_type_labels_fail(self) -> None:
         both = Issue(5, "open", frozenset({"type:task", "type:bug"}))
@@ -175,6 +192,24 @@ class PullRequestTests(unittest.TestCase):
         self.assertEqual(closing_numbers(body), [159, 160])
 
 
+class DependencyRuleTests(unittest.TestCase):
+    def test_a_cycle_is_reported_on_each_member(self) -> None:
+        cycles = [[325, 326]]
+        self.assertIn("#325 -> #326 -> #325", prerequisite_problem(Node(issue(325, "task")), cycles) or "")
+        self.assertIsNone(prerequisite_problem(Node(issue(327, "task")), cycles))
+
+    def test_a_canceled_prerequisite_is_reported(self) -> None:
+        node = Node(issue(328, "task"), prerequisites=[issue(324, "task", "closed"),
+                                                        issue(327, "task", "closed", "not_planned")])
+        self.assertIn("Its prerequisite #327 was closed without being completed", prerequisite_problem(node, []) or "")
+
+    def test_completed_and_open_prerequisites_pass_and_closed_items_are_exempt(self) -> None:
+        node = Node(issue(328, "task"), prerequisites=[issue(324, "task", "closed"), issue(327, "task")])
+        self.assertIsNone(prerequisite_problem(node, []))
+        closed = Node(issue(328, "task", "closed"), prerequisites=[issue(327, "task", "closed", "not_planned")])
+        self.assertIsNone(prerequisite_problem(closed, [[328, 329]]))
+
+
 class GuardTests(unittest.TestCase):
     def setUp(self) -> None:
         patcher = mock.patch.object(project_hierarchy, "gh", return_value="")
@@ -207,6 +242,28 @@ class GuardTests(unittest.TestCase):
         old = Issue(160, "open", frozenset({"type:task"}), None, now - timedelta(minutes=11))
         guard.check_parent(Node(old))
         self.assertEqual(self.calls()[0][-1], NEEDS_PARENT)
+
+    def test_new_item_without_its_contract_gets_the_label_once_its_grace_has_passed(self) -> None:
+        created = ADOPTED + timedelta(hours=1)
+        guard = Guard("owner/repo", created + timedelta(minutes=11))
+        guard.check_contract(Node(Issue(400, "open", frozenset({"type:task"}), None, created, "## Parent\n#13\n")))
+        self.assertEqual(self.calls()[0][-1], NEEDS_CONTRACT)
+        self.assertIn("missing: Purpose, Scope", self.calls()[1][-1])
+
+    def test_item_from_before_adoption_is_left_to_the_migration(self) -> None:
+        old = Issue(13, "open", frozenset({"type:story"}), None, ADOPTED - timedelta(days=3), "")
+        self.guard.check_contract(Node(old))
+        self.assertEqual(self.calls(), [])
+
+    def test_dependency_problem_is_flagged(self) -> None:
+        self.guard.check_dependencies(Node(issue(325, "task")), [[325, 326]])
+        self.assertEqual(self.calls()[0][-1], DEPENDENCY_PROBLEM)
+
+    def test_release_closed_without_its_record_is_reopened(self) -> None:
+        self.gh.return_value = '[{"number": 1, "title": "v9.9"}]'
+        self.guard.root = Path(__file__).resolve().parents[2]
+        self.guard.check_releases()
+        self.assertEqual(self.calls()[1], ("api", "-X", "PATCH", "repos/owner/repo/milestones/1", "-f", "state=open"))
 
     def test_reopened_child_reopens_its_parent_in_the_same_run(self) -> None:
         task, story = issue(57, "task", "closed"), issue(13, "story", "closed")
