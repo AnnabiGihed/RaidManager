@@ -150,6 +150,27 @@ public sealed class MainLayoutTests : BunitContext
         layout.FindAll("img.user-avatar").Select(image => image.GetAttribute("src")).ShouldAllBe(source => source == avatarUrl);
         layout.FindAll(".user-avatar-initials").ShouldBeEmpty();
     }
+
+    /// <summary>Shows a page that fails as a design-system error with Try again.</summary>
+    [Fact]
+    public void FailingPageShowsTheErrorWithTryAgain()
+    {
+        AddAuthorization().SetAuthorized("Arthas Menethil");
+
+        RenderFragment failing = builder =>
+        {
+            builder.OpenComponent<FailingPage>(0);
+            builder.CloseComponent();
+        };
+
+        var layout = Render<MainLayout>(parameters => parameters.Add(component => component.Body, failing));
+
+        var error = layout.Find("[data-testid=page-error]");
+        error.QuerySelector("h1")!.TextContent.ShouldBe("Something went wrong");
+        error.QuerySelector(".notice-title")!.TextContent.ShouldBe("This page could not be shown");
+        layout.FindAll("[data-testid=page-error] button").Single().Click();
+        layout.Find("[data-testid=page-error]").ShouldNotBeNull();
+    }
     #endregion Tests
 
     #region Private Helpers
@@ -158,4 +179,13 @@ public sealed class MainLayoutTests : BunitContext
     private IRenderedComponent<MainLayout> RenderLayout() =>
         Render<MainLayout>(parameters => parameters.Add(layout => layout.Body, (RenderFragment)(builder => builder.AddContent(0, "page"))));
     #endregion Private Helpers
+
+    #region Nested Types
+    /// <summary>Stands in for a page that throws while rendering.</summary>
+    private sealed class FailingPage : ComponentBase
+    {
+        /// <inheritdoc />
+        protected override void OnInitialized() => throw new InvalidOperationException("The page failed.");
+    }
+    #endregion Nested Types
 }

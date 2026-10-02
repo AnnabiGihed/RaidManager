@@ -31,5 +31,15 @@ public sealed class SessionClaimsTests
         user.MemberCommunityIds().ShouldBe([first, second]);
         new ClaimsPrincipal(new ClaimsIdentity()).MemberCommunityIds().ShouldBeEmpty();
     }
+
+    /// <summary>Reads the avatar URL, or none when the session has no picture.</summary>
+    [Fact]
+    public void AvatarUrlIsReadWhenPresent()
+    {
+        var user = new ClaimsPrincipal(new ClaimsIdentity([new Claim(RaidManagerClaimTypes.AvatarUrl, "https://cdn.discordapp.com/avatars/1/a.png")]));
+
+        user.AvatarUrl().ShouldBe("https://cdn.discordapp.com/avatars/1/a.png");
+        new ClaimsPrincipal(new ClaimsIdentity()).AvatarUrl().ShouldBeNull();
+    }
     #endregion Tests
 }

@@ -6,8 +6,8 @@ namespace RaidManager.Web.Features.Authentication;
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-02<br/>
-/// Purpose: Gives pages the communities the player's Discord servers matched at sign-in, kept until the next sign-in
-/// (ADR-0023).
+/// Purpose: Gives pages the player's avatar, and the communities the player's Discord servers matched at sign-in, kept
+/// until the next sign-in (ADR-0023).
 /// </remarks>
 public static class SessionClaims
 {
@@ -24,6 +24,15 @@ public static class SessionClaims
                 .Select(claim => Guid.TryParse(claim.Value, out var id) ? id : Guid.Empty)
                 .Where(id => id != Guid.Empty),
         ];
+    }
+
+    /// <summary>Reads the player's Discord avatar URL.</summary>
+    /// <param name="user">The signed-in player.</param>
+    /// <returns>The URL, or <see langword="null"/> when the player has no avatar.</returns>
+    public static string? AvatarUrl(this ClaimsPrincipal user)
+    {
+        ArgumentNullException.ThrowIfNull(user);
+        return user.FindFirst(RaidManagerClaimTypes.AvatarUrl)?.Value;
     }
     #endregion Public Methods
 }

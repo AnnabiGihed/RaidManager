@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- Every signed-in page is on the design system with a dark content area: the Overview of a player with a community
+  welcomes them with their account card, and a page that fails shows the error with Try again (#306).
 - The character review page follows its mockup: the design system's heading with Decide later, a table with each
   class by name and color and a status badge, a confirmation dialog before a rejection, notifications in the
   design system's style, and an all-set card. Class names read as players say them, such as Death Knight (#305).

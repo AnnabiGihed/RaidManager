@@ -1,4 +1,3 @@
-using System.Security.Claims;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
 using Microsoft.AspNetCore.Components.Routing;
@@ -94,11 +93,6 @@ public sealed partial class MainLayout : IDisposable
     #endregion Overrides
 
     #region Private Helpers
-    /// <summary>Reads the player's Discord avatar URL from the session.</summary>
-    /// <param name="user">The signed-in player.</param>
-    /// <returns>The URL, or <see langword="null"/> when the player has no avatar.</returns>
-    private static string? AvatarUrl(ClaimsPrincipal user) => user.FindFirst(RaidManagerClaimTypes.AvatarUrl)?.Value;
-
     /// <summary>Renders again so the breadcrumb follows navigation between pages.</summary>
     /// <param name="sender">The navigation manager.</param>
     /// <param name="args">The new location.</param>

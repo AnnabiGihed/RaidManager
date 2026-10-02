@@ -67,6 +67,11 @@ public sealed class HomeTests : BunitContext
         var page = Render<HomePage>();
 
         page.WaitForAssertion(() => page.Find("h1").TextContent.ShouldBe("Welcome, Arthas Menethil"));
+        page.Find(".page-heading-eyebrow").TextContent.ShouldBe("Signed in");
+        page.Find(".page-heading-subtitle").TextContent.ShouldBe("Your characters and raids will appear here.");
+        var card = page.Find("[data-testid=account-card]");
+        card.QuerySelector(".profile-card-name")!.TextContent.ShouldBe("Arthas Menethil");
+        card.QuerySelector(".profile-card-detail")!.TextContent.ShouldBe("Signed in with Discord");
         page.Markup.ShouldNotContain("Sign in with Discord");
         page.FindAll("[data-testid=link-steps]").ShouldBeEmpty();
     }
