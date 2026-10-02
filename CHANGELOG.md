@@ -170,6 +170,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- The Raid Manager Project follows the work management specification: Status has Backlog, Ready, In Progress,
+  In Review, Blocked, Done and Canceled (every item kept its value); new Sprint, Delivery Stage and Story Points
+  fields; the 12 views of the specification replace the five earlier ones; and the built-in Item closed and Item
+  reopened workflows are switched off (#327).
 - The Work Management and Delivery Specification is adopted as the authority for RaidManager's work management,
   with the owner's amendments: release milestones per level, a Canceled status, deliberate Status on close and
   reopen, merging as execution, and RaidManager's project policies such as two-week sprints in Europe/Brussels

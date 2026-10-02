@@ -1,29 +1,55 @@
 # Project automation
 
-The [Raid Manager Project](https://github.com/users/AnnabiGihed/projects/2) tracks every work item in one hierarchy of
-native sub-issues ([ADR-0025](../adr/0025-classify-work-items-with-spikes-under-features.md)). Nothing is
-standalone. Automation enforces it without a
-personal token or repository secret.
+The [Raid Manager Project](https://github.com/users/AnnabiGihed/projects/2) applies the
+[Work Management and Delivery Specification](work-management-specification.md)
+([ADR-0026](../adr/0026-adopt-the-work-management-specification.md)). This page documents how the Project is
+configured and what automation enforces; the specification is the authority for the rules themselves. Automation
+runs without a personal token or repository secret (specification §22).
 
 ## Hierarchy
 
-| Type | Label | Parent | Children |
-| --- | --- | --- | --- |
-| Epic | `type:epic` | none | features |
-| Feature | `type:feature` | an epic | stories, improvements, bugs and spikes |
-| Story | `type:story` | a feature | tasks |
-| Improvement | `type:improvement` | a feature | tasks |
-| Bug | `type:bug` | a feature | tasks |
-| Spike | `type:spike` | a feature | tasks |
-| Task | `type:task` | a story, improvement, bug or spike | none |
+Every item sits in one chain of native sub-issues, Epic → Feature → User Story, Improvement, Bug or Spike → Task, with
+exactly one `type:` label (specification §2, §3, §15). The issue forms set the label and ask for the parent; add the
+new issue as a sub-issue of that parent at once.
 
-- Classify by intent first, then scope. A **story** adds a capability a user can't perform today. An **improvement**
-  makes existing behavior, tooling, documentation or process better. A **bug** restores agreed or intended behavior.
-  A **spike** answers a question, within a time box, before a direction is chosen. ADR-0025 has the identifying
-  question and the "choose this, not that" rules for each type.
-- A **task** is one bounded piece of work, delivered by one pull request; its parent says why the work exists.
-- Every issue has exactly one type label. The issue forms set it and ask for the parent; add the new issue as a
-  sub-issue of that parent.
+## Fields
+
+| Field | Type | Values | Specification |
+| --- | --- | --- | --- |
+| Status | Single select | Backlog, Ready, In Progress, In Review, Blocked, Done, Canceled | §11, §15 (A3) |
+| Delivery Stage | Single select | Business Analysis, Functional Analysis, Architecture Analysis, Development, Testing, Deployment | §11 |
+| Sprint | Iteration | Two weeks; Sprint 1 starts 2026-10-02 | §7, §22 |
+| Story Points | Number | 1, 2, 3, 5, 8 or 13, on stories only | §9 |
+| Priority | Single select | P0 Critical, P1 High, P2 Normal, P3 Later, ordered highest first | §15 |
+| Area | Single select | Product areas, kept from before the specification | not in the specification |
+| Milestone | Repository milestone | One per release, its due date the target date, its description linking the release record | §6, §15 |
+
+Every item's Status value was kept when the field changed on 2026-10-02: the former `Todo` was renamed Backlog with the same
+option, and the new values were added beside it. Change single-select options only with their option ids
+(`work-board-configuration-and-validation`), or every item loses its value.
+
+## Views
+
+| View | Layout | Filter | Purpose (specification §17) |
+| --- | --- | --- | --- |
+| Product backlog | Table | `is:issue is:open -status:Done -status:Canceled` | All outstanding work by priority and hierarchy. |
+| Release backlog | Table | outstanding items with `milestone:"v1.0"` | Outstanding items in the release, grouped under their parents. |
+| Release progress | Table | `is:issue milestone:"v1.0"` | All release items, cancellations separate from completed delivery. |
+| Sprint planning | Table | `is:issue is:open status:Ready,Backlog` | Candidates with estimates, stages and prerequisites. |
+| Sprint backlog | Board | `is:issue sprint:@current` | The selected sprint's items, completed ones included, by Status. |
+| Current sprint | Table | `is:issue sprint:@current` | Active sprint execution progress. |
+| Future sprints | Table | `is:issue sprint:>@current` | Prepared upcoming sprint backlogs. |
+| Delivery stages | Board | outstanding items | Items by Delivery Stage, showing Status. |
+| Stabilization | Table | `is:issue sprint:"v1.0 stabilization"` | The release's final sprint quality work. |
+| Blocked work | Table | `is:issue is:open status:Blocked` | Blocking reasons and prerequisites. |
+| Scheduling violations | Table | `is:issue label:"scheduling-violation"` | Items the board report flags. |
+| Roadmap | Roadmap | epics and features | Feature and epic progress and forecasts. |
+
+- The Stabilization view expects the release's last sprint to be titled `v1.0 stabilization`; change the filter if
+  the release record names it otherwise.
+- Capacity assumptions aren't a Project field: they are in the sprint record (`docs/planning/sprints/`).
+- The `scheduling-violation` label is set and cleared by the agent's board report (specification §17, §22). An
+  ordinary filter can't evaluate dates and cross-item rules.
 
 ## Rules
 
@@ -68,29 +94,55 @@ The docs `validate` check runs the pull-request rules on every pull request, so 
 user-interface change without its mockup, can't merge. After you fix a parent link, re-run that check from the pull
 request's Checks tab. The review workflow closes only tasks when it merges.
 
-The Project keeps `Status` in step with the issue through its built-in workflows, which run on GitHub's side and
-need no token:
+The Project's built-in workflows run on GitHub's side and need no token. Closing and reopening never set Status by
+themselves (specification §13, A4):
 
 | Built-in workflow | Setting | Role |
 | --- | --- | --- |
-| Item closed | Set `Status` to `Done` | A closed issue shows `Done`. |
-| Auto-close issue | Close the issue when `Status` is `Done` | Marking an item `Done` closes its issue, so the guard checks it. |
-| Item reopened | Set `Status` to `In Progress` | An issue the guard reopens leaves `Done` again. |
+| Item closed | **Off** | It marked every closed item Done, canceled ones included (specification §15). |
+| Item reopened | **Off** | It marked every reopened item In Progress, whatever its real state. |
+| Auto-close issue | On | Setting Status to `Done` closes the issue as completed, so the guard checks it. |
+| Item added to project | On | A new item starts in `Backlog`. |
 | Auto-add sub-issues to project | On | A new child of a Project item joins the Project. |
+| Pull request linked to issue, Pull request merged | On, unchanged | Must not set an issue to `Done`; checked in step 1 of the setup. |
 
-Together they undo an early `Done` without anyone's help. Marking a story `Done` closes it; the guard reopens it; the
-Project moves it back to `In Progress`.
+Whoever closes or reopens an item sets its Status (`work-task-execution-and-completion`):
+
+- completed: `Done`;
+- not planned: `Canceled`, with the reason;
+- reopened: the status that matches the remaining work.
+
+The board report flags a mismatch between an item's close reason and its Status.
 
 ## One-time setup
 
-Enable **Item reopened** in the Project: open the Project menu, select **Workflows**, then **Item reopened**. Set
-the status to `In Progress`, then save and turn the workflow on. Keep the other workflows in the table on.
-Repository Actions can't change a user-owned Project's settings, so the owner does this once in the browser.
+The API can create fields and views, but it can't switch a workflow off or set a view's grouping, so the owner does
+these steps once in the browser:
+
+1. **Workflows:** open the Project menu, select **Workflows**, and switch off **Item closed** and **Item reopened**.
+   Open **Pull request linked to issue** and **Pull request merged**: if either sets an issue's Status to `Done`,
+   switch it off too, because only verified completion sets `Done` (specification §13).
+2. **Views:** in each view, open the view menu and set:
+
+   | View | Setting |
+   | --- | --- |
+   | Product backlog | Sort by Priority; show hierarchy. |
+   | Release backlog | Group by Parent issue, so each item shows its parent without the parent joining the release (A2). |
+   | Release progress | Group by Status, so Done and Canceled stay apart. |
+   | Sprint planning | Group by Status; sort by Priority. |
+   | Sprint backlog | Column by Status. |
+   | Current sprint | Group by Status. |
+   | Future sprints | Group by Sprint. |
+   | Delivery stages | Column by Delivery Stage. |
+   | Stabilization | Group by Status. |
+   | Roadmap | Dates: Sprint (or Start date and Target date). |
 
 ## Verify the rules
 
-1. Create a test issue labeled `type:story` with no children, and add it to the Project.
-2. Set its Project status to `Done`.
-3. Within a few minutes, the issue is reopened with a completion comment and its status is `In Progress`.
+1. Create a test issue labeled `type:story` with no children, and add it to the Project. It starts in `Backlog`.
+2. Set its Project status to `Done`. The issue closes as completed.
+3. Within a few minutes, the guard reopens it with a completion comment. Its Status stays `Done` until someone sets
+   it, and the board report flags the reopened item marked `Done`.
 4. After 10 minutes, the next audit labels it `needs-parent`, because it has no feature.
-5. Close the test issue as *not planned*. It stays closed, and the next audit removes the label.
+5. Close the test issue as *not planned* and set its Status to `Canceled`. It stays closed, and the next audit removes
+   the label.
