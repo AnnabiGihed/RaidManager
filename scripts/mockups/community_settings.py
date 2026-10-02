@@ -53,9 +53,17 @@ from penpot_scene import HOUSE_PALETTE, Board, Circle, Click, Group, Item, Rect,
 P = HOUSE_PALETTE
 ACCENT, SECONDARY, MUTED, DIVIDER = P["Brand/accent"], P["Text/secondary"], P["Text/muted"], P["Line/divider"]
 SERVER, OWNER = "Citadel Vanguard", "Gihed Annabi"
+# Names and labels used on several boards.
+TOMAS = "Tomas Hale"
+SELM = "Selm Voss"
+VETERAN_ROLE = "@Veteran"
+CANCEL_BUTTON = "Cancel button"
+ADD_ROLE = "Add role"
+ADD_ROLE_LABEL = "+ Add Discord role"
+ROLES_CARD = "Roles card"
 NEWCOMER = User(OWNER, "Player", "GA", "purple")
 ADMINISTRATOR = User(OWNER, "Administrator", "GA", "purple")
-DEMOTED = User("Tomas Hale", "Player", "TH", "red")
+DEMOTED = User(TOMAS, "Player", "TH", "red")
 REALMS = ("Icecrown", "Lordaeron", "Blackrock", "Onyxia")
 # The Discord roles this community maps, and the RaidManager role name used in several places.
 OFFICER_ROLE, RAID_LEAD_ROLE, RAID_LEADER = "@Officer", "@Raid Lead", "Raid leader"
@@ -76,8 +84,8 @@ DELETE_ROLE = "12 · Delete a role"
 MEMBER_ROLES = "13 · Members with several roles"
 ROLE_MANAGER = "14 · Roles as a role manager"
 READ_ONLY = "15 · Roles as a member"
-ROLE_MANAGER_USER = User("Tomas Hale", "Council", "TH", "red")
-MEMBER_USER = User("Selm Voss", "Player", "SV", "red")
+ROLE_MANAGER_USER = User(TOMAS, "Council", "TH", "red")
+MEMBER_USER = User(SELM, "Player", "SV", "red")
 # The permissions a role can allow (owner decision on #308), with the short word each row lists.
 PERMISSIONS = [
     ("Manage raids", "Create and edit raids, templates and recurrence; lock or reopen signups.", "Raids"),
@@ -91,7 +99,7 @@ CUSTOM_ROWS = [
     ("Officer", [OFFICER_ROLE], [0, 1, 2, 3], 3),
     (RAID_LEADER, [RAID_LEAD_ROLE], [0, 1, 2], 2),
     ("Council", ["@Council"], [0, 1, 2, 3, 4], 1),
-    ("Veteran", ["@Veteran"], [2], 6),
+    ("Veteran", [VETERAN_ROLE], [2], 6),
 ]
 ADD_SECTION = "Add RaidManager"
 
@@ -167,7 +175,7 @@ def choose_realm() -> list[Item]:
             text("Realm label", x, top + 132, "WARMANE REALM", 11, 700, MUTED, None, "left", 1.2),
             Group("Realm options", list(options)),
             button("Finish button", x, top + 396, "Finish linking", "primary", 140, Click("navigate", SETTINGS)),
-            button("Cancel button", x + 148, top + 396, "Cancel", "secondary", 96, Click("navigate", NO_COMMUNITY)),
+            button(CANCEL_BUTTON, x + 148, top + 396, "Cancel", "secondary", 96, Click("navigate", NO_COMMUNITY)),
         ]),
     ]
 
@@ -192,7 +200,7 @@ def role_row(y: float, role: str, discord_roles: list[str], members: int, x: flo
             items.append(badge(f"Discord role {index + 1}", chip_x, y + 16, discord_role, "info"))
             chip_x += len(discord_role) * 7 + 32
         if editable:
-            items.append(text("Add role", chip_x, y + 33, "+ Add Discord role", 13, 600, ACCENT))
+            items.append(text(ADD_ROLE, chip_x, y + 33, ADD_ROLE_LABEL, 13, 600, ACCENT))
     else:
         items.append(text("Source", chip_x, y + 34, discord_roles[0], 13, 400, SECONDARY))
     items.append(text("Members", x + width - 104, y + 34, f"{members} member" + ("" if members == 1 else "s"), 13, 400, SECONDARY, 80, "right"))
@@ -223,7 +231,7 @@ def settings() -> list[Item]:
     return [
         page_header("Community", SERVER, f"Discord server linked to RaidManager on {REALMS[0]}."),
         community_summary_card(top, left_w),
-        Group("Roles card", [
+        Group(ROLES_CARD, [
             *card(right_x, top, right_w, 432),
             *section_title("Heading", right_x + 24, top + 40, "Officer roles",
                            "Discord roles that give RaidManager permissions. Members get them at the next check."),
@@ -258,7 +266,7 @@ def mapping_roles() -> list[Item]:
     return [
         page_header("Community", SERVER, f"Discord server linked to RaidManager on {REALMS[0]}."),
         community_summary_card(top, left_w),
-        Group("Roles card", [
+        Group(ROLES_CARD, [
             *card(right_x, top, right_w, 416),
             *section_title("Heading", right_x + 24, top + 40, "Officer roles",
                            "Discord roles that give RaidManager permissions. Members get them at the next check."),
@@ -268,7 +276,7 @@ def mapping_roles() -> list[Item]:
                 *row_frame(officer_y, "Officer", 3),
                 badge("Discord role 1", chip_x, officer_y + 16, f"{OFFICER_ROLE}  ×", "info"),
                 Rect("Picker", chip_x, picker_y, 220, 36, P["Surface/raised"], 1, 8, DIVIDER),
-                text("Picker value", chip_x + 12, picker_y + 23, "@Veteran", 13, 400),
+                text("Picker value", chip_x + 12, picker_y + 23, VETERAN_ROLE, 13, 400),
                 text("Picker arrow", chip_x + 196, picker_y + 23, "▾", 13, 700, SECONDARY, None, "left", 0, icon=True),
                 button("Add button", chip_x + 232, picker_y - 2, "Add", "primary", 64),
                 button("Cancel picker button", chip_x + 304, picker_y - 2, "Cancel", "secondary", 80),
@@ -277,7 +285,7 @@ def mapping_roles() -> list[Item]:
                 *row_frame(leader_y, RAID_LEADER, 2),
                 badge("Discord role 1", chip_x, leader_y + 16, f"{RAID_LEAD_ROLE}  ×", "info"),
                 badge("Deleted role", chip_x + 124, leader_y + 16, "Deleted role  ×", "danger"),
-                text("Add role", chip_x + 268, leader_y + 33, "+ Add Discord role", 13, 600, ACCENT),
+                text(ADD_ROLE, chip_x + 268, leader_y + 33, ADD_ROLE_LABEL, 13, 600, ACCENT),
             ]),
             Group("Member row", [*row_frame(member_y, "Member", 38),
                                  text("Source", chip_x, member_y + 34, "Everyone in the Discord server", 13, 400, SECONDARY)]),
@@ -292,11 +300,11 @@ def mapping_roles() -> list[Item]:
 
 MEMBER_ROWS = [
     (OWNER, "GA", "purple", [OFFICER_ROLE], "Administrator", "success"),
-    ("Tomas Hale", "TH", "red", [OFFICER_ROLE], "Officer", "success"),
+    (TOMAS, "TH", "red", [OFFICER_ROLE], "Officer", "success"),
     ("Arvel Moss", "AM", "blue", [OFFICER_ROLE, RAID_LEAD_ROLE], "Officer", "success"),
     ("Bryn Valewood", "BV", "blue", [RAID_LEAD_ROLE], RAID_LEADER, "info"),
     ("Kiri Dawn", "KD", "purple", ["@Raider"], "Member", "neutral"),
-    ("Selm Voss", "SV", "red", [], "Member", "neutral"),
+    (SELM, "SV", "red", [], "Member", "neutral"),
 ]
 
 
@@ -350,7 +358,7 @@ def custom_role_row(y: float, role: str, discord_roles: list[str], permissions: 
         items.append(badge(f"Discord role {index + 1}", chip_x, y + 16, label, "info"))
         chip_x += len(label) * 7 + 32
     if mode == "edit":
-        items.append(text("Add role", chip_x, y + 33, "+ Add Discord role", 13, 600, ACCENT))
+        items.append(text(ADD_ROLE, chip_x, y + 33, ADD_ROLE_LABEL, 13, 600, ACCENT))
     items.append(text("Permissions", x + 200, y + 62, allows(permissions), 12, 400, MUTED))
     items.append(text("Members", x + width - 176, y + 40, f"{members} member" + ("" if members == 1 else "s"), 13, 400,
                       SECONDARY, 80, "right"))
@@ -387,7 +395,7 @@ def roles_card(mode: str, top: float, x: float, width: float, links: bool = Fals
         text("Members", x + width - 176, member_y + 40, "38 members", 13, 400, SECONDARY, 80, "right")]))
     items.append(button("Members button", x + 24, member_y + row_h + 16, "View members", "secondary", 136,
                         Click("navigate", MEMBER_ROLES) if links else None))
-    return Group("Roles card", items)
+    return Group(ROLES_CARD, items)
 
 
 def custom_roles(mode: str = "admin", links: bool = True) -> list[Item]:
@@ -419,7 +427,7 @@ def role_dialog(title: str, name: str, ticked: list[int], editing: bool) -> list
         items.append(button("Delete button", x + 24, buttons_y, "Delete role", "danger", 120, Click("navigate", DELETE_ROLE)))
     save = "Save" if editing else "Create role"
     save_w = 80 if editing else 120
-    items += [button("Cancel button", x + w - 24 - save_w - 8 - 96, buttons_y, "Cancel", "secondary", 96, Click("navigate", ROLES)),
+    items += [button(CANCEL_BUTTON, x + w - 24 - save_w - 8 - 96, buttons_y, "Cancel", "secondary", 96, Click("navigate", ROLES)),
               button("Save button", x + w - 24 - save_w, buttons_y, save, "primary", save_w, Click("navigate", ROLES))]
     return [Rect("Dim overlay", 0, 0, BOARD_W, BOARD_H, P["Neutral/black"], 0.6), Group("Role dialog", items)]
 
@@ -432,18 +440,18 @@ def delete_dialog() -> list[Item]:
         text("Title", x + 24, y + 44, "Delete Veteran?", 18, 700),
         text("Body line 1", x + 24, y + 80, "6 members lose what it allows. The @Veteran role stays in", 14, 400, SECONDARY),
         text("Body line 2", x + 24, y + 100, "Discord, and its raid history stays in RaidManager.", 14, 400, SECONDARY),
-        button("Cancel button", x + w - 24 - 120 - 8 - 96, y + h - 64, "Cancel", "secondary", 96, Click("navigate", EDIT_ROLE)),
+        button(CANCEL_BUTTON, x + w - 24 - 120 - 8 - 96, y + h - 64, "Cancel", "secondary", 96, Click("navigate", EDIT_ROLE)),
         button("Confirm delete button", x + w - 24 - 120, y + h - 64, "Delete role", "danger", 120, Click("navigate", ROLES)),
     ])]
 
 
 SEVERAL_ROLE_ROWS = [
     (OWNER, "GA", "purple", [OFFICER_ROLE], [("Administrator", "success")]),
-    ("Tomas Hale", "TH", "red", [OFFICER_ROLE, "@Council"], [("Officer", "success"), ("Council", "info")]),
+    (TOMAS, "TH", "red", [OFFICER_ROLE, "@Council"], [("Officer", "success"), ("Council", "info")]),
     ("Arvel Moss", "AM", "blue", [OFFICER_ROLE, RAID_LEAD_ROLE], [("Officer", "success"), (RAID_LEADER, "info")]),
-    ("Bryn Valewood", "BV", "blue", [RAID_LEAD_ROLE, "@Veteran"], [(RAID_LEADER, "info"), ("Veteran", "info")]),
-    ("Kiri Dawn", "KD", "purple", ["@Veteran"], [("Veteran", "info")]),
-    ("Selm Voss", "SV", "red", [], [("Member", "neutral")]),
+    ("Bryn Valewood", "BV", "blue", [RAID_LEAD_ROLE, VETERAN_ROLE], [(RAID_LEADER, "info"), ("Veteran", "info")]),
+    ("Kiri Dawn", "KD", "purple", [VETERAN_ROLE], [("Veteran", "info")]),
+    (SELM, "SV", "red", [], [("Member", "neutral")]),
 ]
 
 
