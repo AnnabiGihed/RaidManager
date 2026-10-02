@@ -174,6 +174,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   In Review, Blocked, Done and Canceled (every item kept its value); new Sprint, Delivery Stage and Story Points
   fields; the 12 views of the specification replace the five earlier ones; and the built-in Item closed and Item
   reopened workflows are switched off (#327).
+- Eight work management skills apply the specification: classification and hierarchy, backlog refinement, release
+  planning, sprint planning and the active-sprint gate, task execution and completion, sprint review and carryover,
+  stabilization and release closure, and board configuration and validation. The GitHub Project workflow skill keeps
+  only branch, pull request and review mechanics, and `AGENTS.md` makes the active-sprint gate mandatory (#325).
 - The Work Management and Delivery Specification is adopted as the authority for RaidManager's work management,
   with the owner's amendments: release milestones per level, a Canceled status, deliberate Status on close and
   reopen, merging as execution, and RaidManager's project policies such as two-week sprints in Europe/Brussels
