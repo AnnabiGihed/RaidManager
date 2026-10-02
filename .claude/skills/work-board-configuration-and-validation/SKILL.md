@@ -51,7 +51,8 @@ authority; this skill applies it. Board visibility doesn't equal enforcement (sp
    - the `project-hierarchy` workflow, with `GITHUB_TOKEN`: types, parents, milestones, completion, pull request
      chains and mockups;
    - the agent preflight and board report, `scripts/work_gate.py`, with the owner's local `gh` login: the
-     sprint gate, Status against closure reason, estimates, Delivery Stage, prerequisites and cycles.
+     sprint gate, Status against closure reason, a sprint's items sharing its release, estimates, Delivery Stage,
+     prerequisites and cycles.
 6. **Test a rule with valid and invalid samples** before enforcing it (spec §20), and document every configuration
    change in `docs/reference/project-automation.md`.
 

@@ -30,6 +30,7 @@ REPOSITORY = "AnnabiGihed/RaidManager"
 PROJECT = "PVT_kwHOAPL9-M4BlGGp"
 TIMEZONE = ZoneInfo("Europe/Brussels")
 SPRINTS = Path("docs/planning/sprints")
+RELEASES = Path("docs/planning/releases")
 SCHEDULING_VIOLATION = "scheduling-violation"
 OUTCOMES = frozenset({STORY, IMPROVEMENT, BUG, SPIKE})
 EXECUTABLE = OUTCOMES | {TASK}
@@ -107,6 +108,49 @@ def sprint_state(sprint: Sprint, root: Path) -> str | None:
     return None
 
 
+def sequence_rows(text: str) -> list[str]:
+    """Returns the table rows of a release record's Sprint sequence section."""
+    rows: list[str] = []
+    in_sequence = False
+    for line in text.splitlines():
+        if line.startswith("## "):
+            in_sequence = line.strip() == "## Sprint sequence"
+        elif in_sequence and line.startswith("|"):
+            rows.append(line)
+    return rows
+
+
+def row_sprint(row: str) -> str | None:
+    """Reads "Sprint N" from a sequence row's first cell, plain or linked; None for the header and divider."""
+    first = row.strip("|").split("|")[0]
+    digits = "".join(character for character in first.split("](")[0] if character.isdigit())
+    return f"Sprint {int(digits)}" if "Sprint" in first and digits else None
+
+
+def sprint_releases(root: Path) -> dict[str, str]:
+    """Maps each sprint to its release, from the Sprint sequence section of each release record (owner rule, #346)."""
+    found: dict[str, str] = {}
+    for record in sorted((root / RELEASES).glob("*.md")):
+        for row in sequence_rows(record.read_text(encoding="utf-8")):
+            sprint = row_sprint(row)
+            if sprint:
+                found[sprint] = record.stem
+    return found
+
+
+def sprint_release_problem(item: Item, releases: dict[str, str]) -> str | None:
+    """A sprint's items share its release (owner rule, #346)."""
+    if item.sprint is None:
+        return None
+    release = releases.get(item.sprint.title)
+    if release is None:
+        return f"{item.sprint.title} belongs to no release record in {RELEASES}."
+    if item.milestone != release:
+        return (f"#{item.number} is on release {item.milestone or 'none'}, but {item.sprint.title} belongs to "
+                f"{release}; a sprint's items share its release.")
+    return None
+
+
 def contract_gaps(item: Item | None) -> list[str]:
     if item is None:
         return []
@@ -179,8 +223,9 @@ def preflight(task: Item, items: dict[int, Item], now: datetime, root: Path) -> 
         ("3. Matching sprint", matching_sprint_problem(task, parent),
          "Select the task and its parent into the same sprint."),
         ("4. Matching release",
-         task_milestone_problem(task.milestone, parent.number, parent.milestone) if parent else None,
-         "Align the milestones (specification section 15)."),
+         (task_milestone_problem(task.milestone, parent.number, parent.milestone) if parent else None)
+         or sprint_release_problem(task, sprint_releases(root)),
+         "Align the milestones (specification section 15) and the sprint's release."),
         ("5. Assignee and Delivery Stage", f"Missing: {', '.join(missing)}." if missing else None,
          "Set them on the task."),
         ("6. Prerequisites", f"Not completed yet: {', '.join(waiting)}." if waiting else None,
@@ -208,8 +253,9 @@ UNESTIMATED = "Unestimated selected stories"
 SELECTED_GAPS = "Ready or selected items with contract gaps"
 UNAVAILABLE = "Unavailable prerequisites"
 UNEXPLAINED_BLOCKS = "Blocked items without a recorded reason"
+SPRINT_RELEASE = "Sprint and release mismatches"
 BACKLOG_GAPS = "Open items with contract gaps (allowed in Backlog)"
-VIOLATIONS = (SCHEDULING, MISMATCHES, UNESTIMATED, SELECTED_GAPS, UNAVAILABLE, UNEXPLAINED_BLOCKS)
+VIOLATIONS = (SCHEDULING, MISMATCHES, SPRINT_RELEASE, UNESTIMATED, SELECTED_GAPS, UNAVAILABLE, UNEXPLAINED_BLOCKS)
 Findings = dict[str, list[tuple[int, str]]]
 
 
@@ -247,22 +293,33 @@ def check_open_item(item: Item, items: dict[int, Item], found: Findings) -> None
             (item.number, "Record the reason, the person responsible and the unblock condition."))
 
 
-def report(items: dict[int, Item], open_pull_requests: list[tuple[int, str]], now: datetime) -> Findings:
+def report(items: dict[int, Item], open_pull_requests: list[tuple[int, str]], now: datetime,
+           releases: dict[str, str]) -> Findings:
     """Every board finding the specification asks validators for (sections 17 and 18), grouped by category."""
     found: Findings = {category: [] for category in (*VIOLATIONS, BACKLOG_GAPS)}
     for item in sorted(items.values(), key=lambda value: value.number):
         problem = status_problem(item)
         if problem:
             found[MISMATCHES].append((item.number, problem))
+        mismatch = sprint_release_problem(item, releases)
+        if mismatch:
+            found[SPRINT_RELEASE].append((item.number, mismatch))
         if item.state == "open" and item.kind is not None:
             check_open_item(item, items, found)
+    found[SCHEDULING] += pull_request_findings(items, open_pull_requests, now)
+    return found
+
+
+def pull_request_findings(items: dict[int, Item], open_pull_requests: list[tuple[int, str]],
+                          now: datetime) -> list[tuple[int, str]]:
+    """An open pull request for a task without an active sprint may not change or merge (A5)."""
+    found: list[tuple[int, str]] = []
     for number, body in open_pull_requests:
         for task_number in closing_numbers(body):
             task = items.get(task_number)
             if task and (task.sprint is None or not task.sprint.active(now)):
-                found[SCHEDULING].append(
-                    (task_number, f"Pull request #{number} is open, but the task has no active sprint; it may "
-                                  "not change or merge until the task is selected into one (A5)."))
+                found.append((task_number, f"Pull request #{number} is open, but the task has no active sprint; it "
+                                           "may not change or merge until the task is selected into one (A5)."))
     return found
 
 
@@ -351,7 +408,7 @@ def run_report(items: dict[int, Item], now: datetime, labels: bool) -> int:
         if item.status == "Blocked":
             # The reason, the person responsible and the unblock condition are usually a comment (section 11).
             item.body += "\n" + gh("issue", "view", str(item.number), "--repo", REPOSITORY, "--comments")
-    found = report(items, fetch_open_pull_requests(), now)
+    found = report(items, fetch_open_pull_requests(), now, sprint_releases(Path.cwd()))
     for category, entries in found.items():
         print(f"## {category} ({len(entries)})")
         for number, detail in entries:
