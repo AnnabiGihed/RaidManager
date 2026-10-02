@@ -178,6 +178,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- Sprint 5 holds every doable v0.3 item, 75 Story Points in dependency order, against a capacity assumption raised
+  to 70 points per sprint; the Project records a Delivery Stage on stories, improvements, bugs and spikes, a new Risk
+  field with its reason on each item, and a planned Start and Target date on every open item (#390, #394).
 - Sprint 5 also holds the OVH spike #373, so both deployment decisions finish before Sprint 6 (#379).
 - Release v0.3 now includes the deployment of a test environment on an OVH VPS-1 under a subdomain of
   `pivotsoftwares.com` (epic #369, starting in Sprint 6), and story #14 moves to v0.4 with the raid commands it needs

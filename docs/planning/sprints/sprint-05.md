@@ -14,46 +14,62 @@ Specification](../../reference/work-management-specification.md) requires (§7, 
 
 ## Sprint Goal
 
-Finish Discord sign-in on evidence, clean SonarCloud on `main`, and settle the companion threat model, the deployed
-secrets store and how RaidManager runs on the OVH test server, so v0.3's pairing and deployment work can start on decided
-ground.
+Finish Discord sign-in on evidence and clean SonarCloud on `main`; settle the companion threat model, the deployed
+secrets store and the OVH runtime layout; then deliver the character sync journey (pairing, addon capture, upload,
+profiles) and RaidManager's first automatic deployment to the OVH test environment, with its status on GitHub and the
+Project.
 
 ## Capacity assumptions
 
-No sprint has a recorded velocity yet; the planning assumption is 20 Story Points per two-week sprint (specification §9).
-The retrospective points of Sprints 1 to 4 aren't used as velocity: they were estimated after one-day history sprints.
-Three spikes have their own timebox (3, 3 and 2 working days). Since the owner's decision of 2 October
-(#346), spikes carry Story Points too, so the sprint holds 19 points (#13 5, #209 5, #37 3, #103 3, #373 3), inside
-the assumption.
+The assumption is 70 Story Points per two-week sprint, raised from 20 on the owner's decision of 2 October (#390), from
+the delivery pace of Sprints 1 to 4. It isn't a measured velocity: Sprints 1 to 4 were one-day history sprints
+estimated afterwards, so Sprint 5 is the first sprint whose completed points count as velocity (specification §9).
+Spikes carry Story Points (#346) and keep their timebox.
+
+The sprint holds 75 points: 72 of delivery work and 3 of planning (#390, #394). That is 5 above the assumption, a risk
+the owner accepted when adding #392 and #394; the sprint review re-plans what doesn't finish.
 
 ## Selected scope
 
-Selected on 2026-10-02 by the agent on the owner's delegation (#360, #361). Every item was Ready, with no contract
-unknowns, before selection.
+Every item was Ready, with no contract unknowns, before selection. Each task's planned window (Start date to Target
+date on the Project, both inclusive) follows the blocked-by order; the item's own window spans its tasks'.
 
-| Item | Type | Story Points or timebox | Tasks (Delivery Stage) |
-| --- | --- | --- | --- |
-| #13 Sign in with Discord and keep a secure session | User story | 5 | #100 (Architecture Analysis), #362 (Testing) |
-| #209 Fix the SonarCloud findings on main | Improvement | 5 | #365 (Development) |
-| #37 Define companion pairing and claim threat model | Spike | 3 days | #363 (Architecture Analysis) |
-| #103 Decide how deployed secrets are stored and delivered | Spike | 3 days | #364 (Architecture Analysis) |
-| #373 Choose how RaidManager runs on the OVH VPS-1 | Spike | 2 days | #380 (Architecture Analysis) |
+| Item | Type | Story Points | Planned window | Tasks (Delivery Stage) | Waits for |
+| --- | --- | --- | --- | --- | --- |
+| #390 Record the full Sprint 5 selection | Improvement | 1 | 3 Oct | #391 (Business Analysis) | None |
+| #394 Record stage, risk and planned dates on the Project | Improvement | 2 | 3 Oct | #395 (Business Analysis) | None |
+| #37 Define companion pairing and claim threat model | Spike | 3 (3 days) | 3 to 5 Oct | #363 (Architecture Analysis) | None |
+| #103 Decide how deployed secrets are stored and delivered | Spike | 3 (3 days) | 3 to 5 Oct | #364 (Architecture Analysis) | None |
+| #373 Choose how RaidManager runs on the OVH VPS-1 | Spike | 3 (2 days) | 3 to 4 Oct | #380 (Architecture Analysis) | None |
+| #13 Sign in with Discord and keep a secure session | User story | 5 | 3 to 6 Oct | #100 (Architecture Analysis), #362 (Testing) | None |
+| #209 Fix the SonarCloud findings on main | Improvement | 5 | 3 to 7 Oct | #365 (Development) | None |
+| #16 Capture visited characters in the WoW addon | User story | 8 | 5 to 9 Oct | #38 (Architecture Analysis), #383 (Development) | None |
+| #374 Provision the OVH test server | Improvement | 5 | 5 to 7 Oct | #387 (Deployment) | #373 |
+| #15 Pair and revoke a desktop companion | User story | 8 | 6 to 9 Oct | #382 (Development) | #37 |
+| #153 Store and deliver deployment secrets | Improvement | 5 | 6 to 8 Oct | #386 (Deployment) | #103 |
+| #19 Inspect and manage character profiles | User story | 5 | 7 to 10 Oct | #385 (Development) | #38 |
+| #375 Configure the test environment | Improvement | 3 | 8 to 9 Oct | #388 (Deployment) | #103, #374 |
+| #17 Discover WoW accounts and upload snapshots reliably | User story | 8 | 10 to 13 Oct | #384 (Development) | #15, #16 |
+| #376 Deploy main to the test environment automatically | Improvement | 8 | 10 to 13 Oct | #389 (Development) | #374, #375 |
+| #392 Show deployment status on GitHub and the Project | Improvement | 3 | 14 to 15 Oct | #393 (Deployment) | #376 |
+
+16 October is kept as a buffer.
 
 Not selected, with the reason:
 
-- #14 Link a community and enforce officer permissions: its remaining task #291 is blocked by the raid commands of
-  #20 (v0.4).
-- #15 Pair and revoke a desktop companion, #153 Store and deliver deployment secrets, #374 Provision the OVH test
-  server and #375 Configure the test environment: they wait for spikes #37, #103 and #373; substantial prerequisites
-  are completed in an earlier sprint (specification §10).
-- #171 Resolve character ownership conflicts as an officer: its decision screen shows last uploads (#17) and rosters
-  (release v1.0), which don't exist yet.
+- #14 Link a community and enforce officer permissions: moved to v0.4 (#367), since its remaining task #291 needs the
+  raid commands of #20.
+- #171 Resolve character ownership conflicts as an officer, and #18 Review new characters and resolve ownership
+  conflicts: their remaining criteria need rosters, which come in release v1.0 (#390).
 
 ## Dependencies and delivery risk
 
-No selected item depends on another. The three spikes run first, since #15, #153, #374 and #375 in Sprint 6 depend on
-their findings; #380 needs the server's specifications from the owner. Risk: #209's 14 vulnerabilities may need more
-than one pull request.
+The "Waits for" column lists the blocked-by links on the board, on the item or its task (#19 through #385). The three
+spikes and #38's snapshot schema run first, since half the sprint builds on them; #380 needs the server's specifications
+from the owner, and #374, #375 and #153 need steps only the owner can take (OVH, DNS, the Discord redirect, secrets).
+Each outcome item carries a Risk value on the Project with its reason in a comment (#394). The items rated High are
+stories #15, #16 and #17 and improvement #376, which form the two long chains of the sprint. The 14 vulnerabilities
+of improvement #209 may need more than one pull request.
 
 ## Assignment history
 
@@ -62,6 +78,9 @@ than one pull request.
 | 2026-10-02 | Created on the owner's decision on #339 (it replaces the two-week sprint that started on 2 October). |
 | 2026-10-02 | Planned on the owner's delegation (#360): #13, #209, #37 and #103 selected with their tasks. |
 | 2026-10-02 | Spike #373 and its task #380 added on the owner's decision (#378), so both deployment decisions finish in this sprint. |
+| 2026-10-02 | Every doable v0.3 item added on the owner's decision (#390): #15, #16, #17, #19, #153, #374, #375 and #376 with their tasks, and #390 to record it; the capacity assumption rises to 70 points. |
+| 2026-10-02 | #392 added on the owner's decision (#390), after #376. |
+| 2026-10-02 | #394 added on the owner's decision recorded on it: Delivery Stage, Risk and planned dates on the Project. |
 
 ## Outcome
 
