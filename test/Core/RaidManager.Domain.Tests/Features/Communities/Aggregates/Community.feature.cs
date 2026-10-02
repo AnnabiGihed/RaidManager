@@ -25,8 +25,8 @@ namespace RaidManager.Domain.Tests.Features.Communities.Aggregates
         private static string[] featureTags = ((string[])(null));
         
         private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Communities/Aggregates", "Community linking and roles", "  As a community Administrator\r\n  I want my Discord server linked once and my Dis" +
-                "cord roles to give RaidManager permissions\r\n  So that only the people Discord tr" +
-                "usts manage our raids", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+                "cord roles to give RaidManager roles\r\n  So that only the people Discord trusts m" +
+                "anage our raids", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
         private global::Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
@@ -164,7 +164,7 @@ namespace RaidManager.Domain.Tests.Features.Communities.Aggregates
       await testRunner.ThenAsync("the community is named \"Citadel Vanguard\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
 #line 11
-      await testRunner.AndAsync("the installer\'s role is Administrator", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+      await testRunner.AndAsync("the installer has every permission", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -263,17 +263,17 @@ namespace RaidManager.Domain.Tests.Features.Communities.Aggregates
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Mapping a Discord role reports a change")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="A new community has the two presets with their permissions")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Community linking and roles")]
-        [global::Xunit.TraitAttribute("Description", "Mapping a Discord role reports a change")]
-        public async global::System.Threading.Tasks.Task MappingADiscordRoleReportsAChange()
+        [global::Xunit.TraitAttribute("Description", "A new community has the two presets with their permissions")]
+        public async global::System.Threading.Tasks.Task ANewCommunityHasTheTwoPresetsWithTheirPermissions()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "4";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Mapping a Discord role reports a change", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A new community has the two presets with their permissions", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator maps Discord roles to Officer and Raid leader", null, tagsOfRule);
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("Every community starts with the Officer and Raid leader presets", null, tagsOfRule);
 #line 27
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
@@ -287,13 +287,53 @@ namespace RaidManager.Domain.Tests.Features.Communities.Aggregates
 #line 28
       await testRunner.GivenAsync("a linked community", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
+                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
+                            "role",
+                            "permissions"});
+                table1.AddRow(new string[] {
+                            "Officer",
+                            "ManageRaids, BuildRosters, RunRaidNight, ReviewConflicts"});
+                table1.AddRow(new string[] {
+                            "Raid leader",
+                            "ManageRaids, BuildRosters, RunRaidNight"});
 #line 29
-      await testRunner.WhenAsync("the Administrator maps the Discord role \"111\" to Officer", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+      await testRunner.ThenAsync("the community\'s roles are", ((string)(null)), table1, "Then ");
 #line hidden
-#line 30
-      await testRunner.ThenAsync("the Discord role \"111\" gives Officer", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="Mapping a Discord role reports a change")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Community linking and roles")]
+        [global::Xunit.TraitAttribute("Description", "Mapping a Discord role reports a change")]
+        public async global::System.Threading.Tasks.Task MappingADiscordRoleReportsAChange()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "5";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Mapping a Discord role reports a change", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator maps Discord roles to the community\'s roles", null, tagsOfRule);
+#line 36
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
-#line 31
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 37
+      await testRunner.GivenAsync("a linked community", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 38
+      await testRunner.WhenAsync("the Administrator maps the Discord role \"111\" to \"Officer\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 39
+      await testRunner.ThenAsync("the Discord role \"111\" gives \"Officer\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 40
       await testRunner.AndAsync("the role mappings changed once", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
@@ -307,11 +347,11 @@ namespace RaidManager.Domain.Tests.Features.Communities.Aggregates
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "5";
+            string pickleIndex = "6";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Mapping the same role again changes nothing", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator maps Discord roles to Officer and Raid leader", null, tagsOfRule);
-#line 33
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator maps Discord roles to the community\'s roles", null, tagsOfRule);
+#line 42
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -321,16 +361,16 @@ namespace RaidManager.Domain.Tests.Features.Communities.Aggregates
             else
             {
                 await this.ScenarioStartAsync();
-#line 34
+#line 43
       await testRunner.GivenAsync("a linked community", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 35
-      await testRunner.AndAsync("the Discord role \"111\" gives Officer", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line 44
+      await testRunner.AndAsync("the Discord role \"111\" gives \"Officer\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 36
-      await testRunner.WhenAsync("the Administrator maps the Discord role \"111\" to Officer", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line 45
+      await testRunner.WhenAsync("the Administrator maps the Discord role \"111\" to \"Officer\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 37
+#line 46
       await testRunner.ThenAsync("the role mappings did not change", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
@@ -344,56 +384,10 @@ namespace RaidManager.Domain.Tests.Features.Communities.Aggregates
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "6";
+            string pickleIndex = "7";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("One Discord role can give both Officer and Raid leader", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator maps Discord roles to Officer and Raid leader", null, tagsOfRule);
-#line 39
-    this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 40
-      await testRunner.GivenAsync("a linked community", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
-#line hidden
-#line 41
-      await testRunner.AndAsync("the Discord role \"111\" gives Officer", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
-#line hidden
-#line 42
-      await testRunner.WhenAsync("the Administrator maps the Discord role \"111\" to RaidLeader", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 43
-      await testRunner.ThenAsync("the Discord role \"111\" gives RaidLeader", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
-#line hidden
-#line 44
-      await testRunner.AndAsync("the Discord role \"111\" gives Officer", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
-#line hidden
-#line 45
-      await testRunner.AndAsync("the community has 2 role mappings", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
-#line hidden
-#line 46
-      await testRunner.AndAsync("the role mappings changed once", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Xunit.SkippableFactAttribute(DisplayName="Only Officer and Raid leader can be mapped")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Community linking and roles")]
-        [global::Xunit.TraitAttribute("Description", "Only Officer and Raid leader can be mapped")]
-        public async global::System.Threading.Tasks.Task OnlyOfficerAndRaidLeaderCanBeMapped()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "7";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Only Officer and Raid leader can be mapped", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator maps Discord roles to Officer and Raid leader", null, tagsOfRule);
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator maps Discord roles to the community\'s roles", null, tagsOfRule);
 #line 48
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
@@ -408,9 +402,56 @@ namespace RaidManager.Domain.Tests.Features.Communities.Aggregates
       await testRunner.GivenAsync("a linked community", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
 #line 50
-      await testRunner.WhenAsync("the Administrator maps the Discord role \"111\" to Administrator", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+      await testRunner.AndAsync("the Discord role \"111\" gives \"Officer\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
 #line 51
+      await testRunner.WhenAsync("the Administrator maps the Discord role \"111\" to \"Raid leader\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 52
+      await testRunner.ThenAsync("the Discord role \"111\" gives \"Raid leader\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 53
+      await testRunner.AndAsync("the Discord role \"111\" gives \"Officer\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 54
+      await testRunner.AndAsync("the community has 2 role mappings", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 55
+      await testRunner.AndAsync("the role mappings changed once", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="A role the community doesn\'t have can\'t be mapped")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Community linking and roles")]
+        [global::Xunit.TraitAttribute("Description", "A role the community doesn\'t have can\'t be mapped")]
+        public async global::System.Threading.Tasks.Task ARoleTheCommunityDoesntHaveCantBeMapped()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "8";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A role the community doesn\'t have can\'t be mapped", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator maps Discord roles to the community\'s roles", null, tagsOfRule);
+#line 57
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 58
+      await testRunner.GivenAsync("a linked community", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 59
+      await testRunner.WhenAsync("the Administrator maps the Discord role \"111\" to a role the community doesn\'t hav" +
+                        "e", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 60
       await testRunner.ThenAsync("the community change is rejected", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
@@ -424,11 +465,11 @@ namespace RaidManager.Domain.Tests.Features.Communities.Aggregates
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "8";
+            string pickleIndex = "9";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A role id that is not a snowflake is rejected", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator maps Discord roles to Officer and Raid leader", null, tagsOfRule);
-#line 53
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator maps Discord roles to the community\'s roles", null, tagsOfRule);
+#line 62
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -438,13 +479,13 @@ namespace RaidManager.Domain.Tests.Features.Communities.Aggregates
             else
             {
                 await this.ScenarioStartAsync();
-#line 54
+#line 63
       await testRunner.GivenAsync("a linked community", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 55
-      await testRunner.WhenAsync("the Administrator maps the Discord role \"officers\" to Officer", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line 64
+      await testRunner.WhenAsync("the Administrator maps the Discord role \"officers\" to \"Officer\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 56
+#line 65
       await testRunner.ThenAsync("the community change is rejected", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
@@ -458,11 +499,11 @@ namespace RaidManager.Domain.Tests.Features.Communities.Aggregates
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "9";
+            string pickleIndex = "10";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Removing a mapping reports a change", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator maps Discord roles to Officer and Raid leader", null, tagsOfRule);
-#line 58
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator maps Discord roles to the community\'s roles", null, tagsOfRule);
+#line 67
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -472,19 +513,19 @@ namespace RaidManager.Domain.Tests.Features.Communities.Aggregates
             else
             {
                 await this.ScenarioStartAsync();
-#line 59
+#line 68
       await testRunner.GivenAsync("a linked community", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 60
-      await testRunner.AndAsync("the Discord role \"111\" gives Officer", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line 69
+      await testRunner.AndAsync("the Discord role \"111\" gives \"Officer\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 61
-      await testRunner.WhenAsync("the Administrator removes the Officer mapping of the Discord role \"111\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line 70
+      await testRunner.WhenAsync("the Administrator removes the \"Officer\" mapping of the Discord role \"111\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 62
+#line 71
       await testRunner.ThenAsync("the community has 0 role mappings", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
-#line 63
+#line 72
       await testRunner.AndAsync("the role mappings changed once", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
@@ -498,11 +539,11 @@ namespace RaidManager.Domain.Tests.Features.Communities.Aggregates
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "10";
+            string pickleIndex = "11";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Removing one of a Discord role\'s mappings keeps the other", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator maps Discord roles to Officer and Raid leader", null, tagsOfRule);
-#line 65
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator maps Discord roles to the community\'s roles", null, tagsOfRule);
+#line 74
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -512,22 +553,22 @@ namespace RaidManager.Domain.Tests.Features.Communities.Aggregates
             else
             {
                 await this.ScenarioStartAsync();
-#line 66
+#line 75
       await testRunner.GivenAsync("a linked community", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 67
-      await testRunner.AndAsync("the Discord role \"111\" gives Officer", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line 76
+      await testRunner.AndAsync("the Discord role \"111\" gives \"Officer\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 68
-      await testRunner.AndAsync("the Discord role \"111\" gives RaidLeader", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line 77
+      await testRunner.AndAsync("the Discord role \"111\" gives \"Raid leader\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 69
-      await testRunner.WhenAsync("the Administrator removes the Officer mapping of the Discord role \"111\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line 78
+      await testRunner.WhenAsync("the Administrator removes the \"Officer\" mapping of the Discord role \"111\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 70
-      await testRunner.ThenAsync("the Discord role \"111\" gives RaidLeader", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line 79
+      await testRunner.ThenAsync("the Discord role \"111\" gives \"Raid leader\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
-#line 71
+#line 80
       await testRunner.AndAsync("the community has 1 role mapping", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
@@ -541,11 +582,11 @@ namespace RaidManager.Domain.Tests.Features.Communities.Aggregates
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "11";
+            string pickleIndex = "12";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Removing a role that was not mapped changes nothing", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator maps Discord roles to Officer and Raid leader", null, tagsOfRule);
-#line 73
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The Administrator maps Discord roles to the community\'s roles", null, tagsOfRule);
+#line 82
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -555,78 +596,39 @@ namespace RaidManager.Domain.Tests.Features.Communities.Aggregates
             else
             {
                 await this.ScenarioStartAsync();
-#line 74
+#line 83
       await testRunner.GivenAsync("a linked community", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 75
-      await testRunner.WhenAsync("the Administrator removes the Officer mapping of the Discord role \"111\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line 84
+      await testRunner.WhenAsync("the Administrator removes the \"Officer\" mapping of the Discord role \"111\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 76
+#line 85
       await testRunner.ThenAsync("the role mappings did not change", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="A Discord role that gives both roles gives the higher one")]
+        [global::Xunit.SkippableTheoryAttribute(DisplayName="Permissions add up across the member\'s roles")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Community linking and roles")]
-        [global::Xunit.TraitAttribute("Description", "A Discord role that gives both roles gives the higher one")]
-        public async global::System.Threading.Tasks.Task ADiscordRoleThatGivesBothRolesGivesTheHigherOne()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "12";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A Discord role that gives both roles gives the higher one", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A member\'s role follows their Discord roles", null, tagsOfRule);
-#line 80
-    this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 81
-      await testRunner.GivenAsync("a linked community", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
-#line hidden
-#line 82
-      await testRunner.AndAsync("the Discord role \"111\" gives Officer", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
-#line hidden
-#line 83
-      await testRunner.AndAsync("the Discord role \"111\" gives RaidLeader", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
-#line hidden
-#line 84
-      await testRunner.WhenAsync("a member has the Discord roles \"111\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 85
-      await testRunner.ThenAsync("the member\'s role is Officer", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Xunit.SkippableTheoryAttribute(DisplayName="The highest mapped role applies")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Community linking and roles")]
-        [global::Xunit.TraitAttribute("Description", "The highest mapped role applies")]
-        [global::Xunit.InlineDataAttribute("111,222", "Officer", "13", new string[0])]
-        [global::Xunit.InlineDataAttribute("222", "RaidLeader", "14", new string[0])]
-        [global::Xunit.InlineDataAttribute("222,333", "RaidLeader", "15", new string[0])]
-        [global::Xunit.InlineDataAttribute("333", "Member", "16", new string[0])]
-        [global::Xunit.InlineDataAttribute("", "Member", "17", new string[0])]
-        public async global::System.Threading.Tasks.Task TheHighestMappedRoleApplies(string discordRoles, string role, string @__pickleIndex, string[] exampleTags)
+        [global::Xunit.TraitAttribute("Description", "Permissions add up across the member\'s roles")]
+        [global::Xunit.InlineDataAttribute("111,222", "Officer, Raid leader", "ManageRaids, BuildRosters, RunRaidNight, ReviewConflicts", "13", new string[0])]
+        [global::Xunit.InlineDataAttribute("222", "Raid leader", "ManageRaids, BuildRosters, RunRaidNight", "14", new string[0])]
+        [global::Xunit.InlineDataAttribute("222,333", "Raid leader", "ManageRaids, BuildRosters, RunRaidNight", "15", new string[0])]
+        [global::Xunit.InlineDataAttribute("333", "", "None", "16", new string[0])]
+        [global::Xunit.InlineDataAttribute("", "", "None", "17", new string[0])]
+        public async global::System.Threading.Tasks.Task PermissionsAddUpAcrossTheMembersRoles(string discordRoles, string roles, string permissions, string @__pickleIndex, string[] exampleTags)
         {
             string[] tagsOfScenario = exampleTags;
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             argumentsOfScenario.Add("discord roles", discordRoles);
-            argumentsOfScenario.Add("role", role);
+            argumentsOfScenario.Add("roles", roles);
+            argumentsOfScenario.Add("permissions", permissions);
             string pickleIndex = @__pickleIndex;
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("The highest mapped role applies", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Permissions add up across the member\'s roles", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A member\'s role follows their Discord roles", null, tagsOfRule);
-#line 87
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A member has every role and permission their Discord roles give", null, tagsOfRule);
+#line 89
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -636,20 +638,23 @@ namespace RaidManager.Domain.Tests.Features.Communities.Aggregates
             else
             {
                 await this.ScenarioStartAsync();
-#line 88
+#line 90
       await testRunner.GivenAsync("a linked community", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 89
-      await testRunner.AndAsync("the Discord role \"111\" gives Officer", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
-#line hidden
-#line 90
-      await testRunner.AndAsync("the Discord role \"222\" gives RaidLeader", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
-#line hidden
 #line 91
-      await testRunner.WhenAsync(string.Format("a member has the Discord roles \"{0}\"", discordRoles), ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+      await testRunner.AndAsync("the Discord role \"111\" gives \"Officer\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
 #line 92
-      await testRunner.ThenAsync(string.Format("the member\'s role is {0}", role), ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+      await testRunner.AndAsync("the Discord role \"222\" gives \"Raid leader\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 93
+      await testRunner.WhenAsync(string.Format("a member has the Discord roles \"{0}\"", discordRoles), ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 94
+      await testRunner.ThenAsync(string.Format("the member\'s roles are \"{0}\"", roles), ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 95
+      await testRunner.AndAsync(string.Format("the member\'s permissions are \"{0}\"", permissions), ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

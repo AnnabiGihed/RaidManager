@@ -6,10 +6,10 @@ namespace RaidManager.Application.Features.Communities.Commands.UnmapCommunityRo
 /// <param name="CommunityId">The community.</param>
 /// <param name="UserId">The signed-in user; only the Administrator may.</param>
 /// <param name="DiscordRoleId">The Discord role snowflake.</param>
-/// <param name="Role">The RaidManager role's name it should no longer give: <c>Officer</c> or <c>RaidLeader</c>.</param>
+/// <param name="RoleId">The community role.</param>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-01<br/>
 /// Purpose: Lets the Administrator stop a Discord role giving a RaidManager role, including a role deleted in Discord since.
 /// </remarks>
-public sealed record UnmapCommunityRoleCommand(Guid CommunityId, Guid UserId, string DiscordRoleId, string Role) : ICommand;
+public sealed record UnmapCommunityRoleCommand(Guid CommunityId, Guid UserId, string DiscordRoleId, Guid RoleId) : ICommand;

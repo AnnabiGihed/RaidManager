@@ -20,9 +20,11 @@ Source: [Mermaid](../diagrams/domain-overview.mmd).
 
 ## Identity and community
 
-A community is a linked Discord server. The user who added the bot is its Administrator, and its role mappings say
-which Discord roles give Officer or Raid leader. Membership and each member's Discord roles stay in Discord: a member's
-role is read from Discord when an action needs it ([ADR-0022](../adr/0022-check-discord-roles-at-action-time.md)).
+A community is a linked Discord server. The user who added the bot is its Administrator. The community holds its roles,
+starting with the Officer and Raid leader presets, each allowing a set of permissions, and its role mappings say which
+Discord roles give which roles ([ADR-0024](../adr/0024-give-each-community-its-own-roles.md)). Membership and each
+member's Discord roles stay in Discord: what a member may do is read from Discord when an action needs it
+([ADR-0022](../adr/0022-check-discord-roles-at-action-time.md)).
 That same user can authorize companion pairings and request character claims across multiple game accounts.
 
 [![Identity model with community membership, Discord identity, companion pairings, and claims](../diagrams/domain-identity.svg)](../diagrams/domain-identity.svg)

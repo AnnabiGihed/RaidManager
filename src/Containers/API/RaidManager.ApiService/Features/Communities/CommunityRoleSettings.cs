@@ -1,4 +1,5 @@
 using RaidManager.Application.Features.Communities.Queries.GetCommunityRoleSettings;
+using RaidManager.Domain.Features.Communities.Enums;
 
 namespace RaidManager.ApiService.Features.Communities;
 
@@ -33,9 +34,22 @@ public sealed record CommunityRoleSettings(
             settings.CanEdit,
             [.. settings.MappableRoles.Select(role => new DiscordRoleOption(role.Id, role.Name))],
             [.. settings.Rows.Select(row => new CommunityRoleRow(
-                row.Role.ToString(),
+                row.Kind,
+                row.RoleId,
+                row.Name,
+                PermissionNames(row.Permissions),
                 [.. row.DiscordRoles.Select(role => new MappedDiscordRole(role.DiscordRoleId, role.Name, role.Missing))],
                 row.Members))]);
     }
     #endregion Public Methods
+
+    #region Private Helpers
+    /// <summary>Names each permission a role allows, in the list's order.</summary>
+    /// <param name="permissions">The permissions.</param>
+    /// <returns>The names, such as <c>ManageRaids</c>; empty for none.</returns>
+    private static List<string> PermissionNames(CommunityPermissions permissions) =>
+        [.. Enum.GetValues<CommunityPermissions>()
+            .Where(permission => permission is not (CommunityPermissions.None or CommunityPermissions.All) && permissions.HasFlag(permission))
+            .Select(permission => permission.ToString())];
+    #endregion Private Helpers
 }

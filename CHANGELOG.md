@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- Each community holds its own roles, each with the permissions it allows: Manage raids, Build rosters, Run raid
+  night, Review conflicts and Manage community roles. Officer and Raid leader are presets every community starts
+  with, and existing mappings keep giving them. A member has every permission of every role their Discord roles
+  give, and the members page shows each of their roles (ADR-0024) (#312).
 - Every signed-in page is on the design system with a dark content area: the Overview of a player with a community
   welcomes them with their account card, a page that fails shows the error with Try again, and the sidebar's
   community card shows it leads to the community page with a chevron and a hover highlight (#306).

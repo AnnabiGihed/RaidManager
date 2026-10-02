@@ -19,7 +19,13 @@ Character-wide state includes approval, ownership, synchronization freshness, an
 ## Community
 
 A Discord server linked to RaidManager, raiding on one Warmane realm. Everyone in the server is a member; the user
-who added the bot is its Administrator, and the Discord roles it maps give Officer or Raid leader.
+who added the bot is its Administrator, and the Discord roles it maps give its roles, such as Officer or Raid leader.
+
+## Community role
+
+A role in a community, such as Officer, Raid leader or one the community created, with the permissions it allows:
+Manage raids, Build rosters, Run raid night, Review conflicts and Manage community roles. A member has every
+permission of every role their Discord roles give them.
 
 ## Discord identity
 

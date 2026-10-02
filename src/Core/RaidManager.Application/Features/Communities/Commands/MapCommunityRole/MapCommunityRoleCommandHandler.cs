@@ -2,7 +2,6 @@ using Pivot.Framework.Application.Abstractions.Messaging.Commands;
 using Pivot.Framework.Domain.Repositories;
 using Pivot.Framework.Domain.Shared;
 using RaidManager.Application.Features.Communities.Abstractions;
-using RaidManager.Domain.Features.Communities.Enums;
 using RaidManager.Domain.Features.Communities.Errors;
 using RaidManager.Domain.Features.Communities.Repositories;
 using RaidManager.Domain.Features.Identity.Repositories;
@@ -75,6 +74,11 @@ internal sealed class MapCommunityRoleCommandHandler : ICommandHandler<MapCommun
             return access;
         }
 
+        if (community.FindRole(new CommunityRoleId(request.RoleId)) is null)
+        {
+            return Result.Failure(CommunityErrors.RoleNotFound, ResultExceptionType.NotFound);
+        }
+
         var server = await _discordServers.GetAsync(community.DiscordGuildId, cancellationToken);
         if (server.IsFailure)
         {
@@ -86,7 +90,7 @@ internal sealed class MapCommunityRoleCommandHandler : ICommandHandler<MapCommun
             return Result.Failure(CommunityErrors.RoleNotMappable);
         }
 
-        community.MapDiscordRole(request.DiscordRoleId, Enum.Parse<CommunityMemberRole>(request.Role));
+        community.MapDiscordRole(request.DiscordRoleId, new CommunityRoleId(request.RoleId));
         await _communities.UpdateAsync(community, cancellationToken);
         return await _unitOfWork.SaveChangesAsync(cancellationToken);
     }

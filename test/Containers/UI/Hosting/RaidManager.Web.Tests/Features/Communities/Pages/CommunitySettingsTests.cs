@@ -86,10 +86,10 @@ public sealed class CommunitySettingsTests : BunitContext
         page.FindAll("[data-testid^=role-row-] .role-row-label").Select(label => label.TextContent).ShouldBe(["Administrator", "Officer", "Raid leader", "Member"]);
         page.FindAll("[data-testid^=role-row-] .role-row-members").Select(count => count.TextContent).ShouldBe(["1 member", "1 member", "0 members", "2 members"]);
         page.Find("[data-testid=role-row-Administrator] .role-row-source").TextContent.ShouldBe("Added RaidManager to the server");
-        page.Find("[data-testid=role-row-Officer] .tag-chip-text").TextContent.ShouldBe("@Officier");
-        page.Find("[data-testid=role-row-Officer] .tag-chip-remove").GetAttribute("aria-label").ShouldBe("Remove @Officier");
-        page.Find("[data-testid=role-row-RaidLeader] .tag-chip").ClassList.ShouldContain("tag-chip-danger");
-        page.Find("[data-testid=role-row-RaidLeader] .tag-chip-text").TextContent.ShouldBe("Deleted role");
+        page.Find($"[data-testid=role-row-{FakeCommunitiesApiClient.OfficerId}] .tag-chip-text").TextContent.ShouldBe("@Officier");
+        page.Find($"[data-testid=role-row-{FakeCommunitiesApiClient.OfficerId}] .tag-chip-remove").GetAttribute("aria-label").ShouldBe("Remove @Officier");
+        page.Find($"[data-testid=role-row-{FakeCommunitiesApiClient.RaidLeaderId}] .tag-chip").ClassList.ShouldContain("tag-chip-danger");
+        page.Find($"[data-testid=role-row-{FakeCommunitiesApiClient.RaidLeaderId}] .tag-chip-text").TextContent.ShouldBe("Deleted role");
         page.FindAll("button").Count(button => button.TextContent.Contains("+ Add Discord role", StringComparison.Ordinal)).ShouldBe(2);
     }
 
@@ -110,7 +110,7 @@ public sealed class CommunitySettingsTests : BunitContext
     public void AddingARoleSavesItAndConfirms()
     {
         var page = OpenAdministratorPage();
-        page.FindAll("[data-testid=role-row-Officer] button").First(button => button.TextContent.Contains("+ Add Discord role", StringComparison.Ordinal)).Click();
+        page.FindAll($"[data-testid=role-row-{FakeCommunitiesApiClient.OfficerId}] button").First(button => button.TextContent.Contains("+ Add Discord role", StringComparison.Ordinal)).Click();
 
         var picker = page.Find("[data-testid=role-picker] select");
         picker.GetAttribute("aria-label").ShouldBe("Discord role for Officer");
@@ -118,7 +118,7 @@ public sealed class CommunitySettingsTests : BunitContext
         picker.Change("1");
         page.FindAll("[data-testid=role-picker] button").First(button => button.TextContent.Contains("Add", StringComparison.Ordinal)).Click();
 
-        _communities.RoleChanges.ShouldHaveSingleItem().ShouldBe(("13", "Officer", true));
+        _communities.RoleChanges.ShouldHaveSingleItem().ShouldBe(("13", FakeCommunitiesApiClient.OfficerId, true));
         page.WaitForAssertion(() => page.Find("[data-testid=saved-confirmation] .toast-title").TextContent.ShouldBe("Officer roles saved"));
         page.FindAll("[data-testid=role-picker]").ShouldBeEmpty();
     }
@@ -128,7 +128,7 @@ public sealed class CommunitySettingsTests : BunitContext
     public void CancellingThePickerChangesNothing()
     {
         var page = OpenAdministratorPage();
-        page.FindAll("[data-testid=role-row-RaidLeader] button").First(button => button.TextContent.Contains("+ Add Discord role", StringComparison.Ordinal)).Click();
+        page.FindAll($"[data-testid=role-row-{FakeCommunitiesApiClient.RaidLeaderId}] button").First(button => button.TextContent.Contains("+ Add Discord role", StringComparison.Ordinal)).Click();
 
         page.FindAll("[data-testid=role-picker] button").First(button => button.TextContent.Contains("Cancel", StringComparison.Ordinal)).Click();
 
@@ -142,9 +142,9 @@ public sealed class CommunitySettingsTests : BunitContext
     {
         var page = OpenAdministratorPage();
 
-        page.Find("[data-testid=role-row-Officer] .tag-chip-remove").Click();
+        page.Find($"[data-testid=role-row-{FakeCommunitiesApiClient.OfficerId}] .tag-chip-remove").Click();
 
-        _communities.RoleChanges.ShouldHaveSingleItem().ShouldBe(("12", "Officer", false));
+        _communities.RoleChanges.ShouldHaveSingleItem().ShouldBe(("12", FakeCommunitiesApiClient.OfficerId, false));
     }
 
     /// <summary>Shows another member the card without any control to change it.</summary>
@@ -158,7 +158,7 @@ public sealed class CommunitySettingsTests : BunitContext
 
         var page = Render<CommunitySettings>();
 
-        page.WaitForAssertion(() => page.Find("[data-testid=role-row-Officer] .tag-chip-text").TextContent.ShouldBe("@Officier"));
+        page.WaitForAssertion(() => page.Find($"[data-testid=role-row-{FakeCommunitiesApiClient.OfficerId}] .tag-chip-text").TextContent.ShouldBe("@Officier"));
         page.FindAll(".tag-chip-remove").ShouldBeEmpty();
         page.Markup.ShouldNotContain("+ Add Discord role");
     }

@@ -13,6 +13,12 @@ namespace RaidManager.ViewModels.Tests.Features.Communities;
 public sealed class CommunityRolesViewModelTests
 {
     #region Fields
+    /// <summary>Stores the Officer row's key in the sample card.</summary>
+    private static readonly string Officer = FakeCommunitiesApi.OfficerId.ToString();
+
+    /// <summary>Stores the Raid leader row's key in the sample card.</summary>
+    private static readonly string RaidLeader = FakeCommunitiesApi.RaidLeaderId.ToString();
+
     /// <summary>Stores the community.</summary>
     private static readonly Guid CommunityId = Guid.NewGuid();
 
@@ -49,9 +55,9 @@ public sealed class CommunityRolesViewModelTests
     {
         var roles = await LoadedAsync(canEdit: true);
 
-        roles.PickerOptions("Officer").Select(option => option.Name).ShouldBe(["Guild Master", "Veteran"]);
-        roles.OpenPicker("Officer");
-        roles.PickingFor.ShouldBe("Officer");
+        roles.PickerOptions(Officer).Select(option => option.Name).ShouldBe(["Guild Master", "Veteran"]);
+        roles.OpenPicker(Officer);
+        roles.PickingFor.ShouldBe(Officer);
         roles.PickedRoleId.ShouldBe("11");
         roles.ClosePicker();
         roles.PickingFor.ShouldBeNull();
@@ -64,12 +70,12 @@ public sealed class CommunityRolesViewModelTests
     public async Task AddingAPickedRoleSavesAndConfirms()
     {
         var roles = await LoadedAsync(canEdit: true);
-        roles.OpenPicker("RaidLeader");
+        roles.OpenPicker(RaidLeader);
         roles.PickedRoleId = "13";
 
         await roles.AddPickedAsync(CancellationToken.None);
 
-        _api.RoleChanges.ShouldHaveSingleItem().ShouldBe(("13", "RaidLeader", true));
+        _api.RoleChanges.ShouldHaveSingleItem().ShouldBe(("13", FakeCommunitiesApi.RaidLeaderId, true));
         roles.JustSaved.ShouldBeTrue();
         roles.PickingFor.ShouldBeNull();
         roles.IsSaving.ShouldBeFalse();
@@ -82,9 +88,9 @@ public sealed class CommunityRolesViewModelTests
     {
         var roles = await LoadedAsync(canEdit: true);
 
-        await roles.RemoveAsync("12", "Officer", CancellationToken.None);
+        await roles.RemoveAsync("12", Officer, CancellationToken.None);
 
-        _api.RoleChanges.ShouldHaveSingleItem().ShouldBe(("12", "Officer", false));
+        _api.RoleChanges.ShouldHaveSingleItem().ShouldBe(("12", FakeCommunitiesApi.OfficerId, false));
         roles.JustSaved.ShouldBeTrue();
     }
 
@@ -113,7 +119,7 @@ public sealed class CommunityRolesViewModelTests
         var roles = await LoadedAsync(canEdit: true);
         _api.RoleStatus = status;
 
-        await roles.RemoveAsync("12", "Officer", CancellationToken.None);
+        await roles.RemoveAsync("12", Officer, CancellationToken.None);
 
         roles.JustSaved.ShouldBeFalse();
         roles.Problem.ShouldNotBeNull().Title.ShouldBe("The officer roles weren't changed");
@@ -133,7 +139,7 @@ public sealed class CommunityRolesViewModelTests
         roles.Status.ShouldBe(CommunityPageStatus.Failed);
         roles.Problem.ShouldNotBeNull().Title.ShouldBe("The officer roles couldn't be shown");
         roles.Rows.ShouldBeEmpty();
-        roles.PickerOptions("Officer").ShouldBeEmpty();
+        roles.PickerOptions(Officer).ShouldBeEmpty();
     }
 
     /// <summary>Explains an unreachable API on reading and on changing.</summary>

@@ -2,7 +2,6 @@ using Pivot.Framework.Application.Abstractions.Messaging.Commands;
 using Pivot.Framework.Domain.Repositories;
 using Pivot.Framework.Domain.Shared;
 using RaidManager.Application.Features.Communities.Abstractions;
-using RaidManager.Domain.Features.Communities.Enums;
 using RaidManager.Domain.Features.Communities.Errors;
 using RaidManager.Domain.Features.Communities.Repositories;
 using RaidManager.Domain.Features.Identity.Repositories;
@@ -70,8 +69,8 @@ internal sealed class UnmapCommunityRoleCommandHandler : ICommandHandler<UnmapCo
             return access;
         }
 
-        var role = Enum.Parse<CommunityMemberRole>(request.Role);
-        if (!community.RoleMappings.Any(mapping => mapping.DiscordRoleId == request.DiscordRoleId && mapping.Role == role))
+        var role = new CommunityRoleId(request.RoleId);
+        if (!community.RoleMappings.Any(mapping => mapping.DiscordRoleId == request.DiscordRoleId && mapping.RoleId == role))
         {
             return Result.Success();
         }

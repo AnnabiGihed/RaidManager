@@ -1,7 +1,8 @@
 using Pivot.Framework.Application.Abstractions.Messaging.Queries;
 using Pivot.Framework.Domain.Shared;
 using RaidManager.Application.Features.Communities.Abstractions;
-using RaidManager.Domain.Features.Communities.Enums;
+using RaidManager.Application.Features.Communities.Queries.GetCommunityRoleSettings;
+using RaidManager.Domain.Features.Communities.Aggregates;
 using RaidManager.Domain.Features.Communities.Errors;
 using RaidManager.Domain.Features.Communities.Repositories;
 using RaidManager.Domain.Features.Identity.Repositories;
@@ -87,18 +88,36 @@ internal sealed class GetCommunityMembersQueryHandler : IQueryHandler<GetCommuni
             return Result.Failure<CommunityMembersResponse>(members.Error);
         }
 
+        // The Administrator first, then people by their first role in the list, then Members; each group by name.
         var administrator = await _users.FindByIdAsync(community.AdministratorId, cancellationToken);
         var rows = members.Value
-            .Select(member => new CommunityMemberResponse(
-                member.UserId,
-                member.DisplayName,
-                member.AvatarUrl,
-                [.. server.Value.Roles.Where(role => member.RoleIds.Contains(role.Id, StringComparer.Ordinal))],
-                member.UserId == administrator?.DiscordUserId.Value ? CommunityMemberRole.Administrator : community.MappedRoleFor(member.RoleIds)))
-            .OrderByDescending(member => member.Role)
-            .ThenBy(member => member.DisplayName, StringComparer.CurrentCultureIgnoreCase)
+            .Select(member => (Member: member, Administrator: member.UserId == administrator?.DiscordUserId.Value, Roles: community.RolesFor(member.RoleIds)))
+            .OrderBy(entry => entry.Administrator ? int.MinValue : entry.Roles.Count > 0 ? entry.Roles[0].Position : int.MaxValue)
+            .ThenBy(entry => entry.Member.DisplayName, StringComparer.CurrentCultureIgnoreCase)
+            .Select(entry => new CommunityMemberResponse(
+                entry.Member.UserId,
+                entry.Member.DisplayName,
+                entry.Member.AvatarUrl,
+                [.. server.Value.Roles.Where(role => entry.Member.RoleIds.Contains(role.Id, StringComparer.Ordinal))],
+                RoleNames(entry.Administrator, entry.Roles)))
             .ToList();
         return Result.Success(new CommunityMembersResponse(community.Id.Value, server.Value.Name, _timeProvider.GetUtcNow(), rows));
     }
     #endregion Public Methods
+
+    #region Private Helpers
+    /// <summary>Names the roles a person has.</summary>
+    /// <param name="administrator">Whether the person is the Administrator.</param>
+    /// <param name="roles">The roles their Discord roles give, in list order.</param>
+    /// <returns>Administrator alone for the Administrator, otherwise the roles' names, otherwise Member.</returns>
+    private static List<string> RoleNames(bool administrator, IReadOnlyList<CommunityRole> roles)
+    {
+        if (administrator)
+        {
+            return [CommunityRoleKinds.Administrator];
+        }
+
+        return roles.Count > 0 ? [.. roles.Select(role => role.Name)] : [CommunityRoleKinds.Member];
+    }
+    #endregion Private Helpers
 }

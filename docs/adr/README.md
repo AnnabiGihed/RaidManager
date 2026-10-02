@@ -25,3 +25,4 @@
 | 0021 | [Import the roster into the addon by pasting a code](0021-import-the-roster-into-the-addon-by-pasting-a-code.md) | Proposed |
 | 0022 | [Check Discord roles at action time](0022-check-discord-roles-at-action-time.md) | Proposed |
 | 0023 | [Read a player's Discord servers at sign-in](0023-read-a-players-discord-servers-at-sign-in.md) | Proposed |
+| 0024 | [Give each community its own roles with permissions](0024-give-each-community-its-own-roles.md) | Proposed |

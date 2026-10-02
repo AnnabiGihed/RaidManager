@@ -109,16 +109,16 @@ internal sealed class CommunitiesApiClient : ICommunitiesApiClient
     }
 
     /// <inheritdoc />
-    public async Task<CommunityApiStatus> MapRoleAsync(Guid userId, Guid communityId, string discordRoleId, string role, CancellationToken cancellationToken)
+    public async Task<CommunityApiStatus> MapRoleAsync(Guid userId, Guid communityId, string discordRoleId, Guid roleId, CancellationToken cancellationToken)
     {
-        using var response = await _httpClient.PutAsync(MappingRoute(userId, communityId, role, discordRoleId), content: null, cancellationToken);
+        using var response = await _httpClient.PutAsync(MappingRoute(userId, communityId, roleId, discordRoleId), content: null, cancellationToken);
         return StatusOf(response);
     }
 
     /// <inheritdoc />
-    public async Task<CommunityApiStatus> UnmapRoleAsync(Guid userId, Guid communityId, string discordRoleId, string role, CancellationToken cancellationToken)
+    public async Task<CommunityApiStatus> UnmapRoleAsync(Guid userId, Guid communityId, string discordRoleId, Guid roleId, CancellationToken cancellationToken)
     {
-        using var response = await _httpClient.DeleteAsync(MappingRoute(userId, communityId, role, discordRoleId), cancellationToken);
+        using var response = await _httpClient.DeleteAsync(MappingRoute(userId, communityId, roleId, discordRoleId), cancellationToken);
         return StatusOf(response);
     }
     #endregion Public Methods
@@ -130,14 +130,14 @@ internal sealed class CommunitiesApiClient : ICommunitiesApiClient
     /// <returns>The route.</returns>
     private static string UserCommunityRoute(Guid userId, Guid communityId) => $"internal/users/{userId}/communities/{communityId}";
 
-    /// <summary>Builds the route of a Discord role's mapping to a RaidManager role.</summary>
+    /// <summary>Builds the route of a Discord role's mapping to one of the community's roles.</summary>
     /// <param name="userId">The signed-in user.</param>
     /// <param name="communityId">The community.</param>
-    /// <param name="role">The RaidManager role's name.</param>
+    /// <param name="roleId">The community role.</param>
     /// <param name="discordRoleId">The Discord role snowflake.</param>
     /// <returns>The route.</returns>
-    private static string MappingRoute(Guid userId, Guid communityId, string role, string discordRoleId) =>
-        $"{UserCommunityRoute(userId, communityId)}/role-mappings/{Uri.EscapeDataString(role)}/{Uri.EscapeDataString(discordRoleId)}";
+    private static string MappingRoute(Guid userId, Guid communityId, Guid roleId, string discordRoleId) =>
+        $"{UserCommunityRoute(userId, communityId)}/role-mappings/{roleId}/{Uri.EscapeDataString(discordRoleId)}";
 
     /// <summary>Reads how the API answered a roles call; an unexpected status throws for the page to show.</summary>
     /// <param name="response">The response.</param>

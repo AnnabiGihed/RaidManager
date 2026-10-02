@@ -17,23 +17,23 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
     
     [global::System.CodeDom.Compiler.GeneratedCodeAttribute("Reqnroll", "3.0.0.0")]
     [global::System.Runtime.CompilerServices.CompilerGeneratedAttribute()]
-    public partial class CommunityRoleCheckFeature : object, global::Xunit.IClassFixture<CommunityRoleCheckFeature.FixtureData>, global::Xunit.IAsyncLifetime
+    public partial class CommunityPermissionCheckFeature : object, global::Xunit.IClassFixture<CommunityPermissionCheckFeature.FixtureData>, global::Xunit.IAsyncLifetime
     {
         
         private global::Reqnroll.ITestRunner testRunner;
         
         private static string[] featureTags = ((string[])(null));
         
-        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Communities/Queries", "Community role check", "  As a community officer\r\n  I want RaidManager to check my role with Discord befo" +
-                "re an officer action\r\n  So that only the people Discord currently trusts manage " +
-                "our raids", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
+        private static global::Reqnroll.FeatureInfo featureInfo = new global::Reqnroll.FeatureInfo(new global::System.Globalization.CultureInfo("en-US"), "Features/Communities/Queries", "Community permission check", "  As a community officer\r\n  I want RaidManager to check what I may do with Discor" +
+                "d before a raid action\r\n  So that only the people Discord currently trusts manag" +
+                "e our raids", global::Reqnroll.ProgrammingLanguage.CSharp, featureTags, InitializeCucumberMessages());
         
         private global::Xunit.Abstractions.ITestOutputHelper _testOutputHelper;
         
-#line 1 "CommunityRole.feature"
+#line 1 "CommunityPermissions.feature"
 #line hidden
         
-        public CommunityRoleCheckFeature(CommunityRoleCheckFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
+        public CommunityPermissionCheckFeature(CommunityPermissionCheckFeature.FixtureData fixtureData, global::Xunit.Abstractions.ITestOutputHelper testOutputHelper)
         {
             this._testOutputHelper = testOutputHelper;
         }
@@ -116,7 +116,7 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Communities/Queries/CommunityRole.feature.ndjson", 11);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Communities/Queries/CommunityPermissions.feature.ndjson", 11);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -144,15 +144,15 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
             await this.TestTearDownAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="A member with a mapped Discord role gets its role")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Community role check")]
-        [global::Xunit.TraitAttribute("Description", "A member with a mapped Discord role gets its role")]
-        public async global::System.Threading.Tasks.Task AMemberWithAMappedDiscordRoleGetsItsRole()
+        [global::Xunit.SkippableFactAttribute(DisplayName="A member with a mapped Discord role gets what its role allows")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Community permission check")]
+        [global::Xunit.TraitAttribute("Description", "A member with a mapped Discord role gets what its role allows")]
+        public async global::System.Threading.Tasks.Task AMemberWithAMappedDiscordRoleGetsWhatItsRoleAllows()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "0";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A member with a mapped Discord role gets its role", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A member with a mapped Discord role gets what its role allows", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("Discord says who is in the server and with which roles", null, tagsOfRule);
 #line 11
@@ -172,24 +172,24 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
       await testRunner.GivenAsync("Discord says \"Alice\" is in the server with the roles \"111\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
 #line 13
-      await testRunner.WhenAsync("the role of \"Alice\" is checked", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+      await testRunner.WhenAsync("the permissions of \"Alice\" are checked", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 14
-      await testRunner.ThenAsync("the check gives Officer", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+      await testRunner.ThenAsync("the check allows \"ManageRaids, BuildRosters, RunRaidNight, ReviewConflicts\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="A member without a mapped Discord role is a Member")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Community role check")]
-        [global::Xunit.TraitAttribute("Description", "A member without a mapped Discord role is a Member")]
-        public async global::System.Threading.Tasks.Task AMemberWithoutAMappedDiscordRoleIsAMember()
+        [global::Xunit.SkippableFactAttribute(DisplayName="A member without a mapped Discord role is allowed nothing")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Community permission check")]
+        [global::Xunit.TraitAttribute("Description", "A member without a mapped Discord role is allowed nothing")]
+        public async global::System.Threading.Tasks.Task AMemberWithoutAMappedDiscordRoleIsAllowedNothing()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "1";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A member without a mapped Discord role is a Member", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A member without a mapped Discord role is allowed nothing", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("Discord says who is in the server and with which roles", null, tagsOfRule);
 #line 16
@@ -209,17 +209,17 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
       await testRunner.GivenAsync("Discord says \"Alice\" is in the server with the roles \"999\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
 #line 18
-      await testRunner.WhenAsync("the role of \"Alice\" is checked", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+      await testRunner.WhenAsync("the permissions of \"Alice\" are checked", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 19
-      await testRunner.ThenAsync("the check gives Member", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+      await testRunner.ThenAsync("the check allows \"None\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
         [global::Xunit.SkippableFactAttribute(DisplayName="The Administrator is still asked about with Discord")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Community role check")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Community permission check")]
         [global::Xunit.TraitAttribute("Description", "The Administrator is still asked about with Discord")]
         public async global::System.Threading.Tasks.Task TheAdministratorIsStillAskedAboutWithDiscord()
         {
@@ -246,24 +246,24 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
       await testRunner.GivenAsync("Discord says the Administrator is in the server with no roles", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
 #line 23
-      await testRunner.WhenAsync("the role of the Administrator is checked", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+      await testRunner.WhenAsync("the permissions of the Administrator are checked", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 24
-      await testRunner.ThenAsync("the check gives Administrator", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+      await testRunner.ThenAsync("the check allows \"All\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Someone who left the server gets no role")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Community role check")]
-        [global::Xunit.TraitAttribute("Description", "Someone who left the server gets no role")]
-        public async global::System.Threading.Tasks.Task SomeoneWhoLeftTheServerGetsNoRole()
+        [global::Xunit.SkippableFactAttribute(DisplayName="Someone who left the server gets nothing")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Community permission check")]
+        [global::Xunit.TraitAttribute("Description", "Someone who left the server gets nothing")]
+        public async global::System.Threading.Tasks.Task SomeoneWhoLeftTheServerGetsNothing()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "3";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Someone who left the server gets no role", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Someone who left the server gets nothing", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("Discord says who is in the server and with which roles", null, tagsOfRule);
 #line 26
@@ -283,7 +283,7 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
       await testRunner.GivenAsync("Discord says \"Alice\" is not in the server", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
 #line 28
-      await testRunner.WhenAsync("the role of \"Alice\" is checked", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+      await testRunner.WhenAsync("the permissions of \"Alice\" are checked", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 29
       await testRunner.ThenAsync("the check is refused because \"Alice\" is not a member", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
@@ -293,7 +293,7 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
         }
         
         [global::Xunit.SkippableFactAttribute(DisplayName="Discord being unavailable refuses the check")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Community role check")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Community permission check")]
         [global::Xunit.TraitAttribute("Description", "Discord being unavailable refuses the check")]
         public async global::System.Threading.Tasks.Task DiscordBeingUnavailableRefusesTheCheck()
         {
@@ -320,7 +320,7 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
       await testRunner.GivenAsync("Discord can\'t be reached", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
 #line 35
-      await testRunner.WhenAsync("the role of \"Alice\" is checked", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+      await testRunner.WhenAsync("the permissions of \"Alice\" are checked", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 36
       await testRunner.ThenAsync("the check fails because Discord is unavailable", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
@@ -330,7 +330,7 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
         }
         
         [global::Xunit.SkippableFactAttribute(DisplayName="An unknown community is not found")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Community role check")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Community permission check")]
         [global::Xunit.TraitAttribute("Description", "An unknown community is not found")]
         public async global::System.Threading.Tasks.Task AnUnknownCommunityIsNotFound()
         {
@@ -354,7 +354,7 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
   await this.FeatureBackgroundAsync();
 #line hidden
 #line 39
-      await testRunner.WhenAsync("the role of \"Alice\" is checked in an unknown community", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+      await testRunner.WhenAsync("the permissions of \"Alice\" are checked in an unknown community", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 40
       await testRunner.ThenAsync("the check fails because the community was not found", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
@@ -364,7 +364,7 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
         }
         
         [global::Xunit.SkippableFactAttribute(DisplayName="A user RaidManager doesn\'t know is not a member")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Community role check")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Community permission check")]
         [global::Xunit.TraitAttribute("Description", "A user RaidManager doesn\'t know is not a member")]
         public async global::System.Threading.Tasks.Task AUserRaidManagerDoesntKnowIsNotAMember()
         {
@@ -388,7 +388,7 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
   await this.FeatureBackgroundAsync();
 #line hidden
 #line 43
-      await testRunner.WhenAsync("the role of an unknown user is checked", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+      await testRunner.WhenAsync("the permissions of an unknown user are checked", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 44
       await testRunner.ThenAsync("the check is refused because the user is not a member", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
@@ -398,7 +398,7 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
         }
         
         [global::Xunit.SkippableTheoryAttribute(DisplayName="A missing identifier is rejected before the handler runs")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Community role check")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Community permission check")]
         [global::Xunit.TraitAttribute("Description", "A missing identifier is rejected before the handler runs")]
         [global::Xunit.InlineDataAttribute("community id", "CommunityId", "7", new string[0])]
         [global::Xunit.InlineDataAttribute("user id", "UserId", "8", new string[0])]
@@ -442,12 +442,12 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
             {
-                await CommunityRoleCheckFeature.FeatureSetupAsync();
+                await CommunityPermissionCheckFeature.FeatureSetupAsync();
             }
             
             async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.DisposeAsync()
             {
-                await CommunityRoleCheckFeature.FeatureTearDownAsync();
+                await CommunityPermissionCheckFeature.FeatureTearDownAsync();
             }
         }
     }

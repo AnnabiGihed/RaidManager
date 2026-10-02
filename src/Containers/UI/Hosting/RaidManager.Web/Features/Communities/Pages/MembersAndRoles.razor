@@ -17,7 +17,14 @@
                             </span>
                         </td>
                         <td class="member-discord-roles">@member.DiscordRoles</td>
-                        <td><TagChip Text="@member.RoleLabel" Tone="@RoleTone(member.Role)" /></td>
+                        <td>
+                            <span class="member-roles">
+                                @foreach (var role in member.Roles)
+                                {
+                                    <TagChip @key="role" Text="@role" Tone="@RoleTone(role)" />
+                                }
+                            </span>
+                        </td>
                     </RowTemplate>
                 </DataTable>
             </div>

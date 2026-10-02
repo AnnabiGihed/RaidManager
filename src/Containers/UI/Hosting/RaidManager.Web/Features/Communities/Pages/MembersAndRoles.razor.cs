@@ -61,14 +61,14 @@ public sealed partial class MembersAndRoles : IDisposable
     #endregion Overrides
 
     #region Private Helpers
-    /// <summary>Gives a role's badge tone: officers stand out, Raid leader is informational, Member is plain.</summary>
-    /// <param name="role">The role's API name.</param>
+    /// <summary>Gives a role's badge tone: the Administrator and Officer stand out, other roles are informational, Member is plain.</summary>
+    /// <param name="role">The role's name.</param>
     /// <returns>The tone.</returns>
     private static TagChipTone RoleTone(string role) => role switch
     {
         "Administrator" or "Officer" => TagChipTone.Success,
-        "RaidLeader" => TagChipTone.Info,
-        _ => TagChipTone.Neutral,
+        "Member" => TagChipTone.Neutral,
+        _ => TagChipTone.Info,
     };
 
     /// <summary>Loads the user's community and its members, or goes back to the Overview when they have none.</summary>
