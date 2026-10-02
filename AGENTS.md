@@ -14,7 +14,10 @@ Project skills live in `.agents/skills/` and, identically, in `.claude/skills/` 
 - Start every task with `.agents/skills/raidmanager-conventions/SKILL.md`. It states which imported house and
   Pivot.Framework rules apply to RaidManager, which accepted ADRs replace (for example Discord instead of
   Keycloak), and which conflicts must be asked about.
-- For GitHub Project work items or user-story development, use
+- For work management (creating, classifying and planning work items, sprints, releases, status and completion),
+  follow `docs/reference/work-management-specification.md` through the eight `.agents/skills/work-*/SKILL.md` skills
+  (ADR-0026).
+- For delivering a change (branch, pull request, review comments, merge and cleanup), use
   `.agents/skills/raidmanager-github-project-workflow/SKILL.md`. A linked task issue is required before implementation.
 - For `.csproj` creation or package metadata changes, use `.agents/skills/raidmanager-project-packaging/SKILL.md`.
 - For the World of Warcraft 3.3.5a addon (Lua, TOC, SavedVariables), use
@@ -26,10 +29,13 @@ Project skills live in `.agents/skills/` and, identically, in `.claude/skills/` 
 
 These hold in every agent session; the skills named give the details.
 
-- **No standalone work item, ever (non-negotiable).** Epic → Feature → User Story, Improvement, Bug or Spike → Task
-  (ADR-0025): every item has exactly one type label and, except an epic, a parent of the allowed type, in this
-  Project or any other board. Classify by intent first, then scope, with the guide in
-  `raidmanager-github-project-workflow`, before creating an issue. Breaking this is a major failure.
+- **No standalone work item, ever (non-negotiable).** Epic → Feature → User Story, Improvement, Bug or Spike → Task:
+  every item has exactly one type label and, except an epic, a parent of the allowed type, in this Project or any
+  other board. Classify by intent first, then scope, with `work-classification-and-hierarchy`, before creating an
+  issue. Breaking this is a major failure.
+- **No execution outside an active sprint.** Before starting or resuming any task, story, improvement, bug or spike,
+  pass the gate of `work-sprint-planning-and-eligibility` (spec §8). If it fails, stop and report the violated rule;
+  never move dates or sprints to pass it. When the sprint ends, stop at a safe checkpoint.
 - **One task, one branch, one draft PR**, following `raidmanager-github-project-workflow`. Branch from `origin/main`
   after checking `git branch --show-current`; stage explicit paths only, because other sessions share this checkout.
 - **Before handover:** build, tests, coverage after committing, the docs check, the spell check and Vale, then a

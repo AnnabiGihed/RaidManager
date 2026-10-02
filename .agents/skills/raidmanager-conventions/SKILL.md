@@ -182,25 +182,22 @@ Coverage is measured and enforced on every pull request
 - **New projects:** a new `src/` project gets its mirrored test project with real tests in the same PR. The summary
   names every project no test loads, such as `RaidManager.DiscordBot` today.
 
-## 9. Work-item hierarchy (mandatory)
+## 9. Work management (mandatory)
 
-Every work item sits in one chain of native sub-issues
-([ADR-0025](../../../docs/adr/0025-classify-work-items-with-spikes-under-features.md)): Epic → Feature → User Story,
-Improvement, Bug or Spike → Task. Only an epic has no parent, and nothing is standalone; breaking this is a major
-failure, in this Project or any other board. Classify each item by intent first, then scope, with the guide in
-`raidmanager-github-project-workflow`, which also holds the contracts and the delivery sequence. These rules
-override the ticket rules of `pr-and-branching-standards`:
+The [Work Management and Delivery Specification](../../../docs/reference/work-management-specification.md) is the
+authority for work management ([ADR-0026](../../../docs/adr/0026-adopt-the-work-management-specification.md)). The
+eight `work-*` skills apply it, and `raidmanager-github-project-workflow` holds the repository's branch, pull request
+and review mechanics. These rules override the ticket rules of `pr-and-branching-standards`:
 
+- Nothing is standalone: Epic → Feature → User Story, Improvement, Bug or Spike → Task, on this Project or any other
+  board (spec §2, `work-classification-and-hierarchy`). Breaking this is a major failure.
+- No task, story, improvement, bug or spike is executed outside an active sprint; check the gate before starting and
+  before resuming (spec §8, `work-sprint-planning-and-eligibility`).
 - The "work item" that a branch, commit and pull request carry is always a **task** number, never a story,
   improvement, bug, spike, feature or epic. Each of those is delivered through its child tasks.
-- A story, improvement, bug or spike can't close without a completed child task; a feature or epic can't close
-  without a completed child of the level below. `project-hierarchy.yml` reopens early closures and labels misplaced
-  or untyped items `needs-parent`; the docs `validate` check rejects a pull request that closes anything but a task
-  reaching an epic.
-- Create issues with the issue forms (blank issues are disabled) and link the parent immediately. Tooling,
-  documentation and process work belongs under **Epic: Engineering platform and delivery** (#142).
+- Tooling, documentation and process work belongs under **Epic: Engineering platform and delivery** (#142).
 - Never create an epic without the owner's approval. Never work around the rules with a personal token, a
-  standalone task, or a parent closed as completed without evidence.
+  standalone item, a moved sprint date, or an item closed as completed without evidence.
 
 ## 10. UI mockups in Penpot (mandatory)
 
