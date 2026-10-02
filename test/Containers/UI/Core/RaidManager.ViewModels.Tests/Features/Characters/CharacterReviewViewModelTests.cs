@@ -215,7 +215,8 @@ public sealed class CharacterReviewViewModelTests
     {
         CharacterReviewViewModel.RejectTitle(Jainaice).ShouldBe("Reject Jainaice?");
         CharacterReviewViewModel.RejectMessage(Jainaice).ShouldBe(
-            "Jainaice (Lordaeron) won't become one of your characters, so you can't sign it up for raids. Reject it only if it isn't yours.");
+            "Jainaice (Lordaeron) won't become one of your characters, so you can't sign it up for raids.");
+        CharacterReviewViewModel.RejectAdvice.ShouldBe("Reject it only if it isn't yours.");
         CharacterReviewViewModel.ConflictReminder(Sylvanash).ShouldBe("Sylvanash stays in conflict review until an officer decides.");
     }
     #endregion Tests

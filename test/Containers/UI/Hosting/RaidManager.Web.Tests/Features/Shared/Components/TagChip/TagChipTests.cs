@@ -50,6 +50,7 @@ public sealed class TagChipTests : BunitContext
     /// <param name="expectedClass">The class it adds.</param>
     [Theory]
     [InlineData(TagChipTone.Success, "tag-chip-success")]
+    [InlineData(TagChipTone.Warning, "tag-chip-warning")]
     [InlineData(TagChipTone.Neutral, "tag-chip-neutral")]
     public void EachToneHasItsClass(TagChipTone tone, string expectedClass) =>
         Render<TagChip>(parameters => parameters.Add(component => component.Text, "Officer").Add(component => component.Tone, tone))

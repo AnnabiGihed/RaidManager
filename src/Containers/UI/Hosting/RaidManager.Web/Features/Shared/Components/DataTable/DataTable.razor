@@ -1,0 +1,29 @@
+@namespace RaidManager.Web.Features.Shared.Components
+@typeparam TItem
+<div class="data-table-card">
+    <table class="data-table" @attributes="AdditionalAttributes">
+        @if (ColumnWidths is { Count: > 0 })
+        {
+            <colgroup>
+                @foreach (var width in ColumnWidths)
+                {
+                    <col style="@ColumnStyle(width)" />
+                }
+            </colgroup>
+        }
+        <thead>
+            <tr>
+                @foreach (var heading in Headings)
+                {
+                    <th scope="col">@heading</th>
+                }
+            </tr>
+        </thead>
+        <tbody>
+            @foreach (var item in Items)
+            {
+                <tr @key="Key(item)" style="@RowStyle">@RowTemplate(item)</tr>
+            }
+        </tbody>
+    </table>
+</div>

@@ -19,4 +19,7 @@ public enum TagChipTone
 
     /// <summary>A plain tag, such as the Member role.</summary>
     Neutral,
+
+    /// <summary>A tag that waits for someone, such as a pending character claim.</summary>
+    Warning,
 }

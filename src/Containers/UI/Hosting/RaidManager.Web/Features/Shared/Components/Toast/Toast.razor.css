@@ -4,7 +4,10 @@
     right: 40px;
     z-index: 10;
     box-sizing: border-box;
-    width: 380px;
+    /* 380 px as in the boards, wider for a longer line, up to 480 px. */
+    width: max-content;
+    min-width: 380px;
+    max-width: min(480px, calc(100vw - 80px));
     min-height: 72px;
     padding: 14px 24px;
     border: 1px solid var(--rm-line-card-border);
@@ -21,6 +24,18 @@
     width: 4px;
     border-radius: 2px;
     background: var(--rm-brand-accent);
+}
+
+.toast-info .toast-accent {
+    background: var(--rm-accent-blue);
+}
+
+.toast-warning .toast-accent {
+    background: var(--rm-accent-amber);
+}
+
+.toast-danger .toast-accent {
+    background: var(--rm-status-danger);
 }
 
 .toast-title {

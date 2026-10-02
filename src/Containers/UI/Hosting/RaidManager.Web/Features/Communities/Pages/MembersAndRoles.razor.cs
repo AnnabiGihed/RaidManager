@@ -20,6 +20,9 @@ public sealed partial class MembersAndRoles : IDisposable
     #endregion Fields
 
     #region Properties
+    /// <summary>Gets the table's column headings.</summary>
+    private static IReadOnlyList<string> Headings { get; } = ["Member", "Discord roles", "RaidManager role"];
+
     /// <summary>Gets or sets the signed-in user's authentication state.</summary>
     [CascadingParameter]
     private Task<AuthenticationState>? AuthenticationState { get; set; }

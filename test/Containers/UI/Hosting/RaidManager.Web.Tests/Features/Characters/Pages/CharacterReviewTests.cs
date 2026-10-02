@@ -73,8 +73,9 @@ public sealed class CharacterReviewTests : BunitContext
         page.Markup.ShouldContain("Sylvanash stays in conflict review until an officer decides.");
         page.FindAll("[data-testid=decide-later]").ShouldBeEmpty();
         _api.Decisions.ShouldBe([("approve", _userId, arthasdk.CharacterId)]);
-        Services.GetRequiredService<NotificationService>().Messages.ShouldContain(message =>
-            message.Severity == NotificationSeverity.Success && message.Summary == "Arthasdk approved");
+        var notice = page.Find("[data-testid=review-notice]");
+        notice.ClassList.ShouldContain("toast-success");
+        notice.QuerySelector(".toast-title")!.TextContent.ShouldBe("Arthasdk approved");
     }
 
     /// <summary>Rejects a claim after confirming.</summary>
@@ -83,13 +84,16 @@ public sealed class CharacterReviewTests : BunitContext
     {
         var jainaice = FakeCharacterClaimsApiClient.Claim("Jainaice");
         _api.Claims = [jainaice];
-        var (page, dialog) = RenderPageWithDialog();
+        var page = RenderPage();
         page.WaitForElement("[data-testid=reject-Jainaice]");
 
         page.Find("[data-testid=reject-Jainaice]").Click();
-        dialog.WaitForAssertion(() => dialog.Markup.ShouldContain("Reject Jainaice?"));
+        var dialog = page.Find("[data-testid=reject-dialog]");
+        dialog.QuerySelector("h2")!.TextContent.ShouldBe("Reject Jainaice?");
+        dialog.QuerySelectorAll("p").Select(paragraph => paragraph.TextContent).ShouldBe(
+            [CharacterReviewViewModel.RejectMessage(jainaice), CharacterReviewViewModel.RejectAdvice]);
         _api.Decisions.ShouldBeEmpty();
-        dialog.FindAll("button").First(button => button.TextContent.Trim() == "Reject").Click();
+        page.FindAll("[data-testid=reject-dialog] button").First(button => button.TextContent.Trim() == "Reject").Click();
 
         page.WaitForElement("[data-testid=all-set]");
         _api.Decisions.ShouldBe([("reject", _userId, jainaice.CharacterId)]);
@@ -100,15 +104,48 @@ public sealed class CharacterReviewTests : BunitContext
     public void CancellingTheConfirmationChangesNothing()
     {
         _api.Claims = [FakeCharacterClaimsApiClient.Claim("Jainaice")];
-        var (page, dialog) = RenderPageWithDialog();
+        var page = RenderPage();
         page.WaitForElement("[data-testid=reject-Jainaice]");
 
         page.Find("[data-testid=reject-Jainaice]").Click();
-        dialog.WaitForAssertion(() => dialog.Markup.ShouldContain("Reject Jainaice?"));
-        dialog.FindAll("button").First(button => button.TextContent.Trim() == "Cancel").Click();
+        page.FindAll("[data-testid=reject-dialog] button").First(button => button.TextContent.Trim() == "Cancel").Click();
 
-        page.WaitForAssertion(() => page.Find("[data-testid=approve-Jainaice]").ShouldNotBeNull());
+        page.FindAll("[data-testid=reject-dialog]").ShouldBeEmpty();
+        page.Find("[data-testid=approve-Jainaice]").ShouldNotBeNull();
         _api.Decisions.ShouldBeEmpty();
+        page.FindAll("[data-testid=review-notice]").ShouldBeEmpty();
+    }
+
+    /// <summary>Lists a claim in the design system's table: the class by its readable name and color, the status as a badge.</summary>
+    [Fact]
+    public void ClaimsAreShownWithTheirClassAndStatus()
+    {
+        _api.Claims = [FakeCharacterClaimsApiClient.Claim("Arthasdk") with { Class = "DeathKnight" }, FakeCharacterClaimsApiClient.Claim("Sylvanash", CharacterClaim.ConflictState)];
+        var page = RenderPage();
+        page.WaitForElement("[data-testid=claims]");
+
+        var rows = page.FindAll("[data-testid=claims] tbody tr");
+        page.FindAll("[data-testid=claims] th").Select(heading => heading.TextContent).ShouldBe(["Character", "Class", "Race", "Level", "Found", "Status", "Decision"]);
+        rows[0].QuerySelector(".wow-class")!.ClassList.ShouldContain("wow-class-deathknight");
+        rows[0].QuerySelector(".wow-class")!.TextContent.Trim().ShouldBe("Death Knight");
+        rows[0].QuerySelector(".tag-chip")!.ClassList.ShouldContain("tag-chip-warning");
+        rows[1].QuerySelector(".tag-chip")!.ClassList.ShouldContain("tag-chip-danger");
+        rows[1].TextContent.ShouldContain("An officer will review it");
+        page.Find(".notice-title").TextContent.ShouldBe("1 character is waiting for your decision");
+    }
+
+    /// <summary>Shows a failed decision as a red notification.</summary>
+    [Fact]
+    public void AFailedDecisionShowsADangerNotification()
+    {
+        _api.Claims = [FakeCharacterClaimsApiClient.Claim("Arthasdk")];
+        var page = RenderPage();
+        page.WaitForElement("[data-testid=approve-Arthasdk]");
+        _api.Fails = true;
+
+        page.Find("[data-testid=approve-Arthasdk]").Click();
+
+        page.WaitForAssertion(() => page.Find("[data-testid=review-notice]").ClassList.ShouldContain("toast-danger"));
     }
 
     /// <summary>Leaves the review undecided.</summary>
@@ -182,15 +219,6 @@ public sealed class CharacterReviewTests : BunitContext
     #endregion Tests
 
     #region Private Helpers
-    /// <summary>Signs the player in and renders the page next to the dialog host the layout provides.</summary>
-    /// <returns>The rendered page and dialog host.</returns>
-    private (IRenderedComponent<CharacterReview> Page, IRenderedComponent<RadzenDialog> Dialog) RenderPageWithDialog()
-    {
-        SignIn();
-        var dialog = Render<RadzenDialog>();
-        return (Render<CharacterReview>(), dialog);
-    }
-
     /// <summary>Signs the player in and renders the page with a return URL.</summary>
     /// <param name="returnUrl">The page to continue to.</param>
     /// <returns>The rendered page.</returns>

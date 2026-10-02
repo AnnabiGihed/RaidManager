@@ -14,7 +14,7 @@ public sealed class FakeCharacterClaimsApiClient : ICharacterClaimsApiClient
     /// <summary>Gets or sets the claims the API returns.</summary>
     public List<CharacterClaim> Claims { get; set; } = [];
 
-    /// <summary>Gets or sets a value indicating whether listing the claims fails as an unavailable API would.</summary>
+    /// <summary>Gets or sets a value indicating whether listing and deciding claims fail as an unavailable API would.</summary>
     public bool Fails { get; set; }
 
     /// <summary>Gets the decisions received, as <c>approve</c> or <c>reject</c> with the user and character.</summary>
@@ -45,13 +45,18 @@ public sealed class FakeCharacterClaimsApiClient : ICharacterClaimsApiClient
     #endregion Public Methods
 
     #region Private Helpers
-    /// <summary>Records a decision and removes the claim, as the API would.</summary>
+    /// <summary>Records a decision and removes the claim, as the API would, or fails when the API is set to fail.</summary>
     /// <param name="decision">The decision name.</param>
     /// <param name="userId">The player.</param>
     /// <param name="characterId">The character.</param>
     /// <returns>A recorded outcome.</returns>
     private Task<ClaimDecisionOutcome> Decide(string decision, Guid userId, Guid characterId)
     {
+        if (Fails)
+        {
+            throw new HttpRequestException("The API is unavailable.");
+        }
+
         Decisions.Add((decision, userId, characterId));
         Claims.RemoveAll(claim => claim.CharacterId == characterId);
         return Task.FromResult(ClaimDecisionOutcome.Recorded);

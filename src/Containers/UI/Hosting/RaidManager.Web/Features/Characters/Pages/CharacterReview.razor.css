@@ -1,0 +1,55 @@
+/* Placement only: the parts are shared components, and colors come from the project-wide theme. */
+.review-page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    box-sizing: border-box;
+    max-width: 1168px;
+    /* With the content area's own 16 px, the page starts where the mockup's content does. */
+    padding: 24px;
+}
+
+/* The notice sits 16 px above the table, as in board 1. */
+.review-claims {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+}
+
+/* The error notice spans the content width, as in board 4. */
+.review-column {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.claim-name {
+    display: block;
+    color: var(--rm-text-primary);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.claim-realm {
+    display: block;
+    margin-top: 2px;
+    color: var(--rm-text-muted);
+    font-size: 12px;
+}
+
+.claim-found {
+    color: var(--rm-text-secondary);
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.claim-decision {
+    display: inline-flex;
+    gap: 8px;
+}
+
+.review-reminder {
+    margin: 0;
+    color: var(--rm-text-muted);
+    font-size: 13px;
+}

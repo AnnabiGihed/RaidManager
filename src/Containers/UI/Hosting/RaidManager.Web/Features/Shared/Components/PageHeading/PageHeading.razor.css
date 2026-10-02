@@ -1,13 +1,31 @@
 .page-heading {
     display: flex;
-    flex-direction: column;
-    gap: 8px;
+    gap: 24px;
+    align-items: flex-start;
+    justify-content: space-between;
     font-family: var(--rm-font-family);
 }
 
+.page-heading-text {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+}
+
 .page-heading-center {
-    align-items: center;
+    justify-content: center;
     text-align: center;
+}
+
+.page-heading-center .page-heading-text {
+    align-items: center;
+}
+
+.page-heading-actions {
+    display: flex;
+    flex: none;
+    gap: 8px;
+    padding-top: 28px;
 }
 
 .page-heading-eyebrow {

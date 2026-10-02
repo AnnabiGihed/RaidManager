@@ -9,6 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- The character review page follows its mockup: the design system's heading with Decide later, a table with each
+  class by name and color and a status badge, a confirmation dialog before a rejection, notifications in the
+  design system's style, and an all-set card. Class names read as players say them, such as Death Knight (#305).
 - A member of a linked Discord server sees its community after signing in, on the Overview and in the sidebar's
   community card. Sign-in also asks Discord for the servers the player is in and keeps only the matching
   communities until the next sign-in; if Discord or the API can't answer, sign-in still completes. The API matches

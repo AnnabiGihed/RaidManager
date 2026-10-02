@@ -1,0 +1,56 @@
+.wow-class {
+    display: inline-flex;
+    gap: 8px;
+    align-items: center;
+    color: var(--rm-text-primary);
+    font-family: var(--rm-font-family);
+    font-size: 14px;
+}
+
+.wow-class-dot {
+    flex: none;
+    width: 10px;
+    height: 10px;
+    border-radius: 50%;
+    background: var(--rm-text-muted);
+}
+
+.wow-class-deathknight .wow-class-dot {
+    background: var(--rm-wow-death-knight);
+}
+
+.wow-class-druid .wow-class-dot {
+    background: var(--rm-wow-druid);
+}
+
+.wow-class-hunter .wow-class-dot {
+    background: var(--rm-wow-hunter);
+}
+
+.wow-class-mage .wow-class-dot {
+    background: var(--rm-wow-mage);
+}
+
+.wow-class-paladin .wow-class-dot {
+    background: var(--rm-wow-paladin);
+}
+
+.wow-class-priest .wow-class-dot {
+    background: var(--rm-wow-priest);
+}
+
+.wow-class-rogue .wow-class-dot {
+    background: var(--rm-wow-rogue);
+}
+
+.wow-class-shaman .wow-class-dot {
+    background: var(--rm-wow-shaman);
+}
+
+.wow-class-warlock .wow-class-dot {
+    background: var(--rm-wow-warlock);
+}
+
+.wow-class-warrior .wow-class-dot {
+    background: var(--rm-wow-warrior);
+}

@@ -7,31 +7,19 @@
     @switch (Members.Status)
     {
         case CommunityPageStatus.Ready:
-            <div class="members-table-card">
-                <table class="members-table" data-testid="members-table">
-                    <thead>
-                        <tr>
-                            <th scope="col">Member</th>
-                            <th scope="col">Discord roles</th>
-                            <th scope="col">RaidManager role</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach (var member in Members.Rows)
-                        {
-                            <tr @key="member.DiscordUserId">
-                                <td>
-                                    <span class="member-name">
-                                        <UserAvatar Name="@member.DisplayName" ImageUrl="@member.AvatarUrl" />
-                                        @member.DisplayName
-                                    </span>
-                                </td>
-                                <td class="member-discord-roles">@member.DiscordRoles</td>
-                                <td><TagChip Text="@member.RoleLabel" Tone="@RoleTone(member.Role)" /></td>
-                            </tr>
-                        }
-                    </tbody>
-                </table>
+            <div class="members-table-width">
+                <DataTable Items="@Members.Rows" Headings="@Headings" Key="@(member => member.DiscordUserId)" data-testid="members-table">
+                    <RowTemplate Context="member">
+                        <td>
+                            <span class="member-name">
+                                <UserAvatar Name="@member.DisplayName" ImageUrl="@member.AvatarUrl" />
+                                @member.DisplayName
+                            </span>
+                        </td>
+                        <td class="member-discord-roles">@member.DiscordRoles</td>
+                        <td><TagChip Text="@member.RoleLabel" Tone="@RoleTone(member.Role)" /></td>
+                    </RowTemplate>
+                </DataTable>
             </div>
             <TextNote Text="@Members.CheckedNote" />
             break;
