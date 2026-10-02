@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- `scripts/work_gate.py`: the agent preflight checks the seven conditions of the active-sprint gate for a task, and
+  the board report lists scheduling violations, Status and closure mismatches, unestimated selected stories,
+  contract gaps, unavailable prerequisites and Blocked items without a reason, optionally maintaining the
+  `scheduling-violation` label (#328).
 - Planning records: Sprint 1 (2026-10-02 to 2026-10-16, adopting the work management specification) and a draft
   release v1.0 record with its goal, acceptance criteria, scope and sprint sequence awaiting owner approval (#330).
 - The community page manages roles: one roles card with each role's Discord roles, what it allows and its members;

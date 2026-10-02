@@ -34,8 +34,9 @@ These hold in every agent session; the skills named give the details.
   other board. Classify by intent first, then scope, with `work-classification-and-hierarchy`, before creating an
   issue. Breaking this is a major failure.
 - **No execution outside an active sprint.** Before starting or resuming any task, story, improvement, bug or spike,
-  pass the gate of `work-sprint-planning-and-eligibility` (spec §8). If it fails, stop and report the violated rule;
-  never move dates or sprints to pass it. When the sprint ends, stop at a safe checkpoint.
+  pass the gate: `python scripts/work_gate.py preflight <task>` (`work-sprint-planning-and-eligibility`, spec §8). If
+  it fails, stop and report the violated rule; never move dates or sprints to pass it. When the sprint ends, stop at a
+  safe checkpoint. Start every session with `python scripts/work_gate.py report` and report its violations.
 - **One task, one branch, one draft PR**, following `raidmanager-github-project-workflow`. Branch from `origin/main`
   after checking `git branch --show-current`; stage explicit paths only, because other sessions share this checkout.
 - **Before handover:** build, tests, coverage after committing, the docs check, the spell check and Vale, then a

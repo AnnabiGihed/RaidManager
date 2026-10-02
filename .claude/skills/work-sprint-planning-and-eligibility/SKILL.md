@@ -32,8 +32,9 @@ the check runs before starting and before resuming work (spec §8).
 
 ## Preflight checks: the gate
 
-Run `python scripts/work_gate.py preflight <task>` once it exists (#328). Until then, check each condition by hand and
-record the result on the task:
+Run `python scripts/work_gate.py preflight <task>` from the repository root. It reads the Project with the owner's
+local `gh` login, prints PASS or FAIL for each condition with the correction a failure needs, and exits 1 when any
+condition fails. Every condition must pass; record the result on the task when you start or resume:
 
 1. Valid hierarchy and issue contract (`work-classification-and-hierarchy`, spec §4).
 2. An assigned sprint with `start <= now < end` and no cancellation. Boundaries are local midnight in Europe/Brussels;
