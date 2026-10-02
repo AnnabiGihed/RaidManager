@@ -1,4 +1,5 @@
 using AspNet.Security.OAuth.Discord;
+using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
 using Microsoft.AspNetCore.TestHost;
@@ -33,6 +34,9 @@ public sealed class WebsiteFactory : WebApplicationFactory<Program>
 
     /// <summary>Gets the fake API's community endpoints.</summary>
     public FakeCommunitiesApiClient CommunitiesApi { get; } = new();
+
+    /// <summary>Gets the stand-in for Discord's sign-in answers.</summary>
+    public DiscordBackchannelStub Discord { get; } = new();
 
     /// <summary>Gets the fake of Discord's exchange when the bot is added.</summary>
     public FakeDiscordInstallClient DiscordInstall { get; } = new();
@@ -69,7 +73,8 @@ public sealed class WebsiteFactory : WebApplicationFactory<Program>
             services.AddSingleton<IDiscordInstallClient>(DiscordInstall);
             services.PostConfigure<DiscordAuthenticationOptions>(
                 DiscordAuthenticationDefaults.AuthenticationScheme,
-                options => options.Backchannel = new HttpClient(new DiscordBackchannelStub()));
+                options => options.Backchannel = new HttpClient(Discord, disposeHandler: false));
+            services.AddSingleton<IStartupFilter, SessionEchoStartupFilter>();
         });
     }
     #endregion Overrides

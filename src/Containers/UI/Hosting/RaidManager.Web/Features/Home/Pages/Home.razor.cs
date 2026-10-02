@@ -81,7 +81,7 @@ public sealed partial class Home : IDisposable
             return;
         }
 
-        await Overview.LoadAsync(userId, LinkFailure, _lifetime.Token);
+        await Overview.LoadAsync(userId, state!.User.MemberCommunityIds(), LinkFailure, _lifetime.Token);
         if (LinkFailure is not null)
         {
             // The notice is shown once: a clean address highlights Overview and a refresh doesn't repeat it.

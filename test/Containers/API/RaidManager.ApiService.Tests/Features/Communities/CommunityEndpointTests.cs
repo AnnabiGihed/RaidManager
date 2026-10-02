@@ -66,6 +66,41 @@ public sealed class CommunityEndpointTests
         (await client.GetFromJsonAsync<List<CommunitySummary>>($"/internal/users/{administrator}/communities")).ShouldBe([expected]);
     }
 
+    /// <summary>Finds a member's community from their Discord servers, and lists it with the communities they administer.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task AMembersServersFindTheirCommunity()
+    {
+        using var client = WebsiteClient();
+        var administrator = await SignInAsync(client, "Gihed");
+        var member = await SignInAsync(client, "Malarya");
+        var serverId = NewSnowflake();
+        var linked = await (await client.PostAsJsonAsync(CommunityEndpoints.CommunitiesRoute, new LinkCommunityRequest(serverId, "Dark Templars", "Icecrown", administrator)))
+            .Content.ReadFromJsonAsync<LinkCommunityResponse>();
+        var expected = new CommunitySummary(linked.ShouldNotBeNull().CommunityId, serverId, "Dark Templars", "Icecrown", administrator, "Gihed");
+
+        var found = await client.PostAsJsonAsync($"{CommunityEndpoints.CommunitiesRoute}/by-discord-servers", new FindCommunitiesByDiscordServersRequest([NewSnowflake(), serverId]));
+
+        found.StatusCode.ShouldBe(HttpStatusCode.OK);
+        (await found.Content.ReadFromJsonAsync<List<CommunitySummary>>()).ShouldBe([expected]);
+        (await client.GetFromJsonAsync<List<CommunitySummary>>($"/internal/users/{member}/communities?memberOf={expected.CommunityId}&memberOf={Guid.NewGuid()}")).ShouldBe([expected]);
+        (await client.GetFromJsonAsync<List<CommunitySummary>>($"/internal/users/{administrator}/communities?memberOf={expected.CommunityId}")).ShouldBe([expected]);
+        (await client.GetFromJsonAsync<List<CommunitySummary>>($"/internal/users/{member}/communities")).ShouldNotBeNull().ShouldBeEmpty();
+    }
+
+    /// <summary>Rejects a server id that isn't a snowflake when matching servers, naming the field.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task MatchingAServerThatIsNotASnowflakeIsABadRequest()
+    {
+        using var client = WebsiteClient();
+
+        var response = await client.PostAsJsonAsync($"{CommunityEndpoints.CommunitiesRoute}/by-discord-servers", new FindCommunitiesByDiscordServersRequest(["not-a-snowflake"]));
+
+        response.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        (await response.Content.ReadFromJsonAsync<ValidationProblemDetails>()).ShouldNotBeNull().Errors.Keys.ShouldContain(key => key.StartsWith("DiscordGuildIds", StringComparison.Ordinal));
+    }
+
     /// <summary>Refuses to link a server twice and keeps the first link.</summary>
     /// <returns>A task that completes when the test has run.</returns>
     [Fact]
@@ -129,6 +164,7 @@ public sealed class CommunityEndpointTests
         document.ShouldContain("\"/internal/communities\"");
         document.ShouldContain("/internal/communities/{communityId}");
         document.ShouldContain("/internal/communities/by-discord-server/{discordGuildId}");
+        document.ShouldContain("/internal/communities/by-discord-servers");
         document.ShouldContain("/internal/users/{userId}/communities");
     }
     #endregion Tests

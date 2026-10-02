@@ -78,12 +78,12 @@ public sealed partial class CommunitySettings : IDisposable
     private static string PickerLabel(RoleRowView row) => $"Discord role for {row.Label}";
 
     /// <summary>Reads the signed-in user from the session.</summary>
-    /// <returns>The user's id and display name, or <see langword="null"/> when the session has no user id.</returns>
-    private async Task<(Guid Id, string? Name)?> SignedInUserAsync()
+    /// <returns>The user's id, display name and matched communities, or <see langword="null"/> when the session has no user id.</returns>
+    private async Task<(Guid Id, string? Name, IReadOnlyList<Guid> MemberOf)?> SignedInUserAsync()
     {
         var state = AuthenticationState is null ? null : await AuthenticationState;
         return Guid.TryParse(state?.User.FindFirst(RaidManagerClaimTypes.UserId)?.Value, out var id)
-            ? (id, state!.User.Identity?.Name)
+            ? (id, state!.User.Identity?.Name, state.User.MemberCommunityIds())
             : null;
     }
 
@@ -96,7 +96,7 @@ public sealed partial class CommunitySettings : IDisposable
             return;
         }
 
-        await ViewModel.LoadForUserAsync(user.Id, _lifetime.Token);
+        await ViewModel.LoadForUserAsync(user.Id, user.MemberOf, _lifetime.Token);
         if (ViewModel.Status == CommunityPageStatus.Missing)
         {
             Navigation.NavigateTo("/");

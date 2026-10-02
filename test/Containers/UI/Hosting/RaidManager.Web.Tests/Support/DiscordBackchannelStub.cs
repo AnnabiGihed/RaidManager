@@ -20,15 +20,39 @@ public sealed class DiscordBackchannelStub : HttpMessageHandler
 
     /// <summary>Defines the avatar hash the stub returns.</summary>
     public const string AvatarHash = "a1b2c3";
+
+    /// <summary>Defines a linked server the stub lists by default; the fake API's communities use it.</summary>
+    public const string LinkedServerId = "123456789012345678";
+
+    /// <summary>Defines a server the stub lists by default that no community links to.</summary>
+    public const string OtherServerId = "223456789012345678";
     #endregion Constants
+
+    #region Properties
+    /// <summary>Gets or sets the servers Discord lists for the user, as Discord's JSON answer.</summary>
+    public string ServersJson { get; set; } =
+        $$"""[{"id":"{{LinkedServerId}}","name":"Dark Templars","icon":null,"banner":null,"owner":false,"permissions":"0","features":[]},{"id":"{{OtherServerId}}","name":"Other","icon":null,"banner":null,"owner":false,"permissions":"0","features":[]}]""";
+
+    /// <summary>Gets or sets the status Discord answers the server list with.</summary>
+    public HttpStatusCode ServersStatus { get; set; } = HttpStatusCode.OK;
+
+    /// <summary>Gets the authorization header of the last server list request.</summary>
+    public string? ServersAuthorization { get; private set; }
+    #endregion Properties
 
     #region Overrides
     /// <inheritdoc />
     protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         var path = request.RequestUri?.AbsolutePath ?? string.Empty;
+        if (path.EndsWith("/users/@me/guilds", StringComparison.Ordinal))
+        {
+            ServersAuthorization = request.Headers.Authorization?.ToString();
+            return Task.FromResult(new HttpResponseMessage(ServersStatus) { Content = new StringContent(ServersJson, Encoding.UTF8, "application/json") });
+        }
+
         var json = path.EndsWith("/oauth2/token", StringComparison.Ordinal)
-            ? """{"access_token":"test-access-token","token_type":"Bearer","expires_in":604800,"scope":"identify"}"""
+            ? """{"access_token":"test-access-token","token_type":"Bearer","expires_in":604800,"scope":"identify guilds"}"""
             : path.EndsWith("/users/@me", StringComparison.Ordinal)
                 ? $$"""{"id":"{{DiscordUserId}}","username":"arthas","global_name":"{{GlobalName}}","avatar":"{{AvatarHash}}","discriminator":"0"}"""
                 : null;

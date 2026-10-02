@@ -29,6 +29,9 @@ public sealed class FakeCommunitiesApiClient : ICommunitiesApiClient
     /// <summary>Gets the role changes asked for: the Discord role, the RaidManager role, and whether it was added or removed.</summary>
     public List<(string DiscordRoleId, string Role, bool Added)> RoleChanges { get; } = [];
 
+    /// <summary>Gets the Discord servers each sign-in asked about.</summary>
+    public List<IReadOnlyList<string>> ServerLookups { get; } = [];
+
     /// <summary>Gets the members pages by community; a community without one gets a sample page.</summary>
     public Dictionary<Guid, CommunityMembers> MemberLists { get; } = [];
     #endregion Properties
@@ -72,8 +75,19 @@ public sealed class FakeCommunitiesApiClient : ICommunitiesApiClient
         ]);
 
     /// <inheritdoc />
-    public Task<IReadOnlyList<CommunitySummary>> GetUserCommunitiesAsync(Guid userId, CancellationToken cancellationToken) =>
-        Answer<IReadOnlyList<CommunitySummary>>([.. Communities.Where(community => community.AdministratorId == userId)]);
+    public Task<IReadOnlyList<CommunitySummary>> GetUserCommunitiesAsync(Guid userId, IReadOnlyCollection<Guid> memberOf, CancellationToken cancellationToken) =>
+        Answer<IReadOnlyList<CommunitySummary>>(
+        [
+            .. Communities.Where(community => community.AdministratorId == userId),
+            .. Communities.Where(community => community.AdministratorId != userId && memberOf.Contains(community.CommunityId)),
+        ]);
+
+    /// <inheritdoc />
+    public Task<IReadOnlyList<CommunitySummary>> FindByDiscordServersAsync(IReadOnlyCollection<string> discordGuildIds, CancellationToken cancellationToken)
+    {
+        ServerLookups.Add([.. discordGuildIds]);
+        return Answer<IReadOnlyList<CommunitySummary>>([.. Communities.Where(community => discordGuildIds.Contains(community.DiscordGuildId))]);
+    }
 
     /// <inheritdoc />
     public Task<CommunitySummary?> GetAsync(Guid communityId, CancellationToken cancellationToken) =>

@@ -29,7 +29,7 @@ public sealed class ShellCommunityViewModelTests
     {
         var shell = new ShellCommunityViewModel(_api);
 
-        await shell.LoadAsync(UserId, CancellationToken.None);
+        await shell.LoadAsync(UserId, [], CancellationToken.None);
 
         shell.CardTitle.ShouldBe("No community yet");
         shell.CardSubtitle.ShouldBe("Link a Discord server");
@@ -45,12 +45,27 @@ public sealed class ShellCommunityViewModelTests
         _api.Communities.Add(FakeCommunitiesApi.Community(UserId));
         var shell = new ShellCommunityViewModel(_api);
 
-        await shell.LoadAsync(UserId, CancellationToken.None);
+        await shell.LoadAsync(UserId, [], CancellationToken.None);
 
         shell.CardTitle.ShouldBe("Dark Templars");
         shell.CardSubtitle.ShouldBe("Icecrown · Community");
         shell.CardGlyph.ShouldBe("DT");
         shell.RoleLabel.ShouldBe(ShellCommunityViewModel.AdministratorLabel);
+    }
+
+    /// <summary>Shows the community a member's Discord servers matched, with the member's role label.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task MemberSeesTheCommunityTheirServersMatched()
+    {
+        var community = FakeCommunitiesApi.Community(Guid.NewGuid());
+        _api.Communities.Add(community);
+        var shell = new ShellCommunityViewModel(_api);
+
+        await shell.LoadAsync(UserId, [community.CommunityId], CancellationToken.None);
+
+        shell.CardTitle.ShouldBe("Dark Templars");
+        shell.RoleLabel.ShouldBe("Player");
     }
 
     /// <summary>Shows no community when the API can't answer, instead of breaking the shell.</summary>
@@ -61,7 +76,7 @@ public sealed class ShellCommunityViewModelTests
         _api.Failure = new HttpRequestException("down");
         var shell = new ShellCommunityViewModel(_api);
 
-        await shell.LoadAsync(UserId, CancellationToken.None);
+        await shell.LoadAsync(UserId, [], CancellationToken.None);
 
         shell.Community.ShouldBeNull();
         shell.CardTitle.ShouldBe("No community yet");

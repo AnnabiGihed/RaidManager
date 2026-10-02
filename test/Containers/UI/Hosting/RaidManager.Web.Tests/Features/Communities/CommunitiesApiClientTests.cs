@@ -39,7 +39,26 @@ public sealed class CommunitiesApiClientTests : IDisposable
 
         (await client.GetAsync(communityId, CancellationToken.None)).ShouldNotBeNull().Name.ShouldBe("Dark Templars");
         (await client.FindByDiscordServerAsync("987", CancellationToken.None)).ShouldBeNull();
-        (await client.GetUserCommunitiesAsync(Guid.Parse("0b5f3d2c-7a1e-4b8f-9c6d-1e2f3a4b5c6d"), CancellationToken.None)).ShouldHaveSingleItem().Realm.ShouldBe("Icecrown");
+        (await client.GetUserCommunitiesAsync(Guid.Parse("0b5f3d2c-7a1e-4b8f-9c6d-1e2f3a4b5c6d"), [], CancellationToken.None)).ShouldHaveSingleItem().Realm.ShouldBe("Icecrown");
+    }
+
+    /// <summary>Sends the matched communities with the user and the servers to match, and reads the answers.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task MemberCommunitiesAndServersAreSent()
+    {
+        var userId = Guid.Parse("0b5f3d2c-7a1e-4b8f-9c6d-1e2f3a4b5c6d");
+        var first = Guid.Parse("6f1c3f4e-1d3a-4c55-9a8e-0d3c1b2a4f5e");
+        var second = Guid.Parse("7a2d4e5f-2e4b-4d66-8b9f-1e4d2c3b5a6f");
+        _api.Answer($"/internal/users/{userId}/communities", HttpStatusCode.OK, $"[{CommunityJson}]")
+            .Answer("/internal/communities/by-discord-servers", HttpStatusCode.OK, $"[{CommunityJson}]");
+        var client = Client();
+
+        (await client.GetUserCommunitiesAsync(userId, [first, second], CancellationToken.None)).ShouldHaveSingleItem();
+        (await client.FindByDiscordServersAsync(["987", "654"], CancellationToken.None)).ShouldHaveSingleItem().DiscordGuildId.ShouldBe("987");
+
+        _api.Requests[0].Request.RequestUri.ShouldNotBeNull().Query.ShouldBe($"?memberOf={first}&memberOf={second}");
+        _api.Requests[1].Body.ShouldBe("""{"discordGuildIds":["987","654"]}""");
     }
 
     /// <summary>Returns the new id after linking, and none when the server is already linked.</summary>

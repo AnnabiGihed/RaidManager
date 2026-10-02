@@ -15,6 +15,9 @@ public static class RaidManagerClaimTypes
     /// <summary>Defines the claim holding the player's Discord avatar URL.</summary>
     public const string AvatarUrl = "raidmanager:avatar_url";
 
+    /// <summary>Defines the claim holding a community the player's Discord servers matched at sign-in, one per community.</summary>
+    public const string MemberCommunityId = "raidmanager:member_community_id";
+
     /// <summary>Defines the claim the Discord handler fills with the player's chosen display name.</summary>
     public const string DiscordGlobalName = "urn:discord:user:global_name";
 

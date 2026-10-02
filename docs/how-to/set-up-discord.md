@@ -51,6 +51,10 @@ secrets inside the command, so it never appears on screen.
 
 All calls go to `https://discord.com/api/v10`.
 
+Sign-in asks Discord for the `identify` and `guilds` scopes, so Discord's consent screen also says RaidManager can
+see your servers. The website then reads `GET /users/@me/guilds` once with the sign-in token to find your
+communities ([ADR-0023](../adr/0023-read-a-players-discord-servers-at-sign-in.md)). No setting is needed for it.
+
 Discord can place an application under a developer team, even one with a single member. Then the `owner` that
 `GET /applications/@me` returns is the team's own account, which is in no server, and your account is
 `team.owner_user_id`. Check the member call with that id, the id of the person who added the bot.

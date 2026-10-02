@@ -21,7 +21,7 @@ public sealed partial class DiscordSignInFlowTests
     /// <summary>Starts sign-in and checks the redirect to Discord.</summary>
     /// <returns>A task that completes when the test has run.</returns>
     [Fact]
-    public async Task SignInRedirectsToDiscordWithOnlyTheIdentifyScope()
+    public async Task SignInRedirectsToDiscordWithTheIdentifyAndGuildsScopes()
     {
         await using var site = new WebsiteFactory();
         using var browser = site.CreateBrowser();
@@ -33,7 +33,7 @@ public sealed partial class DiscordSignInFlowTests
         location.GetLeftPart(UriPartial.Path).ShouldBe("https://discord.com/api/oauth2/authorize");
         var query = QueryHelpers.ParseQuery(location.Query);
         query["client_id"].ToString().ShouldBe(WebsiteFactory.ClientId);
-        query["scope"].ToString().ShouldBe("identify");
+        query["scope"].ToString().ShouldBe("identify guilds");
         query["redirect_uri"].ToString().ShouldBe("https://localhost" + AuthenticationRoutes.DiscordCallback);
     }
 
@@ -63,6 +63,76 @@ public sealed partial class DiscordSignInFlowTests
         var home = await browser.GetStringAsync("/");
         home.ShouldContain(DiscordBackchannelStub.GlobalName);
         home.ShouldContain("Sign out");
+    }
+
+    /// <summary>Keeps the communities of the player's Discord servers in the session, asking Discord with the sign-in token.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task CommunitiesOfThePlayersServersAreKeptInTheSession()
+    {
+        await using var site = new WebsiteFactory();
+        var community = FakeCommunitiesApiClient.Community(Guid.NewGuid());
+        site.CommunitiesApi.Communities.Add(community);
+        using var browser = site.CreateBrowser();
+
+        await SignInAsync(browser, "/");
+
+        site.Discord.ServersAuthorization.ShouldBe("Bearer test-access-token");
+        site.CommunitiesApi.ServerLookups.ShouldHaveSingleItem().ShouldBe([DiscordBackchannelStub.LinkedServerId, DiscordBackchannelStub.OtherServerId]);
+        (await browser.GetStringAsync(SessionEchoStartupFilter.Path)).ShouldBe(community.CommunityId.ToString());
+    }
+
+    /// <summary>Signs in without asking the API when the player is in no server.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task NoServerMeansNoLookup()
+    {
+        await using var site = new WebsiteFactory();
+        site.Discord.ServersJson = "[]";
+        using var browser = site.CreateBrowser();
+
+        await SignInAsync(browser, "/");
+
+        site.CommunitiesApi.ServerLookups.ShouldBeEmpty();
+        (await browser.GetStringAsync(SessionEchoStartupFilter.Path)).ShouldBeEmpty();
+    }
+
+    /// <summary>Still signs in, with no community, when Discord refuses the server list or answers unreadably.</summary>
+    /// <param name="status">The status Discord answers with.</param>
+    /// <param name="json">The body Discord answers with.</param>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Theory]
+    [InlineData(HttpStatusCode.Unauthorized, "{}")]
+    [InlineData(HttpStatusCode.OK, "not json")]
+    public async Task AFailedServerListStillSignsIn(HttpStatusCode status, string json)
+    {
+        await using var site = new WebsiteFactory();
+        site.CommunitiesApi.Communities.Add(FakeCommunitiesApiClient.Community(Guid.NewGuid()));
+        site.Discord.ServersStatus = status;
+        site.Discord.ServersJson = json;
+        using var browser = site.CreateBrowser();
+
+        var callback = await SignInAsync(browser, "/");
+
+        SessionCookieWasIssued(callback).ShouldBeTrue();
+        site.CommunitiesApi.ServerLookups.ShouldBeEmpty();
+        (await browser.GetStringAsync(SessionEchoStartupFilter.Path)).ShouldBeEmpty();
+    }
+
+    /// <summary>Still signs in, with no community, when the API can't match the servers.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task AnUnavailableApiStillSignsIn()
+    {
+        await using var site = new WebsiteFactory();
+        site.CommunitiesApi.Fails = true;
+        using var browser = site.CreateBrowser();
+
+        var callback = await SignInAsync(browser, "/");
+
+        callback.Headers.Location.ShouldNotBeNull().OriginalString.ShouldBe("/");
+        SessionCookieWasIssued(callback).ShouldBeTrue();
+        (await browser.GetStringAsync(SessionEchoStartupFilter.Path)).ShouldBeEmpty();
     }
 
     /// <summary>Signs in with a character awaiting the player's decision.</summary>
@@ -261,6 +331,16 @@ public sealed partial class DiscordSignInFlowTests
         var challenge = await browser.GetAsync($"{AuthenticationRoutes.SignIn}?returnUrl={Uri.EscapeDataString(returnUrl)}");
         var location = challenge.Headers.Location.ShouldNotBeNull();
         return QueryHelpers.ParseQuery(location.Query)["state"].ToString();
+    }
+
+    /// <summary>Runs a complete sign-in and returns Discord's callback answer.</summary>
+    /// <param name="browser">The browser-like client.</param>
+    /// <param name="returnUrl">The page to return to.</param>
+    /// <returns>The callback response.</returns>
+    private static async Task<HttpResponseMessage> SignInAsync(HttpClient browser, string returnUrl)
+    {
+        var state = await StartSignInAsync(browser, returnUrl);
+        return await browser.GetAsync($"{AuthenticationRoutes.DiscordCallback}?code=test-code&state={Uri.EscapeDataString(state)}");
     }
 
     /// <summary>Determines whether a response issued the session cookie.</summary>

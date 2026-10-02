@@ -74,8 +74,16 @@ internal sealed class FakeCommunitiesApi : ICommunitiesApiClient
         ]);
 
     /// <inheritdoc />
-    public Task<IReadOnlyList<CommunitySummary>> GetUserCommunitiesAsync(Guid userId, CancellationToken cancellationToken) =>
-        Answer<IReadOnlyList<CommunitySummary>>([.. Communities.Where(community => community.AdministratorId == userId)]);
+    public Task<IReadOnlyList<CommunitySummary>> GetUserCommunitiesAsync(Guid userId, IReadOnlyCollection<Guid> memberOf, CancellationToken cancellationToken) =>
+        Answer<IReadOnlyList<CommunitySummary>>(
+        [
+            .. Communities.Where(community => community.AdministratorId == userId),
+            .. Communities.Where(community => community.AdministratorId != userId && memberOf.Contains(community.CommunityId)),
+        ]);
+
+    /// <inheritdoc />
+    public Task<IReadOnlyList<CommunitySummary>> FindByDiscordServersAsync(IReadOnlyCollection<string> discordGuildIds, CancellationToken cancellationToken) =>
+        Answer<IReadOnlyList<CommunitySummary>>([.. Communities.Where(community => discordGuildIds.Contains(community.DiscordGuildId))]);
 
     /// <inheritdoc />
     public Task<CommunitySummary?> GetAsync(Guid communityId, CancellationToken cancellationToken) =>

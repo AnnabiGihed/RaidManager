@@ -71,6 +71,22 @@ public sealed class HomeTests : BunitContext
         page.FindAll("[data-testid=link-steps]").ShouldBeEmpty();
     }
 
+    /// <summary>Welcomes a member to the community their Discord servers matched at sign-in.</summary>
+    [Fact]
+    public void MemberOfALinkedServerSeesItsCommunity()
+    {
+        var community = FakeCommunitiesApiClient.Community(Guid.NewGuid());
+        _communities.Communities.Add(community);
+        AddAuthorization().SetAuthorized("Arthas Menethil").SetClaims(
+            new Claim(RaidManagerClaimTypes.UserId, _userId.ToString()),
+            new Claim(RaidManagerClaimTypes.MemberCommunityId, community.CommunityId.ToString()));
+
+        var page = Render<HomePage>();
+
+        page.WaitForAssertion(() => page.Find("h1").TextContent.ShouldBe("Welcome, Arthas Menethil"));
+        page.FindAll("[data-testid=link-steps]").ShouldBeEmpty();
+    }
+
     /// <summary>Shows a player without a community the steps of board 1 and starts adding the bot.</summary>
     [Fact]
     public void PlayerWithoutACommunitySeesHowToLinkOne()

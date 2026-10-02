@@ -68,16 +68,17 @@ public sealed class OverviewViewModel
 
     /// <summary>Loads the user's community and the reason the last attempt stopped, if any.</summary>
     /// <param name="userId">The signed-in user.</param>
+    /// <param name="memberOf">The communities the user's Discord servers matched at sign-in.</param>
     /// <param name="failure">The reason the return address names, if any.</param>
     /// <param name="cancellationToken">The page's token.</param>
     /// <returns>A task that completes when the state is loaded.</returns>
-    public async Task LoadAsync(Guid userId, string? failure, CancellationToken cancellationToken)
+    public async Task LoadAsync(Guid userId, IReadOnlyCollection<Guid> memberOf, string? failure, CancellationToken cancellationToken)
     {
         Failure = NoticeFor(failure);
         Status = CommunityPageStatus.Loading;
         try
         {
-            var communities = await _api.GetUserCommunitiesAsync(userId, cancellationToken);
+            var communities = await _api.GetUserCommunitiesAsync(userId, memberOf, cancellationToken);
             Community = communities.Count > 0 ? communities[0] : null;
             Status = CommunityPageStatus.Ready;
         }
