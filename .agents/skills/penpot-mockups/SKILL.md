@@ -95,7 +95,7 @@ The generator turns the design into a small design system that a designer keeps 
 
 ## Workflow
 
-1. Confirm the item is labelled `ui` and has a design task under its story, improvement or bug.
+1. Confirm the item is labelled `ui` and has a design task under its story, improvement, bug or spike.
 2. Read the API contract and the story's criteria; list the states the screen shows and the journeys between them.
 3. Write `scripts/mockups/<screen_name>.py`:
    - `app_screen(...)` for each state of a website screen (`Board(name, x, y, width, height, fill, children)`

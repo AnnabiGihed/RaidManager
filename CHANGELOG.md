@@ -170,6 +170,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- Work items follow ADR-0025, which supersedes ADR-0016: a spike sits under a feature beside stories, improvements
+  and bugs, and holds tasks like them; each type is chosen by intent first, then scope. A spike closes only with a
+  completed task, a pull request closes tasks only, and an open issue without exactly one type label is flagged
+  `needs-parent`. The issue forms, skills and agent instructions state the rule (#318).
 - The agent's working practices live in the skills and `AGENTS.md` instead of an agent's memory: drafting both
   review comments, a clean Vale and SonarCloud before handover, checking a page against its mockup, shared-checkout
   git hygiene, Windows line endings, and leaving the owner's running app alone (#279).

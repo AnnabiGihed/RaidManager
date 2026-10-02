@@ -26,6 +26,10 @@ Project skills live in `.agents/skills/` and, identically, in `.claude/skills/` 
 
 These hold in every agent session; the skills named give the details.
 
+- **No standalone work item, ever (non-negotiable).** Epic → Feature → User Story, Improvement, Bug or Spike → Task
+  (ADR-0025): every item has exactly one type label and, except an epic, a parent of the allowed type, in this
+  Project or any other board. Classify by intent first, then scope, with the guide in
+  `raidmanager-github-project-workflow`, before creating an issue. Breaking this is a major failure.
 - **One task, one branch, one draft PR**, following `raidmanager-github-project-workflow`. Branch from `origin/main`
   after checking `git branch --show-current`; stage explicit paths only, because other sessions share this checkout.
 - **Before handover:** build, tests, coverage after committing, the docs check, the spell check and Vale, then a

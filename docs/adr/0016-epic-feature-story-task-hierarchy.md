@@ -1,6 +1,6 @@
 # ADR-0016: One Epic, Feature, Story and Task hierarchy
 
-- Status: Proposed
+- Status: Superseded by [ADR-0025](0025-classify-work-items-with-spikes-under-features.md)
 - Date: 2026-09-30
 - Deciders: Gihed Annabi
 

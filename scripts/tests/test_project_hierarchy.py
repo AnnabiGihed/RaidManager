@@ -1,4 +1,4 @@
-"""Tests for the Epic -> Feature -> Story/Improvement/Bug -> Task/Spike hierarchy rules."""
+"""Tests for the Epic -> Feature -> Story/Improvement/Bug/Spike -> Task hierarchy rules (ADR-0025)."""
 
 from __future__ import annotations
 
@@ -28,42 +28,54 @@ class ParentRuleTests(unittest.TestCase):
 
     def test_each_level_needs_the_level_above(self) -> None:
         cases = [("feature", "epic"), ("story", "feature"), ("improvement", "feature"), ("bug", "feature"),
-                 ("task", "story"), ("task", "improvement"), ("task", "bug"), ("spike", "story")]
+                 ("spike", "feature"), ("task", "story"), ("task", "improvement"), ("task", "bug"), ("task", "spike")]
         for kind, parent in cases:
             with self.subTest(kind=kind, parent=parent):
                 self.assertIsNone(parent_problem(issue(2, kind), issue(1, parent)))
 
     def test_missing_parent_names_the_allowed_types(self) -> None:
         self.assertEqual(parent_problem(issue(100, "task"), None),
-                         "Add this task as a sub-issue of a story, improvement or bug.")
+                         "Add this task as a sub-issue of a story, improvement, bug or spike.")
+        self.assertEqual(parent_problem(issue(37, "spike"), None), "Add this spike as a sub-issue of a feature.")
         self.assertEqual(parent_problem(issue(13, "story"), None), "Add this story as a sub-issue of a feature.")
 
     def test_wrong_parent_level_fails(self) -> None:
         self.assertEqual(parent_problem(issue(13, "story"), issue(7, "epic")),
                          "Its parent #7 is an epic; a story belongs under a feature.")
         self.assertEqual(parent_problem(issue(57, "task"), issue(9, "feature")),
-                         "Its parent #9 is a feature; a task belongs under a story, improvement or bug.")
+                         "Its parent #9 is a feature; a task belongs under a story, improvement, bug or spike.")
+        self.assertEqual(parent_problem(issue(37, "spike"), issue(15, "story")),
+                         "Its parent #15 is a story; a spike belongs under a feature.")
 
     def test_two_type_labels_fail(self) -> None:
         both = Issue(5, "open", frozenset({"type:task", "type:bug"}))
         self.assertEqual(parent_problem(both, None), "Use exactly one type label, not type:bug, type:task.")
 
-    def test_untyped_and_abandoned_items_are_exempt(self) -> None:
+    def test_closed_untyped_and_abandoned_items_are_exempt(self) -> None:
         self.assertIsNone(parent_problem(Issue(118, "closed", frozenset(), "not_planned"), None))
         self.assertIsNone(parent_problem(issue(40, "spike", "closed", "not_planned"), None))
+
+    def test_an_open_issue_without_a_type_label_is_flagged(self) -> None:
+        problem = parent_problem(Issue(300, "open", frozenset({"ui"})), None) or ""
+        self.assertIn("Give this issue exactly one type label", problem)
+        self.assertIn("nothing is standalone", problem)
 
 
 class CompletionRuleTests(unittest.TestCase):
     def test_each_parent_level_needs_a_completed_child(self) -> None:
-        for kind in ("epic", "feature", "story", "improvement", "bug"):
+        for kind in ("epic", "feature", "story", "improvement", "bug", "spike"):
             with self.subTest(kind=kind):
                 self.assertIn("At least one child", completion_problem(issue(1, kind, "closed"), []) or "")
 
     def test_bug_closes_with_a_completed_task(self) -> None:
         self.assertIsNone(completion_problem(issue(146, "bug", "closed"), [issue(123, "task", "closed")]))
 
-    def test_feature_accepts_stories_improvements_and_bugs(self) -> None:
-        children = [issue(13, "story", "closed"), issue(144, "improvement", "closed"), issue(146, "bug", "closed")]
+    def test_spike_closes_with_a_completed_task(self) -> None:
+        self.assertIsNone(completion_problem(issue(40, "spike", "closed"), [issue(41, "task", "closed")]))
+
+    def test_feature_accepts_stories_improvements_bugs_and_spikes(self) -> None:
+        children = [issue(13, "story", "closed"), issue(144, "improvement", "closed"), issue(146, "bug", "closed"),
+                    issue(40, "spike", "closed")]
         self.assertIsNone(completion_problem(issue(125, "feature", "closed"), children))
 
     def test_epic_needs_features_not_stories(self) -> None:
@@ -71,8 +83,13 @@ class CompletionRuleTests(unittest.TestCase):
         self.assertEqual(problem, "Children of an epic must be a feature: #13.")
 
     def test_story_rejects_an_open_task(self) -> None:
-        children = [issue(57, "task", "closed"), issue(58, "spike")]
+        children = [issue(57, "task", "closed"), issue(58, "task")]
         self.assertEqual(completion_problem(issue(13, "story", "closed"), children), "Close every child first: #58.")
+
+    def test_story_rejects_a_spike_child(self) -> None:
+        children = [issue(57, "task", "closed"), issue(58, "spike", "closed")]
+        self.assertEqual(completion_problem(issue(13, "story", "closed"), children),
+                         "Children of a story must be a task: #58.")
 
     def test_abandoned_children_do_not_count_as_completed(self) -> None:
         children = [issue(57, "task", "closed", "not_planned")]
@@ -98,7 +115,7 @@ class CompletionRuleTests(unittest.TestCase):
 
 
 class PullRequestTests(unittest.TestCase):
-    """A pull request closes a task or spike whose chain reaches an epic."""
+    """A pull request closes a task whose chain reaches an epic."""
 
     def board(self, *nodes: Node):
         by_number = {node.issue.number: node for node in nodes}
@@ -114,8 +131,18 @@ class PullRequestTests(unittest.TestCase):
     def test_story_cannot_be_closed_by_a_pull_request(self) -> None:
         self.assertIn("#13 is a story", chain_problem(13, self.board(*self.chain())) or "")
 
+    def test_spike_cannot_be_closed_by_a_pull_request(self) -> None:
+        epic, feature = issue(7, "epic"), issue(125, "feature")
+        board = self.board(Node(epic), Node(feature, epic), Node(issue(37, "spike"), feature))
+        self.assertIn("#37 is a spike. A pull request closes a task only", chain_problem(37, board) or "")
+
+    def test_task_of_a_spike_passes(self) -> None:
+        epic, feature, spike = issue(7, "epic"), issue(125, "feature"), issue(37, "spike")
+        board = self.board(Node(epic), Node(feature, epic), Node(spike, feature), Node(issue(41, "task"), spike))
+        self.assertIsNone(chain_problem(41, board))
+
     def test_orphan_task_fails(self) -> None:
-        self.assertIn("#100 needs a parent story, improvement or bug",
+        self.assertIn("#100 needs a parent story, improvement, bug or spike",
                       chain_problem(100, self.board(Node(issue(100, "task")))) or "")
 
     def test_story_without_feature_fails(self) -> None:

@@ -33,7 +33,7 @@ jobs:
           python-version: '3.12'
       - name: Ensure the rule labels exist
         run: |
-          gh label create needs-parent --repo "$GITHUB_REPOSITORY" --color d93f0b --force             --description "Not placed in the Epic, Feature, Story and Task hierarchy (ADR-0016)"
+          gh label create needs-parent --repo "$GITHUB_REPOSITORY" --color d93f0b --force             --description "Standalone or misplaced: every item needs one type label and its parent (ADR-0025)"
           gh label create ui --repo "$GITHUB_REPOSITORY" --color 1d76db --force             --description "Changes what users see; must link or show its Penpot mockup (ADR-0017)"
           gh label create needs-mockup --repo "$GITHUB_REPOSITORY" --color fbca04 --force             --description "UI work without a linked or shown mockup (ADR-0017)"
       - name: Check parents and completion, and the ancestors of a changed issue

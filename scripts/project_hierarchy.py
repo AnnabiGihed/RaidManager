@@ -1,12 +1,13 @@
-"""Keep RaidManager's work items in one Epic -> Feature -> Story/Improvement/Bug -> Task/Spike hierarchy (ADR-0016).
+"""Keep RaidManager's work items in one Epic -> Feature -> Story/Improvement/Bug/Spike -> Task hierarchy (ADR-0025).
 
 Four rules, all checked with the built-in GITHUB_TOKEN:
 
-- Parent: every item except an epic has a parent of the level above; an epic has none. A violation adds the
-  needs-parent label and one explanatory comment; fixing the item removes the label.
-- Completion: an epic, feature, story, improvement or bug closed as completed is reopened unless at least one child
-  of the level below is completed and every child is closed.
-- Pull requests: each "Closes #N" names a task or spike whose chain reaches an epic.
+- Parent: every item has exactly one type label and, except an epic, a parent of the level above; an epic has none.
+  Nothing is standalone. A violation adds the needs-parent label and one explanatory comment; fixing the item removes
+  the label.
+- Completion: an epic, feature, story, improvement, bug or spike closed as completed is reopened unless at least one
+  child of the level below is completed and every child is closed.
+- Pull requests: each "Closes #N" names a task whose chain reaches an epic.
 - Mockups (ADR-0017): an item labelled `ui`, or whose issue form says it changes a user interface, links or shows its
   mockup; otherwise it gets the needs-mockup label and one comment.
 """
@@ -30,8 +31,9 @@ from ui_mockups import NEEDS_MOCKUP, UI_LABEL, mockup_problem, ui_requested
 NEEDS_PARENT = "needs-parent"
 # A new issue usually gets its parent a moment after it is created, so the parent rule waits before flagging it.
 GRACE = timedelta(minutes=10)
-WORK_ITEMS = frozenset({"type:task", "type:spike"})
-BACKLOG_ITEMS = frozenset({"type:story", "type:improvement", "type:bug"})
+# A spike is a peer of stories, improvements and bugs under a feature, and has tasks like them (ADR-0025).
+WORK_ITEMS = frozenset({"type:task"})
+BACKLOG_ITEMS = frozenset({"type:story", "type:improvement", "type:bug", "type:spike"})
 # Allowed parent types and child types for each type label.
 PARENTS: dict[str, frozenset[str]] = {
     "type:epic": frozenset(),
@@ -46,10 +48,10 @@ CHILDREN: dict[str, frozenset[str]] = {
 }
 NAMES = {
     "type:epic": "epic", "type:feature": "feature", "type:story": "story", "type:improvement": "improvement",
-    "type:bug": "bug", "type:task": "task", "type:spike": "spike",
+    "type:bug": "bug", "type:spike": "spike", "type:task": "task",
 }
 # Leaves first, so a parent is judged after the children the same run reopened.
-DEPTH = {"type:task": 0, "type:spike": 0, "type:story": 1, "type:improvement": 1, "type:bug": 1,
+DEPTH = {"type:task": 0, "type:story": 1, "type:improvement": 1, "type:bug": 1, "type:spike": 1,
          "type:feature": 2, "type:epic": 3}
 ANCESTOR_LEVELS = 3
 CLOSING_LINE = re.compile(r"^Closes #(\d+)[ \t]*$", re.IGNORECASE)
@@ -134,8 +136,11 @@ def parent_problem(issue: Issue, parent: Issue | None) -> str | None:
     if len(issue.kinds) > 1:
         return f"Use exactly one type label, not {', '.join(issue.kinds)}."
     kind = issue.kind
-    if kind is None or issue.abandoned:
+    if issue.abandoned or (kind is None and issue.state != "open"):
         return None
+    if kind is None:
+        return (f"Give this issue exactly one type label ({', '.join(ORDER)}) and link it to its parent; "
+                "nothing is standalone.")
     allowed = PARENTS[kind]
     if not allowed:
         return None if parent is None else f"An epic has no parent: remove it from #{parent.number}."
@@ -169,13 +174,13 @@ def chain_problem(number: int, fetch: Callable[[int], Node]) -> str | None:
     node = fetch(number)
     if node.issue.kind not in WORK_ITEMS:
         found = NAMES.get(node.issue.kind or "", "item without one type label")
-        return f"#{number} is {a(found)}. A pull request closes a task or spike only; use Refs for other items."
+        return f"#{number} is {a(found)}. A pull request closes a task only; use Refs for other items."
     current, expected = node, [BACKLOG_ITEMS, frozenset({"type:feature"}), frozenset({"type:epic"})]
     for level in expected:
         if current.parent is None or current.parent.kind not in level:
             where = f"#{current.issue.number}"
             return (f"{where} needs a parent {names(level)}, so that #{number} reaches an epic through a story, "
-                    "improvement or bug and a feature.")
+                    "improvement, bug or spike and a feature.")
         current = fetch(current.parent.number)
     if current.parent is not None:
         return f"Epic #{current.issue.number} must not have a parent."
@@ -257,7 +262,7 @@ class Guard:
             print(f"Cleared #{issue.number} {label}")
 
     def check_parent(self, node: Node) -> None:
-        self.flag(node.issue, NEEDS_PARENT, parent_problem(node.issue, node.parent), "Hierarchy rule (ADR-0016)")
+        self.flag(node.issue, NEEDS_PARENT, parent_problem(node.issue, node.parent), "Hierarchy rule (ADR-0025)")
 
     def check_mockup(self, node: Node) -> None:
         issue = node.issue
@@ -290,7 +295,7 @@ def check_pull_request(repository: str, body: str) -> int:
     for problem in problems:
         print(f"ERROR: {problem}")
     if not problems:
-        print("Every closed work item sits in the Epic, Feature, Story and Task hierarchy.")
+        print("Every closed task sits in the Epic, Feature, Story/Improvement/Bug/Spike and Task hierarchy.")
     return 1 if problems else 0
 
 
