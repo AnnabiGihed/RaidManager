@@ -72,5 +72,32 @@ public interface ICommunitiesApiClient
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>How the API answered.</returns>
     Task<CommunityApiStatus> UnmapRoleAsync(Guid userId, Guid communityId, string discordRoleId, Guid roleId, CancellationToken cancellationToken);
+
+    /// <summary>Creates a role in the community.</summary>
+    /// <param name="userId">The signed-in user: the Administrator or a role manager.</param>
+    /// <param name="communityId">The community.</param>
+    /// <param name="name">The role name.</param>
+    /// <param name="permissions">What it allows, by API name.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>How the API answered; <see cref="CommunityApiStatus.NameTaken"/> when another role has the name.</returns>
+    Task<CommunityApiStatus> CreateRoleAsync(Guid userId, Guid communityId, string name, IReadOnlyCollection<string> permissions, CancellationToken cancellationToken);
+
+    /// <summary>Renames one of the community's roles and changes what it allows.</summary>
+    /// <param name="userId">The signed-in user: the Administrator or a role manager.</param>
+    /// <param name="communityId">The community.</param>
+    /// <param name="roleId">The role.</param>
+    /// <param name="name">The new name.</param>
+    /// <param name="permissions">What it allows now, by API name.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>How the API answered; <see cref="CommunityApiStatus.NameTaken"/> when another role has the name.</returns>
+    Task<CommunityApiStatus> UpdateRoleAsync(Guid userId, Guid communityId, Guid roleId, string name, IReadOnlyCollection<string> permissions, CancellationToken cancellationToken);
+
+    /// <summary>Deletes one of the community's roles.</summary>
+    /// <param name="userId">The signed-in user: the Administrator or a role manager.</param>
+    /// <param name="communityId">The community.</param>
+    /// <param name="roleId">The role.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>How the API answered.</returns>
+    Task<CommunityApiStatus> DeleteRoleAsync(Guid userId, Guid communityId, Guid roleId, CancellationToken cancellationToken);
     #endregion Methods
 }

@@ -32,6 +32,9 @@ public sealed class CommunityViewModel
     /// <summary>Gets the community page's subtitle.</summary>
     public string LinkedOn => Community is null ? string.Empty : $"Discord server linked to RaidManager on {Community.Realm}.";
 
+    /// <summary>Gets the community page's subtitle: the realm and the Administrator (board 9).</summary>
+    public string Overview => Community is null ? string.Empty : $"{LinkedOn} Administrator: {Community.AdministratorName}.";
+
     /// <summary>Gets the already-linked page's title.</summary>
     public string AlreadyLinkedTitle => Community is null ? string.Empty : $"{Community.Name} is already linked";
 

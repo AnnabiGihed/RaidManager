@@ -70,5 +70,16 @@ public sealed class SurfaceCardTests : BunitContext
         card.FindAll(".surface-card-title").ShouldBeEmpty();
     }
 
+    /// <summary>Shows header actions at the end of the title row only when given.</summary>
+    [Fact]
+    public void HeaderActionsSitBesideTheTitle()
+    {
+        var card = Render<SurfaceCard>(parameters => parameters.Add(component => component.Title, "Roles").Add(component => component.HeaderActions, "Create role"));
+        var plain = Render<SurfaceCard>(parameters => parameters.Add(component => component.Title, "Community"));
+
+        card.Find(".surface-card-header .surface-card-title").TextContent.ShouldBe("Roles");
+        card.Find(".surface-card-header-actions").TextContent.ShouldBe("Create role");
+        plain.FindAll(".surface-card-header-actions").ShouldBeEmpty();
+    }
     #endregion Tests
 }

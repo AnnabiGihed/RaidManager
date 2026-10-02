@@ -9,6 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- The community page manages roles: one roles card with each role's Discord roles, what it allows and its members;
+  Create role, Edit and Delete with a confirmation; a role manager sees the roles they can't change as locked and
+  can't let a role manage roles; other members see the card read-only (#314).
 - The API lets the Administrator, or a member whose role grants Manage community roles, create, rename, change the
   permissions of and delete a community's roles, and map Discord roles to them. Only the Administrator changes a
   role that manages roles or lets one do so, and role names are unique in a community (ADR-0024) (#313).

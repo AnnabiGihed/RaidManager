@@ -8,21 +8,15 @@
     padding: 24px;
 }
 
-/* The community card keeps the mockup's 400 px; the roles card takes the rest of the content width. */
-.community-columns {
-    display: flex;
-    gap: 16px;
-    align-items: flex-start;
+/* The locked notice keeps board 14's width beside the heading. */
+.locked-notice {
+    width: 560px;
+    max-width: 100%;
+}
+
+/* The roles card spans the content width of board 9. */
+.community-roles {
     max-width: 1120px;
-}
-
-.community-summary-column {
-    flex: 0 0 400px;
-}
-
-.community-roles-column {
-    flex: 1 1 auto;
-    min-width: 0;
 }
 
 .roles-content {
@@ -31,31 +25,39 @@
     gap: 16px;
 }
 
-.roles-caption {
-    margin: 0;
-    color: var(--rm-text-secondary);
-    font-size: 13px;
+/* The rows follow each other with only their dividers between them, as in board 9. */
+.role-rows {
+    display: flex;
+    flex-direction: column;
 }
 
 .role-row {
     display: flex;
     gap: 16px;
     align-items: center;
-    min-height: 64px;
-    padding: 8px 0;
+    min-height: 80px;
+    margin: 0 -24px;
+    padding: 8px 24px;
     border-top: 1px solid var(--rm-line-divider);
 }
 
 .role-row-label {
-    flex: 0 0 144px;
+    flex: 0 0 160px;
     color: var(--rm-text-primary);
     font-size: 14px;
     font-weight: 600;
 }
 
-.role-row-sources {
+.role-row-details {
     display: flex;
     flex: 1 1 auto;
+    flex-direction: column;
+    gap: 8px;
+    min-width: 0;
+}
+
+.role-row-sources {
+    display: flex;
     flex-wrap: wrap;
     gap: 8px;
     align-items: center;
@@ -67,9 +69,26 @@
     font-size: 13px;
 }
 
+.role-row-allows,
+.role-row-locked {
+    color: var(--rm-text-muted);
+    font-size: 12px;
+}
+
+.role-row-locked {
+    font-size: 13px;
+    font-weight: 600;
+}
+
 .role-row-members {
-    flex: 0 0 auto;
+    flex: 0 0 96px;
     text-align: right;
+}
+
+.role-row-action {
+    display: flex;
+    flex: 0 0 64px;
+    justify-content: flex-end;
 }
 
 .role-picker {
@@ -79,8 +98,25 @@
     align-items: center;
 }
 
-.community-values {
+.role-permissions {
     display: flex;
     flex-direction: column;
-    gap: 20px;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+}
+
+.role-permissions-legend {
+    margin-bottom: 12px;
+    padding: 0;
+    color: var(--rm-text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-transform: uppercase;
+}
+
+.role-form-spacer {
+    flex: 1 1 auto;
 }

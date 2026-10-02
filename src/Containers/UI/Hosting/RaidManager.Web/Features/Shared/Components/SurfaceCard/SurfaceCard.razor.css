@@ -39,6 +39,31 @@
     gap: 16px;
 }
 
+.surface-card-header {
+    display: flex;
+    gap: 16px;
+    align-items: flex-start;
+    justify-content: space-between;
+}
+
+.surface-card-heading {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.surface-card-subtitle {
+    margin: 0;
+    color: var(--rm-text-secondary);
+    font-size: 13px;
+}
+
+.surface-card-header-actions {
+    display: flex;
+    flex: none;
+    gap: 8px;
+}
+
 .surface-card-title {
     margin: 0;
     color: var(--rm-text-primary);

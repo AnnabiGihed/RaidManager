@@ -15,6 +15,10 @@ public sealed partial class SurfaceCard
     [Parameter]
     public string? Title { get; set; }
 
+    /// <summary>Gets or sets the optional line under the title.</summary>
+    [Parameter]
+    public string? Subtitle { get; set; }
+
     /// <summary>Gets or sets the heading level of the title.</summary>
     [Parameter]
     public HeadingLevel HeadingLevel { get; set; } = HeadingLevel.H2;
@@ -30,6 +34,10 @@ public sealed partial class SurfaceCard
     /// <summary>Gets or sets the actions shown in a row under the body, such as buttons.</summary>
     [Parameter]
     public RenderFragment? Actions { get; set; }
+
+    /// <summary>Gets or sets optional actions at the end of the title row, such as "Create role".</summary>
+    [Parameter]
+    public RenderFragment? HeaderActions { get; set; }
 
     /// <summary>Gets or sets extra attributes for the card, such as a test id.</summary>
     [Parameter(CaptureUnmatchedValues = true)]

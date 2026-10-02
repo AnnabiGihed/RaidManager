@@ -133,6 +133,30 @@ public sealed class CommunitiesApiClientTests : IDisposable
         _api.Answer($"{route}/roles", HttpStatusCode.InternalServerError);
         await Should.ThrowAsync<HttpRequestException>(() => client.GetRoleSettingsAsync(user, community, CancellationToken.None));
     }
+
+    /// <summary>Sends role writes to their routes and reads 409 as a taken name and 404 as refused.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task RoleWritesGoToTheirRoutes()
+    {
+        var user = Guid.Parse("0b5f3d2c-7a1e-4b8f-9c6d-1e2f3a4b5c6d");
+        var community = Guid.Parse("6f1c3f4e-1d3a-4c55-9a8e-0d3c1b2a4f5e");
+        var role = Guid.Parse("0a6f3c1e-1111-4c55-9a8e-0d3c1b2a4f5e");
+        var route = $"/internal/users/{user}/communities/{community}/roles";
+        _api.Answer(route, HttpStatusCode.Created, """{"roleId":"0a6f3c1e-1111-4c55-9a8e-0d3c1b2a4f5e"}""").Answer($"{route}/{role}", HttpStatusCode.NoContent);
+        var client = Client();
+
+        (await client.CreateRoleAsync(user, community, "Veteran", ["RunRaidNight"], CancellationToken.None)).ShouldBe(CommunityApiStatus.Succeeded);
+        _api.Requests[^1].Body.ShouldBe("""{"name":"Veteran","permissions":["RunRaidNight"]}""");
+        (await client.UpdateRoleAsync(user, community, role, "Veteran", [], CancellationToken.None)).ShouldBe(CommunityApiStatus.Succeeded);
+        _api.Requests[^1].Request.Method.ShouldBe(HttpMethod.Put);
+        (await client.DeleteRoleAsync(user, community, role, CancellationToken.None)).ShouldBe(CommunityApiStatus.Succeeded);
+        _api.Requests[^1].Request.Method.ShouldBe(HttpMethod.Delete);
+
+        _api.Answer(route, HttpStatusCode.Conflict).Answer($"{route}/{role}", HttpStatusCode.NotFound);
+        (await client.CreateRoleAsync(user, community, "Officer", [], CancellationToken.None)).ShouldBe(CommunityApiStatus.NameTaken);
+        (await client.DeleteRoleAsync(user, community, role, CancellationToken.None)).ShouldBe(CommunityApiStatus.Refused);
+    }
     #endregion Tests
 
     #region Public Methods

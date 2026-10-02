@@ -77,6 +77,11 @@ public sealed partial class CommunitySettings : IDisposable
     /// <returns>The label, such as "Discord role for Officer".</returns>
     private static string PickerLabel(RoleRowView row) => $"Discord role for {row.Label}";
 
+    /// <summary>Names a row's Edit link for screen readers.</summary>
+    /// <param name="row">The row.</param>
+    /// <returns>The label, such as "Edit Veteran".</returns>
+    private static string EditLabel(RoleRowView row) => $"Edit {row.Label}";
+
     /// <summary>Reads the signed-in user from the session.</summary>
     /// <returns>The user's id, display name and matched communities, or <see langword="null"/> when the session has no user id.</returns>
     private async Task<(Guid Id, string? Name, IReadOnlyList<Guid> MemberOf)?> SignedInUserAsync()
@@ -140,5 +145,13 @@ public sealed partial class CommunitySettings : IDisposable
     /// <param name="role">The row's RaidManager role.</param>
     /// <returns>A task that completes when the change was tried.</returns>
     private Task RemoveAsync(string discordRoleId, string role) => Roles.RemoveAsync(discordRoleId, role, _lifetime.Token);
+
+    /// <summary>Saves the role form.</summary>
+    /// <returns>A task that completes when the save was tried.</returns>
+    private Task SaveAsync() => Roles.SaveFormAsync(_lifetime.Token);
+
+    /// <summary>Deletes the role being edited, once confirmed.</summary>
+    /// <returns>A task that completes when the deletion was tried.</returns>
+    private Task DeleteAsync() => Roles.DeleteAsync(_lifetime.Token);
     #endregion Private Helpers
 }

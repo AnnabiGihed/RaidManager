@@ -1,0 +1,11 @@
+@namespace RaidManager.Web.Features.Shared.Components
+<div class="form-dialog-overlay">
+    <div class="form-dialog" role="dialog" aria-modal="true" aria-labelledby="@TitleId" tabindex="-1" @ref="_dialog" @onkeydown="OnKeyDownAsync" @attributes="AdditionalAttributes">
+        <h2 id="@TitleId" class="form-dialog-title">@Title</h2>
+        <div class="form-dialog-body">@ChildContent</div>
+        @if (Actions is not null)
+        {
+            <div class="form-dialog-actions">@Actions</div>
+        }
+    </div>
+</div>
