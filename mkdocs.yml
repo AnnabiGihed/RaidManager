@@ -19,6 +19,7 @@ nav:
   - Glossary: glossary.md
   - API contracts: reference/api-contracts.md
   - Project automation: reference/project-automation.md
+  - Work management specification: reference/work-management-specification.md
   - Warmane lockout evidence: reference/warmane-lockout-rules.md
   - Decisions:
       - Index: adr/README.md
@@ -47,6 +48,7 @@ nav:
       - Discord servers at sign-in: adr/0023-read-a-players-discord-servers-at-sign-in.md
       - Community roles: adr/0024-give-each-community-its-own-roles.md
       - Work item classification: adr/0025-classify-work-items-with-spikes-under-features.md
+      - Work management specification adoption: adr/0026-adopt-the-work-management-specification.md
 theme:
   name: material
 markdown_extensions:
