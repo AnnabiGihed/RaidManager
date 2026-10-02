@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- Three Project views show releases and sprints at a glance: Release plan (a timeline grouped by release, with sprint
+  and release markers), Releases (items, counts and Story Points per release), and Sprints (the same per sprint) (#344).
 - `scripts/work_gate.py`: the agent preflight checks the seven conditions of the active-sprint gate for a task, and
   the board report lists scheduling violations, Status and closure mismatches, unestimated selected stories,
   contract gaps, unavailable prerequisites and Blocked items without a reason, optionally maintaining the
