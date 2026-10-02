@@ -2,25 +2,20 @@
 
 ## Work items
 
-Follow the mandatory [GitHub Project workflow](.agents/skills/raidmanager-github-project-workflow/SKILL.md).
-Story development requires an accepted story and a child task with measurable acceptance criteria before branching
-or implementation. Complete the task through its own issue-linked pull request.
+Work management follows the [Work Management and Delivery Specification](docs/reference/work-management-specification.md)
+([ADR-0026](docs/adr/0026-adopt-the-work-management-specification.md)), applied by the eight `work-*` skills in
+`.agents/skills/`:
 
-Every work item sits in one chain of native sub-issues
-([ADR-0025](docs/adr/0025-classify-work-items-with-spikes-under-features.md)): an **epic** holds **features**; a
-feature holds **stories** (new capabilities), **improvements** (better existing behavior, tooling, documentation or
-process), **bugs** (behavior that contradicts what was agreed) and **spikes** (time-boxed research); each of those
-holds **tasks**. Only an epic has no parent, and nothing is standalone. Classify by intent first, then scope, with
-the identifying questions in ADR-0025. Create issues with the issue forms, which set the type label, and add each new
-issue as a sub-issue of its parent right away.
+- Every item sits in one chain of native sub-issues: Epic → Feature → User Story, Improvement, Bug or Spike → Task.
+  Nothing is standalone. Classify by intent first, then scope (specification §2, §3), and create issues with the issue
+  forms.
+- No task, story, improvement, bug or spike is executed outside an active sprint (specification §8).
+- Status, Delivery Stage, completion, cancellation and releases follow specification §6 to §13.
 
-A parent closes as completed only when at least one child is completed and every child is closed, so a story,
-improvement, bug or spike never closes without a completed task. The
-[hierarchy workflow](.github/workflows/project-hierarchy.yml) reopens an invalid closure and its ancestors, and labels
-a misplaced item, or one without a type label, `needs-parent`. The Project's built-in
-workflows move a reopened item back to `In Progress`. Items closed as *not planned* or *duplicate* are exempt. No
-personal token, repository secret or manual status correction is involved. See
-[Project automation](docs/reference/project-automation.md) for the rules and the one-time Project setting.
+Deliver each task through the mandatory [GitHub Project workflow](.agents/skills/raidmanager-github-project-workflow/SKILL.md):
+its own branch and issue-linked pull request. The [hierarchy workflow](.github/workflows/project-hierarchy.yml) and
+the checks in [Project automation](docs/reference/project-automation.md) enforce the rules they can see without a
+personal token or repository secret.
 
 ## Branching
 
