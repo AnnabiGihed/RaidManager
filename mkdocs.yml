@@ -21,6 +21,9 @@ nav:
   - Project automation: reference/project-automation.md
   - Work management specification: reference/work-management-specification.md
   - Warmane lockout evidence: reference/warmane-lockout-rules.md
+  - Planning:
+      - Release v1.0: planning/releases/v1.0.md
+      - Sprint 1: planning/sprints/sprint-01.md
   - Decisions:
       - Index: adr/README.md
       - Foundation and authentication: adr/0001-foundation-and-authentication.md
