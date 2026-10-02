@@ -44,7 +44,16 @@ option, and the new values were added beside it. Change single-select options on
 | Blocked work | Table | `is:issue is:open status:Blocked` | Blocking reasons and prerequisites. |
 | Scheduling violations | Table | `is:issue label:"scheduling-violation"` | Items the board report flags. |
 | Roadmap | Roadmap | epics and features | Feature and epic progress and forecasts. |
+| Release plan | Roadmap | stories, improvements, bugs and spikes | Every release on one timeline, like an Azure DevOps delivery plan. |
+| Releases | Table | stories, improvements, bugs and spikes | Each release's items with their count and Story Points. |
+| Sprints | Table | `is:issue has:sprint` | Each sprint's items with their count and Story Points, like sprint backlogs. |
 
+- Release plan, Releases and Sprints were added on 2026-10-02 at the owner's request (#343) so releases and sprints can
+  be read at a glance:
+  - Release plan groups by milestone and draws each item between its sprint's start and end, at Quarter zoom, with
+    a marker for every sprint start and every release's due date. Items not yet selected into a sprint are listed in
+    their release without a bar.
+  - Releases groups by milestone and Sprints by sprint, each group showing its item count and its Story Points sum.
 - The Stabilization view expects the release's last sprint to be titled `v1.0 stabilization`; change the filter if
   the release record names it otherwise.
 - Capacity assumptions aren't a Project field: they are in the sprint record (`docs/planning/sprints/`).
@@ -174,6 +183,9 @@ these steps once in the browser:
    | Delivery stages | Column by Delivery Stage. |
    | Stabilization | Group by Status. |
    | Roadmap | Dates: Sprint (or Start date and Target date). |
+   | Release plan | Group by Milestone; Dates: Sprint; Markers: Milestone and Sprint; Zoom level: Quarter. |
+   | Releases | Group by Milestone; Field sum: Count and Story Points. |
+   | Sprints | Group by Sprint; Field sum: Count and Story Points. |
 
 ## Verify the rules
 
