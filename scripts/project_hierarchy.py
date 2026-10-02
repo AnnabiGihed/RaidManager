@@ -31,28 +31,27 @@ from ui_mockups import NEEDS_MOCKUP, UI_LABEL, mockup_problem, ui_requested
 NEEDS_PARENT = "needs-parent"
 # A new issue usually gets its parent a moment after it is created, so the parent rule waits before flagging it.
 GRACE = timedelta(minutes=10)
+EPIC, FEATURE, STORY, IMPROVEMENT, BUG, SPIKE, TASK = (
+    "type:epic", "type:feature", "type:story", "type:improvement", "type:bug", "type:spike", "type:task")
 # A spike is a peer of stories, improvements and bugs under a feature, and has tasks like them (ADR-0025).
-WORK_ITEMS = frozenset({"type:task"})
-BACKLOG_ITEMS = frozenset({"type:story", "type:improvement", "type:bug", "type:spike"})
+WORK_ITEMS = frozenset({TASK})
+BACKLOG_ITEMS = frozenset({STORY, IMPROVEMENT, BUG, SPIKE})
 # Allowed parent types and child types for each type label.
 PARENTS: dict[str, frozenset[str]] = {
-    "type:epic": frozenset(),
-    "type:feature": frozenset({"type:epic"}),
-    **{kind: frozenset({"type:feature"}) for kind in BACKLOG_ITEMS},
+    EPIC: frozenset(),
+    FEATURE: frozenset({EPIC}),
+    **{kind: frozenset({FEATURE}) for kind in BACKLOG_ITEMS},
     **{kind: BACKLOG_ITEMS for kind in WORK_ITEMS},
 }
 CHILDREN: dict[str, frozenset[str]] = {
-    "type:epic": frozenset({"type:feature"}),
-    "type:feature": BACKLOG_ITEMS,
+    EPIC: frozenset({FEATURE}),
+    FEATURE: BACKLOG_ITEMS,
     **{kind: WORK_ITEMS for kind in BACKLOG_ITEMS},
 }
-NAMES = {
-    "type:epic": "epic", "type:feature": "feature", "type:story": "story", "type:improvement": "improvement",
-    "type:bug": "bug", "type:spike": "spike", "type:task": "task",
-}
+# Type names in hierarchy order.
+NAMES = {kind: kind.removeprefix("type:") for kind in (EPIC, FEATURE, STORY, IMPROVEMENT, BUG, SPIKE, TASK)}
 # Leaves first, so a parent is judged after the children the same run reopened.
-DEPTH = {"type:task": 0, "type:story": 1, "type:improvement": 1, "type:bug": 1, "type:spike": 1,
-         "type:feature": 2, "type:epic": 3}
+DEPTH = {TASK: 0, **{kind: 1 for kind in BACKLOG_ITEMS}, FEATURE: 2, EPIC: 3}
 ANCESTOR_LEVELS = 3
 CLOSING_LINE = re.compile(r"^Closes #(\d+)[ \t]*$", re.IGNORECASE)
 FIELDS = "number state stateReason createdAt labels(first: 20) { nodes { name } }"
@@ -175,7 +174,7 @@ def chain_problem(number: int, fetch: Callable[[int], Node]) -> str | None:
     if node.issue.kind not in WORK_ITEMS:
         found = NAMES.get(node.issue.kind or "", "item without one type label")
         return f"#{number} is {a(found)}. A pull request closes a task only; use Refs for other items."
-    current, expected = node, [BACKLOG_ITEMS, frozenset({"type:feature"}), frozenset({"type:epic"})]
+    current, expected = node, [BACKLOG_ITEMS, frozenset({FEATURE}), frozenset({EPIC})]
     for level in expected:
         if current.parent is None or current.parent.kind not in level:
             where = f"#{current.issue.number}"
