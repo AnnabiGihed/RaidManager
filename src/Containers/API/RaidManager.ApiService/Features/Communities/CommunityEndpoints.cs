@@ -7,6 +7,7 @@ using RaidManager.Application.Features.Communities.Commands.RefreshCommunityName
 using RaidManager.Application.Features.Communities.Commands.UnmapCommunityRole;
 using RaidManager.Application.Features.Communities.Queries.GetCommunity;
 using RaidManager.Application.Features.Communities.Queries.GetCommunityByDiscordServer;
+using RaidManager.Application.Features.Communities.Queries.GetCommunityMembers;
 using RaidManager.Application.Features.Communities.Queries.GetCommunityRoleSettings;
 using RaidManager.Application.Features.Communities.Queries.GetUserCommunities;
 
@@ -96,6 +97,17 @@ public static class CommunityEndpoints
             .ProducesProblem(StatusCodes.Status409Conflict)
             .ProducesProblem(StatusCodes.Status503ServiceUnavailable);
 
+        userCommunity.MapGet("/members", GetMembersAsync)
+            .WithName("GetCommunityMembers")
+            .WithSummary("List the people in a community's Discord server")
+            .WithDescription("Reads the Discord server's people with the bot, without bots, and gives each the RaidManager role they get: the Administrator, otherwise their highest mapped role, otherwise Member. Only a current member of the server may ask. Also refreshes the stored server name. Returns 503 when Discord can't answer.")
+            .Produces<CommunityMembers>()
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status403Forbidden)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict)
+            .ProducesProblem(StatusCodes.Status503ServiceUnavailable);
+
         userCommunity.MapPut("/role-mappings/{role}/{discordRoleId}", MapRoleAsync)
             .WithName("MapCommunityRole")
             .WithSummary("Map a Discord role to Officer or Raid leader")
@@ -174,6 +186,23 @@ public static class CommunityEndpoints
         }
 
         return result.ToHttpResult(settings => TypedResults.Ok(CommunityRoleSettings.From(settings)));
+    }
+
+    /// <summary>Lists the people in a community's Discord server, refreshing the stored server name from Discord's answer.</summary>
+    /// <param name="userId">The signed-in user.</param>
+    /// <param name="communityId">The community.</param>
+    /// <param name="sender">The MediatR sender.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>200 with the members, or a problem.</returns>
+    private static async Task<IResult> GetMembersAsync(Guid userId, Guid communityId, ISender sender, CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new GetCommunityMembersQuery(communityId, userId), cancellationToken);
+        if (result.IsSuccess)
+        {
+            await sender.Send(new RefreshCommunityNameCommand(communityId, result.Value.ServerName), cancellationToken);
+        }
+
+        return result.ToHttpResult(members => TypedResults.Ok(CommunityMembers.From(members)));
     }
 
     /// <summary>Maps a Discord role to a RaidManager role.</summary>

@@ -60,6 +60,25 @@ public sealed class CommunityRoleEndpointTests
         (await client.GetFromJsonAsync<CommunitySummary>($"{CommunityEndpoints.CommunitiesRoute}/{server.CommunityId}")).ShouldNotBeNull().Name.ShouldBe("Dark Templars Reborn");
     }
 
+    /// <summary>Lists the server's people with their roles for a member, and keeps someone outside the server out.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task MembersAreListedWithTheirRoles()
+    {
+        using var client = WebsiteClient();
+        var server = await LinkedServerAsync(client);
+        (await client.PutAsync($"{server.Route(server.Administrator)}/role-mappings/Officer/{server.OfficerRoleId}", content: null)).EnsureSuccessStatusCode();
+
+        var members = await client.GetFromJsonAsync<CommunityMembers>($"{server.Route(server.Member)}/members");
+        var outsider = await client.GetAsync($"{server.Route(server.Outsider)}/members");
+
+        members.ShouldNotBeNull();
+        members.ServerName.ShouldBe("Dark Templars Reborn");
+        members.Members.Select(member => (member.DisplayName, member.Role)).ShouldBe([("Gihed", "Administrator"), ("Malarya", "Officer"), ("Daymox", "Member")]);
+        members.Members[1].DiscordRoles.ShouldHaveSingleItem().Name.ShouldBe("Officier");
+        outsider.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
+    }
+
     /// <summary>Lets another member read the card but not change it, and keeps someone outside the server out.</summary>
     /// <returns>A task that completes when the test has run.</returns>
     [Fact]
@@ -133,6 +152,7 @@ public sealed class CommunityRoleEndpointTests
         var document = await client.GetStringAsync("/openapi/v1.json");
 
         document.ShouldContain("/internal/users/{userId}/communities/{communityId}/roles");
+        document.ShouldContain("/internal/users/{userId}/communities/{communityId}/members");
         document.ShouldContain("/internal/users/{userId}/communities/{communityId}/role-mappings/{role}/{discordRoleId}");
     }
     #endregion Tests

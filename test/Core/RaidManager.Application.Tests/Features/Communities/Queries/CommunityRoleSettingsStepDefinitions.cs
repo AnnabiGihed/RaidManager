@@ -7,6 +7,7 @@ using RaidManager.Application.Features.Communities.Abstractions;
 using RaidManager.Application.Features.Communities.Commands.MapCommunityRole;
 using RaidManager.Application.Features.Communities.Commands.RefreshCommunityName;
 using RaidManager.Application.Features.Communities.Commands.UnmapCommunityRole;
+using RaidManager.Application.Features.Communities.Queries.GetCommunityMembers;
 using RaidManager.Application.Features.Communities.Queries.GetCommunityRoleSettings;
 using RaidManager.Domain.Features.Communities.Aggregates;
 using RaidManager.Domain.Features.Communities.Enums;
@@ -65,6 +66,12 @@ public sealed class CommunityRoleSettingsStepDefinitions
     /// <summary>Stores a value indicating whether Discord fails every call.</summary>
     private bool _discordDown;
 
+    /// <summary>Stores a value indicating whether Discord fails to read the server.</summary>
+    private bool _serverDown;
+
+    /// <summary>Stores a value indicating whether Discord fails to list the server's people.</summary>
+    private bool _memberListDown;
+
     /// <summary>Stores the community.</summary>
     private Community? _community;
 
@@ -73,6 +80,9 @@ public sealed class CommunityRoleSettingsStepDefinitions
 
     /// <summary>Stores the result of the latest change.</summary>
     private Result? _change;
+
+    /// <summary>Stores the result of the latest members list.</summary>
+    private Result<CommunityMembersResponse>? _memberList;
     #endregion Fields
 
     #region Constructors
@@ -94,12 +104,14 @@ public sealed class CommunityRoleSettingsStepDefinitions
                     : DiscordMembership.NotMember));
         _discordServers
             .Setup(discord => discord.GetAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(() => _discordDown
+            .ReturnsAsync(() => _discordDown || _serverDown
                 ? Result.Failure<DiscordServer>(DiscordErrors.Unavailable)
                 : Result.Success(new DiscordServer(_serverName, [.. _serverRoles])));
         _discordServers
             .Setup(discord => discord.ListMembersAsync(It.IsAny<string>(), It.IsAny<CancellationToken>()))
-            .ReturnsAsync(() => Result.Success<IReadOnlyList<DiscordServerMember>>([.. _members]));
+            .ReturnsAsync(() => _memberListDown
+                ? Result.Failure<IReadOnlyList<DiscordServerMember>>(DiscordErrors.Unavailable)
+                : Result.Success<IReadOnlyList<DiscordServerMember>>([.. _members]));
         _unitOfWork
             .Setup(unitOfWork => unitOfWork.SaveChangesAsync(It.IsAny<CancellationToken>()))
             .ReturnsAsync(Result.Success());
@@ -114,7 +126,7 @@ public sealed class CommunityRoleSettingsStepDefinitions
     private Result<CommunityRoleSettingsResponse> Read => _read ?? throw new InvalidOperationException("No read ran in this scenario.");
 
     /// <summary>Gets the latest request's outcome, read or change.</summary>
-    private Result Outcome => (Result?)_read ?? _change ?? throw new InvalidOperationException("No request ran in this scenario.");
+    private Result Outcome => (Result?)_read ?? (Result?)_memberList ?? _change ?? throw new InvalidOperationException("No request ran in this scenario.");
     #endregion Properties
 
     #region Given Steps
@@ -168,6 +180,14 @@ public sealed class CommunityRoleSettingsStepDefinitions
     /// <summary>Makes every Discord call fail.</summary>
     [Given("Discord can't be reached")]
     public void GivenDiscordCantBeReached() => _discordDown = true;
+
+    /// <summary>Makes Discord fail to read the server, after it confirmed the membership.</summary>
+    [Given("Discord can't read the server")]
+    public void GivenDiscordCantReadTheServer() => _serverDown = true;
+
+    /// <summary>Makes Discord fail to list the server's people, after it read the server.</summary>
+    [Given("Discord can't list the server's people")]
+    public void GivenDiscordCantListTheServersPeople() => _memberListDown = true;
     #endregion Given Steps
 
     #region When Steps
@@ -179,6 +199,26 @@ public sealed class CommunityRoleSettingsStepDefinitions
     {
         var handler = new GetCommunityRoleSettingsQueryHandler(_communities.Object, _userRepository.Object, _discordMembers.Object, _discordServers.Object);
         _read = await handler.Handle(new GetCommunityRoleSettingsQuery(Community.Id.Value, UserNamed(name).Id.Value), CancellationToken.None);
+    }
+
+    /// <summary>Lists the community's members as a user.</summary>
+    /// <param name="name">The user's name.</param>
+    /// <returns>A task that completes when the list has run.</returns>
+    [When("{string} lists the community's members")]
+    public async Task WhenListsTheCommunitysMembers(string name)
+    {
+        var handler = new GetCommunityMembersQueryHandler(_communities.Object, _userRepository.Object, _discordMembers.Object, _discordServers.Object, TimeProvider.System);
+        _memberList = await handler.Handle(new GetCommunityMembersQuery(Community.Id.Value, UserNamed(name).Id.Value), CancellationToken.None);
+    }
+
+    /// <summary>Lists the members of a community that doesn't exist.</summary>
+    /// <param name="name">The user's name.</param>
+    /// <returns>A task that completes when the list has run.</returns>
+    [When("{string} lists the members of an unknown community")]
+    public async Task WhenListsTheMembersOfAnUnknownCommunity(string name)
+    {
+        var handler = new GetCommunityMembersQueryHandler(_communities.Object, _userRepository.Object, _discordMembers.Object, _discordServers.Object, TimeProvider.System);
+        _memberList = await handler.Handle(new GetCommunityMembersQuery(Guid.NewGuid(), UserNamed(name).Id.Value), CancellationToken.None);
     }
 
     /// <summary>Maps a Discord role as a user.</summary>
@@ -219,6 +259,25 @@ public sealed class CommunityRoleSettingsStepDefinitions
     #endregion When Steps
 
     #region Then Steps
+    /// <summary>Checks the members, in order, with their Discord roles and RaidManager role.</summary>
+    /// <param name="rows">Table with the columns <c>name</c>, <c>discord roles</c> and <c>role</c>.</param>
+    [Then("the members are listed as")]
+    public void ThenTheMembersAreListedAs(DataTable rows)
+    {
+        var members = (_memberList ?? throw new InvalidOperationException("No list ran in this scenario.")).Value.Members;
+        members.Select(member => member.DisplayName).ShouldBe(rows.Rows.Select(row => row["name"]));
+        foreach (var (actual, expected) in members.Zip(rows.Rows))
+        {
+            string.Join(",", actual.DiscordRoles.Select(role => role.Name)).ShouldBe(expected["discord roles"]);
+            actual.Role.ToString().ShouldBe(expected["role"]);
+        }
+    }
+
+    /// <summary>Checks that the list says when Discord was asked.</summary>
+    [Then("the list says when Discord was asked")]
+    public void ThenTheListSaysWhenDiscordWasAsked() =>
+        (DateTimeOffset.UtcNow - _memberList!.Value.CheckedAtUtc).ShouldBeLessThan(TimeSpan.FromMinutes(1));
+
     /// <summary>Checks that the asking user may edit.</summary>
     [Then("the roles can be edited")]
     public void ThenTheRolesCanBeEdited() => Read.Value.CanEdit.ShouldBeTrue();
@@ -271,6 +330,10 @@ public sealed class CommunityRoleSettingsStepDefinitions
         Outcome.IsFailure.ShouldBeTrue();
         Outcome.Error.ShouldBe(CommunityErrors.RoleNotMappable);
     }
+
+    /// <summary>Checks that the request failed because the community doesn't exist.</summary>
+    [Then("the request fails because the community doesn't exist")]
+    public void ThenTheRequestFailsBecauseTheCommunityDoesntExist() => ShouldFail(CommunityErrors.NotFound, ResultExceptionType.NotFound);
 
     /// <summary>Checks that the request failed because Discord couldn't answer.</summary>
     [Then("the request fails because Discord is unavailable")]

@@ -34,6 +34,6 @@ public sealed partial class TagChip
     public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
 
     /// <summary>Gets the classes for the tone.</summary>
-    private string CssClass => Tone == TagChipTone.Danger ? "tag-chip tag-chip-danger" : "tag-chip tag-chip-info";
+    private string CssClass => $"tag-chip tag-chip-{Tone.ToString().ToLowerInvariant()}";
     #endregion Properties
 }

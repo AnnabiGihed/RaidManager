@@ -29,9 +29,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
   members have it, read from Discord. The Administrator adds a Discord role to Officer or Raid leader from the
   server's roles, removes one with its ×, and sees a role deleted in Discord as missing; others see the card read-only.
   One Discord role can give both Officer and Raid leader, and each row counts the people who get it (#289).
+- Members and roles page: from the community page's officer roles card, View members lists the server's members
+  read from Discord, with their avatar, their Discord roles and the RaidManager role they get, Administrator first, and
+  says when Discord was last checked. A refused, removed-bot or unavailable answer explains itself (#290).
 - The API reads a community's Discord roles and members with the bot, giving each role's Discord roles and member
   count, and lets the Administrator map Discord roles to Officer and Raid leader. Reading the server keeps the stored
   server name current (#300).
+- The API lists a community's members for its members: each one's Discord roles, avatar and RaidManager role, and
+  when Discord was asked (#290).
 - A signed-in player without a community sees how to link one on the Overview. Adding RaidManager to a Discord
   server from the website opens Discord's page; RaidManager then learns the server from Discord, asks for the Warmane
   realm, and links the community with the player as its Administrator. A server that is already linked says so, and

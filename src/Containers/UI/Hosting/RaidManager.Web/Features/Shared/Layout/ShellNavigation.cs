@@ -22,6 +22,7 @@ public static class ShellNavigation
         new(ShellSection.Player, "Add RaidManager", CommunityRoutes.ChooseRealm, InSidebar: false),
         new(ShellSection.Player, "Add RaidManager", CommunityRoutes.AlreadyLinked, InSidebar: false),
         new(ShellSection.Player, "Community settings", CommunityRoutes.Settings, InSidebar: false),
+        new(ShellSection.Player, "Members", CommunityRoutes.Members, InSidebar: false),
     ];
     #endregion Fields
 

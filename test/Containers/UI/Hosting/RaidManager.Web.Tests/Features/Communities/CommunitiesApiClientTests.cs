@@ -102,6 +102,11 @@ public sealed class CommunitiesApiClientTests : IDisposable
             refused.ShouldBe(new CommunityRoleSettingsAnswer(outcome, null));
         }
 
+        _api.Answer($"{route}/members", HttpStatusCode.OK, """{"communityId":"6f1c3f4e-1d3a-4c55-9a8e-0d3c1b2a4f5e","serverName":"Dark Templars","checkedAtUtc":"2026-10-01T18:40:00+00:00","members":[{"discordUserId":"1","displayName":"Malarya","avatarUrl":null,"discordRoles":[],"role":"Officer"}]}""");
+        (await client.GetMembersAsync(user, community, CancellationToken.None)).Members.ShouldNotBeNull().Members.ShouldHaveSingleItem().Role.ShouldBe("Officer");
+        _api.Answer($"{route}/members", HttpStatusCode.ServiceUnavailable);
+        (await client.GetMembersAsync(user, community, CancellationToken.None)).ShouldBe(new CommunityMembersAnswer(CommunityApiStatus.DiscordUnavailable, null));
+
         _api.Answer($"{route}/roles", HttpStatusCode.InternalServerError);
         await Should.ThrowAsync<HttpRequestException>(() => client.GetRoleSettingsAsync(user, community, CancellationToken.None));
     }

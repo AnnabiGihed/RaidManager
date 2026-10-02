@@ -27,6 +27,9 @@ public static class CommunityRoutes
     /// <summary>Defines the community page (board 4).</summary>
     public const string Settings = "/community";
 
+    /// <summary>Defines the members page (board 5).</summary>
+    public const string Members = "/community/members";
+
     /// <summary>Defines the query parameter that carries the protected pending link to the realm choice.</summary>
     public const string LinkParameter = "link";
 

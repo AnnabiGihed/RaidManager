@@ -28,6 +28,9 @@ public sealed class FakeCommunitiesApiClient : ICommunitiesApiClient
 
     /// <summary>Gets the role changes asked for: the Discord role, the RaidManager role, and whether it was added or removed.</summary>
     public List<(string DiscordRoleId, string Role, bool Added)> RoleChanges { get; } = [];
+
+    /// <summary>Gets the members pages by community; a community without one gets a sample page.</summary>
+    public Dictionary<Guid, CommunityMembers> MemberLists { get; } = [];
     #endregion Properties
 
     #region Public Methods
@@ -38,6 +41,19 @@ public sealed class FakeCommunitiesApiClient : ICommunitiesApiClient
     /// <returns>The community.</returns>
     public static CommunitySummary Community(Guid administratorId, string name = "Dark Templars", string realm = "Icecrown") =>
         new(Guid.NewGuid(), "123456789012345678", name, realm, administratorId, "Gihed Annabi");
+
+    /// <summary>Creates a members page with an officer who has a picture and a member without roles or picture.</summary>
+    /// <param name="communityId">The community.</param>
+    /// <param name="checkedAtUtc">When Discord was asked.</param>
+    /// <returns>The members page.</returns>
+    public static CommunityMembers MemberList(Guid communityId, DateTimeOffset checkedAtUtc) => new(
+        communityId,
+        "Dark Templars",
+        checkedAtUtc,
+        [
+            new CommunityMember("1", "Malarya", "https://cdn.discordapp.com/avatars/1/a.png", [new DiscordRoleOption("12", "Officier"), new DiscordRoleOption("13", "Veteran")], "Officer"),
+            new CommunityMember("2", "OrlkDemon", null, [], "Member"),
+        ]);
 
     /// <summary>Creates a roles card with Guild Master and Officier mappable, Officier mapped to Officer.</summary>
     /// <param name="communityId">The community.</param>
@@ -86,6 +102,12 @@ public sealed class FakeCommunitiesApiClient : ICommunitiesApiClient
         Communities.Add(community);
         return Task.FromResult<Guid?>(community.CommunityId);
     }
+
+    /// <inheritdoc />
+    public Task<CommunityMembersAnswer> GetMembersAsync(Guid userId, Guid communityId, CancellationToken cancellationToken) =>
+        Fails ? throw new HttpRequestException("The API is unavailable.") : Task.FromResult(RoleStatus == CommunityApiStatus.Succeeded
+            ? new CommunityMembersAnswer(RoleStatus, MemberLists.TryGetValue(communityId, out var list) ? list : MemberList(communityId, DateTimeOffset.UtcNow))
+            : new CommunityMembersAnswer(RoleStatus, null));
 
     /// <inheritdoc />
     public Task<CommunityRoleSettingsAnswer> GetRoleSettingsAsync(Guid userId, Guid communityId, CancellationToken cancellationToken) =>

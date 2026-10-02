@@ -21,6 +21,9 @@ internal sealed partial class DiscordServersClient : IDiscordServers
     /// <summary>Defines Discord's error code for a server the bot isn't in.</summary>
     private const int UnknownGuild = 10004;
 
+    /// <summary>Defines where Discord serves account pictures (checked on 2026-10-01).</summary>
+    private const string AvatarBaseUrl = "https://cdn.discordapp.com/avatars";
+
     /// <summary>Defines the most members Discord returns in one page.</summary>
     private const int PageSize = 1000;
     #endregion Constants
@@ -90,7 +93,8 @@ internal sealed partial class DiscordServersClient : IDiscordServers
                 .Select(member => new DiscordServerMember(
                     member.User.Id,
                     member.Nick ?? member.User.GlobalName ?? member.User.Username,
-                    member.Roles)));
+                    member.Roles,
+                    member.User.Avatar is null ? null : $"{AvatarBaseUrl}/{member.User.Id}/{member.User.Avatar}.png")));
             if (page.Value.Count < PageSize)
             {
                 return Result.Success<IReadOnlyList<DiscordServerMember>>(members);
@@ -188,11 +192,13 @@ internal sealed partial class DiscordServersClient : IDiscordServers
     /// <param name="Username">The username.</param>
     /// <param name="GlobalName">The global display name, if any.</param>
     /// <param name="Bot">Whether the account is a bot.</param>
+    /// <param name="Avatar">The account picture's hash, if any.</param>
     private sealed record UserAnswer(
         [property: JsonPropertyName("id")] string Id,
         [property: JsonPropertyName("username")] string Username,
         [property: JsonPropertyName("global_name")] string? GlobalName,
-        [property: JsonPropertyName("bot")] bool? Bot);
+        [property: JsonPropertyName("bot")] bool? Bot,
+        [property: JsonPropertyName("avatar")] string? Avatar);
 
     /// <summary>Reads Discord's error object.</summary>
     /// <param name="Code">Discord's JSON error code.</param>

@@ -73,6 +73,18 @@ public sealed class DiscordServersClientTests : IDisposable
         _discord.Requests.Count.ShouldBe(2);
     }
 
+    /// <summary>Gives a member with a Discord picture its address, as Discord serves it.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task AMemberWithAPictureHasItsAddress()
+    {
+        _discord.Answer($"{GuildPath}/members?limit=1000&after=0", HttpStatusCode.OK, """[{"nick":null,"roles":[],"user":{"id":"42","username":"anguish","global_name":"Anguish","avatar":"abc123"}}]""");
+
+        var members = await Client().ListMembersAsync(GuildId, CancellationToken.None);
+
+        members.Value.ShouldHaveSingleItem().AvatarUrl.ShouldBe("https://cdn.discordapp.com/avatars/42/abc123.png");
+    }
+
     /// <summary>Reports a server the bot was removed from.</summary>
     /// <returns>A task that completes when the test has run.</returns>
     [Fact]

@@ -4,9 +4,10 @@ namespace RaidManager.Application.Features.Communities.Abstractions;
 /// <param name="UserId">The Discord user snowflake.</param>
 /// <param name="DisplayName">The name shown in the server: the server nickname, else the global name, else the username.</param>
 /// <param name="RoleIds">The member's role snowflakes in the server.</param>
+/// <param name="AvatarUrl">The address of the member's Discord picture, or <see langword="null"/> when they have none.</param>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-01<br/>
 /// Purpose: Lets RaidManager count and list a community's members from Discord without storing them (ADR-0022).
 /// </remarks>
-public sealed record DiscordServerMember(string UserId, string DisplayName, IReadOnlyList<string> RoleIds);
+public sealed record DiscordServerMember(string UserId, string DisplayName, IReadOnlyList<string> RoleIds, string? AvatarUrl = null);

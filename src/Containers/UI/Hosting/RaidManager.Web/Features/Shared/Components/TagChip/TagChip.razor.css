@@ -37,3 +37,13 @@
     outline-offset: 2px;
     border-radius: 2px;
 }
+
+.tag-chip-success {
+    background: var(--rm-status-success-background);
+    color: var(--rm-brand-accent);
+}
+
+.tag-chip-neutral {
+    background: var(--rm-surface-raised);
+    color: var(--rm-text-secondary);
+}

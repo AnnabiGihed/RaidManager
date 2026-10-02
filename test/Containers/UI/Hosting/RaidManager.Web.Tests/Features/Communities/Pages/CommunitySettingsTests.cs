@@ -93,6 +93,18 @@ public sealed class CommunitySettingsTests : BunitContext
         page.FindAll("button").Count(button => button.TextContent.Contains("+ Add Discord role", StringComparison.Ordinal)).ShouldBe(2);
     }
 
+    /// <summary>Opens the members page from the roles card.</summary>
+    [Fact]
+    public void ViewMembersOpensTheMembersPage()
+    {
+        var page = OpenAdministratorPage();
+        var navigation = Services.GetRequiredService<NavigationManager>();
+
+        page.FindAll("button").First(button => button.TextContent.Contains("View members", StringComparison.Ordinal)).Click();
+
+        navigation.Uri.ShouldEndWith("/community/members");
+    }
+
     /// <summary>Picks a Discord role for Officer, adds it, and confirms the change.</summary>
     [Fact]
     public void AddingARoleSavesItAndConfirms()
