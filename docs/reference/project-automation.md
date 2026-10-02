@@ -17,10 +17,12 @@ new issue as a sub-issue of that parent at once.
 | Field | Type | Values | Specification |
 | --- | --- | --- | --- |
 | Status | Single select | Backlog, Ready, In Progress, In Review, Blocked, Done, Canceled | §11, §15 (A3) |
-| Delivery Stage | Single select | Business Analysis, Functional Analysis, Architecture Analysis, Development, Testing, Deployment | §11 |
-| Sprint | Iteration | Two weeks; Sprint 1 starts 2026-10-02 | §7, §22 |
-| Story Points | Number | 1, 2, 3, 5, 8 or 13, on stories only | §9 |
+| Delivery Stage | Single select | Business Analysis, Functional Analysis, Architecture Analysis, Development, Testing, Deployment; on every task, and on stories, improvements, bugs and spikes as their current focus (the stage of their earliest open task) | §11 (owner decision, #394) |
+| Sprint | Iteration | Two weeks from Sprint 5 (2026-10-03); Sprints 1 to 4 were one-day history sprints (#339) | §7, §22 |
+| Story Points | Number | 1, 2, 3, 5, 8 or 13, on stories, improvements, bugs and spikes, never on tasks (#346) | §9 |
 | Priority | Single select | P0 Critical, P1 High, P2 Normal, P3 Later, ordered highest first | §15 |
+| Risk | Single select | Low, Medium, High, on open stories, improvements, bugs and spikes, the reason in a comment on the item | §10, §14 (owner decision, #394) |
+| Start date, Target date | Date | The planned window of an open item: a selected item's window follows its sprint's dependency order, an unselected item takes its release's sprint window | §14 (owner decision, #394) |
 | Area | Single select | Product areas, kept from before the specification | not in the specification |
 | Milestone | Repository milestone | One per release, its due date the target date, its description linking the release record | §6, §15 |
 
