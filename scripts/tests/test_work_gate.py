@@ -125,7 +125,7 @@ class ReportTests(unittest.TestCase):
             40: item(40, "improvement", status="Blocked", sprint=SPRINT_1),
             41: item(41, "task", status="Ready", sprint=Sprint("Sprint 2", date(2026, 10, 16), 14), parent=40),
         }
-        found = report(items, [(99, "Closes #41\n\n## What changed")], DURING, self.root)
+        found = report(items, [(99, "Closes #41\n\n## What changed")], DURING)
         self.assertEqual([number for number, _ in found["Scheduling violations"]], [13, 41, 41])
         self.assertEqual([number for number, _ in found["Unestimated selected stories"]], [30])
         self.assertEqual([number for number, _ in found["Ready or selected items with contract gaps"]], [30])
@@ -137,7 +137,7 @@ class ReportTests(unittest.TestCase):
     def test_a_prerequisite_in_the_same_sprint_is_available(self) -> None:
         items = {30: item(30, "story", sprint=SPRINT_1, points=3, prerequisites=[(31, "open", None)]),
                  31: item(31, "story", sprint=SPRINT_1, points=2)}
-        self.assertEqual(report(items, [], DURING, self.root)["Unavailable prerequisites"], [])
+        self.assertEqual(report(items, [], DURING)["Unavailable prerequisites"], [])
 
 
 class ApiTests(unittest.TestCase):

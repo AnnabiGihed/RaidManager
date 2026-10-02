@@ -15,7 +15,6 @@ from __future__ import annotations
 
 import argparse
 import json
-import re
 import subprocess
 import sys
 from dataclasses import dataclass, field
@@ -36,7 +35,6 @@ OUTCOMES = frozenset({STORY, IMPROVEMENT, BUG, SPIKE})
 EXECUTABLE = OUTCOMES | {TASK}
 TYPES = frozenset({EPIC, FEATURE, STORY, IMPROVEMENT, BUG, SPIKE, TASK})
 EXECUTING = frozenset({"In Progress", "In Review"})
-STATE_LINE = re.compile(r"^\|\s*State\s*\|\s*([A-Za-z ]+?)\s*\|", re.MULTILINE)
 
 
 @dataclass(frozen=True)
@@ -96,85 +94,101 @@ class Finding:
 
 def sprint_state(sprint: Sprint, root: Path) -> str | None:
     """Reads the state from the sprint's record, docs/planning/sprints/sprint-NN.md, if it exists."""
-    match = re.search(r"(\d+)", sprint.title)
-    if not match:
+    digits = "".join(character for character in sprint.title if character.isdigit())
+    if not digits:
         return None
-    path = root / SPRINTS / f"sprint-{int(match.group(1)):02d}.md"
+    path = root / SPRINTS / f"sprint-{int(digits):02d}.md"
     if not path.is_file():
         return None
-    found = STATE_LINE.search(path.read_text(encoding="utf-8"))
-    return found.group(1) if found else None
+    for line in path.read_text(encoding="utf-8").splitlines():
+        cells = [cell.strip() for cell in line.strip().strip("|").split("|")]
+        if len(cells) >= 2 and cells[0] == "State":
+            return cells[1]
+    return None
 
 
-def contract_gaps(item: Item) -> list[str]:
+def contract_gaps(item: Item | None) -> list[str]:
+    if item is None:
+        return []
     kind = item.kind
     if kind is None:
         return ["exactly one type label"]
     return missing_sections(kind, item.body) + [f"{name} (Unknown)" for name in unknown_sections(kind, item.body)]
 
 
-def preflight(task: Item, items: dict[int, Item], now: datetime, root: Path) -> list[Finding]:
-    """The seven conditions of the active-sprint gate (section 8) for one task."""
-    findings: list[Finding] = []
-    parent = items.get(task.parent) if task.parent else None
+def completed(state: str, reason: str | None) -> bool:
+    return state == "closed" and reason in (None, "completed")
 
-    def check(rule: str, problem: str | None, fix: str) -> None:
-        findings.append(Finding(rule, problem is None, f"{problem} {fix}" if problem else "ok"))
 
-    hierarchy = None
-    if task.kind != TASK:
-        hierarchy = f"#{task.number} is not a task; only tasks are executed (outcome items run through their tasks)."
-    elif parent is None or parent.kind not in OUTCOMES:
-        hierarchy = f"#{task.number} has no story, improvement, bug or spike parent on the Project."
-    gaps = contract_gaps(task) + (contract_gaps(parent) if parent else [])
-    check("1. Hierarchy and contract", hierarchy or (f"Contract gaps: {', '.join(gaps)}." if gaps else None),
-          "Fix them with work-classification-and-hierarchy and work-backlog-refinement.")
-
-    sprint_problem = None
-    if task.sprint is None:
-        sprint_problem = "No sprint is assigned."
-    else:
-        start, end = task.sprint.window()
-        state = sprint_state(task.sprint, root)
-        if state is None:
-            sprint_problem = f"{task.sprint.title} has no record in {SPRINTS}."
-        elif state.lower() == "canceled":
-            sprint_problem = f"{task.sprint.title} is canceled."
-        elif not task.sprint.active(now):
-            sprint_problem = (f"{task.sprint.title} runs from {start:%Y-%m-%d %H:%M} to {end:%Y-%m-%d %H:%M} "
-                              f"Europe/Brussels (end exclusive); now is {now.astimezone(TIMEZONE):%Y-%m-%d %H:%M}.")
-    check("2. Active sprint", sprint_problem,
-          "Ask the owner to select the work into an active sprint; never move dates.")
-
-    same = None
-    if parent and (parent.sprint is None or task.sprint is None or parent.sprint.title != task.sprint.title):
-        same = (f"#{task.number} is in {task.sprint.title if task.sprint else 'no sprint'} but its parent "
-                f"#{parent.number} is in {parent.sprint.title if parent.sprint else 'no sprint'}.")
-    check("3. Matching sprint", same, "Select the task and its parent into the same sprint.")
-
-    release = task_milestone_problem(task.milestone, parent.number, parent.milestone) if parent else None
-    check("4. Matching release", release, "Align the milestones (specification section 15).")
-
-    missing = [name for name, value in (("assignee", task.assignees), ("Delivery Stage", task.stage)) if not value]
-    check("5. Assignee and Delivery Stage", f"Missing: {', '.join(missing)}." if missing else None,
-          "Set them on the task.")
-
-    waiting = [f"#{number}" for number, state, reason in task.prerequisites
-               if not (state == "closed" and reason in (None, "completed"))]
-    check("6. Prerequisites", f"Not completed yet: {', '.join(waiting)}." if waiting else None,
-          "Wait for their completion evidence.")
-
-    closed = None
-    if task.state == "closed":
-        closed = f"#{task.number} is already {'completed' if task.completed else 'canceled'}."
-    elif parent and parent.state == "closed":
-        closed = f"Its parent #{parent.number} is closed."
-    check("7. Open and not canceled", closed, "Reopen it deliberately (work-task-execution-and-completion) first.")
-    return findings
+def sprint_name(item: Item) -> str:
+    return item.sprint.title if item.sprint else "no sprint"
 
 
 def same_sprint(first: Item | None, second: Item) -> bool:
     return bool(first and first.sprint and second.sprint and first.sprint.title == second.sprint.title)
+
+
+def hierarchy_problem(task: Item, parent: Item | None) -> str | None:
+    if task.kind != TASK:
+        return f"#{task.number} is not a task; only tasks are executed (outcome items run through their tasks)."
+    if parent is None or parent.kind not in OUTCOMES:
+        return f"#{task.number} has no story, improvement, bug or spike parent on the Project."
+    gaps = contract_gaps(task) + contract_gaps(parent)
+    return f"Contract gaps: {', '.join(gaps)}." if gaps else None
+
+
+def active_sprint_problem(task: Item, now: datetime, root: Path) -> str | None:
+    if task.sprint is None:
+        return "No sprint is assigned."
+    state = sprint_state(task.sprint, root)
+    if state is None:
+        return f"{task.sprint.title} has no record in {SPRINTS}."
+    if state.lower() == "canceled":
+        return f"{task.sprint.title} is canceled."
+    if task.sprint.active(now):
+        return None
+    start, end = task.sprint.window()
+    return (f"{task.sprint.title} runs from {start:%Y-%m-%d %H:%M} to {end:%Y-%m-%d %H:%M} Europe/Brussels "
+            f"(end exclusive); now is {now.astimezone(TIMEZONE):%Y-%m-%d %H:%M}.")
+
+
+def matching_sprint_problem(task: Item, parent: Item | None) -> str | None:
+    if parent is None or same_sprint(parent, task):
+        return None
+    return f"#{task.number} is in {sprint_name(task)} but its parent #{parent.number} is in {sprint_name(parent)}."
+
+
+def open_problem(task: Item, parent: Item | None) -> str | None:
+    if task.state == "closed":
+        return f"#{task.number} is already {'completed' if task.completed else 'canceled'}."
+    if parent and parent.state == "closed":
+        return f"Its parent #{parent.number} is closed."
+    return None
+
+
+def preflight(task: Item, items: dict[int, Item], now: datetime, root: Path) -> list[Finding]:
+    """The seven conditions of the active-sprint gate (section 8) for one task."""
+    parent = items.get(task.parent) if task.parent else None
+    missing = [name for name, value in (("assignee", task.assignees), ("Delivery Stage", task.stage)) if not value]
+    waiting = [f"#{number}" for number, state, reason in task.prerequisites if not completed(state, reason)]
+    checks = (
+        ("1. Hierarchy and contract", hierarchy_problem(task, parent),
+         "Fix them with work-classification-and-hierarchy and work-backlog-refinement."),
+        ("2. Active sprint", active_sprint_problem(task, now, root),
+         "Ask the owner to select the work into an active sprint; never move dates."),
+        ("3. Matching sprint", matching_sprint_problem(task, parent),
+         "Select the task and its parent into the same sprint."),
+        ("4. Matching release",
+         task_milestone_problem(task.milestone, parent.number, parent.milestone) if parent else None,
+         "Align the milestones (specification section 15)."),
+        ("5. Assignee and Delivery Stage", f"Missing: {', '.join(missing)}." if missing else None,
+         "Set them on the task."),
+        ("6. Prerequisites", f"Not completed yet: {', '.join(waiting)}." if waiting else None,
+         "Wait for their completion evidence."),
+        ("7. Open and not canceled", open_problem(task, parent),
+         "Reopen it deliberately (work-task-execution-and-completion) first."),
+    )
+    return [Finding(rule, problem is None, f"{problem} {fix}" if problem else "ok") for rule, problem, fix in checks]
 
 
 def status_problem(item: Item) -> str | None:
@@ -188,60 +202,68 @@ def status_problem(item: Item) -> str | None:
     return None
 
 
-def report(items: dict[int, Item], open_pull_requests: list[tuple[int, str]], now: datetime,
-           root: Path) -> dict[str, list[tuple[int, str]]]:
+SCHEDULING = "Scheduling violations"
+MISMATCHES = "Status and closure mismatches"
+UNESTIMATED = "Unestimated selected stories"
+SELECTED_GAPS = "Ready or selected items with contract gaps"
+UNAVAILABLE = "Unavailable prerequisites"
+UNEXPLAINED_BLOCKS = "Blocked items without a recorded reason"
+BACKLOG_GAPS = "Open items with contract gaps (allowed in Backlog)"
+VIOLATIONS = (SCHEDULING, MISMATCHES, UNESTIMATED, SELECTED_GAPS, UNAVAILABLE, UNEXPLAINED_BLOCKS)
+Findings = dict[str, list[tuple[int, str]]]
+
+
+def scheduling_findings(item: Item, parent: Item | None) -> list[str]:
+    found: list[str] = []
+    if item.kind in EXECUTABLE and item.status in EXECUTING and item.sprint is None:
+        found.append(f"Status {item.status} but no sprint was ever assigned.")
+    if item.kind == TASK and parent and parent.kind in OUTCOMES and item.sprint and not same_sprint(parent, item):
+        found.append(f"In {sprint_name(item)}, but its parent #{parent.number} is in {sprint_name(parent)}.")
+    return found
+
+
+def unavailable_prerequisites(item: Item, items: dict[int, Item]) -> list[str]:
+    if item.sprint is None:
+        return []
+    return [f"#{number}" for number, state, reason in item.prerequisites
+            if not completed(state, reason) and not same_sprint(items.get(number), item)]
+
+
+def check_open_item(item: Item, items: dict[int, Item], found: Findings) -> None:
+    parent = items.get(item.parent) if item.parent else None
+    found[SCHEDULING] += [(item.number, detail) for detail in scheduling_findings(item, parent)]
+    if item.kind == STORY and item.sprint and item.points is None:
+        found[UNESTIMATED].append((item.number, f"Selected into {sprint_name(item)}."))
+    gaps = contract_gaps(item)
+    if gaps:
+        found[SELECTED_GAPS if item.status == "Ready" or item.sprint else BACKLOG_GAPS].append(
+            (item.number, ", ".join(gaps)))
+    outside = unavailable_prerequisites(item, items)
+    if outside:
+        found[UNAVAILABLE].append(
+            (item.number, f"Waits on {', '.join(outside)}, unfinished and outside {sprint_name(item)}."))
+    if item.status == "Blocked" and "unblock" not in item.body.lower():
+        found[UNEXPLAINED_BLOCKS].append(
+            (item.number, "Record the reason, the person responsible and the unblock condition."))
+
+
+def report(items: dict[int, Item], open_pull_requests: list[tuple[int, str]], now: datetime) -> Findings:
     """Every board finding the specification asks validators for (sections 17 and 18), grouped by category."""
-    found: dict[str, list[tuple[int, str]]] = {
-        "Scheduling violations": [], "Status and closure mismatches": [], "Unestimated selected stories": [],
-        "Ready or selected items with contract gaps": [], "Unavailable prerequisites": [],
-        "Blocked items without a recorded reason": [], "Open items with contract gaps (allowed in Backlog)": [],
-    }
+    found: Findings = {category: [] for category in (*VIOLATIONS, BACKLOG_GAPS)}
     for item in sorted(items.values(), key=lambda value: value.number):
-        kind = item.kind
-        parent = items.get(item.parent) if item.parent else None
         problem = status_problem(item)
         if problem:
-            found["Status and closure mismatches"].append((item.number, problem))
-        if item.state != "open" or kind is None:
-            continue
-        if kind in EXECUTABLE and item.status in EXECUTING and item.sprint is None:
-            found["Scheduling violations"].append(
-                (item.number, f"Status {item.status} but no sprint was ever assigned."))
-        if kind == TASK and parent and parent.kind in OUTCOMES and item.sprint and \
-                (parent.sprint is None or parent.sprint.title != item.sprint.title):
-            found["Scheduling violations"].append(
-                (item.number, f"In {item.sprint.title}, but its parent #{parent.number} is in "
-                              f"{parent.sprint.title if parent.sprint else 'no sprint'}."))
-        if kind == STORY and item.sprint and item.points is None:
-            found["Unestimated selected stories"].append((item.number, f"Selected into {item.sprint.title}."))
-        gaps = contract_gaps(item)
-        if gaps:
-            target = ("Ready or selected items with contract gaps" if item.status == "Ready" or item.sprint
-                      else "Open items with contract gaps (allowed in Backlog)")
-            found[target].append((item.number, ", ".join(gaps)))
-        if item.sprint:
-            outside = [f"#{number}" for number, state, reason in item.prerequisites
-                       if not (state == "closed" and reason in (None, "completed"))
-                       and not same_sprint(items.get(number), item)]
-            if outside:
-                found["Unavailable prerequisites"].append(
-                    (item.number, f"Waits on {', '.join(outside)}, unfinished and outside {item.sprint.title}."))
-        if item.status == "Blocked" and "unblock" not in item.body.lower():
-            found["Blocked items without a recorded reason"].append(
-                (item.number, "Record the reason, the person responsible and the unblock condition."))
+            found[MISMATCHES].append((item.number, problem))
+        if item.state == "open" and item.kind is not None:
+            check_open_item(item, items, found)
     for number, body in open_pull_requests:
         for task_number in closing_numbers(body):
             task = items.get(task_number)
             if task and (task.sprint is None or not task.sprint.active(now)):
-                found["Scheduling violations"].append(
+                found[SCHEDULING].append(
                     (task_number, f"Pull request #{number} is open, but the task has no active sprint; it may "
                                   "not change or merge until the task is selected into one (A5)."))
     return found
-
-
-VIOLATIONS = ("Scheduling violations", "Status and closure mismatches", "Unestimated selected stories",
-              "Ready or selected items with contract gaps", "Unavailable prerequisites",
-              "Blocked items without a recorded reason")
 
 
 def gh(*arguments: str) -> str:
@@ -313,6 +335,33 @@ def apply_labels(items: dict[int, Item], violations: set[int]) -> None:
             gh("issue", "edit", str(item.number), "--repo", REPOSITORY, "--remove-label", SCHEDULING_VIOLATION)
 
 
+def run_preflight(number: int, items: dict[int, Item], now: datetime, root: Path) -> int:
+    task = items.get(number)
+    if task is None:
+        print(f"FAIL #{number} is not on the Project; eligibility is unknown (section 18).")
+        return 1
+    findings = preflight(task, items, now, root)
+    for finding in findings:
+        print(f"{'PASS' if finding.passed else 'FAIL'} {finding.rule}: {finding.detail}")
+    return 0 if all(finding.passed for finding in findings) else 1
+
+
+def run_report(items: dict[int, Item], now: datetime, labels: bool) -> int:
+    for item in items.values():
+        if item.status == "Blocked":
+            # The reason, the person responsible and the unblock condition are usually a comment (section 11).
+            item.body += "\n" + gh("issue", "view", str(item.number), "--repo", REPOSITORY, "--comments")
+    found = report(items, fetch_open_pull_requests(), now)
+    for category, entries in found.items():
+        print(f"## {category} ({len(entries)})")
+        for number, detail in entries:
+            print(f"- #{number}: {detail}")
+        print()
+    if labels:
+        apply_labels(items, {number for number, _ in found[SCHEDULING]})
+    return 1 if any(found[category] for category in VIOLATIONS) else 0
+
+
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__, formatter_class=argparse.RawDescriptionHelpFormatter)
     commands = parser.add_subparsers(dest="command", required=True)
@@ -321,30 +370,11 @@ def main() -> int:
     board = commands.add_parser("report", help="report every board finding")
     board.add_argument("--apply-labels", action="store_true", help="maintain the scheduling-violation label")
     args = parser.parse_args()
-    now, root = datetime.now(timezone.utc), Path.cwd()
+    now = datetime.now(timezone.utc)
     items = fetch_items()
     if args.command == "preflight":
-        task = items.get(args.task)
-        if task is None:
-            print(f"FAIL #{args.task} is not on the Project; eligibility is unknown (section 18).")
-            return 1
-        findings = preflight(task, items, now, root)
-        for finding in findings:
-            print(f"{'PASS' if finding.passed else 'FAIL'} {finding.rule}: {finding.detail}")
-        return 0 if all(finding.passed for finding in findings) else 1
-    for item in items.values():
-        if item.status == "Blocked":
-            # The reason, the person responsible and the unblock condition are usually a comment (section 11).
-            item.body += "\n" + gh("issue", "view", str(item.number), "--repo", REPOSITORY, "--comments")
-    found = report(items, fetch_open_pull_requests(), now, root)
-    for category, entries in found.items():
-        print(f"## {category} ({len(entries)})")
-        for number, detail in entries:
-            print(f"- #{number}: {detail}")
-        print()
-    if args.apply_labels:
-        apply_labels(items, {number for number, _ in found["Scheduling violations"]})
-    return 1 if any(found[category] for category in VIOLATIONS) else 0
+        return run_preflight(args.task, items, now, Path.cwd())
+    return run_report(items, now, args.apply_labels)
 
 
 if __name__ == "__main__":
