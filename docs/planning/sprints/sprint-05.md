@@ -14,15 +14,17 @@ Specification](../../reference/work-management-specification.md) requires (§7, 
 
 ## Sprint Goal
 
-Finish Discord sign-in on evidence, clean SonarCloud on `main`, and settle the companion threat model and the deployed
-secrets store, so v0.3's pairing and deployment work can start on decided ground.
+Finish Discord sign-in on evidence, clean SonarCloud on `main`, and settle the companion threat model, the deployed
+secrets store and how RaidManager runs on the OVH test server, so v0.3's pairing and deployment work can start on decided
+ground.
 
 ## Capacity assumptions
 
 No sprint has a recorded velocity yet; the planning assumption is 20 Story Points per two-week sprint (specification §9).
 The retrospective points of Sprints 1 to 4 aren't used as velocity: they were estimated after one-day history sprints.
-Two spikes get a separate timebox of 3 working days each, so only 10 points are selected and the sprint stays
-inside its assumption.
+Three spikes have their own timebox (3, 3 and 2 working days). Since the owner's decision of 2 October
+(#346), spikes carry Story Points too, so the sprint holds 19 points (#13 5, #209 5, #37 3, #103 3, #373 3), inside
+the assumption.
 
 ## Selected scope
 
@@ -35,20 +37,23 @@ unknowns, before selection.
 | #209 Fix the SonarCloud findings on main | Improvement | 5 | #365 (Development) |
 | #37 Define companion pairing and claim threat model | Spike | 3 days | #363 (Architecture Analysis) |
 | #103 Decide how deployed secrets are stored and delivered | Spike | 3 days | #364 (Architecture Analysis) |
+| #373 Choose how RaidManager runs on the OVH VPS-1 | Spike | 2 days | #380 (Architecture Analysis) |
 
 Not selected, with the reason:
 
 - #14 Link a community and enforce officer permissions: its remaining task #291 is blocked by the raid commands of
   #20 (v0.4).
-- #15 Pair and revoke a desktop companion, and #153 Store and deliver deployment secrets: they wait for spikes #37
-  and #103; substantial prerequisites are completed in an earlier sprint (specification §10).
+- #15 Pair and revoke a desktop companion, #153 Store and deliver deployment secrets, #374 Provision the OVH test
+  server and #375 Configure the test environment: they wait for spikes #37, #103 and #373; substantial prerequisites
+  are completed in an earlier sprint (specification §10).
 - #171 Resolve character ownership conflicts as an officer: its decision screen shows last uploads (#17) and rosters
   (release v1.0), which don't exist yet.
 
 ## Dependencies and delivery risk
 
-No selected item depends on another. The two spikes run first, since #15 and #153 in Sprint 6 depend on their
-findings. Risk: #209's 14 vulnerabilities may need more than one pull request.
+No selected item depends on another. The three spikes run first, since #15, #153, #374 and #375 in Sprint 6 depend on
+their findings; #380 needs the server's specifications from the owner. Risk: #209's 14 vulnerabilities may need more
+than one pull request.
 
 ## Assignment history
 
@@ -56,6 +61,7 @@ findings. Risk: #209's 14 vulnerabilities may need more than one pull request.
 | --- | --- |
 | 2026-10-02 | Created on the owner's decision on #339 (it replaces the two-week sprint that started on 2 October). |
 | 2026-10-02 | Planned on the owner's delegation (#360): #13, #209, #37 and #103 selected with their tasks. |
+| 2026-10-02 | Spike #373 and its task #380 added on the owner's decision (#378), so both deployment decisions finish in this sprint. |
 
 ## Outcome
 
