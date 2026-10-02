@@ -80,6 +80,7 @@ OAuth
 onboarding
 Onyxia
 OpenAPI
+OVH
 Penpot
 picklist
 PlantUML
@@ -114,6 +115,7 @@ signups
 SonarCloud
 SQL
 subcase
+subdomain
 SVG
 SVGs
 Swashbuckle
@@ -136,6 +138,7 @@ Validators
 validators
 versioned
 versioning
+VPS
 Warband
 Warcraft
 Warmane
