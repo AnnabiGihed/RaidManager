@@ -2,7 +2,8 @@
 
 Four rules, all checked with the built-in GITHUB_TOKEN:
 
-- Parent: every item has exactly one type label and, except an epic, a parent of the level above; an epic has none.
+- Parent: every item has exactly one type label and, except an epic, a parent of the level above on the same
+  milestone; an epic has none.
   Nothing is standalone. A violation adds the needs-parent label and one explanatory comment; fixing the item removes
   the label.
 - Completion: an epic, feature, story, improvement, bug or spike closed as completed is reopened unless at least one
@@ -54,7 +55,7 @@ NAMES = {kind: kind.removeprefix("type:") for kind in (EPIC, FEATURE, STORY, IMP
 DEPTH = {TASK: 0, **dict.fromkeys(BACKLOG_ITEMS, 1), FEATURE: 2, EPIC: 3}
 ANCESTOR_LEVELS = 3
 CLOSING_LINE = re.compile(r"^Closes #(\d+)[ \t]*$", re.IGNORECASE)
-FIELDS = "number state stateReason createdAt labels(first: 20) { nodes { name } }"
+FIELDS = "number state stateReason createdAt milestone { title } labels(first: 20) { nodes { name } }"
 NODE = f"{FIELDS} body parent {{ {FIELDS} }} subIssues(first: 100) {{ nodes {{ {FIELDS} }} }}"
 
 
@@ -66,6 +67,7 @@ class Issue:
     state_reason: str | None = None
     created_at: datetime | None = None
     body: str = ""
+    milestone: str | None = None
 
     @classmethod
     def from_api(cls, value: dict) -> Issue:
@@ -74,10 +76,11 @@ class Issue:
         names = labels["nodes"] if isinstance(labels, dict) else labels
         reason = value.get("state_reason") or value.get("stateReason") or ""
         created = value.get("created_at") or value.get("createdAt")
+        milestone = value.get("milestone") or {}
         return cls(value["number"], value["state"].lower(), frozenset(label["name"] for label in names),
                    reason.lower() or None,
                    datetime.fromisoformat(created.replace("Z", "+00:00")) if created else None,
-                   value.get("body") or "")
+                   value.get("body") or "", milestone.get("title"))
 
     @property
     def kinds(self) -> list[str]:
@@ -148,7 +151,15 @@ def parent_problem(issue: Issue, parent: Issue | None) -> str | None:
     if parent.kind not in allowed:
         found = NAMES.get(parent.kind or "", "item without one type label")
         return f"Its parent #{parent.number} is {a(found)}; {a(NAMES[kind])} belongs under {a(names(allowed))}."
+    if issue.milestone != parent.milestone:
+        # A milestone view filters out a parent on another milestone and shows its children as if standalone.
+        return (f"Its milestone is {milestone(issue)} but its parent #{parent.number}'s is {milestone(parent)}; "
+                "give both the same milestone, so a milestone view shows it under its parent.")
     return None
+
+
+def milestone(issue: Issue) -> str:
+    return f"`{issue.milestone}`" if issue.milestone else "none"
 
 
 def completion_problem(issue: Issue, children: list[Issue]) -> str | None:
@@ -245,7 +256,7 @@ class Guard:
     def current(self, issue: Issue) -> Issue:
         if issue.number not in self.reopened:
             return issue
-        return Issue(issue.number, "open", issue.labels, None, issue.created_at, issue.body)
+        return Issue(issue.number, "open", issue.labels, None, issue.created_at, issue.body, issue.milestone)
 
     def flag(self, issue: Issue, label: str, problem: str | None, rule: str) -> None:
         """Adds the label with one explanatory comment while the problem lasts, and removes it once it is fixed."""

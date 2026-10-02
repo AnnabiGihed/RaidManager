@@ -36,7 +36,8 @@ Epic
 | Spike | `type:spike` | a feature | tasks |
 | Task | `type:task` | a user story, improvement, bug or spike | none |
 
-Every issue carries exactly one type label and, except an epic, a parent of the allowed type. Nothing is standalone.
+Every issue carries exactly one type label and, except an epic, a parent of the allowed type on the same
+milestone, so a milestone view never shows a child without its parent. Nothing is standalone.
 A task describes how bounded work is done and verified; its parent says why the work exists: deliver a capability,
 enhance something, correct a defect, or answer a research question.
 

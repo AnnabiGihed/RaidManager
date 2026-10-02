@@ -4,7 +4,8 @@ on:
   issues:
     # A reopened or relabeled child can invalidate a completed parent, so every change re-checks the ancestors.
     # Opening or editing an issue can add its mockup link or its form answer, so those events re-check it too.
-    types: [opened, edited, closed, reopened, labeled, unlabeled]
+    # A milestone change can split an item from its parent's milestone.
+    types: [opened, edited, closed, reopened, labeled, unlabeled, milestoned, demilestoned]
   schedule:
     - cron: '7,22,37,52 * * * *'
   workflow_dispatch:

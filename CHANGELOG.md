@@ -193,6 +193,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- Every work item now carries its parent's milestone, so the Release v1.0 view no longer shows tasks and
+  improvements without their parents; the hierarchy guard flags a child on another milestone `needs-parent` (#321).
 - The AppHost no longer logs a resource watch timeout every minute: the Aspire packages are pinned to 13.5.4, the AppHost
   SDK's version, until the Aspire 13.6.0 regression is fixed (#274).
 - A `ui` item keeps its `needs-mockup` label until the mockup it names exists on `main`; naming a file that a task
