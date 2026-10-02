@@ -1,4 +1,5 @@
 AA
+AAAA
 addon
 ADR
 ADRs
@@ -16,6 +17,7 @@ boolean
 booleans
 bot
 bUnit
+Caddy
 changelog
 CLI
 codebase
@@ -23,6 +25,7 @@ Codecov
 config
 CQRS
 CSS
+datacenter
 DDD
 debuff
 debuffs
@@ -38,12 +41,18 @@ enum
 Excalidraw
 FASFC
 Figma
+GB
 GearScore
 Gihed
 GitHub
 GraphQL
 Graphviz
+Gravelines
 headlessly
+Hostname
+hostname
+Hostnames
+hostnames
 hotfix
 hotspot
 hotspots
@@ -53,6 +62,7 @@ HttpOnly
 Icecrown
 IDE
 inspectable
+IPv
 js
 JSON
 Keycloak
@@ -77,6 +87,7 @@ multi
 Noto
 npm
 NuGet
+NVMe
 OAuth
 onboarding
 Onyxia
@@ -115,6 +126,7 @@ signup
 signups
 SonarCloud
 SQL
+SSD
 subcase
 subdomain
 SVG
@@ -137,6 +149,7 @@ UTC
 validator
 Validators
 validators
+vCores
 versioned
 versioning
 VPS

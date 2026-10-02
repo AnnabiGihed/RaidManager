@@ -9,6 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- ADR-0027 proposes how the test environment runs on the OVH VPS-1: containers generated from the AppHost with
+  Docker Compose, Caddy with Let's Encrypt in front of `raidmanager-test.pivotsoftwares.com` and its `api.`
+  subdomain, SQL Server Express capped at 2 GB, images built in GitHub Actions, and the provisioning steps (#380).
 - Three Project views show releases and sprints at a glance: Release plan (a timeline grouped by release, with sprint
   and release markers), Releases (items, counts and Story Points per release), and Sprints (the same per sprint) (#344).
 - `scripts/work_gate.py`: the agent preflight checks the seven conditions of the active-sprint gate for a task, and
