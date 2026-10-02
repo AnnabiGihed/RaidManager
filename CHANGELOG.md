@@ -178,6 +178,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- Release v0.3 now includes the deployment of a test environment on an OVH VPS-1 under a subdomain of
+  `pivotsoftwares.com` (epic #369, starting in Sprint 6), and story #14 moves to v0.4 with the raid commands it needs
+  (#368).
 - Release v0.3 is approved and Planned, and Sprint 5 (3 to 17 October) is planned: Discord sign-in proven on evidence,
   the SonarCloud findings on `main` fixed, and the companion threat model and deployed secrets spikes, 10 points and
   two 3-day spikes (#361).
