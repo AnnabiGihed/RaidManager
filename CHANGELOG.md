@@ -170,6 +170,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- The issue forms ask for each type's contract from the work management specification, and the type labels describe
+  when to choose each type. The hierarchy guard applies the specification's milestone rule (a task shares its
+  parent's release; a feature or epic has a milestone only when all its scope is in it), labels new items missing
+  part of their contract `needs-contract`, labels dependency cycles and canceled prerequisites `dependency-problem`,
+  and reopens a release milestone closed before its record shows the delivery (#326).
 - The Raid Manager Project follows the work management specification: Status has Backlog, Ready, In Progress,
   In Review, Blocked, Done and Canceled (every item kept its value); new Sprint, Delivery Stage and Story Points
   fields; the 12 views of the specification replace the five earlier ones; and the built-in Item closed and Item

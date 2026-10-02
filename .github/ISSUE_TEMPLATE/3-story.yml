@@ -1,16 +1,16 @@
 name: User story
-description: "A new capability for a user, under a feature."
+description: "A capability a user needs that does not exist yet, under a feature."
 title: "Story: "
 labels: ["type:story"]
 body:
   - type: markdown
     attributes:
-      value: "Every item sits in one chain: Epic → Feature → User Story, Improvement, Bug or Spike → Task (ADR-0025). Nothing is standalone: after creating this issue, add it as a sub-issue of its parent; an item without the right parent or type gets the `needs-parent` label. Classify by intent first, then scope: choose a user story when a user needs a capability they can't perform today; not an improvement (nothing is refined), not a bug (no agreed requirement is violated), not a spike (it delivers usable behavior). Its children are tasks. Work that changes what users see must link or show its Penpot mockup (ADR-0017)."
+      value: "Work items follow the Work Management and Delivery Specification (docs/reference/work-management-specification.md, ADR-0026): Epic → Feature → User Story, Improvement, Bug or Spike → Task, and nothing is standalone. Classify by intent first, then scope (section 3). Choose a user story when a user needs a capability that does not exist yet. Its parent is a feature. After creating this issue, add it as a sub-issue of its parent at once. Answer every field; write `Unknown: needs clarification` for what isn't known yet, and such an item stays in Backlog until it is clarified (section 4). Work that changes what users see must link or show its Penpot mockup (ADR-0017)."
   - type: input
     id: parent
     attributes:
       label: Parent
-      description: "The feature this item belongs to, for example #13."
+      description: "The feature this story belongs to, for example #156."
       placeholder: "#"
     validations:
       required: true
@@ -32,24 +32,52 @@ body:
       placeholder: docs/mockups/<screen>.svg
     validations:
       required: false
-  - type: textarea
-    id: story
+  - type: input
+    id: user
     attributes:
-      label: Story
-      description: "As a <actor>, I want <capability>, so that <benefit>."
+      label: User
+      description: "Who needs the capability, for example an officer."
     validations:
       required: true
   - type: textarea
-    id: criteria
+    id: need
+    attributes:
+      label: Need
+      description: "The capability they need that does not exist yet."
+    validations:
+      required: true
+  - type: textarea
+    id: benefit
+    attributes:
+      label: Benefit
+      description: "Why they need it: the value it brings."
+    validations:
+      required: true
+  - type: textarea
+    id: scope
+    attributes:
+      label: Scope
+      description: "Affected surfaces (website, Discord bot, addon, companion, API) and boundaries."
+    validations:
+      required: true
+  - type: textarea
+    id: acceptance-criteria
     attributes:
       label: Acceptance criteria
-      description: "Independently verifiable criteria, including invalid, unavailable and boundary cases."
+      description: "Observable, independently verifiable criteria, including invalid, unavailable and boundary cases."
     validations:
       required: true
   - type: textarea
-    id: surfaces
+    id: dependencies
     attributes:
-      label: Affected surfaces
-      description: "Website, Discord bot, addon, companion, API."
+      label: Dependencies
+      description: "Prerequisites as #N (also linked as blocked-by), or None. Parents are not dependencies."
     validations:
-      required: false
+      required: true
+  - type: textarea
+    id: verification
+    attributes:
+      label: Verification
+      description: "How each criterion is verified. Story Points are set on the Project before sprint selection."
+    validations:
+      required: true
