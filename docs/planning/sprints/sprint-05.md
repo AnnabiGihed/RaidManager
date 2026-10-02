@@ -67,8 +67,9 @@ Not selected, with the reason:
 The "Waits for" column lists the blocked-by links on the board, on the item or its task (#19 through #385). The three
 spikes and #38's snapshot schema run first, since half the sprint builds on them; #380 needs the server's specifications
 from the owner, and #374, #375 and #153 need steps only the owner can take (OVH, DNS, the Discord redirect, secrets).
-Each outcome item carries a Risk value on the Project with its reason in a comment (#394): High for #15, #16, #17 and
-#376, which form the two long chains of the sprint; #209's 14 vulnerabilities may need more than one pull request.
+Each outcome item carries a Risk value on the Project with its reason in a comment (#394). The items rated High are
+stories #15, #16 and #17 and improvement #376, which form the two long chains of the sprint. The 14 vulnerabilities
+of improvement #209 may need more than one pull request.
 
 ## Assignment history
 
