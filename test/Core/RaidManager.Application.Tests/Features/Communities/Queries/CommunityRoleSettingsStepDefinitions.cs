@@ -4,9 +4,12 @@ using Pivot.Framework.Domain.Shared;
 using Reqnroll;
 using Shouldly;
 using RaidManager.Application.Features.Communities.Abstractions;
+using RaidManager.Application.Features.Communities.Commands.CreateCommunityRole;
+using RaidManager.Application.Features.Communities.Commands.DeleteCommunityRole;
 using RaidManager.Application.Features.Communities.Commands.MapCommunityRole;
 using RaidManager.Application.Features.Communities.Commands.RefreshCommunityName;
 using RaidManager.Application.Features.Communities.Commands.UnmapCommunityRole;
+using RaidManager.Application.Features.Communities.Commands.UpdateCommunityRole;
 using RaidManager.Application.Features.Communities.Queries.GetCommunityMembers;
 using RaidManager.Application.Features.Communities.Queries.GetCommunityRoleSettings;
 using RaidManager.Domain.Features.Communities.Aggregates;
@@ -80,6 +83,9 @@ public sealed class CommunityRoleSettingsStepDefinitions
 
     /// <summary>Stores the result of the latest change.</summary>
     private Result? _change;
+
+    /// <summary>Stores the result of the latest role validation.</summary>
+    private FluentValidation.Results.ValidationResult? _validation;
 
     /// <summary>Stores the result of the latest members list.</summary>
     private Result<CommunityMembersResponse>? _memberList;
@@ -188,6 +194,17 @@ public sealed class CommunityRoleSettingsStepDefinitions
     /// <summary>Makes Discord fail to list the server's people, after it read the server.</summary>
     [Given("Discord can't list the server's people")]
     public void GivenDiscordCantListTheServersPeople() => _memberListDown = true;
+
+    /// <summary>Creates a role as the Administrator and maps a Discord role to it.</summary>
+    /// <param name="discordRole">The Discord role name.</param>
+    /// <param name="name">The new role's name.</param>
+    /// <param name="permissions">What it allows, by name.</param>
+    [Given("the Discord role {string} gives a new role {string} allowing {string}")]
+    public void GivenTheDiscordRoleGivesANewRole(string discordRole, string name, string permissions)
+    {
+        var role = Community.CreateRole(name, CommunityPermissionNames.Parse(PermissionList(permissions)), byAdministrator: true).Value;
+        Community.MapDiscordRole(RoleId(discordRole), role.Id);
+    }
     #endregion Given Steps
 
     #region When Steps
@@ -267,6 +284,73 @@ public sealed class CommunityRoleSettingsStepDefinitions
         var handler = new RefreshCommunityNameCommandHandler(_communities.Object, _unitOfWork.Object);
         _change = await handler.Handle(new RefreshCommunityNameCommand(Community.Id.Value, name), CancellationToken.None);
     }
+
+    /// <summary>Creates a role, as a user.</summary>
+    /// <param name="name">The user's name.</param>
+    /// <param name="role">The role name.</param>
+    /// <param name="permissions">What it allows, by name.</param>
+    /// <returns>A task that completes when the change has run.</returns>
+    [When("{string} creates the role {string} allowing {string}")]
+    public async Task WhenCreatesTheRole(string name, string role, string permissions)
+    {
+        var handler = new CreateCommunityRoleCommandHandler(_communities.Object, _userRepository.Object, _discordMembers.Object, _unitOfWork.Object);
+        _change = await handler.Handle(new CreateCommunityRoleCommand(Community.Id.Value, UserNamed(name).Id.Value, role, PermissionList(permissions)), CancellationToken.None);
+    }
+
+    /// <summary>Changes a role, as a user.</summary>
+    /// <param name="name">The user's name.</param>
+    /// <param name="role">The role's current name.</param>
+    /// <param name="newName">The role's new name.</param>
+    /// <param name="permissions">What it allows now, by name.</param>
+    /// <returns>A task that completes when the change has run.</returns>
+    [When("{string} changes the role {string} to {string} allowing {string}")]
+    public async Task WhenChangesTheRole(string name, string role, string newName, string permissions)
+    {
+        var handler = new UpdateCommunityRoleCommandHandler(_communities.Object, _userRepository.Object, _discordMembers.Object, _unitOfWork.Object);
+        _change = await handler.Handle(
+            new UpdateCommunityRoleCommand(Community.Id.Value, UserNamed(name).Id.Value, RoleNamed(role), newName, PermissionList(permissions)),
+            CancellationToken.None);
+    }
+
+    /// <summary>Changes a role of a community that doesn't exist.</summary>
+    /// <param name="name">The user's name.</param>
+    /// <returns>A task that completes when the change has run.</returns>
+    [When("{string} changes a role of a community that doesn't exist")]
+    public async Task WhenChangesARoleOfACommunityThatDoesntExist(string name)
+    {
+        var handler = new UpdateCommunityRoleCommandHandler(_communities.Object, _userRepository.Object, _discordMembers.Object, _unitOfWork.Object);
+        _change = await handler.Handle(new UpdateCommunityRoleCommand(Guid.NewGuid(), UserNamed(name).Id.Value, Guid.NewGuid(), "Veteran", []), CancellationToken.None);
+    }
+
+    /// <summary>Deletes a role, as a user.</summary>
+    /// <param name="name">The user's name.</param>
+    /// <param name="role">The role name; an unknown name stands for a role the community doesn't have.</param>
+    /// <returns>A task that completes when the change has run.</returns>
+    [When("{string} deletes the role {string}")]
+    public async Task WhenDeletesTheRole(string name, string role)
+    {
+        var handler = new DeleteCommunityRoleCommandHandler(_communities.Object, _userRepository.Object, _discordMembers.Object, _unitOfWork.Object);
+        _change = await handler.Handle(new DeleteCommunityRoleCommand(Community.Id.Value, UserNamed(name).Id.Value, RoleNamed(role)), CancellationToken.None);
+    }
+
+    /// <summary>Maps a Discord role to a role by its name, as a user.</summary>
+    /// <param name="name">The user's name.</param>
+    /// <param name="discordRole">The Discord role name.</param>
+    /// <param name="role">The role name.</param>
+    /// <returns>A task that completes when the change has run.</returns>
+    [When("{string} maps the Discord role {string} to the role {string}")]
+    public async Task WhenMapsTheDiscordRoleToTheRole(string name, string discordRole, string role)
+    {
+        var handler = new MapCommunityRoleCommandHandler(_communities.Object, _userRepository.Object, _discordMembers.Object, _discordServers.Object, _unitOfWork.Object);
+        _change = await handler.Handle(new MapCommunityRoleCommand(Community.Id.Value, UserNamed(name).Id.Value, RoleId(discordRole), RoleNamed(role)), CancellationToken.None);
+    }
+
+    /// <summary>Validates a role's name and permissions as a create command would carry them.</summary>
+    /// <param name="name">The role name.</param>
+    /// <param name="permissions">The permission names, comma-separated.</param>
+    [When("a role named {string} allowing {string} is validated")]
+    public void WhenARoleNamedIsValidated(string name, string permissions) =>
+        _validation = new CreateCommunityRoleCommandValidator().Validate(new CreateCommunityRoleCommand(Guid.NewGuid(), Guid.NewGuid(), name, PermissionList(permissions)));
     #endregion When Steps
 
     #region Then Steps
@@ -334,9 +418,58 @@ public sealed class CommunityRoleSettingsStepDefinitions
     [Then("the request is refused because the user is not a member")]
     public void ThenTheRequestIsRefusedBecauseTheUserIsNotAMember() => ShouldFail(CommunityErrors.NotAMember, ResultExceptionType.AccessDenied);
 
-    /// <summary>Checks that the request was refused because the user isn't the Administrator.</summary>
-    [Then("the request is refused because the user is not the Administrator")]
-    public void ThenTheRequestIsRefusedBecauseTheUserIsNotTheAdministrator() => ShouldFail(CommunityErrors.NotAdministrator, ResultExceptionType.AccessDenied);
+    /// <summary>Checks that the request was refused because the user can't manage roles.</summary>
+    [Then("the request is refused because the user can't manage roles")]
+    public void ThenTheRequestIsRefusedBecauseTheUserCantManageRoles() => ShouldFail(CommunityErrors.NotRoleManager, ResultExceptionType.AccessDenied);
+
+    /// <summary>Checks that the request was refused because only the Administrator changes the role.</summary>
+    [Then("the request is refused because the role is locked")]
+    public void ThenTheRequestIsRefusedBecauseTheRoleIsLocked() => ShouldFail(CommunityErrors.RoleLocked, ResultExceptionType.AccessDenied);
+
+    /// <summary>Checks that the request was refused because only the Administrator lets a role manage roles.</summary>
+    [Then("the request is refused because only the Administrator can let a role manage roles")]
+    public void ThenTheRequestIsRefusedBecauseOnlyTheAdministratorCanLetARoleManageRoles() =>
+        ShouldFail(CommunityErrors.CannotGrantRoleManagement, ResultExceptionType.AccessDenied);
+
+    /// <summary>Checks that the request failed because another role has the name.</summary>
+    [Then("the request fails because the role name is taken")]
+    public void ThenTheRequestFailsBecauseTheRoleNameIsTaken() => ShouldFail(CommunityErrors.RoleNameTaken, ResultExceptionType.Conflict);
+
+    /// <summary>Checks one of the community's roles and what it allows.</summary>
+    /// <param name="name">The role name.</param>
+    /// <param name="permissions">The expected permissions, by name.</param>
+    [Then("the community has the role {string} allowing {string}")]
+    public void ThenTheCommunityHasTheRole(string name, string permissions) =>
+        Community.Roles.Single(role => role.Name == name).Permissions.ShouldBe(CommunityPermissionNames.Parse(PermissionList(permissions)));
+
+    /// <summary>Checks that the community has no role with a name.</summary>
+    /// <param name="name">The role name.</param>
+    [Then("the community has no role {string}")]
+    public void ThenTheCommunityHasNoRole(string name) => Community.Roles.ShouldNotContain(role => role.Name == name);
+
+    /// <summary>Checks that the asking user can't let a role manage roles.</summary>
+    [Then("the roles can't let a role manage roles")]
+    public void ThenTheRolesCantLetARoleManageRoles() => Read.Value.CanGrantRoleManagement.ShouldBeFalse();
+
+    /// <summary>Checks that the asking user may change a role.</summary>
+    /// <param name="name">The role name.</param>
+    [Then("the {string} role can be changed")]
+    public void ThenTheRoleCanBeChanged(string name) => Read.Value.Rows.Single(row => row.Name == name).CanChange.ShouldBeTrue();
+
+    /// <summary>Checks that the asking user may not change a role.</summary>
+    /// <param name="name">The role name.</param>
+    [Then("the {string} role can't be changed")]
+    public void ThenTheRoleCantBeChanged(string name) => Read.Value.Rows.Single(row => row.Name == name).CanChange.ShouldBeFalse();
+
+    /// <summary>Checks the property a malformed role was rejected on.</summary>
+    /// <param name="property">The property name.</param>
+    [Then("the role is rejected on {string}")]
+    public void ThenTheRoleIsRejectedOn(string property)
+    {
+        var validation = _validation.ShouldNotBeNull();
+        validation.IsValid.ShouldBeFalse();
+        validation.Errors.ShouldContain(error => error.PropertyName == property);
+    }
 
     /// <summary>Checks that the request was refused because the role can't be mapped.</summary>
     [Then("the request is refused because the role can't be mapped")]
@@ -397,6 +530,12 @@ public sealed class CommunityRoleSettingsStepDefinitions
     #endregion Then Steps
 
     #region Private Helpers
+    /// <summary>Splits a comma-separated list of permission names.</summary>
+    /// <param name="permissions">The names.</param>
+    /// <returns>The names, trimmed.</returns>
+    private static List<string> PermissionList(string permissions) =>
+        [.. permissions.Split(',', StringSplitOptions.RemoveEmptyEntries | StringSplitOptions.TrimEntries)];
+
     /// <summary>Gets or registers the user with a name, each with their own Discord account.</summary>
     /// <param name="name">The user's name.</param>
     /// <returns>The user.</returns>
@@ -415,6 +554,11 @@ public sealed class CommunityRoleSettingsStepDefinitions
     /// <param name="name">The name, such as <c>Officer</c> or <c>RaidLeader</c>.</param>
     /// <returns>The role's identifier.</returns>
     private CommunityRoleId Preset(string name) => Community.Roles.Single(role => string.Equals(role.Name.Replace(" ", string.Empty, StringComparison.Ordinal), name, StringComparison.OrdinalIgnoreCase)).Id;
+
+    /// <summary>Finds one of the community's roles by name, or makes up an id for a name it doesn't have.</summary>
+    /// <param name="name">The role name.</param>
+    /// <returns>The role's identifier.</returns>
+    private Guid RoleNamed(string name) => Community.Roles.FirstOrDefault(role => role.Name == name)?.Id.Value ?? Guid.NewGuid();
 
     /// <summary>Gets or assigns the snowflake of a Discord role name.</summary>
     /// <param name="name">The role name.</param>

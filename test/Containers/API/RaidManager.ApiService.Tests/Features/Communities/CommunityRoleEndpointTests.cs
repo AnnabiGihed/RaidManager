@@ -123,6 +123,67 @@ public sealed class CommunityRoleEndpointTests
         unknownRaidManagerRole.StatusCode.ShouldBe(HttpStatusCode.NotFound);
     }
 
+    /// <summary>Creates, changes, maps and deletes a role as the Administrator, refusing a taken name, an unknown permission and an unknown role.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task RolesAreCreatedChangedAndDeleted()
+    {
+        using var client = WebsiteClient();
+        var server = await LinkedServerAsync(client);
+        var route = server.Route(server.Administrator);
+
+        var created = await client.PostAsJsonAsync($"{route}/roles", new CommunityRoleRequest("Veteran", ["RunRaidNight"]));
+        created.StatusCode.ShouldBe(HttpStatusCode.Created);
+        var roleId = (await created.Content.ReadFromJsonAsync<CreatedCommunityRole>()).ShouldNotBeNull().RoleId;
+        created.Headers.Location.ShouldBe(new Uri($"{route}/roles/{roleId}", UriKind.Relative));
+        (await client.PutAsJsonAsync($"{route}/roles/{roleId}", new CommunityRoleRequest("Veteran Raider", ["RunRaidNight", "ReviewConflicts"]))).StatusCode.ShouldBe(HttpStatusCode.NoContent);
+        (await client.PutAsync($"{route}/role-mappings/{roleId}/{server.OfficerRoleId}", content: null)).StatusCode.ShouldBe(HttpStatusCode.NoContent);
+
+        var card = (await client.GetFromJsonAsync<CommunityRoleSettings>($"{route}/roles")).ShouldNotBeNull();
+        var row = card.Rows.Single(candidate => candidate.RoleId == roleId);
+        (row.Name, row.CanChange, row.Members).ShouldBe(("Veteran Raider", true, 1));
+        row.Permissions.ShouldBe(["RunRaidNight", "ReviewConflicts"]);
+        card.CanGrantRoleManagement.ShouldBeTrue();
+
+        (await client.PostAsJsonAsync($"{route}/roles", new CommunityRoleRequest("officer", ["ManageRaids"]))).StatusCode.ShouldBe(HttpStatusCode.Conflict);
+        var unknownPermission = await client.PostAsJsonAsync($"{route}/roles", new CommunityRoleRequest("Recruiter", ["FlyMounts"]));
+        unknownPermission.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        (await unknownPermission.Content.ReadAsStringAsync()).ShouldContain("Permissions[0]");
+        (await client.DeleteAsync($"{route}/roles/{roleId}")).StatusCode.ShouldBe(HttpStatusCode.NoContent);
+        (await client.DeleteAsync($"{route}/roles/{roleId}")).StatusCode.ShouldBe(HttpStatusCode.NotFound);
+        (await client.GetFromJsonAsync<CommunityRoleSettings>($"{route}/roles")).ShouldNotBeNull().Rows.ShouldNotContain(candidate => candidate.RoleId == roleId);
+    }
+
+    /// <summary>Lets a member whose role manages roles change other roles, but never a role that manages roles.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task RoleManagersChangeOnlyRolesThatDontManageRoles()
+    {
+        using var client = WebsiteClient();
+        var server = await LinkedServerAsync(client);
+        var adminRoute = server.Route(server.Administrator);
+        var council = (await (await client.PostAsJsonAsync($"{adminRoute}/roles", new CommunityRoleRequest("Council", ["ManageCommunityRoles"])))
+            .Content.ReadFromJsonAsync<CreatedCommunityRole>()).ShouldNotBeNull().RoleId;
+        (await client.PutAsync($"{adminRoute}/role-mappings/{council}/{server.OfficerRoleId}", content: null)).EnsureSuccessStatusCode();
+        var route = server.Route(server.Member);
+
+        var card = (await client.GetFromJsonAsync<CommunityRoleSettings>($"{route}/roles")).ShouldNotBeNull();
+        var recruiter = await client.PostAsJsonAsync($"{route}/roles", new CommunityRoleRequest("Recruiter", ["ReviewConflicts"]));
+        var escalation = await client.PostAsJsonAsync($"{route}/roles", new CommunityRoleRequest("Elders", ["ManageCommunityRoles"]));
+        var lockedChange = await client.PutAsJsonAsync($"{route}/roles/{council}", new CommunityRoleRequest("Council", ["ManageRaids"]));
+        var lockedDelete = await client.DeleteAsync($"{route}/roles/{council}");
+        var outsider = await client.PostAsJsonAsync($"{server.Route(server.Outsider)}/roles", new CommunityRoleRequest("Strangers", []));
+
+        (card.CanEdit, card.CanGrantRoleManagement).ShouldBe((true, false));
+        card.Rows.Single(row => row.RoleId == council).CanChange.ShouldBeFalse();
+        card.Rows.Single(row => row.RoleId == server.Officer).CanChange.ShouldBeTrue();
+        recruiter.StatusCode.ShouldBe(HttpStatusCode.Created);
+        escalation.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
+        lockedChange.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
+        lockedDelete.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
+        outsider.StatusCode.ShouldBe(HttpStatusCode.Forbidden);
+    }
+
     /// <summary>Answers 503 when Discord can't answer and 409 when the bot was removed from the server.</summary>
     /// <returns>A task that completes when the test has run.</returns>
     [Fact]
@@ -159,6 +220,7 @@ public sealed class CommunityRoleEndpointTests
         document.ShouldContain("/internal/users/{userId}/communities/{communityId}/roles");
         document.ShouldContain("/internal/users/{userId}/communities/{communityId}/members");
         document.ShouldContain("/internal/users/{userId}/communities/{communityId}/role-mappings/{roleId}/{discordRoleId}");
+        document.ShouldContain("/internal/users/{userId}/communities/{communityId}/roles/{roleId}");
     }
     #endregion Tests
 

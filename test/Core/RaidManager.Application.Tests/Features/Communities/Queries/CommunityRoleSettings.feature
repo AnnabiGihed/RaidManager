@@ -1,6 +1,6 @@
 Feature: Community role settings
   As a community Administrator
-  I want to see and change which Discord roles give Officer and Raid leader
+  I want to see and change the community's roles and which Discord roles give them
   So that RaidManager permissions follow the roles my server already uses
 
   Background:
@@ -70,7 +70,7 @@ Feature: Community role settings
 
     Scenario: Another member can't map a role
       When "Malarya" maps the Discord role "Veteran" to RaidLeader
-      Then the request is refused because the user is not the Administrator
+      Then the request is refused because the user can't manage roles
       And nothing is saved
 
     Scenario: A role that isn't one of the server's mappable roles is refused
@@ -139,3 +139,83 @@ Feature: Community role settings
     Scenario: A community that doesn't exist can't be listed
       When "Gihed" lists the members of an unknown community
       Then the request fails because the community doesn't exist
+
+  Rule: The Administrator and role managers create, change and delete roles
+
+    Scenario: The Administrator creates a role
+      When "Gihed" creates the role "Recruiter" allowing "ReviewConflicts, ManageRaids"
+      Then the change is saved
+      And the community has the role "Recruiter" allowing "ManageRaids, ReviewConflicts"
+
+    Scenario: A role manager creates a role
+      Given the Discord role "Veteran" gives a new role "Council" allowing "ManageCommunityRoles"
+      When "Daymox" creates the role "Recruiter" allowing "ReviewConflicts"
+      Then the change is saved
+      And the community has the role "Recruiter" allowing "ReviewConflicts"
+
+    Scenario: A role manager maps a Discord role to Raid leader
+      Given the Discord role "Veteran" gives a new role "Council" allowing "ManageCommunityRoles"
+      When "Daymox" maps the Discord role "Guild Master" to RaidLeader
+      Then the change is saved
+      And the Discord role "Guild Master" gives RaidLeader
+
+    Scenario: A role manager sees which roles they can change
+      Given the Discord role "Veteran" gives a new role "Council" allowing "ManageCommunityRoles"
+      When "Daymox" reads the community's roles
+      Then the roles can be edited
+      And the roles can't let a role manage roles
+      And the "Officer" role can be changed
+      And the "Council" role can't be changed
+
+    Scenario: A role manager can't change, delete or map a role that manages roles
+      Given the Discord role "Veteran" gives a new role "Council" allowing "ManageCommunityRoles"
+      When "Daymox" changes the role "Council" to "Council" allowing "ManageRaids"
+      Then the request is refused because the role is locked
+      When "Daymox" deletes the role "Council"
+      Then the request is refused because the role is locked
+      When "Daymox" maps the Discord role "Guild Master" to the role "Council"
+      Then the request is refused because the role is locked
+
+    Scenario: A role manager can't let a role manage roles
+      Given the Discord role "Veteran" gives a new role "Council" allowing "ManageCommunityRoles"
+      When "Daymox" changes the role "Officer" to "Officer" allowing "ManageCommunityRoles"
+      Then the request is refused because only the Administrator can let a role manage roles
+      And nothing is saved
+
+    Scenario: A member whose roles don't manage roles can't create one
+      When "Malarya" creates the role "Recruiter" allowing "ReviewConflicts"
+      Then the request is refused because the user can't manage roles
+      And nothing is saved
+
+    Scenario: The Administrator changes a role
+      When "Gihed" changes the role "Raid leader" to "Raid lead" allowing "RunRaidNight"
+      Then the change is saved
+      And the community has the role "Raid lead" allowing "RunRaidNight"
+
+    Scenario: The Administrator deletes a role
+      When "Gihed" deletes the role "Raid leader"
+      Then the change is saved
+      And the community has no role "Raid leader"
+
+    Scenario: A name another role has is refused
+      When "Gihed" creates the role "officer" allowing "ManageRaids"
+      Then the request fails because the role name is taken
+
+    Scenario: Deleting a role the community doesn't have is not found
+      When "Gihed" deletes the role "Ghost"
+      Then the request fails because the role doesn't exist
+
+    Scenario: Changing a role in a community that doesn't exist is not found
+      When "Gihed" changes a role of a community that doesn't exist
+      Then the request fails because the community doesn't exist
+
+    Scenario Outline: A malformed role is rejected before the handler runs
+      When a role named "<name>" allowing "<permissions>" is validated
+      Then the role is rejected on "<property>"
+
+      Examples:
+        | name                                                | permissions | property       |
+        |                                                     | ManageRaids | Name           |
+        | 123456789012345678901234567890123456789012345678901 | ManageRaids | Name           |
+        | Veteran                                             | FlyMounts   | Permissions[0] |
+

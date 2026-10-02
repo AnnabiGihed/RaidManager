@@ -2,10 +2,13 @@ using MediatR;
 using Microsoft.AspNetCore.Mvc;
 using RaidManager.ApiService.Features.Shared.Authentication;
 using RaidManager.ApiService.Features.Shared.Http;
+using RaidManager.Application.Features.Communities.Commands.CreateCommunityRole;
+using RaidManager.Application.Features.Communities.Commands.DeleteCommunityRole;
 using RaidManager.Application.Features.Communities.Commands.LinkCommunity;
 using RaidManager.Application.Features.Communities.Commands.MapCommunityRole;
 using RaidManager.Application.Features.Communities.Commands.RefreshCommunityName;
 using RaidManager.Application.Features.Communities.Commands.UnmapCommunityRole;
+using RaidManager.Application.Features.Communities.Commands.UpdateCommunityRole;
 using RaidManager.Application.Features.Communities.Queries.GetCommunity;
 using RaidManager.Application.Features.Communities.Queries.GetCommunityByDiscordServer;
 using RaidManager.Application.Features.Communities.Queries.GetCommunityMembers;
@@ -98,7 +101,7 @@ public static class CommunityEndpoints
         userCommunity.MapGet("/roles", GetRoleSettingsAsync)
             .WithName("GetCommunityRoleSettings")
             .WithSummary("Get a community's roles")
-            .WithDescription("Reads the Discord server's roles and members with the bot and applies the community's mappings: the mappable roles, and rows for the Administrator, each of the community's roles with what it allows, and Member, each with its Discord roles and member count. Only a current member of the server may ask; only the Administrator can edit. Also refreshes the stored server name. Returns 503 when Discord can't answer.")
+            .WithDescription("Reads the Discord server's roles and members with the bot and applies the community's mappings: the mappable roles, and rows for the Administrator, each of the community's roles with what it allows, and Member, each with its Discord roles and member count. Only a current member of the server may ask. Says whether the user may change roles, whether they may let a role manage roles, and per role whether they may change it. Also refreshes the stored server name. Returns 503 when Discord can't answer.")
             .Produces<CommunityRoleSettings>()
             .ProducesValidationProblem()
             .ProducesProblem(StatusCodes.Status403Forbidden)
@@ -117,10 +120,42 @@ public static class CommunityEndpoints
             .ProducesProblem(StatusCodes.Status409Conflict)
             .ProducesProblem(StatusCodes.Status503ServiceUnavailable);
 
+        userCommunity.MapPost("/roles", CreateRoleAsync)
+            .WithName("CreateCommunityRole")
+            .WithSummary("Create a role in a community")
+            .WithDescription("The Administrator, or a member whose role grants ManageCommunityRoles, still in the server, may. The name is required, at most 50 characters and unique in the community (409 otherwise); only the Administrator can include ManageCommunityRoles (403). Returns the new role's id.")
+            .Produces<CreatedCommunityRole>(StatusCodes.Status201Created)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status403Forbidden)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict)
+            .ProducesProblem(StatusCodes.Status503ServiceUnavailable);
+
+        userCommunity.MapPut("/roles/{roleId:guid}", UpdateRoleAsync)
+            .WithName("UpdateCommunityRole")
+            .WithSummary("Rename a community's role and change what it allows")
+            .WithDescription("The same people may as for creating a role, but only the Administrator changes a role that grants ManageCommunityRoles or lets one grant it (403). A name another role has returns 409.")
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status403Forbidden)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status409Conflict)
+            .ProducesProblem(StatusCodes.Status503ServiceUnavailable);
+
+        userCommunity.MapDelete("/roles/{roleId:guid}", DeleteRoleAsync)
+            .WithName("DeleteCommunityRole")
+            .WithSummary("Delete a community's role")
+            .WithDescription("The same people may as for creating a role, but only the Administrator deletes a role that grants ManageCommunityRoles (403). The Discord roles mapped to it stop giving it, and its members lose what it allowed at their next check.")
+            .Produces(StatusCodes.Status204NoContent)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status403Forbidden)
+            .ProducesProblem(StatusCodes.Status404NotFound)
+            .ProducesProblem(StatusCodes.Status503ServiceUnavailable);
+
         userCommunity.MapPut("/role-mappings/{roleId:guid}/{discordRoleId}", MapRoleAsync)
             .WithName("MapCommunityRole")
             .WithSummary("Map a Discord role to one of the community's roles")
-            .WithDescription("Only the community's Administrator, still in the server, may. The role must be one of the community's roles (404 otherwise), and the Discord role one of the server's mappable roles. One Discord role can give several roles; mapping it to one keeps the others.")
+            .WithDescription("The Administrator, or a member whose role grants ManageCommunityRoles, still in the server, may; only the Administrator maps a role that grants ManageCommunityRoles. The role must be one of the community's roles (404 otherwise), and the Discord role one of the server's mappable roles. One Discord role can give several roles; mapping it to one keeps the others.")
             .Produces(StatusCodes.Status204NoContent)
             .ProducesValidationProblem()
             .ProducesProblem(StatusCodes.Status400BadRequest)
@@ -131,7 +166,7 @@ public static class CommunityEndpoints
         userCommunity.MapDelete("/role-mappings/{roleId:guid}/{discordRoleId}", UnmapRoleAsync)
             .WithName("UnmapCommunityRole")
             .WithSummary("Stop a Discord role giving one of the community's roles")
-            .WithDescription("Only the community's Administrator, still in the server, may. Any other role the Discord role gives stays; removing a mapping that doesn't exist changes nothing.")
+            .WithDescription("The same people may as for mapping. Any other role the Discord role gives stays; removing a mapping that doesn't exist changes nothing.")
             .Produces(StatusCodes.Status204NoContent)
             .ProducesValidationProblem()
             .ProducesProblem(StatusCodes.Status403Forbidden)
@@ -212,6 +247,47 @@ public static class CommunityEndpoints
         }
 
         return result.ToHttpResult(members => TypedResults.Ok(CommunityMembers.From(members)));
+    }
+
+    /// <summary>Creates a role in the community.</summary>
+    /// <param name="userId">The signed-in user.</param>
+    /// <param name="communityId">The community.</param>
+    /// <param name="request">The role's name and permissions.</param>
+    /// <param name="sender">The MediatR sender.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>201 with the new role's id, or a problem.</returns>
+    private static async Task<IResult> CreateRoleAsync(Guid userId, Guid communityId, CommunityRoleRequest request, ISender sender, CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new CreateCommunityRoleCommand(communityId, userId, request.Name, request.Permissions ?? []), cancellationToken);
+        return result.ToHttpResult(roleId =>
+            TypedResults.Created($"/internal/users/{userId}/communities/{communityId}/roles/{roleId}", new CreatedCommunityRole(roleId)));
+    }
+
+    /// <summary>Renames a role and changes what it allows.</summary>
+    /// <param name="userId">The signed-in user.</param>
+    /// <param name="communityId">The community.</param>
+    /// <param name="roleId">The role.</param>
+    /// <param name="request">The role's new name and permissions.</param>
+    /// <param name="sender">The MediatR sender.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>204, or a problem.</returns>
+    private static async Task<IResult> UpdateRoleAsync(Guid userId, Guid communityId, Guid roleId, CommunityRoleRequest request, ISender sender, CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new UpdateCommunityRoleCommand(communityId, userId, roleId, request.Name, request.Permissions ?? []), cancellationToken);
+        return result.ToHttpResult(TypedResults.NoContent);
+    }
+
+    /// <summary>Deletes a role.</summary>
+    /// <param name="userId">The signed-in user.</param>
+    /// <param name="communityId">The community.</param>
+    /// <param name="roleId">The role.</param>
+    /// <param name="sender">The MediatR sender.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>204, or a problem.</returns>
+    private static async Task<IResult> DeleteRoleAsync(Guid userId, Guid communityId, Guid roleId, ISender sender, CancellationToken cancellationToken)
+    {
+        var result = await sender.Send(new DeleteCommunityRoleCommand(communityId, userId, roleId), cancellationToken);
+        return result.ToHttpResult(TypedResults.NoContent);
     }
 
     /// <summary>Maps a Discord role to one of the community's roles.</summary>

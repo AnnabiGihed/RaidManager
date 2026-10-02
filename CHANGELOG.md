@@ -9,6 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- The API lets the Administrator, or a member whose role grants Manage community roles, create, rename, change the
+  permissions of and delete a community's roles, and map Discord roles to them. Only the Administrator changes a
+  role that manages roles or lets one do so, and role names are unique in a community (ADR-0024) (#313).
 - Each community holds its own roles, each with the permissions it allows: Manage raids, Build rosters, Run raid
   night, Review conflicts and Manage community roles. Officer and Raid leader are presets every community starts
   with, and existing mappings keep giving them. A member has every permission of every role their Discord roles

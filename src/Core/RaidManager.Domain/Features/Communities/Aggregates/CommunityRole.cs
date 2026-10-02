@@ -73,31 +73,23 @@ public sealed class CommunityRole : Entity<CommunityRoleId>
     #endregion Domain Behavior
 
     #region Factory Methods
-    /// <summary>Creates a role.</summary>
-    /// <param name="name">The role name.</param>
+    /// <summary>Creates a role; the community has checked the name and permissions.</summary>
+    /// <param name="name">The trimmed role name.</param>
     /// <param name="permissions">What the role allows.</param>
     /// <param name="position">The role's place in the community's list.</param>
     /// <returns>The role.</returns>
-    /// <exception cref="DomainException">Thrown when the name is blank or too long, or the permissions aren't known.</exception>
-    internal static CommunityRole Create(string name, CommunityPermissions permissions, int position)
-    {
-        var trimmed = name?.Trim() ?? string.Empty;
-        if (trimmed.Length == 0)
-        {
-            throw new UnknownDomainException("A role needs a name.");
-        }
-
-        if (trimmed.Length > MaximumNameLength)
-        {
-            throw new UnknownDomainException($"A role name cannot be longer than {MaximumNameLength} characters.");
-        }
-
-        if ((permissions & ~CommunityPermissions.All) != CommunityPermissions.None)
-        {
-            throw new UnknownDomainException("A role can only allow the known permissions.");
-        }
-
-        return new CommunityRole(new CommunityRoleId(Guid.NewGuid()), trimmed, permissions, position);
-    }
+    internal static CommunityRole Create(string name, CommunityPermissions permissions, int position) =>
+        new(new CommunityRoleId(Guid.NewGuid()), name, permissions, position);
     #endregion Factory Methods
+
+    #region Community Behavior
+    /// <summary>Renames the role and changes what it allows; the community has checked both.</summary>
+    /// <param name="name">The trimmed role name.</param>
+    /// <param name="permissions">What the role allows.</param>
+    internal void Change(string name, CommunityPermissions permissions)
+    {
+        Name = name;
+        Permissions = permissions;
+    }
+    #endregion Community Behavior
 }

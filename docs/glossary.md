@@ -27,6 +27,12 @@ A role in a community, such as Officer, Raid leader or one the community created
 Manage raids, Build rosters, Run raid night, Review conflicts and Manage community roles. A member has every
 permission of every role their Discord roles give them.
 
+## Role manager
+
+A member whose roles grant Manage community roles. A role manager creates, changes and deletes the community's roles
+and maps Discord roles to them, except a role that itself grants Manage community roles, which only the Administrator
+changes.
+
 ## Discord identity
 
 The external Discord account that authenticates a platform user. The platform does not manage local passwords.

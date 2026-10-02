@@ -73,12 +73,13 @@ internal sealed class FakeCommunitiesApi : ICommunitiesApiClient
         communityId,
         "Dark Templars",
         canEdit,
+        canEdit,
         [new DiscordRoleOption("11", "Guild Master"), new DiscordRoleOption("12", "Officier"), new DiscordRoleOption("13", "Veteran")],
         [
-            new CommunityRoleRow("Administrator", null, "Administrator", ["ManageRaids", "BuildRosters", "RunRaidNight", "ReviewConflicts", "ManageCommunityRoles"], [], 1),
-            new CommunityRoleRow("Role", OfficerId, "Officer", ["ManageRaids", "BuildRosters", "RunRaidNight", "ReviewConflicts"], [new MappedDiscordRole("12", "Officier", false)], 1),
-            new CommunityRoleRow("Role", RaidLeaderId, "Raid leader", ["ManageRaids", "BuildRosters", "RunRaidNight"], [new MappedDiscordRole("99", null, true)], 0),
-            new CommunityRoleRow("Member", null, "Member", [], [], 2),
+            new CommunityRoleRow("Administrator", null, "Administrator", ["ManageRaids", "BuildRosters", "RunRaidNight", "ReviewConflicts", "ManageCommunityRoles"], [], false, 1),
+            new CommunityRoleRow("Role", OfficerId, "Officer", ["ManageRaids", "BuildRosters", "RunRaidNight", "ReviewConflicts"], [new MappedDiscordRole("12", "Officier", false)], canEdit, 1),
+            new CommunityRoleRow("Role", RaidLeaderId, "Raid leader", ["ManageRaids", "BuildRosters", "RunRaidNight"], [new MappedDiscordRole("99", null, true)], canEdit, 0),
+            new CommunityRoleRow("Member", null, "Member", [], [], false, 2),
         ]);
 
     /// <inheritdoc />

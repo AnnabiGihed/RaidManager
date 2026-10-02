@@ -2,21 +2,21 @@ using Pivot.Framework.Application.Abstractions.Messaging.Commands;
 using Pivot.Framework.Domain.Repositories;
 using Pivot.Framework.Domain.Shared;
 using RaidManager.Application.Features.Communities.Abstractions;
-using RaidManager.Domain.Features.Communities.Aggregates;
 using RaidManager.Domain.Features.Communities.Errors;
 using RaidManager.Domain.Features.Communities.Repositories;
 using RaidManager.Domain.Features.Identity.Repositories;
 using RaidManager.Domain.Features.Shared.Identifiers;
 
-namespace RaidManager.Application.Features.Communities.Commands.UnmapCommunityRole;
+namespace RaidManager.Application.Features.Communities.Commands.UpdateCommunityRole;
 
-/// <summary>Handles <see cref="UnmapCommunityRoleCommand"/>.</summary>
+/// <summary>Handles <see cref="UpdateCommunityRoleCommand"/>: checks with Discord who asks, then lets the community change the role.</summary>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
-/// Date: 2026-10-01<br/>
-/// Purpose: Lets the Administrator stop a Discord role giving a RaidManager role, including a role deleted in Discord since.
+/// Date: 2026-10-02<br/>
+/// Purpose: A role manager changes every role except one that manages roles, and can't let a role manage roles (owner
+/// decisions on #308).
 /// </remarks>
-internal sealed class UnmapCommunityRoleCommandHandler : ICommandHandler<UnmapCommunityRoleCommand>
+internal sealed class UpdateCommunityRoleCommandHandler : ICommandHandler<UpdateCommunityRoleCommand>
 {
     #region Fields
     /// <summary>Stores the community repository.</summary>
@@ -28,17 +28,17 @@ internal sealed class UnmapCommunityRoleCommandHandler : ICommandHandler<UnmapCo
     /// <summary>Stores the Discord membership lookup.</summary>
     private readonly IDiscordServerMembers _discordMembers;
 
-    /// <summary>Stores the unit of work that commits the change.</summary>
+    /// <summary>Stores the unit of work.</summary>
     private readonly IUnitOfWork _unitOfWork;
     #endregion Fields
 
     #region Constructors
-    /// <summary>Initializes a new instance of the <see cref="UnmapCommunityRoleCommandHandler"/> class.</summary>
+    /// <summary>Initializes a new instance of the <see cref="UpdateCommunityRoleCommandHandler"/> class.</summary>
     /// <param name="communities">The community repository.</param>
     /// <param name="users">The user repository.</param>
     /// <param name="discordMembers">The Discord membership lookup.</param>
-    /// <param name="unitOfWork">The unit of work that commits the change.</param>
-    public UnmapCommunityRoleCommandHandler(ICommunityRepository communities, IUserRepository users, IDiscordServerMembers discordMembers, IUnitOfWork unitOfWork)
+    /// <param name="unitOfWork">The unit of work.</param>
+    public UpdateCommunityRoleCommandHandler(ICommunityRepository communities, IUserRepository users, IDiscordServerMembers discordMembers, IUnitOfWork unitOfWork)
     {
         _communities = communities;
         _users = users;
@@ -48,11 +48,11 @@ internal sealed class UnmapCommunityRoleCommandHandler : ICommandHandler<UnmapCo
     #endregion Constructors
 
     #region Public Methods
-    /// <summary>Applies the command.</summary>
+    /// <summary>Changes the role.</summary>
     /// <param name="request">The command.</param>
     /// <param name="cancellationToken">A token to cancel the operation.</param>
-    /// <returns>Success, also when the role wasn't mapped, or <see cref="CommunityErrors.NotFound"/>, <see cref="CommunityErrors.NotRoleManager"/>, <see cref="CommunityErrors.RoleNotFound"/>, <see cref="CommunityErrors.RoleLocked"/>, <see cref="CommunityErrors.NotAMember"/> or Discord's failure.</returns>
-    public async Task<Result> Handle(UnmapCommunityRoleCommand request, CancellationToken cancellationToken)
+    /// <returns>Success, or the failure.</returns>
+    public async Task<Result> Handle(UpdateCommunityRoleCommand request, CancellationToken cancellationToken)
     {
         var community = await _communities.FindByIdAsync(new CommunityId(request.CommunityId), cancellationToken);
         if (community is null)
@@ -70,24 +70,12 @@ internal sealed class UnmapCommunityRoleCommandHandler : ICommandHandler<UnmapCo
             return Result.Failure(access.Error, access.ResultExceptionType);
         }
 
-        // Only the Administrator maps a role that manages roles (owner decision on #308).
-        var role = community.FindRole(new CommunityRoleId(request.RoleId));
-        if (role is null)
+        var changed = community.UpdateRole(new CommunityRoleId(request.RoleId), request.Name, CommunityPermissionNames.Parse(request.Permissions), access.Value);
+        if (changed.IsFailure)
         {
-            return Result.Failure(CommunityErrors.RoleNotFound, ResultExceptionType.NotFound);
+            return changed;
         }
 
-        if (!Community.CanChange(role, access.Value))
-        {
-            return Result.Failure(CommunityErrors.RoleLocked, ResultExceptionType.AccessDenied);
-        }
-
-        if (!community.RoleMappings.Any(mapping => mapping.DiscordRoleId == request.DiscordRoleId && mapping.RoleId == role.Id))
-        {
-            return Result.Success();
-        }
-
-        community.UnmapDiscordRole(request.DiscordRoleId, role.Id);
         await _communities.UpdateAsync(community, cancellationToken);
         return await _unitOfWork.SaveChangesAsync(cancellationToken);
     }

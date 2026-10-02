@@ -88,7 +88,7 @@ public sealed class CommunityRolesViewModel
         {
             var answer = await _api.GetRoleSettingsAsync(userId, communityId, cancellationToken);
             Settings = answer.Settings;
-            Rows = answer.Settings is { } settings ? [.. settings.Rows.Select(row => View(row, settings.CanEdit))] : [];
+            Rows = answer.Settings is { } settings ? [.. settings.Rows.Select(View)] : [];
             Problem = answer.Status == CommunityApiStatus.Succeeded ? null : NoticeFor(answer.Status, "The officer roles couldn't be shown");
             Status = answer.Status == CommunityApiStatus.Succeeded ? CommunityPageStatus.Ready : CommunityPageStatus.Failed;
         }
@@ -155,9 +155,8 @@ public sealed class CommunityRolesViewModel
 
     /// <summary>Builds a row's view.</summary>
     /// <param name="row">The row.</param>
-    /// <param name="canEdit">Whether the user is the Administrator.</param>
     /// <returns>The view.</returns>
-    private static RoleRowView View(CommunityRoleRow row, bool canEdit)
+    private static RoleRowView View(CommunityRoleRow row)
     {
         var source = row.Kind switch
         {
@@ -171,7 +170,7 @@ public sealed class CommunityRolesViewModel
             source,
             [.. row.DiscordRoles.Select(role => new RoleChipView(role.DiscordRoleId, role.Missing ? "Deleted role" : $"@{role.Name}", role.Missing))],
             string.Create(CultureInfo.InvariantCulture, $"{row.Members} member{(row.Members == 1 ? string.Empty : "s")}"),
-            canEdit && row.Kind == CommunityRoleRow.RoleKind);
+            row.CanChange);
     }
 
     /// <summary>Sends a change, reloads the card when it was saved, and words the outcome.</summary>
