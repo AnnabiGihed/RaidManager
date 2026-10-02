@@ -58,9 +58,9 @@ runs with the built-in `GITHUB_TOKEN`:
 - Every 15 minutes it audits every issue, as a safety net for events it missed and for sub-issue changes, which
   start no workflow.
 - It reopens an invalid parent with a comment that names the missing or open children.
-- It labels a misplaced item, or one without a type label, `needs-parent` with one comment that says where it belongs, and a `ui` item without a
-  mockup `needs-mockup`. It removes each label once the item is fixed. A new issue gets 10 minutes to be linked
-  before it is flagged.
+- It labels a misplaced item, or one without a type label, `needs-parent` with one comment that says where it
+  belongs, and a `ui` item without a mockup `needs-mockup`. It removes each label once the item is fixed. A new issue
+  gets 10 minutes to be linked before it is flagged.
 
 The docs `validate` check runs the pull-request rules on every pull request, so a task without a full chain, or a
 user-interface change without its mockup, can't merge. After you fix a parent link, re-run that check from the pull
