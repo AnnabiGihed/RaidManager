@@ -22,8 +22,15 @@ public sealed partial class Toast
     [EditorRequired]
     public string Message { get; set; } = string.Empty;
 
+    /// <summary>Gets or sets the accent; <see cref="ToastTone.Success"/> by default.</summary>
+    [Parameter]
+    public ToastTone Tone { get; set; } = ToastTone.Success;
+
     /// <summary>Gets or sets attributes passed through to the notification, such as a test id.</summary>
     [Parameter(CaptureUnmatchedValues = true)]
     public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    /// <summary>Gets the classes for the tone.</summary>
+    private string CssClass => $"toast toast-{Tone.ToString().ToLowerInvariant()}";
     #endregion Properties
 }

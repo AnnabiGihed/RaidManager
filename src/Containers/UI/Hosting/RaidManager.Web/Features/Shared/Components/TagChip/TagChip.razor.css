@@ -43,6 +43,11 @@
     color: var(--rm-brand-accent);
 }
 
+.tag-chip-warning {
+    background: var(--rm-status-warning-background);
+    color: var(--rm-status-warning-title);
+}
+
 .tag-chip-neutral {
     background: var(--rm-surface-raised);
     color: var(--rm-text-secondary);

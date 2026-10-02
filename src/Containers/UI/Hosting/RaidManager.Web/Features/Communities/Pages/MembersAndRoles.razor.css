@@ -15,36 +15,9 @@
     max-width: 720px;
 }
 
-/* The table card spans the content width of the mockup. */
-.members-table-card {
+/* The table spans the content width of the mockup. */
+.members-table-width {
     max-width: 1120px;
-    padding: 0 0 8px;
-    border: 1px solid var(--rm-line-card-border);
-    border-radius: 12px;
-    background: var(--rm-surface-card);
-}
-
-.members-table {
-    width: 100%;
-    border-collapse: collapse;
-    font-family: var(--rm-font-family);
-}
-
-.members-table th {
-    height: 44px;
-    padding: 0 24px;
-    color: var(--rm-text-muted);
-    font-size: 11px;
-    font-weight: 700;
-    letter-spacing: 0.12em;
-    text-align: left;
-    text-transform: uppercase;
-}
-
-.members-table td {
-    height: 64px;
-    padding: 0 24px;
-    border-top: 1px solid var(--rm-line-divider);
 }
 
 .member-name {

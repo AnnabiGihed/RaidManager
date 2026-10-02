@@ -1,0 +1,18 @@
+@namespace RaidManager.Web.Features.Shared.Components
+<div class="confirm-dialog-overlay">
+    <div class="confirm-dialog" role="alertdialog" aria-modal="true" aria-labelledby="@TitleId" aria-describedby="@MessageId"
+         tabindex="-1" @ref="_dialog" @onkeydown="OnKeyDownAsync" @attributes="AdditionalAttributes">
+        <h2 id="@TitleId" class="confirm-dialog-title">@Title</h2>
+        <div id="@MessageId" class="confirm-dialog-message">
+            <p>@Message</p>
+            @if (!string.IsNullOrWhiteSpace(Detail))
+            {
+                <p>@Detail</p>
+            }
+        </div>
+        <div class="confirm-dialog-actions">
+            <ActionButton Text="@CancelText" Appearance="ActionButtonAppearance.Secondary" Click="@(() => OnCancel.InvokeAsync())" />
+            <ActionButton Text="@ConfirmText" Appearance="@ConfirmAppearance" Click="@(() => OnConfirm.InvokeAsync())" />
+        </div>
+    </div>
+</div>

@@ -52,5 +52,17 @@ public sealed class PageHeadingTests : BunitContext
         heading.FindAll(".page-heading-subtitle").ShouldBeEmpty();
     }
 
+    /// <summary>Shows actions at the end of the heading only when given.</summary>
+    [Fact]
+    public void ActionsAreShownWhenGiven()
+    {
+        var plain = Render<PageHeading>(parameters => parameters.Add(component => component.Title, "Overview"));
+        var withActions = Render<PageHeading>(parameters => parameters
+            .Add(component => component.Title, "Review your new characters")
+            .Add(component => component.Actions, "Decide later"));
+
+        plain.FindAll(".page-heading-actions").ShouldBeEmpty();
+        withActions.Find(".page-heading-actions").TextContent.ShouldBe("Decide later");
+    }
     #endregion Tests
 }

@@ -28,6 +28,10 @@ public sealed partial class PageHeading
     [Parameter]
     public ContentAlignment Alignment { get; set; } = ContentAlignment.Start;
 
+    /// <summary>Gets or sets the optional actions shown at the end of the heading, such as "Decide later".</summary>
+    [Parameter]
+    public RenderFragment? Actions { get; set; }
+
     /// <summary>Gets the classes for the alignment.</summary>
     private string CssClass => Alignment == ContentAlignment.Center ? "page-heading page-heading-center" : "page-heading";
     #endregion Properties

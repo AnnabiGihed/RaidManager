@@ -1,0 +1,11 @@
+@namespace RaidManager.Web.Features.Shared.Components
+<section class="empty-state" @attributes="AdditionalAttributes">
+    <span class="empty-state-mark" aria-hidden="true">✓</span>
+    <h2 class="empty-state-title">@Title</h2>
+    <p class="empty-state-message">@Message</p>
+    @ChildContent
+    @if (Actions is not null)
+    {
+        <div class="empty-state-actions">@Actions</div>
+    }
+</section>

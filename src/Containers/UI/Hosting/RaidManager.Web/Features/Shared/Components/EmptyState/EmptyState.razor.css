@@ -1,0 +1,46 @@
+.empty-state {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    align-items: center;
+    box-sizing: border-box;
+    padding: 44px 24px 40px;
+    border: 1px solid var(--rm-line-card-border);
+    border-radius: 12px;
+    background: var(--rm-surface-card);
+    font-family: var(--rm-font-family);
+    text-align: center;
+}
+
+.empty-state-mark {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 72px;
+    height: 72px;
+    margin-bottom: 16px;
+    border-radius: 50%;
+    background: var(--rm-status-success-background);
+    color: var(--rm-brand-accent);
+    font-size: 36px;
+    font-weight: 800;
+}
+
+.empty-state-title {
+    margin: 0;
+    color: var(--rm-text-primary);
+    font-size: 18px;
+    font-weight: 700;
+}
+
+.empty-state-message {
+    margin: 0;
+    color: var(--rm-text-secondary);
+    font-size: 14px;
+}
+
+.empty-state-actions {
+    display: flex;
+    gap: 8px;
+    margin-top: 16px;
+}

@@ -1,10 +1,10 @@
 using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Components;
 using Microsoft.AspNetCore.Components.Authorization;
-using Radzen;
 using RaidManager.ViewModels.Features.Characters;
 using RaidManager.Web.Features.Authentication;
 using RaidManager.Web.Features.Characters;
+using RaidManager.Web.Features.Shared.Components;
 
 namespace RaidManager.Web.Features.Characters.Pages;
 
@@ -12,8 +12,9 @@ namespace RaidManager.Web.Features.Characters.Pages;
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-01<br/>
-/// Purpose: The page sign-in opens while claims await the player's decision (story #18). It wires the view model to
-/// Radzen; the claims load after the first interactive render, so prerendering doesn't call the API twice.
+/// Purpose: The page sign-in opens while claims await the player's decision (story #18), built from the design system's
+/// components (character review mockup). The claims load after the first interactive render, so prerendering doesn't
+/// call the API twice.
 /// </remarks>
 [Authorize]
 public sealed partial class CharacterReview : IDisposable
@@ -21,12 +22,24 @@ public sealed partial class CharacterReview : IDisposable
     #region Fields
     /// <summary>Stores the source of the token that cancels API calls when the player leaves the page.</summary>
     private readonly CancellationTokenSource _lifetime = new();
+
+    /// <summary>Stores the outcome of the latest decision, shown as a notification.</summary>
+    private ReviewNotice? _notice;
+
+    /// <summary>Stores the claim whose rejection waits for confirmation, if any.</summary>
+    private CharacterClaim? _rejecting;
     #endregion Fields
 
     #region Properties
     /// <summary>Gets or sets the page to continue to, from the query string.</summary>
     [SupplyParameterFromQuery]
     public string? ReturnUrl { get; set; }
+
+    /// <summary>Gets the table's column headings.</summary>
+    private static IReadOnlyList<string> Headings { get; } = ["Character", "Class", "Race", "Level", "Found", "Status", "Decision"];
+
+    /// <summary>Gets the table's column widths, as the mockup places the columns; Decision takes the rest.</summary>
+    private static IReadOnlyList<int> ColumnWidths { get; } = [240, 160, 120, 80, 160, 120, 0];
 
     /// <summary>Gets or sets the signed-in player's authentication state.</summary>
     [CascadingParameter]
@@ -39,14 +52,6 @@ public sealed partial class CharacterReview : IDisposable
     /// <summary>Gets or sets the navigation manager.</summary>
     [Inject]
     private NavigationManager Navigation { get; set; } = default!;
-
-    /// <summary>Gets or sets the Radzen notification service.</summary>
-    [Inject]
-    private NotificationService Notifications { get; set; } = default!;
-
-    /// <summary>Gets or sets the Radzen dialog service.</summary>
-    [Inject]
-    private DialogService Dialogs { get; set; } = default!;
 
     /// <summary>Gets a value indicating whether a decision is being sent.</summary>
     private bool IsDeciding => ViewModel.Deciding is not null;
@@ -77,20 +82,20 @@ public sealed partial class CharacterReview : IDisposable
     #endregion Overrides
 
     #region Private Helpers
-    /// <summary>Gets the badge style of a claim's status.</summary>
+    /// <summary>Gets the badge tone of a claim's status.</summary>
     /// <param name="claim">The claim.</param>
     /// <returns>Warning for a pending claim, danger for a conflict.</returns>
-    private static BadgeStyle StatusStyle(CharacterClaim claim) => claim.IsPending ? BadgeStyle.Warning : BadgeStyle.Danger;
+    private static TagChipTone StatusTone(CharacterClaim claim) => claim.IsPending ? TagChipTone.Warning : TagChipTone.Danger;
 
-    /// <summary>Maps a review notification kind to a Radzen severity.</summary>
+    /// <summary>Maps a review notification kind to a notification tone.</summary>
     /// <param name="kind">The kind.</param>
-    /// <returns>The severity.</returns>
-    private static NotificationSeverity SeverityOf(ReviewNoticeKind kind) => kind switch
+    /// <returns>The tone.</returns>
+    private static ToastTone ToneOf(ReviewNoticeKind kind) => kind switch
     {
-        ReviewNoticeKind.Success => NotificationSeverity.Success,
-        ReviewNoticeKind.Warning => NotificationSeverity.Warning,
-        ReviewNoticeKind.Error => NotificationSeverity.Error,
-        _ => NotificationSeverity.Info,
+        ReviewNoticeKind.Success => ToastTone.Success,
+        ReviewNoticeKind.Warning => ToastTone.Warning,
+        ReviewNoticeKind.Error => ToastTone.Danger,
+        _ => ToastTone.Info,
     };
 
     /// <summary>Loads the claims of the player in the session.</summary>
@@ -105,34 +110,29 @@ public sealed partial class CharacterReview : IDisposable
     /// <summary>Approves a claim and shows the outcome.</summary>
     /// <param name="claim">The claim.</param>
     /// <returns>A task that completes when the outcome is shown.</returns>
-    private async Task ApproveAsync(CharacterClaim claim) => Notify(await ViewModel.ApproveAsync(claim, _lifetime.Token));
+    private async Task ApproveAsync(CharacterClaim claim) => _notice = await ViewModel.ApproveAsync(claim, _lifetime.Token);
 
-    /// <summary>Asks for confirmation, then rejects a claim and shows the outcome.</summary>
+    /// <summary>Asks for confirmation before rejecting a claim.</summary>
     /// <param name="claim">The claim.</param>
-    /// <returns>A task that completes when the outcome is shown, or when the player cancels.</returns>
-    private async Task RejectAsync(CharacterClaim claim)
+    private void AskToReject(CharacterClaim claim) => _rejecting = claim;
+
+    /// <summary>Rejects the claim the player confirmed and shows the outcome.</summary>
+    /// <returns>A task that completes when the outcome is shown.</returns>
+    private async Task RejectAsync()
     {
-        var confirmed = await Dialogs.Confirm(
-            CharacterReviewViewModel.RejectMessage(claim),
-            CharacterReviewViewModel.RejectTitle(claim),
-            new ConfirmOptions { OkButtonText = "Reject", CancelButtonText = "Cancel" });
-        if (confirmed == true)
+        if (_rejecting is not { } claim)
         {
-            Notify(await ViewModel.RejectAsync(claim, _lifetime.Token));
+            return;
         }
+
+        _rejecting = null;
+        _notice = await ViewModel.RejectAsync(claim, _lifetime.Token);
     }
+
+    /// <summary>Closes the confirmation without rejecting anything.</summary>
+    private void CancelReject() => _rejecting = null;
 
     /// <summary>Leaves the page for the requested page without deciding anything.</summary>
     private void Continue() => Navigation.NavigateTo(CharacterRoutes.ContinueUrl(ReturnUrl));
-
-    /// <summary>Shows a review notification.</summary>
-    /// <param name="notice">The notification.</param>
-    private void Notify(ReviewNotice notice) => Notifications.Notify(new NotificationMessage
-    {
-        Severity = SeverityOf(notice.Kind),
-        Summary = notice.Title,
-        Detail = notice.Detail,
-        Duration = 6000,
-    });
     #endregion Private Helpers
 }

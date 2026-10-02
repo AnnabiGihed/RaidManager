@@ -12,6 +12,9 @@ namespace RaidManager.ViewModels.Features.Characters;
 public sealed class CharacterReviewViewModel
 {
     #region Constants
+    /// <summary>Defines the advice under the rejection message.</summary>
+    public const string RejectAdvice = "Reject it only if it isn't yours.";
+
     /// <summary>Defines the detail shown when a decision could not be sent.</summary>
     private const string TryAgainDetail = "Nothing changed. Try again in a moment.";
     #endregion Constants
@@ -76,8 +79,7 @@ public sealed class CharacterReviewViewModel
     public static string RejectMessage(CharacterClaim claim)
     {
         ArgumentNullException.ThrowIfNull(claim);
-        return $"{claim.Name} ({claim.Realm}) won't become one of your characters, so you can't sign it up for raids. "
-            + "Reject it only if it isn't yours.";
+        return $"{claim.Name} ({claim.Realm}) won't become one of your characters, so you can't sign it up for raids.";
     }
 
     /// <summary>Gets the reminder shown for a conflicted claim once nothing is left to decide.</summary>

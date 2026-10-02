@@ -1,0 +1,30 @@
+.data-table-card {
+    padding: 0 0 8px;
+    border: 1px solid var(--rm-line-card-border);
+    border-radius: 12px;
+    background: var(--rm-surface-card);
+}
+
+.data-table {
+    width: 100%;
+    border-collapse: collapse;
+    color: var(--rm-text-primary);
+    font-family: var(--rm-font-family);
+    font-size: 14px;
+}
+
+.data-table th {
+    height: 44px;
+    padding: 0 24px;
+    color: var(--rm-text-muted);
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.12em;
+    text-align: left;
+    text-transform: uppercase;
+}
+
+.data-table ::deep td {
+    padding: 0 24px;
+    border-top: 1px solid var(--rm-line-divider);
+}

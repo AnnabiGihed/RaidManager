@@ -1,12 +1,18 @@
 @namespace RaidManager.Web.Features.Shared.Components
 <header class="@CssClass">
-    @if (!string.IsNullOrWhiteSpace(Eyebrow))
+    <div class="page-heading-text">
+        @if (!string.IsNullOrWhiteSpace(Eyebrow))
+        {
+            <span class="page-heading-eyebrow">@Eyebrow</span>
+        }
+        <h1 class="page-heading-title">@Title</h1>
+        @if (!string.IsNullOrWhiteSpace(Subtitle))
+        {
+            <p class="page-heading-subtitle">@Subtitle</p>
+        }
+    </div>
+    @if (Actions is not null)
     {
-        <span class="page-heading-eyebrow">@Eyebrow</span>
-    }
-    <h1 class="page-heading-title">@Title</h1>
-    @if (!string.IsNullOrWhiteSpace(Subtitle))
-    {
-        <p class="page-heading-subtitle">@Subtitle</p>
+        <div class="page-heading-actions">@Actions</div>
     }
 </header>

@@ -24,5 +24,27 @@ public sealed class ToastTests : BunitContext
         toast.Find(".toast-title").TextContent.ShouldBe("Officer roles saved");
         toast.Find(".toast-message").TextContent.ShouldBe("Members get them at their next check.");
     }
+
+    /// <summary>Gives each tone its own class, teal by default.</summary>
+    /// <param name="tone">The tone, or <see langword="null"/> for the default.</param>
+    /// <param name="expectedClass">The class it adds.</param>
+    [Theory]
+    [InlineData(null, "toast-success")]
+    [InlineData(ToastTone.Info, "toast-info")]
+    [InlineData(ToastTone.Warning, "toast-warning")]
+    [InlineData(ToastTone.Danger, "toast-danger")]
+    public void EachToneHasItsClass(ToastTone? tone, string expectedClass)
+    {
+        var toast = Render<Toast>(parameters =>
+        {
+            parameters.Add(component => component.Title, "Saved").Add(component => component.Message, "Done.");
+            if (tone is { } value)
+            {
+                parameters.Add(component => component.Tone, value);
+            }
+        });
+
+        toast.Find(".toast").ClassList.ShouldContain(expectedClass);
+    }
     #endregion Tests
 }

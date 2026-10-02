@@ -2,91 +2,87 @@
 
 <PageTitle>Review your new characters</PageTitle>
 
-<RadzenStack Gap="1rem" class="rz-p-4">
-    <RadzenStack Orientation="Orientation.Horizontal" AlignItems="AlignItems.Start" JustifyContent="JustifyContent.SpaceBetween" Gap="1rem">
-        <RadzenStack Gap="0.25rem">
-            <RadzenText TextStyle="TextStyle.H4" TagName="TagName.H1">Review your new characters</RadzenText>
-            <RadzenText TextStyle="TextStyle.Body1">Your companion found these characters on your WoW accounts. Only the ones you approve can sign up for raids.</RadzenText>
-        </RadzenStack>
-        @if (CanDecideLater)
-        {
-            <RadzenButton ButtonStyle="ButtonStyle.Light" Text="Decide later" Click="Continue" data-testid="decide-later" />
-        }
-    </RadzenStack>
+<div class="review-page rm-design-page">
+    <PageHeading Eyebrow="New characters" Title="Review your new characters" Subtitle="Your companion found these characters on your WoW accounts. Only the ones you approve can sign up for raids.">
+        <Actions>
+            @if (CanDecideLater)
+            {
+                <ActionButton Text="Decide later" Appearance="ActionButtonAppearance.Secondary" Click="Continue" data-testid="decide-later" />
+            }
+        </Actions>
+    </PageHeading>
+
+    @if (_notice is { } notice)
+    {
+        <Toast Title="@notice.Title" Message="@notice.Detail" Tone="@ToneOf(notice.Kind)" data-testid="review-notice" />
+    }
 
     @if (ViewModel.Status == CharacterReviewStatus.Loading)
     {
-        <RadzenProgressBarCircular ShowValue="false" Mode="ProgressBarMode.Indeterminate" aria-label="Loading your characters" />
+        <TextNote Text="Loading your characters…" />
     }
     else if (ViewModel.Status == CharacterReviewStatus.Failed)
     {
-        <RadzenAlert AlertStyle="AlertStyle.Danger" Variant="Variant.Flat" AllowClose="false" Title="We couldn't load your characters" data-testid="load-failed">
-            Nothing was approved or rejected. Try again in a moment.
-        </RadzenAlert>
-        <div>
-            <RadzenButton Text="Try again" Click="LoadAsync" />
+        <div class="review-column">
+            <Notice Tone="NoticeTone.Danger" Title="We couldn't load your characters" Message="Nothing was approved or rejected. Try again in a moment." data-testid="load-failed" />
+            <div>
+                <ActionButton Text="Try again" Click="LoadAsync" />
+            </div>
         </div>
     }
     else if (ViewModel.PendingCount > 0)
     {
-        <RadzenAlert AlertStyle="AlertStyle.Info" Variant="Variant.Flat" AllowClose="false" Title="@ViewModel.WaitingTitle">
-            Undecided characters stay pending, and this page opens again at your next sign-in.
-        </RadzenAlert>
-        <RadzenDataGrid TItem="CharacterClaim" Data="@ViewModel.Claims" data-testid="claims">
-            <Columns>
-                <RadzenDataGridColumn TItem="CharacterClaim" Title="Character">
-                    <Template Context="claim">
-                        <RadzenStack Gap="0">
-                            <RadzenText TextStyle="TextStyle.Body1" TagName="TagName.Span" class="rz-font-weight-semibold">@claim.Name</RadzenText>
-                            <RadzenText TextStyle="TextStyle.Caption" TagName="TagName.Span">@claim.Realm</RadzenText>
-                        </RadzenStack>
-                    </Template>
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CharacterClaim" Property="@nameof(CharacterClaim.Class)" Title="Class" />
-                <RadzenDataGridColumn TItem="CharacterClaim" Property="@nameof(CharacterClaim.Race)" Title="Race" />
-                <RadzenDataGridColumn TItem="CharacterClaim" Property="@nameof(CharacterClaim.Level)" Title="Level" />
-                <RadzenDataGridColumn TItem="CharacterClaim" Title="Found">
-                    <Template Context="claim">@ViewModel.FoundLabel(claim)</Template>
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CharacterClaim" Title="Status">
-                    <Template Context="claim">
-                        <RadzenBadge BadgeStyle="@StatusStyle(claim)" Text="@claim.ClaimState" />
-                    </Template>
-                </RadzenDataGridColumn>
-                <RadzenDataGridColumn TItem="CharacterClaim" Title="Decision" Width="220px">
-                    <Template Context="claim">
+        <div class="review-claims">
+            <Notice Title="@ViewModel.WaitingTitle" Message="Undecided characters stay pending, and this page opens again at your next sign-in." />
+            <DataTable Items="@ViewModel.Claims" Headings="@Headings" Key="@(claim => claim.CharacterId)" ColumnWidths="@ColumnWidths" RowHeight="72" data-testid="claims">
+                <RowTemplate Context="claim">
+                    <td>
+                        <span class="claim-name">@claim.Name</span>
+                        <span class="claim-realm">@claim.Realm</span>
+                    </td>
+                    <td><WowClassLabel ClassName="@claim.Class" /></td>
+                    <td>@claim.Race</td>
+                    <td>@claim.Level</td>
+                    <td class="claim-found">@ViewModel.FoundLabel(claim)</td>
+                    <td><TagChip Text="@claim.ClaimState" Tone="@StatusTone(claim)" /></td>
+                    <td>
                         @if (claim.IsPending)
                         {
-                            <RadzenStack Orientation="Orientation.Horizontal" Gap="0.5rem">
-                                <RadzenButton Text="Approve" Disabled="@IsDeciding" Click="@(() => ApproveAsync(claim))" data-testid="@($"approve-{claim.Name}")" />
-                                <RadzenButton ButtonStyle="ButtonStyle.Light" Text="Reject" Disabled="@IsDeciding" Click="@(() => RejectAsync(claim))" data-testid="@($"reject-{claim.Name}")" />
-                            </RadzenStack>
+                            <span class="claim-decision">
+                                <ActionButton Text="Approve" Disabled="@IsDeciding" Click="@(() => ApproveAsync(claim))" data-testid="@($"approve-{claim.Name}")" />
+                                <ActionButton Text="Reject" Appearance="ActionButtonAppearance.Secondary" Disabled="@IsDeciding" Click="@(() => AskToReject(claim))" data-testid="@($"reject-{claim.Name}")" />
+                            </span>
                         }
                         else
                         {
-                            <RadzenStack Gap="0">
-                                <RadzenText TextStyle="TextStyle.Body2" TagName="TagName.Span" class="rz-font-weight-semibold">An officer will review it</RadzenText>
-                                <RadzenText TextStyle="TextStyle.Caption" TagName="TagName.Span">Another player owns it.</RadzenText>
-                            </RadzenStack>
+                            <span class="claim-name">An officer will review it</span>
+                            <span class="claim-realm">Another player owns it.</span>
                         }
-                    </Template>
-                </RadzenDataGridColumn>
-            </Columns>
-        </RadzenDataGrid>
+                    </td>
+                </RowTemplate>
+            </DataTable>
+        </div>
     }
     else
     {
-        <RadzenCard data-testid="all-set">
-            <RadzenStack Gap="0.5rem" AlignItems="AlignItems.Center">
-                <RadzenIcon Icon="check_circle" IconStyle="IconStyle.Success" />
-                <RadzenText TextStyle="TextStyle.H5" TagName="TagName.H2">You're all set</RadzenText>
-                <RadzenText TextStyle="TextStyle.Body1">No characters are waiting for your decision.</RadzenText>
+        <EmptyState Title="You're all set" Message="No characters are waiting for your decision." data-testid="all-set">
+            <ChildContent>
                 @foreach (var conflict in ViewModel.Conflicts)
                 {
-                    <RadzenText @key="conflict.CharacterId" TextStyle="TextStyle.Body2">@CharacterReviewViewModel.ConflictReminder(conflict)</RadzenText>
+                    <p @key="conflict.CharacterId" class="review-reminder">@CharacterReviewViewModel.ConflictReminder(conflict)</p>
                 }
-                <RadzenButton Text="Continue" Click="Continue" />
-            </RadzenStack>
-        </RadzenCard>
+            </ChildContent>
+            <Actions>
+                <ActionButton Text="Continue" Click="Continue" />
+            </Actions>
+        </EmptyState>
     }
-</RadzenStack>
+
+    @if (_rejecting is { } rejecting)
+    {
+        <ConfirmDialog Title="@CharacterReviewViewModel.RejectTitle(rejecting)" Message="@CharacterReviewViewModel.RejectMessage(rejecting)"
+                       Detail="@CharacterReviewViewModel.RejectAdvice"
+                       ConfirmText="Reject" ConfirmAppearance="ActionButtonAppearance.Danger" OnConfirm="RejectAsync" OnCancel="CancelReject"
+                       data-testid="reject-dialog" />
+    }
+</div>
