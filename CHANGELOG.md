@@ -178,6 +178,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- Every sprint now holds one release: finished items moved to the release in which their work was done, items with
+  tasks in two releases were split into one item per release (#349 to #358), every story, improvement, bug and spike
+  has Story Points, every task has a Delivery Stage, and the Sprints view lists outcome items. The board report and
+  the preflight flag an item whose release differs from its sprint's release (#347, #348).
 - Release 1 is split into five releases: v0.1 Delivery foundation and v0.2 Design system and process group the
   finished work by day in one-day history sprints (Sprints 1 to 4); v0.3 Identity and characters, v0.4 Raid scheduling
   and readiness, and v1.0 Rosters and raid night are planned in two-week sprints (Sprints 5 to 16), each ending in a

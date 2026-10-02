@@ -46,7 +46,7 @@ option, and the new values were added beside it. Change single-select options on
 | Roadmap | Roadmap | epics and features | Feature and epic progress and forecasts. |
 | Release plan | Roadmap | stories, improvements, bugs and spikes | Every release on one timeline, like an Azure DevOps delivery plan. |
 | Releases | Table | stories, improvements, bugs and spikes | Each release's items with their count and Story Points. |
-| Sprints | Table | `is:issue has:sprint` | Each sprint's items with their count and Story Points, like sprint backlogs. |
+| Sprints | Table | stories, improvements, bugs and spikes with a sprint | Each sprint's outcome items with their count and Story Points, like sprint backlogs. |
 
 - Release plan, Releases and Sprints were added on 2026-10-02 at the owner's request (#343) so releases and sprints can
   be read at a glance:
@@ -128,6 +128,8 @@ scheduled check the workflow token can't do (specification §18, §22):
   - scheduling violations: work in progress without any sprint, a task in another sprint than its parent, or an open
     pull request for a task without an active sprint;
   - Status and closure mismatches;
+  - sprint and release mismatches: an item whose release (milestone) differs from its sprint's release, as listed
+    in the Sprint sequence of the release records (owner rule, #346);
   - unestimated selected stories;
   - contract gaps on Ready or selected items;
   - unavailable prerequisites;

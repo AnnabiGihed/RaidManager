@@ -9,7 +9,10 @@ from datetime import date, datetime, timezone
 from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
-from work_gate import Item, Sprint, item_from_api, preflight, report, sprint_state, status_problem  # noqa: E402
+from work_gate import (  # noqa: E402
+    Item, Sprint, item_from_api, preflight, report, sprint_release_problem, sprint_releases, sprint_state,
+    status_problem,
+)
 
 SPRINT_1 = Sprint("Sprint 1", date(2026, 10, 2), 14)
 # 2026-10-02 00:00 in Brussels (CEST, UTC+2) is 2026-10-01 22:00 UTC; the end, 2026-10-16 00:00, is 2026-10-15 22:00.
@@ -55,6 +58,9 @@ class PreflightTests(unittest.TestCase):
         self.root = Path(self.folder.name)
         (self.root / "docs/planning/sprints").mkdir(parents=True)
         (self.root / "docs/planning/sprints/sprint-01.md").write_text("| State | Active |\n", encoding="utf-8")
+        (self.root / "docs/planning/releases").mkdir(parents=True)
+        (self.root / "docs/planning/releases/v1.0.md").write_text(
+            "## Sprint sequence\n\n| Sprint | Dates |\n| --- | --- |\n| Sprint 1 | 2026-10-02 |\n", encoding="utf-8")
         self.parent = item(323, "improvement", milestone="v1.0", sprint=SPRINT_1)
         self.task = item(328, "task", milestone="v1.0", sprint=SPRINT_1, parent=323, assignees=("owner",),
                          stage="Development", prerequisites=[(324, "closed", "completed")])
@@ -125,7 +131,7 @@ class ReportTests(unittest.TestCase):
             40: item(40, "improvement", status="Blocked", sprint=SPRINT_1),
             41: item(41, "task", status="Ready", sprint=Sprint("Sprint 2", date(2026, 10, 16), 14), parent=40),
         }
-        found = report(items, [(99, "Closes #41\n\n## What changed")], DURING)
+        found = report(items, [(99, "Closes #41\n\n## What changed")], DURING, {})
         self.assertEqual([number for number, _ in found["Scheduling violations"]], [13, 41, 41])
         self.assertEqual([number for number, _ in found["Unestimated selected stories"]], [30])
         self.assertEqual([number for number, _ in found["Ready or selected items with contract gaps"]], [30])
@@ -137,7 +143,44 @@ class ReportTests(unittest.TestCase):
     def test_a_prerequisite_in_the_same_sprint_is_available(self) -> None:
         items = {30: item(30, "story", sprint=SPRINT_1, points=3, prerequisites=[(31, "open", None)]),
                  31: item(31, "story", sprint=SPRINT_1, points=2)}
-        self.assertEqual(report(items, [], DURING)["Unavailable prerequisites"], [])
+        self.assertEqual(report(items, [], DURING, {})["Unavailable prerequisites"], [])
+
+
+class SprintReleaseTests(unittest.TestCase):
+    RECORD = ("# Release v0.3\n\n## Sprint sequence\n\n| Sprint | Dates | Purpose |\n| --- | --- | --- |\n"
+              "| Sprint 5 | 2026-10-03 | Delivery |\n| Sprint 8 | 2026-11-14 | Stabilization |\n\n"
+              "## Scope decisions\n\n"
+              "| Sprint 9 | not a sequence row |\n")
+    HISTORY = ("# Release v0.1\n\n## Sprint sequence\n\n| Sprint | Date |\n| --- | --- |\n"
+               "| [Sprint 1](../sprints/sprint-01.md) | 2026-09-29 |\n")
+
+    def releases(self) -> dict[str, str]:
+        with tempfile.TemporaryDirectory() as folder:
+            root = Path(folder)
+            (root / "docs/planning/releases").mkdir(parents=True)
+            (root / "docs/planning/releases/v0.3.md").write_text(self.RECORD, encoding="utf-8")
+            (root / "docs/planning/releases/v0.1.md").write_text(self.HISTORY, encoding="utf-8")
+            return sprint_releases(root)
+
+    def test_each_sprint_maps_to_the_release_whose_sequence_lists_it(self) -> None:
+        self.assertEqual(self.releases(), {"Sprint 1": "v0.1", "Sprint 5": "v0.3", "Sprint 8": "v0.3"})
+
+    def test_an_item_on_another_release_than_its_sprint_is_reported(self) -> None:
+        releases = self.releases()
+        sprint5 = Sprint("Sprint 5", date(2026, 10, 3), 14)
+        self.assertIsNone(sprint_release_problem(item(13, "story", milestone="v0.3", sprint=sprint5), releases))
+        self.assertIn("belongs to v0.3", sprint_release_problem(item(92, "task", milestone="v0.1", sprint=sprint5),
+                                                                releases) or "")
+        self.assertIn("belongs to no release record",
+                      sprint_release_problem(item(1, "task", sprint=Sprint("Sprint 20", date(2027, 6, 1), 14)),
+                                             releases) or "")
+        self.assertIsNone(sprint_release_problem(item(2, "task"), releases))
+
+    def test_the_report_lists_mismatches_as_violations(self) -> None:
+        sprint5 = Sprint("Sprint 5", date(2026, 10, 3), 14)
+        found = report({92: item(92, "task", state="closed", reason="completed", status="Done", milestone="v0.1",
+                                 sprint=sprint5)}, [], DURING, {"Sprint 5": "v0.3"})
+        self.assertEqual([number for number, _ in found["Sprint and release mismatches"]], [92])
 
 
 class ApiTests(unittest.TestCase):
