@@ -61,6 +61,12 @@ class SectionTests(unittest.TestCase):
         self.assertEqual(missing_sections(TASK, body), [])
         self.assertEqual(unknown_sections(TASK, body), ["Verification", "Verification method"])
 
+    def test_a_quoted_marker_is_not_an_unknown_answer(self) -> None:
+        body = TASK_BODY.replace("Unit tests.", 'Gaps are recorded as "Unknown: needs clarification".')
+        self.assertEqual(unknown_sections(TASK, body), [])
+        body = TASK_BODY.replace("Unit tests.", "- Unknown: needs clarification (owner)")
+        self.assertEqual(unknown_sections(TASK, body), ["Verification", "Verification method"])
+
     def test_every_type_has_its_own_requirements(self) -> None:
         self.assertEqual(len(BY_TYPE), 7)
         self.assertIn("Parent", missing_sections("type:story", ""))

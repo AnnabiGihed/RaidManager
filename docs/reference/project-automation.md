@@ -105,6 +105,29 @@ runs with the built-in `GITHUB_TOKEN`:
   Delivery Stage, run in the agent preflight and board report instead, because the token can't read a user-owned
   Project (specification §22).
 
+## Agent preflight and board report
+
+[`scripts/work_gate.py`](https://github.com/AnnabiGihed/RaidManager/blob/main/scripts/work_gate.py) reads the Project
+with the owner's local `gh` login. Agents run it before every execution and at the start of every session, as the
+scheduled check the workflow token can't do (specification §18, §22):
+
+- `python scripts/work_gate.py preflight <task>` checks the seven conditions of the active-sprint gate
+  (specification §8): hierarchy and contract, an active sprint (Europe/Brussels midnight, end exclusive, not canceled
+  in its record), the same sprint and release as the parent, assignee and Delivery Stage, completed prerequisites, and
+  an open item. It prints PASS or FAIL with the correction for each, and exits 1 on any failure.
+- `python scripts/work_gate.py report` lists, by category:
+  - scheduling violations: work in progress without any sprint, a task in another sprint than its parent, or an open
+    pull request for a task without an active sprint;
+  - Status and closure mismatches;
+  - unestimated selected stories;
+  - contract gaps on Ready or selected items;
+  - unavailable prerequisites;
+  - Blocked items without a recorded reason;
+  - open items with contract gaps, which are allowed in Backlog.
+
+  It exits 1 when any category other than the last has findings. With `--apply-labels`, it keeps the
+  `scheduling-violation` label on exactly the items it flags, which the Scheduling violations view shows.
+
 The docs `validate` check runs the pull-request rules on every pull request, so a task without a full chain, or a
 user-interface change without its mockup, can't merge. After you fix a parent link, re-run that check from the pull
 request's Checks tab. The review workflow closes only tasks when it merges.

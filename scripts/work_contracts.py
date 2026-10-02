@@ -93,7 +93,12 @@ def unknown_sections(kind: str, body: str) -> list[str]:
     """Returns the requirements still answered "Unknown: needs clarification"; such an item can't become Ready (A7)."""
     found = sections(body)
     return [name for name, headings in requirements(kind)
-            if any(UNKNOWN in found.get(heading.lower(), "").lower() for heading in headings)]
+            if any(answers_unknown(found.get(heading.lower(), "")) for heading in headings)]
+
+
+def answers_unknown(text: str) -> bool:
+    """A line, or list item, that starts with the marker; a sentence that only quotes the marker doesn't count."""
+    return any(line.strip().lstrip("-* ").lower().startswith(UNKNOWN) for line in text.splitlines())
 
 
 def contract_problem(kind: str | None, state: str, created_at: datetime | None, body: str) -> str | None:

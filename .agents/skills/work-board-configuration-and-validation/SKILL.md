@@ -16,7 +16,8 @@ authority; this skill applies it. Board visibility doesn't equal enforcement (sp
 - Adding or changing a Project field, a Status value, a view or a built-in workflow.
 - Changing a type label, an issue form, `scripts/project_hierarchy.py` or `scripts/work_gate.py`.
 - Configuring another platform, such as Azure DevOps, from spec §16.
-- The start of every agent session, and before execution: run the board report (spec §18).
+- The start of every agent session, and before execution: run `python scripts/work_gate.py report` (spec §18).
+  Add `--apply-labels` to keep the `scheduling-violation` label on exactly the items it flags.
 
 ## Required inputs
 
@@ -49,7 +50,7 @@ authority; this skill applies it. Board visibility doesn't equal enforcement (sp
 5. **Validate in two layers** (spec §22):
    - the `project-hierarchy` workflow, with `GITHUB_TOKEN`: types, parents, milestones, completion, pull request
      chains and mockups;
-   - the agent preflight and board report, `scripts/work_gate.py` (#328), with the owner's local `gh` login: the
+   - the agent preflight and board report, `scripts/work_gate.py`, with the owner's local `gh` login: the
      sprint gate, Status against closure reason, estimates, Delivery Stage, prerequisites and cycles.
 6. **Test a rule with valid and invalid samples** before enforcing it (spec §20), and document every configuration
    change in `docs/reference/project-automation.md`.
