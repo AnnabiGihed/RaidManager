@@ -235,6 +235,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- The workflow skill hands over one pull request at a time or states the merge order, and brings a branch up to date
+  by merging `main` instead of a forced push; the board skill lists the out-of-date pull request and the missing closing
+  link of a workflow-written description among its pitfalls (#485).
 - Dependabot sends the week's GitHub Actions updates as one grouped pull request, with one task and one review,
   instead of a pull request per action (#480).
 - The skills keep the session's lessons: rendering Mermaid without hiding errors, keeping command-line text away
