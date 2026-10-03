@@ -9,6 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- Sign-in tests prove the rest of story #13: a code or token Discord refuses, as it does after an expired or revoked
+  authorization, leads to the retry page without a session, and a session left unused past its 12 hours asks the
+  player to sign in again, while one used within them still opens protected pages (#362).
 - Each dev deployment marks what it delivered: completed items, parents whose completed children all are, and
   releases whose items all are get `deployed:dev`, or `deploy-failed:dev` with a comment when the deployment fails;
   a release milestone's description notes the deployment. The first run labels everything already deployed. The

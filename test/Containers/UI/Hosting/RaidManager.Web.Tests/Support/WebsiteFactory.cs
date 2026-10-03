@@ -1,4 +1,5 @@
 using AspNet.Security.OAuth.Discord;
+using Microsoft.AspNetCore.Authentication.Cookies;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Mvc.Testing;
@@ -41,6 +42,9 @@ public sealed class WebsiteFactory : WebApplicationFactory<Program>
     /// <summary>Gets the fake of Discord's exchange when the bot is added.</summary>
     public FakeDiscordInstallClient DiscordInstall { get; } = new();
 
+    /// <summary>Gets the clock the session cookie is issued and checked with.</summary>
+    public TestClock Clock { get; } = new();
+
     /// <summary>Gets extra settings a test applies before the website starts, as a deployed environment would.</summary>
     public Dictionary<string, string> Settings { get; } = [];
     #endregion Properties
@@ -82,6 +86,9 @@ public sealed class WebsiteFactory : WebApplicationFactory<Program>
             services.PostConfigure<DiscordAuthenticationOptions>(
                 DiscordAuthenticationDefaults.AuthenticationScheme,
                 options => options.Backchannel = new HttpClient(Discord, disposeHandler: false));
+            services.PostConfigure<CookieAuthenticationOptions>(
+                CookieAuthenticationDefaults.AuthenticationScheme,
+                options => options.TimeProvider = Clock);
             services.AddSingleton<IStartupFilter, SessionEchoStartupFilter>();
         });
     }
