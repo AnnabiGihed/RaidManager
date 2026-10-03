@@ -6,8 +6,9 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Features.Shared.Conversion
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-09-30<br/>
-/// Purpose: SQL Server <c>datetime2</c> columns lose <see cref="DateTimeKind"/>, and Pivot's <c>AuditInfo</c> refuses a non-UTC
-/// date when a loaded aggregate is modified. RaidManager stores only UTC values, so marking them UTC on read is lossless.
+/// Purpose: Npgsql writes a <see cref="DateTime"/> to a <c>timestamptz</c> column only when it is UTC, and Pivot's
+/// <c>AuditInfo</c> refuses a non-UTC date when a loaded aggregate is modified. RaidManager stores only UTC values, so
+/// marking them UTC on read is lossless, whatever kind the provider returns.
 /// </remarks>
 internal sealed class UtcDateTimeConverter : ValueConverter<DateTime, DateTime>
 {

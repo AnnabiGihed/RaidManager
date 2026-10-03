@@ -11,8 +11,8 @@ website, Discord bot, addon synchronization, and raid workflows are not yet usab
 
 ## Build locally
 
-You need the .NET 10 software development kit (SDK), and Docker for the Aspire host's local SQL Server and for the
-persistence and API integration tests, which start a SQL Server container.
+You need the .NET 10 software development kit (SDK), and Docker for the Aspire host's local PostgreSQL and for the
+persistence and API integration tests, which start a PostgreSQL container.
 
 ### Give your machine access to the Pivot.Framework packages
 
@@ -60,8 +60,9 @@ dotnet build RaidManager.sln --no-restore
 dotnet test RaidManager.sln --no-build
 ```
 
-The executable tests cover the Domain and Application projects and, against a SQL Server container, the
-Entity Framework Core persistence and the API. The other test projects are placeholders.
+The tests cover the Domain, Application, Infrastructure, view model and website projects, the AppHost's application
+model, and, against a PostgreSQL container, the Entity Framework Core persistence and the API. The end-to-end test
+project is still a placeholder, and the Discord bot has no tests yet.
 
 To measure test coverage the way CI does, run the tests with the coverage settings and read the summary:
 
@@ -83,8 +84,8 @@ Run the product through the Aspire AppHost. It generates the shared website key 
 - **Command line:** `dotnet run --project src/Containers/Aspire/Hosting/RaidManager.AppHost`.
 
 Docker Desktop must be running. The browser opens the Aspire dashboard at `https://localhost:17190`; the console
-window only shows logs. Wait until `sql`, `api`, and `web` show **Running**. The first run downloads the SQL Server
-image, which takes a few minutes, and the API then creates the database schema. The website is at
+window only shows logs. Wait until `postgres`, `api`, and `web` show **Running**. The first run downloads the
+PostgreSQL image, and the API then creates the database schema. The website is at
 `https://localhost:55365`, and the interactive API reference is at `https://localhost:55366/scalar` (linked as
 "API reference" in the dashboard).
 
@@ -144,6 +145,9 @@ Its secrets never live in the repository or in user secrets
   Then run the deploy workflow, so the server picks up the new value. ADR-0028 lists every secret and how to rotate it.
 
 ### Change the database schema
+
+The database is PostgreSQL ([ADR-0029](docs/adr/0029-store-data-in-postgresql.md)). Data from the earlier SQL Server
+volume isn't carried over; remove that volume in Docker Desktop once you no longer need it.
 
 The persistence schema is managed with Entity Framework Core migrations, using the repository's local `dotnet-ef`
 tool. After changing a mapping, add a migration:

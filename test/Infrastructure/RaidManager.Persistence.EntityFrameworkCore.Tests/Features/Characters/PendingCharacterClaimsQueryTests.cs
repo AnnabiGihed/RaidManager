@@ -13,24 +13,24 @@ using DomainUnitOfWork = Pivot.Framework.Domain.Repositories.IUnitOfWork;
 
 namespace RaidManager.Persistence.EntityFrameworkCore.Tests.Features.Characters;
 
-/// <summary>Verifies the pending-claims query against SQL Server, sent through MediatR as a host would.</summary>
+/// <summary>Verifies the pending-claims query against PostgreSQL, sent through MediatR as a host would.</summary>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-09-30<br/>
 /// Purpose: Proves the read-only query returns exactly the player's pending and conflicted claims, oldest first.
 /// </remarks>
-[Collection(SqlServerTestGroup.Name)]
+[Collection(PostgreSqlTestGroup.Name)]
 public sealed class PendingCharacterClaimsQueryTests
 {
     #region Fields
-    /// <summary>Stores the SQL Server fixture.</summary>
-    private readonly SqlServerFixture _database;
+    /// <summary>Stores the PostgreSQL fixture.</summary>
+    private readonly PostgreSqlFixture _database;
     #endregion Fields
 
     #region Constructors
     /// <summary>Initializes a new instance of the <see cref="PendingCharacterClaimsQueryTests"/> class.</summary>
-    /// <param name="database">The SQL Server fixture.</param>
-    public PendingCharacterClaimsQueryTests(SqlServerFixture database)
+    /// <param name="database">The PostgreSQL fixture.</param>
+    public PendingCharacterClaimsQueryTests(PostgreSqlFixture database)
     {
         _database = database;
     }
@@ -44,8 +44,11 @@ public sealed class PendingCharacterClaimsQueryTests
     {
         var alice = new UserId(Guid.NewGuid());
         var bob = new UserId(Guid.NewGuid());
-        var earlier = DateTimeOffset.UtcNow.AddHours(-2);
-        var later = DateTimeOffset.UtcNow.AddHours(-1);
+
+        // Whole seconds: PostgreSQL keeps timestamps to the microsecond, not to .NET's 100 nanoseconds.
+        var now = DateTimeOffset.FromUnixTimeSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds());
+        var earlier = now.AddHours(-2);
+        var later = now.AddHours(-1);
 
         var pending = NewCharacter("Pendingone");
         pending.RequestClaim(alice, later).IsSuccess.ShouldBeTrue();

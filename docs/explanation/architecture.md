@@ -1,7 +1,7 @@
 # Architecture and implementation status
 
 RaidManager follows Clean Architecture with separate Identity, Characters, Communities, and Raids domain areas.
-The solution targets .NET 10, C# 14, Blazor, ASP.NET Core, SQL Server, Aspire, and Pivot.Framework.
+The solution targets .NET 10, C# 14, Blazor, ASP.NET Core, PostgreSQL, Aspire, and Pivot.Framework.
 The first [Architecture Decision Record (ADR)](../adr/README.md) records Discord-only authentication and
 Warmane-first data sources. The [companion ADR](../adr/0002-use-desktop-companion-for-character-sync.md) records
 the upload path.
@@ -18,12 +18,12 @@ The web app signs players in with Discord and keeps a cookie session
 ([ADR-0011](../adr/0011-website-session-and-api-trust.md)); it runs in Interactive Server mode with Radzen
 ([ADR-0012](../adr/0012-interactive-server-rendering-with-radzen.md)).
 The Discord worker logs its startup and waits; it has no interaction gateway.
-The Aspire AppHost starts the API, web app, bot host, and a local SQL Server resource.
+The Aspire AppHost starts the API, web app, bot host, and a local PostgreSQL resource.
 The Domain project contains initial aggregates and value objects. The Application project has the first commands, to
 resolve a Discord sign-in to one user and to approve or reject a character claim, and a query listing the claims
 awaiting a player's decision. Queries read the write database through no-tracking readers
 ([ADR-0010](../adr/0010-read-queries-from-the-write-database.md)). The Entity Framework Core project persists the
-`User` and `Character` aggregates on SQL Server and records domain events in an outbox table; nothing delivers them
+`User` and `Character` aggregates on PostgreSQL and records domain events in an outbox table; nothing delivers them
 yet. The API sends the sign-in command for the website.
 There is no addon or companion project yet.
 

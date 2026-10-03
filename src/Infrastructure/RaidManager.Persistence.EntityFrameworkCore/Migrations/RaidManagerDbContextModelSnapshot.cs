@@ -3,8 +3,8 @@ using System;
 using System.Collections.Generic;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.EntityFrameworkCore.Infrastructure;
-using Microsoft.EntityFrameworkCore.Metadata;
 using Microsoft.EntityFrameworkCore.Storage.ValueConversion;
+using Npgsql.EntityFrameworkCore.PostgreSQL.Metadata;
 using RaidManager.Persistence.EntityFrameworkCore;
 
 #nullable disable
@@ -19,45 +19,45 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
 #pragma warning disable 612, 618
             modelBuilder
                 .HasAnnotation("ProductVersion", "10.0.12")
-                .HasAnnotation("Relational:MaxIdentifierLength", 128);
+                .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
-            SqlServerModelBuilderExtensions.UseIdentityColumns(modelBuilder);
+            NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
 
             modelBuilder.Entity("Pivot.Framework.Infrastructure.Abstraction.Outbox.Models.OutboxMessage", b =>
                 {
                     b.Property<Guid>("Id")
                         .ValueGeneratedOnAdd()
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("CorrelationId")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime>("CreatedAtUtc")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamptz");
 
                     b.Property<string>("EventType")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("FailedAtUtc")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamptz");
 
                     b.Property<int>("Kind")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("LastError")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<string>("Payload")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("jsonb");
 
                     b.Property<bool>("Processed")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<DateTime?>("ProcessedAtUtc")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamptz");
 
                     b.Property<int>("RetryCount")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -67,70 +67,70 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
             modelBuilder.Entity("RaidManager.Domain.Features.Characters.Aggregates.Character", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Class")
                         .IsRequired()
                         .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)");
+                        .HasColumnType("character varying(32)");
 
                     b.Property<string>("DeletedBy")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("DeletedOnUtc")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Faction")
                         .IsRequired()
                         .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)");
+                        .HasColumnType("character varying(32)");
 
                     b.Property<string>("GuildName")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasColumnType("character varying(64)");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<bool>("IsOwnershipVerified")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<DateTimeOffset?>("LastAddonSynchronizedAtUtc")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTimeOffset?>("LastArmorySynchronizedAtUtc")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTimeOffset?>("LastCompleteRaidSaveScanAtUtc")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTimeOffset?>("LastIncompleteRaidSaveScanAtUtc")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<int>("Level")
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(12)
-                        .HasColumnType("nvarchar(12)");
+                        .HasColumnType("character varying(12)");
 
                     b.Property<Guid?>("OwnerId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("Race")
                         .IsRequired()
                         .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)");
+                        .HasColumnType("character varying(32)");
 
                     b.Property<string>("Realm")
                         .IsRequired()
                         .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)");
+                        .HasColumnType("character varying(32)");
 
                     b.Property<int>("Version")
                         .IsConcurrencyToken()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -143,39 +143,39 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
             modelBuilder.Entity("RaidManager.Domain.Features.Communities.Aggregates.Community", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("AdministratorId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("DeletedBy")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("DeletedOnUtc")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("DiscordGuildId")
                         .IsRequired()
                         .HasMaxLength(20)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("character varying(20)");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("Name")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<string>("Realm")
                         .IsRequired()
                         .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)");
+                        .HasColumnType("character varying(32)");
 
                     b.Property<int>("Version")
                         .IsConcurrencyToken()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -188,39 +188,39 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
             modelBuilder.Entity("RaidManager.Domain.Features.Identity.Aggregates.User", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("AvatarUrl")
                         .HasMaxLength(512)
-                        .HasColumnType("nvarchar(512)");
+                        .HasColumnType("character varying(512)");
 
                     b.Property<string>("DeletedBy")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("DeletedOnUtc")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("DiscordUserId")
                         .IsRequired()
                         .HasMaxLength(20)
                         .IsUnicode(false)
-                        .HasColumnType("varchar(20)");
+                        .HasColumnType("character varying(20)");
 
                     b.Property<string>("DisplayName")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<string>("TimeZoneId")
                         .HasMaxLength(64)
-                        .HasColumnType("nvarchar(64)");
+                        .HasColumnType("character varying(64)");
 
                     b.Property<int>("Version")
                         .IsConcurrencyToken()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.HasKey("Id");
 
@@ -233,45 +233,45 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
             modelBuilder.Entity("RaidManager.Domain.Features.Raids.Aggregates.Raid", b =>
                 {
                     b.Property<Guid>("Id")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("CommunityId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<Guid>("CreatedByUserId")
-                        .HasColumnType("uniqueidentifier");
+                        .HasColumnType("uuid");
 
                     b.Property<string>("DeletedBy")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<DateTime?>("DeletedOnUtc")
-                        .HasColumnType("datetime2");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Description")
-                        .HasColumnType("nvarchar(max)");
+                        .HasColumnType("text");
 
                     b.Property<bool>("IsDeleted")
-                        .HasColumnType("bit");
+                        .HasColumnType("boolean");
 
                     b.Property<DateTimeOffset>("SignupDeadlineUtc")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTimeOffset>("StartsAtUtc")
-                        .HasColumnType("datetimeoffset");
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<string>("Status")
                         .IsRequired()
                         .HasMaxLength(32)
-                        .HasColumnType("nvarchar(32)");
+                        .HasColumnType("character varying(32)");
 
                     b.Property<string>("Title")
                         .IsRequired()
                         .HasMaxLength(100)
-                        .HasColumnType("nvarchar(100)");
+                        .HasColumnType("character varying(100)");
 
                     b.Property<int>("Version")
                         .IsConcurrencyToken()
-                        .HasColumnType("int");
+                        .HasColumnType("integer");
 
                     b.ComplexProperty(typeof(Dictionary<string, object>), "Requirements", "RaidManager.Domain.Features.Raids.Aggregates.Raid.Requirements#RaidRequirements", b1 =>
                         {
@@ -281,10 +281,10 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                                 .HasColumnType("bigint");
 
                             b1.Property<int?>("MinimumGearScore")
-                                .HasColumnType("int");
+                                .HasColumnType("integer");
 
                             b1.Property<bool>("RequiresUnsavedCharacter")
-                                .HasColumnType("bit");
+                                .HasColumnType("boolean");
                         });
 
                     b.HasKey("Id");
@@ -299,22 +299,22 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                     b.OwnsOne("Pivot.Framework.Domain.Primitives.AuditInfo", "Audit", b1 =>
                         {
                             b1.Property<Guid>("CharacterId")
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.Property<string>("CreatedBy")
-                                .HasColumnType("nvarchar(max)")
+                                .HasColumnType("text")
                                 .HasColumnName("Audit_CreatedBy");
 
                             b1.Property<DateTime>("CreatedOnUtc")
-                                .HasColumnType("datetime2")
+                                .HasColumnType("timestamp with time zone")
                                 .HasColumnName("Audit_CreatedOnUtc");
 
                             b1.Property<string>("ModifiedBy")
-                                .HasColumnType("nvarchar(max)")
+                                .HasColumnType("text")
                                 .HasColumnName("Audit_ModifiedBy");
 
                             b1.Property<DateTime?>("ModifiedOnUtc")
-                                .HasColumnType("datetime2")
+                                .HasColumnType("timestamp with time zone")
                                 .HasColumnName("Audit_ModifiedOnUtc");
 
                             b1.HasKey("CharacterId");
@@ -328,24 +328,24 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                     b.OwnsMany("RaidManager.Domain.Features.Characters.Aggregates.CharacterClaim", "Claims", b1 =>
                         {
                             b1.Property<Guid>("Id")
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.Property<Guid>("CharacterId")
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.Property<DateTimeOffset?>("DecidedAtUtc")
-                                .HasColumnType("datetimeoffset");
+                                .HasColumnType("timestamp with time zone");
 
                             b1.Property<DateTimeOffset>("RequestedAtUtc")
-                                .HasColumnType("datetimeoffset");
+                                .HasColumnType("timestamp with time zone");
 
                             b1.Property<Guid>("RequestedByUserId")
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.Property<string>("State")
                                 .IsRequired()
                                 .HasMaxLength(32)
-                                .HasColumnType("nvarchar(32)");
+                                .HasColumnType("character varying(32)");
 
                             b1.HasKey("Id");
 
@@ -362,34 +362,34 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                     b.OwnsMany("RaidManager.Domain.Features.Characters.Aggregates.Loadout", "Loadouts", b1 =>
                         {
                             b1.Property<Guid>("Id")
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.Property<Guid>("CharacterId")
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.Property<int>("GearScore")
-                                .HasColumnType("int");
+                                .HasColumnType("integer");
 
                             b1.Property<bool>("IsPrimary")
-                                .HasColumnType("bit");
+                                .HasColumnType("boolean");
 
                             b1.Property<DateTimeOffset>("LastSynchronizedAtUtc")
-                                .HasColumnType("datetimeoffset");
+                                .HasColumnType("timestamp with time zone");
 
                             b1.Property<string>("Name")
                                 .IsRequired()
                                 .HasMaxLength(64)
-                                .HasColumnType("nvarchar(64)");
+                                .HasColumnType("character varying(64)");
 
                             b1.Property<string>("Role")
                                 .IsRequired()
                                 .HasMaxLength(32)
-                                .HasColumnType("nvarchar(32)");
+                                .HasColumnType("character varying(32)");
 
                             b1.Property<string>("Source")
                                 .IsRequired()
                                 .HasMaxLength(32)
-                                .HasColumnType("nvarchar(32)");
+                                .HasColumnType("character varying(32)");
 
                             b1.HasKey("Id");
 
@@ -403,91 +403,91 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                             b1.OwnsOne("RaidManager.Domain.Features.Characters.ValueObjects.CombatStats", "Stats", b2 =>
                                 {
                                     b2.Property<Guid>("LoadoutId")
-                                        .HasColumnType("uniqueidentifier");
+                                        .HasColumnType("uuid");
 
                                     b2.Property<int>("Agility")
-                                        .HasColumnType("int");
+                                        .HasColumnType("integer");
 
                                     b2.Property<int>("Armor")
-                                        .HasColumnType("int");
+                                        .HasColumnType("integer");
 
                                     b2.Property<decimal>("ArmorPenetrationPercent")
                                         .HasPrecision(9, 4)
-                                        .HasColumnType("decimal(9,4)");
+                                        .HasColumnType("numeric(9,4)");
 
                                     b2.Property<int>("ArmorPenetrationRating")
-                                        .HasColumnType("int");
+                                        .HasColumnType("integer");
 
                                     b2.Property<int>("AttackPower")
-                                        .HasColumnType("int");
+                                        .HasColumnType("integer");
 
                                     b2.Property<decimal>("BlockPercent")
                                         .HasPrecision(9, 4)
-                                        .HasColumnType("decimal(9,4)");
+                                        .HasColumnType("numeric(9,4)");
 
                                     b2.Property<decimal>("CritPercent")
                                         .HasPrecision(9, 4)
-                                        .HasColumnType("decimal(9,4)");
+                                        .HasColumnType("numeric(9,4)");
 
                                     b2.Property<int>("CritRating")
-                                        .HasColumnType("int");
+                                        .HasColumnType("integer");
 
                                     b2.Property<int>("DefenseSkill")
-                                        .HasColumnType("int");
+                                        .HasColumnType("integer");
 
                                     b2.Property<decimal>("DodgePercent")
                                         .HasPrecision(9, 4)
-                                        .HasColumnType("decimal(9,4)");
+                                        .HasColumnType("numeric(9,4)");
 
                                     b2.Property<decimal>("ExpertiseMainHand")
                                         .HasPrecision(9, 4)
-                                        .HasColumnType("decimal(9,4)");
+                                        .HasColumnType("numeric(9,4)");
 
                                     b2.Property<decimal>("ExpertiseOffHand")
                                         .HasPrecision(9, 4)
-                                        .HasColumnType("decimal(9,4)");
+                                        .HasColumnType("numeric(9,4)");
 
                                     b2.Property<int>("ExpertiseRating")
-                                        .HasColumnType("int");
+                                        .HasColumnType("integer");
 
                                     b2.Property<decimal>("HastePercent")
                                         .HasPrecision(9, 4)
-                                        .HasColumnType("decimal(9,4)");
+                                        .HasColumnType("numeric(9,4)");
 
                                     b2.Property<int>("HasteRating")
-                                        .HasColumnType("int");
+                                        .HasColumnType("integer");
 
                                     b2.Property<int>("Health")
-                                        .HasColumnType("int");
+                                        .HasColumnType("integer");
 
                                     b2.Property<decimal>("HitPercent")
                                         .HasPrecision(9, 4)
-                                        .HasColumnType("decimal(9,4)");
+                                        .HasColumnType("numeric(9,4)");
 
                                     b2.Property<int>("HitRating")
-                                        .HasColumnType("int");
+                                        .HasColumnType("integer");
 
                                     b2.Property<int>("Intellect")
-                                        .HasColumnType("int");
+                                        .HasColumnType("integer");
 
                                     b2.Property<decimal>("ParryPercent")
                                         .HasPrecision(9, 4)
-                                        .HasColumnType("decimal(9,4)");
+                                        .HasColumnType("numeric(9,4)");
 
                                     b2.Property<int>("ResilienceRating")
-                                        .HasColumnType("int");
+                                        .HasColumnType("integer");
 
                                     b2.Property<int>("SpellPower")
-                                        .HasColumnType("int");
+                                        .HasColumnType("integer");
 
                                     b2.Property<int>("Spirit")
-                                        .HasColumnType("int");
+                                        .HasColumnType("integer");
 
                                     b2.Property<int>("Stamina")
-                                        .HasColumnType("int");
+                                        .HasColumnType("integer");
 
                                     b2.Property<int>("Strength")
-                                        .HasColumnType("int");
+                                        .HasColumnType("integer");
 
                                     b2.HasKey("LoadoutId");
 
@@ -500,25 +500,25 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                             b1.OwnsMany("RaidManager.Domain.Features.Characters.ValueObjects.GearItem", "GearItems", b2 =>
                                 {
                                     b2.Property<Guid>("LoadoutId")
-                                        .HasColumnType("uniqueidentifier");
+                                        .HasColumnType("uuid");
 
                                     b2.Property<string>("Slot")
                                         .HasMaxLength(32)
-                                        .HasColumnType("nvarchar(32)");
+                                        .HasColumnType("character varying(32)");
 
                                     b2.Property<int?>("DisplayId")
-                                        .HasColumnType("int");
+                                        .HasColumnType("integer");
 
                                     b2.Property<int>("ItemId")
-                                        .HasColumnType("int");
+                                        .HasColumnType("integer");
 
                                     b2.Property<int>("ItemLevel")
-                                        .HasColumnType("int");
+                                        .HasColumnType("integer");
 
                                     b2.Property<string>("ItemLink")
                                         .IsRequired()
                                         .HasMaxLength(512)
-                                        .HasColumnType("nvarchar(512)");
+                                        .HasColumnType("character varying(512)");
 
                                     b2.HasKey("LoadoutId", "Slot");
 
@@ -531,36 +531,36 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                             b1.OwnsOne("RaidManager.Domain.Features.Characters.ValueObjects.TalentConfiguration", "TalentConfiguration", b2 =>
                                 {
                                     b2.Property<Guid>("LoadoutId")
-                                        .HasColumnType("uniqueidentifier");
+                                        .HasColumnType("uuid");
 
                                     b2.Property<int>("FirstTreePoints")
-                                        .HasColumnType("int");
+                                        .HasColumnType("integer");
 
                                     b2.Property<string>("MajorGlyphIds")
                                         .IsRequired()
                                         .HasMaxLength(64)
-                                        .HasColumnType("nvarchar(64)");
+                                        .HasColumnType("character varying(64)");
 
                                     b2.Property<string>("MinorGlyphIds")
                                         .IsRequired()
                                         .HasMaxLength(64)
-                                        .HasColumnType("nvarchar(64)");
+                                        .HasColumnType("character varying(64)");
 
                                     b2.Property<int>("SecondTreePoints")
-                                        .HasColumnType("int");
+                                        .HasColumnType("integer");
 
                                     b2.Property<string>("SpecializationName")
                                         .IsRequired()
                                         .HasMaxLength(64)
-                                        .HasColumnType("nvarchar(64)");
+                                        .HasColumnType("character varying(64)");
 
                                     b2.Property<string>("TalentCode")
                                         .IsRequired()
                                         .HasMaxLength(128)
-                                        .HasColumnType("nvarchar(128)");
+                                        .HasColumnType("character varying(128)");
 
                                     b2.Property<int>("ThirdTreePoints")
-                                        .HasColumnType("int");
+                                        .HasColumnType("integer");
 
                                     b2.HasKey("LoadoutId");
 
@@ -583,32 +583,32 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                         {
                             b1.Property<int>("Id")
                                 .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
+                                .HasColumnType("integer");
 
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
+                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
 
                             b1.Property<Guid>("CharacterId")
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.Property<string>("Difficulty")
                                 .IsRequired()
                                 .HasMaxLength(32)
-                                .HasColumnType("nvarchar(32)");
+                                .HasColumnType("character varying(32)");
 
                             b1.Property<string>("Instance")
                                 .IsRequired()
                                 .HasMaxLength(32)
-                                .HasColumnType("nvarchar(32)");
+                                .HasColumnType("character varying(32)");
 
                             b1.Property<bool>("IsExtended")
-                                .HasColumnType("bit");
+                                .HasColumnType("boolean");
 
                             b1.Property<string>("LockoutId")
                                 .HasMaxLength(64)
-                                .HasColumnType("nvarchar(64)");
+                                .HasColumnType("character varying(64)");
 
                             b1.Property<DateTimeOffset>("ResetsAtUtc")
-                                .HasColumnType("datetimeoffset");
+                                .HasColumnType("timestamp with time zone");
 
                             b1.HasKey("Id");
 
@@ -634,22 +634,22 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                     b.OwnsOne("Pivot.Framework.Domain.Primitives.AuditInfo", "Audit", b1 =>
                         {
                             b1.Property<Guid>("CommunityId")
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.Property<string>("CreatedBy")
-                                .HasColumnType("nvarchar(max)")
+                                .HasColumnType("text")
                                 .HasColumnName("Audit_CreatedBy");
 
                             b1.Property<DateTime>("CreatedOnUtc")
-                                .HasColumnType("datetime2")
+                                .HasColumnType("timestamp with time zone")
                                 .HasColumnName("Audit_CreatedOnUtc");
 
                             b1.Property<string>("ModifiedBy")
-                                .HasColumnType("nvarchar(max)")
+                                .HasColumnType("text")
                                 .HasColumnName("Audit_ModifiedBy");
 
                             b1.Property<DateTime?>("ModifiedOnUtc")
-                                .HasColumnType("datetime2")
+                                .HasColumnType("timestamp with time zone")
                                 .HasColumnName("Audit_ModifiedOnUtc");
 
                             b1.HasKey("CommunityId");
@@ -663,21 +663,21 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                     b.OwnsMany("RaidManager.Domain.Features.Communities.Aggregates.CommunityRole", "Roles", b1 =>
                         {
                             b1.Property<Guid>("Id")
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.Property<Guid>("CommunityId")
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.Property<string>("Name")
                                 .IsRequired()
                                 .HasMaxLength(50)
-                                .HasColumnType("nvarchar(50)");
+                                .HasColumnType("character varying(50)");
 
                             b1.Property<int>("Permissions")
-                                .HasColumnType("int");
+                                .HasColumnType("integer");
 
                             b1.Property<int>("Position")
-                                .HasColumnType("int");
+                                .HasColumnType("integer");
 
                             b1.HasKey("Id");
 
@@ -692,15 +692,15 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                     b.OwnsMany("RaidManager.Domain.Features.Communities.ValueObjects.DiscordRoleMapping", "RoleMappings", b1 =>
                         {
                             b1.Property<Guid>("CommunityId")
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.Property<string>("DiscordRoleId")
                                 .HasMaxLength(20)
                                 .IsUnicode(false)
-                                .HasColumnType("varchar(20)");
+                                .HasColumnType("character varying(20)");
 
                             b1.Property<Guid>("RoleId")
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.HasKey("CommunityId", "DiscordRoleId", "RoleId");
 
@@ -722,22 +722,22 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                     b.OwnsOne("Pivot.Framework.Domain.Primitives.AuditInfo", "Audit", b1 =>
                         {
                             b1.Property<Guid>("UserId")
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.Property<string>("CreatedBy")
-                                .HasColumnType("nvarchar(max)")
+                                .HasColumnType("text")
                                 .HasColumnName("Audit_CreatedBy");
 
                             b1.Property<DateTime>("CreatedOnUtc")
-                                .HasColumnType("datetime2")
+                                .HasColumnType("timestamp with time zone")
                                 .HasColumnName("Audit_CreatedOnUtc");
 
                             b1.Property<string>("ModifiedBy")
-                                .HasColumnType("nvarchar(max)")
+                                .HasColumnType("text")
                                 .HasColumnName("Audit_ModifiedBy");
 
                             b1.Property<DateTime?>("ModifiedOnUtc")
-                                .HasColumnType("datetime2")
+                                .HasColumnType("timestamp with time zone")
                                 .HasColumnName("Audit_ModifiedOnUtc");
 
                             b1.HasKey("UserId");
@@ -756,22 +756,22 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                     b.OwnsOne("Pivot.Framework.Domain.Primitives.AuditInfo", "Audit", b1 =>
                         {
                             b1.Property<Guid>("RaidId")
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.Property<string>("CreatedBy")
-                                .HasColumnType("nvarchar(max)")
+                                .HasColumnType("text")
                                 .HasColumnName("Audit_CreatedBy");
 
                             b1.Property<DateTime>("CreatedOnUtc")
-                                .HasColumnType("datetime2")
+                                .HasColumnType("timestamp with time zone")
                                 .HasColumnName("Audit_CreatedOnUtc");
 
                             b1.Property<string>("ModifiedBy")
-                                .HasColumnType("nvarchar(max)")
+                                .HasColumnType("text")
                                 .HasColumnName("Audit_ModifiedBy");
 
                             b1.Property<DateTime?>("ModifiedOnUtc")
-                                .HasColumnType("datetime2")
+                                .HasColumnType("timestamp with time zone")
                                 .HasColumnName("Audit_ModifiedOnUtc");
 
                             b1.HasKey("RaidId");
@@ -785,24 +785,24 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                     b.OwnsMany("RaidManager.Domain.Features.Raids.Aggregates.RaidSignup", "Signups", b1 =>
                         {
                             b1.Property<Guid>("Id")
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.Property<string>("Availability")
                                 .IsRequired()
                                 .HasMaxLength(32)
-                                .HasColumnType("nvarchar(32)");
+                                .HasColumnType("character varying(32)");
 
                             b1.Property<string>("Comment")
-                                .HasColumnType("nvarchar(max)");
+                                .HasColumnType("text");
 
                             b1.Property<DateTimeOffset?>("LateArrivalUtc")
-                                .HasColumnType("datetimeoffset");
+                                .HasColumnType("timestamp with time zone");
 
                             b1.Property<Guid>("RaidId")
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.Property<Guid>("UserId")
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.HasKey("Id");
 
@@ -818,18 +818,18 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                                 {
                                     b2.Property<int>("Id")
                                         .ValueGeneratedOnAdd()
-                                        .HasColumnType("int");
+                                        .HasColumnType("integer");
 
-                                    SqlServerPropertyBuilderExtensions.UseIdentityColumn(b2.Property<int>("Id"));
+                                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b2.Property<int>("Id"));
 
                                     b2.Property<Guid>("CharacterId")
-                                        .HasColumnType("uniqueidentifier");
+                                        .HasColumnType("uuid");
 
                                     b2.Property<Guid>("LoadoutId")
-                                        .HasColumnType("uniqueidentifier");
+                                        .HasColumnType("uuid");
 
                                     b2.Property<Guid>("RaidSignupId")
-                                        .HasColumnType("uniqueidentifier");
+                                        .HasColumnType("uuid");
 
                                     b2.HasKey("Id");
 
@@ -847,25 +847,25 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                     b.OwnsMany("RaidManager.Domain.Features.Raids.Aggregates.RosterSelection", "RosterSelections", b1 =>
                         {
                             b1.Property<Guid>("Id")
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.Property<Guid>("CharacterId")
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.Property<int>("GroupNumber")
-                                .HasColumnType("int");
+                                .HasColumnType("integer");
 
                             b1.Property<Guid>("LoadoutId")
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.Property<int>("Position")
-                                .HasColumnType("int");
+                                .HasColumnType("integer");
 
                             b1.Property<Guid>("RaidId")
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.Property<Guid>("UserId")
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.HasKey("Id");
 
@@ -882,22 +882,22 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                         {
                             b1.Property<int>("Id")
                                 .ValueGeneratedOnAdd()
-                                .HasColumnType("int");
+                                .HasColumnType("integer");
 
-                            SqlServerPropertyBuilderExtensions.UseIdentityColumn(b1.Property<int>("Id"));
+                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
 
                             b1.Property<string>("Difficulty")
                                 .IsRequired()
                                 .HasMaxLength(32)
-                                .HasColumnType("nvarchar(32)");
+                                .HasColumnType("character varying(32)");
 
                             b1.Property<string>("Instance")
                                 .IsRequired()
                                 .HasMaxLength(32)
-                                .HasColumnType("nvarchar(32)");
+                                .HasColumnType("character varying(32)");
 
                             b1.Property<Guid>("RaidId")
-                                .HasColumnType("uniqueidentifier");
+                                .HasColumnType("uuid");
 
                             b1.HasKey("Id");
 

@@ -10,7 +10,7 @@ using RaidManager.ApiService.Tests.Support;
 
 namespace RaidManager.ApiService.Tests.Features.Communities;
 
-/// <summary>Verifies the website-only community endpoints against the real API and SQL Server.</summary>
+/// <summary>Verifies the website-only community endpoints against the real API and PostgreSQL.</summary>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-01<br/>

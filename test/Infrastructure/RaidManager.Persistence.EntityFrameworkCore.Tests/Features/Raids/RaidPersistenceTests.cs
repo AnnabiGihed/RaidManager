@@ -14,24 +14,24 @@ using DomainUnitOfWork = Pivot.Framework.Domain.Repositories.IUnitOfWork;
 
 namespace RaidManager.Persistence.EntityFrameworkCore.Tests.Features.Raids;
 
-/// <summary>Verifies that the Raid aggregate persists on SQL Server with its targets, signups and roster.</summary>
+/// <summary>Verifies that the Raid aggregate persists on PostgreSQL with its targets, signups and roster.</summary>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-01<br/>
 /// Purpose: Proves the mapping round-trips every part of the raid, replaces edited child rows, and records events in the outbox.
 /// </remarks>
-[Collection(SqlServerTestGroup.Name)]
+[Collection(PostgreSqlTestGroup.Name)]
 public sealed class RaidPersistenceTests
 {
     #region Fields
-    /// <summary>Stores the SQL Server fixture.</summary>
-    private readonly SqlServerFixture _database;
+    /// <summary>Stores the PostgreSQL fixture.</summary>
+    private readonly PostgreSqlFixture _database;
     #endregion Fields
 
     #region Constructors
     /// <summary>Initializes a new instance of the <see cref="RaidPersistenceTests"/> class.</summary>
-    /// <param name="database">The SQL Server fixture.</param>
-    public RaidPersistenceTests(SqlServerFixture database)
+    /// <param name="database">The PostgreSQL fixture.</param>
+    public RaidPersistenceTests(PostgreSqlFixture database)
     {
         _database = database;
     }
@@ -90,7 +90,7 @@ public sealed class RaidPersistenceTests
         selection.Position.ShouldBe(3);
 
         var context = scope.ServiceProvider.GetRequiredService<RaidManagerDbContext>();
-        var storedStatus = await context.Database.SqlQuery<string>($"SELECT Status AS Value FROM Raids WHERE Id = {raid.Id.Value}").SingleAsync();
+        var storedStatus = await context.Database.SqlQuery<string>($"SELECT \"Status\" AS \"Value\" FROM \"Raids\" WHERE \"Id\" = {raid.Id.Value}").SingleAsync();
         storedStatus.ShouldBe(nameof(RaidStatus.OpenForSignups));
         context.Model.FindEntityType(typeof(Raid))!.FindProperty(nameof(Raid.Version))!.IsConcurrencyToken.ShouldBeTrue();
         var eventTypes = await context.OutboxMessages.Select(message => message.EventType).ToListAsync();
@@ -141,9 +141,9 @@ public sealed class RaidPersistenceTests
         selection.Position.ShouldBe(4);
 
         var database = scope.ServiceProvider.GetRequiredService<RaidManagerDbContext>().Database;
-        (await database.SqlQuery<int>($"SELECT COUNT(*) AS Value FROM RaidTargets WHERE RaidId = {raid.Id.Value}").SingleAsync()).ShouldBe(2);
-        (await database.SqlQuery<int>($"SELECT COUNT(*) AS Value FROM RosterSelections WHERE RaidId = {raid.Id.Value}").SingleAsync()).ShouldBe(1);
-        (await database.SqlQuery<int>($"SELECT COUNT(*) AS Value FROM RaidSignupOptions WHERE RaidSignupId = {signup.Id.Value}").SingleAsync()).ShouldBe(1);
+        (await database.SqlQuery<int>($"SELECT COUNT(*)::int AS \"Value\" FROM \"RaidTargets\" WHERE \"RaidId\" = {raid.Id.Value}").SingleAsync()).ShouldBe(2);
+        (await database.SqlQuery<int>($"SELECT COUNT(*)::int AS \"Value\" FROM \"RosterSelections\" WHERE \"RaidId\" = {raid.Id.Value}").SingleAsync()).ShouldBe(1);
+        (await database.SqlQuery<int>($"SELECT COUNT(*)::int AS \"Value\" FROM \"RaidSignupOptions\" WHERE \"RaidSignupId\" = {signup.Id.Value}").SingleAsync()).ShouldBe(1);
     }
     #endregion Tests
 

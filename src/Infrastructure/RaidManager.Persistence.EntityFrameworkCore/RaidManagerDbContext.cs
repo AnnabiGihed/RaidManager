@@ -1,6 +1,7 @@
 using Microsoft.EntityFrameworkCore;
 using Pivot.Framework.Infrastructure.Abstraction.Outbox.Models;
 using Pivot.Framework.Infrastructure.Persistence.EntityFrameworkCore.PersistenceContext;
+using Pivot.Framework.Infrastructure.Persistence.PostgreSQL.Configuration;
 using RaidManager.Domain.Features.Characters.Aggregates;
 using RaidManager.Domain.Features.Communities.Aggregates;
 using RaidManager.Domain.Features.Identity.Aggregates;
@@ -9,7 +10,7 @@ using RaidManager.Persistence.EntityFrameworkCore.Features.Shared.Conversions;
 
 namespace RaidManager.Persistence.EntityFrameworkCore;
 
-/// <summary>Represents the RaidManager write-side database session on SQL Server.</summary>
+/// <summary>Represents the RaidManager write-side database session on PostgreSQL.</summary>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-09-30<br/>
@@ -58,6 +59,10 @@ public sealed class RaidManagerDbContext : PivotDbContextBase
         // The base maps Pivot's AuditInfo columns for every auditable entity already in the model.
         base.OnModelCreating(modelBuilder);
         modelBuilder.Entity<OutboxMessage>().ToTable("OutboxMessages");
+
+        // Only the outbox override: ApplyPostgreSqlConfigurations would also add the event store's table, which
+        // RaidManager doesn't use (includeEventStore: false).
+        modelBuilder.ApplyConfiguration(new PostgreSqlOutboxMessageConfiguration());
         modelBuilder.ApplyConfigurationsFromAssembly(typeof(RaidManagerDbContext).Assembly);
     }
     #endregion Overrides

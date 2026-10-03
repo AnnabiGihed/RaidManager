@@ -104,13 +104,13 @@ adopt before a dedicated alignment PR.
   2. Wait until `https://localhost:55365/` returns 200, check `https://localhost:55366/` answers and
      `https://localhost:55366/scalar` returns 200, and that `/sign-in` redirects to `https://discord.com/api/oauth2/authorize` with a `client_id` and the
      `https://localhost:55365/signin-discord` redirect URI (redact the id and state in the PR).
-  3. Stop the AppHost and every `RaidManager.*` process it started, then remove any leftover `sql-*` container
+  3. Stop the AppHost and every `RaidManager.*` process it started, then remove any leftover `postgres-*` container
      (keep the data volume). Never leave processes or containers running for the owner to collide with.
   Signing in to Discord itself is the owner's step; the agent never enters Discord credentials.
 - **Never stop an app the owner started.** A `RaidManager.*` process you didn't start belongs to the owner (check its
-  start time). If it locks `bin/` and the build fails, don't stop it: build elsewhere with `--artifacts-path` (the
-  SQL Server tests can't load their native driver from a long scratch path, so say which tests didn't run) or ask
-  the owner. Stop only the processes and `sql-*` containers your own run started. The same holds for the owner's
+  start time). If it locks `bin/` and the build fails, don't stop it: build elsewhere with `--artifacts-path` (say which
+  tests didn't run there, if any) or ask the owner. Stop only the processes and `postgres-*` containers your own run
+  started. The same holds for the owner's
   Visual Studio (`devenv`) and its MSBuild nodes, even when they lock a scratch NuGet cache.
 - **A forced restore with another cache moves the assets file.** `dotnet restore --force` with `NUGET_PACKAGES`
   pointed at a scratch folder rewrites `obj/project.assets.json` to that cache; run a normal restore afterwards.

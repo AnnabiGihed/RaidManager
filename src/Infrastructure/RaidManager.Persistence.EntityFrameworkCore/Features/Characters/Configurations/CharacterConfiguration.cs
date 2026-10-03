@@ -7,7 +7,7 @@ using RaidManager.Domain.Features.Shared.Identifiers;
 
 namespace RaidManager.Persistence.EntityFrameworkCore.Features.Characters.Configurations;
 
-/// <summary>Maps the <see cref="Character"/> aggregate, its claims, loadouts and raid saves to SQL Server tables.</summary>
+/// <summary>Maps the <see cref="Character"/> aggregate, its claims, loadouts and raid saves to PostgreSQL tables.</summary>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-09-30<br/>

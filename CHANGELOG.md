@@ -209,6 +209,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- RaidManager stores its data in PostgreSQL instead of SQL Server (ADR-0029): the persistence project uses
+  Pivot.Framework's PostgreSQL package, the AppHost runs `postgres`, one fresh migration replaces the six SQL Server
+  ones, and the tests run against PostgreSQL 18.3 containers. Local data from the SQL Server volume isn't carried
+  over (#411).
 - Sprint 4 has its review: goal achieved, 11 items completed (18 Story Points of stories and 38 of improvements,
   retrospective), nothing unfinished. The item lists of Sprints 1 to 4 and of releases v0.1 and v0.2 now match the
   Project, including the parts split from mixed-release items (#400).

@@ -6,7 +6,7 @@ using RaidManager.Domain.Features.Shared.Identifiers;
 
 namespace RaidManager.Persistence.EntityFrameworkCore.Features.Raids.Configurations;
 
-/// <summary>Maps the <see cref="Raid"/> aggregate, its targets, signups and roster selections to SQL Server tables.</summary>
+/// <summary>Maps the <see cref="Raid"/> aggregate, its targets, signups and roster selections to PostgreSQL tables.</summary>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-01<br/>
@@ -56,7 +56,7 @@ internal sealed class RaidConfiguration : IEntityTypeConfiguration<Raid>
             requirements.Property(requirement => requirement.MinimumGearScore)
                 .HasConversion(score => score.HasValue ? score.Value.Value : (int?)null, value => value.HasValue ? new GearScore(value.Value) : null);
 
-            // SQL Server's time type stops at 24 hours, and a data age is often counted in days.
+            // Stored as ticks: a data age is often counted in days, which SQL Server's time type couldn't hold.
             requirements.Property(requirement => requirement.MaximumCharacterDataAge).HasConversion<long>();
         });
     }

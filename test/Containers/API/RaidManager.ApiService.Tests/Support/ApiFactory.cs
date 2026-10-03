@@ -4,12 +4,12 @@ using Microsoft.AspNetCore.TestHost;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using RaidManager.Application.Features.Communities.Abstractions;
-using Testcontainers.MsSql;
+using Testcontainers.PostgreSql;
 using Xunit;
 
 namespace RaidManager.ApiService.Tests.Support;
 
-/// <summary>Hosts the real API against a SQL Server container with a known website key.</summary>
+/// <summary>Hosts the real API against a PostgreSQL container with a known website key.</summary>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-09-30<br/>
@@ -24,13 +24,13 @@ public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
     /// <summary>Defines a placeholder bot token: startup requires one, and these tests never call Discord.</summary>
     private const string PlaceholderBotToken = "not-a-real-bot-token";
 
-    /// <summary>Defines the SQL Server image, matching the persistence tests.</summary>
-    private const string SqlServerImage = "mcr.microsoft.com/mssql/server:2022-latest";
+    /// <summary>Defines the PostgreSQL image, the version the Aspire AppHost runs (ADR-0029).</summary>
+    private const string PostgreSqlImage = "postgres:18.3";
     #endregion Constants
 
     #region Fields
-    /// <summary>Stores the SQL Server container.</summary>
-    private readonly MsSqlContainer _database = new MsSqlBuilder(SqlServerImage).Build();
+    /// <summary>Stores the PostgreSQL container.</summary>
+    private readonly PostgreSqlContainer _database = new PostgreSqlBuilder(PostgreSqlImage).Build();
     #endregion Fields
 
     #region Properties

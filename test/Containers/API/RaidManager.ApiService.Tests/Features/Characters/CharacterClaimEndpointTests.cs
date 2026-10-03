@@ -18,7 +18,7 @@ using DomainUnitOfWork = Pivot.Framework.Domain.Repositories.IUnitOfWork;
 
 namespace RaidManager.ApiService.Tests.Features.Characters;
 
-/// <summary>Verifies the website-only character claim review endpoints through HTTP and SQL Server.</summary>
+/// <summary>Verifies the website-only character claim review endpoints through HTTP and PostgreSQL.</summary>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-09-30<br/>
