@@ -5,7 +5,7 @@
 - Deciders: Gihed Annabi
 - Amended: 2026-10-03, by #387, while still Proposed (owner decisions on #374, #369 and #387); database and memory
   amended by [ADR-0029](0029-store-data-in-postgresql.md) (#410); application settings amended by #388; Compose
-  generation detailed by #444
+  generation detailed by #444; the dev deployment detailed by #389
 
 The server turned out to be in use already: it hosts the `pivotsoftwares.com` website and Delivery Atlas behind one
 shared Caddy. The amendment keeps RaidManager beside them: it joins the shared proxy instead of running its own,
@@ -81,6 +81,25 @@ What already runs on it, as read on 2026-10-03 (#374):
   new volume the owner of its folder only when the image already has that folder (tested on the .NET 10 image).
 - **No dashboard and no restart by hand:** the Compose environment has no Aspire dashboard (ADR-0029), and every
   service restarts unless stopped.
+
+### Deploying an environment
+
+The `deploy-dev` workflow deploys `main` to dev; the `review` workflow starts it after each merge, and it can be
+started by hand from the Actions tab. Its steps, with the server's part in `deploy/server/deploy-environment.sh`:
+
+1. Build the three images on the runner (`dotnet publish -t:PublishContainer`), tagged with the commit, and generate
+   the Compose file.
+2. Over SSH, with the environment's deploy key in an `ssh-agent`: load the images (`docker save` piped to
+   `docker load`), copy the Compose file, and write `.env` from the environment's secrets, as `*.next` files.
+3. On the server: keep the current files as `*.previous`, switch to the new ones, start PostgreSQL, and run the new
+   API image once with `--Database:MigrateAndExit=true`, so the migrations apply before any new version serves.
+4. Start the new version and wait until the API answers 200 and the website 200 or 302 on the environment's network.
+5. From the runner, through Caddy: the website answers 200, sign-in redirects to Discord with the environment's HTTPS
+   address, and the API answers 404 for an unknown companion route (Caddy alone would answer 503).
+6. If step 3, 4 or 5 fails, the previous files come back and the previous version runs again; a first deployment
+   that fails is stopped. A migration that already ran isn't undone: that is #434's.
+7. On success, the RaidManager images that no environment's current or previous version uses are removed.
+
 - **Images are built in GitHub Actions, never on the server.** Building needs the Pivot.Framework feed credentials
   and more memory than the server can spare. The workflow (#376) builds the images, copies them to the server over
   SSH (`docker save` piped to `docker load`), copies the Compose file, and runs `docker compose up -d`. The server

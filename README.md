@@ -153,6 +153,10 @@ Their secrets never live in the repository or in user secrets
   Then deploy that environment again, so the server picks up the new value. ADR-0028 lists every secret and how to
   rotate it.
 
+Dev deploys itself after each merge to `main`: the `deploy-dev` workflow builds the images, copies them to the
+server, applies the migrations, starts the new version and checks it, and puts the previous version back if a check
+fails (ADR-0027, "Deploying an environment"). You can also start it from the repository's Actions tab.
+
 To see what an environment runs, publish the AppHost's Compose file and its `.env` template, which holds no value:
 
 ```bash
