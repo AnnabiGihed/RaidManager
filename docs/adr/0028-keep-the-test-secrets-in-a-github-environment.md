@@ -53,7 +53,7 @@ scope:
 
 ### Delivery: the deploy workflow writes the server's `.env` file
 
-- At each deployment, the workflow (#389) writes `/opt/raidmanager/.env` on the server from the `test` secrets and
+- At each deployment, the workflow (#389) writes `/opt/apps/raidmanager/.env` on the server from the `test` secrets and
   variables, then runs `docker compose up -d`, which passes the values to the containers as environment variables.
 - The values travel only through the SSH connection's input: the job puts them in `env:` and pipes them to
   `umask 077; cat > .env.new; mv .env.new .env` on the server. They never appear in a command line, a `${{ }}`

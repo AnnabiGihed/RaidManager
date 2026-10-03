@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- `deploy/test-server/provision.sh` prepares the shared OVH server for the test environment: keys-only SSH, the
+  firewall, security upgrades, swap, the `deploy` user, and the two RaidManager sites in the shared Caddy, which answer
+  503 until the first deployment. ADR-0027 is amended for the server already hosting other applications, and
+  "Provision the test server" explains the steps (#387).
 - ADR-0028 proposes how the test environment's secrets are kept and delivered: environment secrets of a GitHub
   environment named `test`, limited to `main`, written to the server's `.env` file by the deploy workflow; a
   dedicated, restricted SSH key for the deploy; a separate Discord application for the test environment; the rotation

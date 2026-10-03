@@ -19,6 +19,7 @@ booleans
 bot
 bUnit
 Caddy
+Caddyfile
 changelog
 CLI
 codebase
@@ -96,6 +97,7 @@ onboarding
 Onyxia
 OpenAPI
 OpenID
+OpenSSH
 OVH
 Penpot
 picklist
@@ -133,6 +135,7 @@ SQL
 SSD
 subcase
 subdomain
+sudo
 SVG
 SVGs
 Swashbuckle
