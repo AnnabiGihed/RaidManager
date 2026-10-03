@@ -46,11 +46,11 @@ jobs:
       # The operator: the author, or the owner for Dependabot's updates (owner decision on #460, verify_review.py).
       AUTHOR: ${{ github.event.pull_request.user.login == 'dependabot[bot]' && 'AnnabiGihed' || github.event.pull_request.user.login }}
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
         with:
           ref: main
           persist-credentials: false
-      - uses: actions/setup-python@v5
+      - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
 

@@ -19,8 +19,8 @@ jobs:
       # Only for the coverage comment on the pull request.
       pull-requests: write
     steps:
-      - uses: actions/checkout@v4
-      - uses: actions/setup-dotnet@v4
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.0.x'
       - name: Restore
@@ -52,7 +52,7 @@ jobs:
           fi
           cat coverage-summary.md >> "$GITHUB_STEP_SUMMARY"
       - name: Upload coverage reports
-        uses: actions/upload-artifact@v4
+        uses: actions/upload-artifact@v7
         with:
           name: coverage
           path: |
@@ -87,7 +87,7 @@ jobs:
     runs-on: ubuntu-latest
     timeout-minutes: 20
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v7
       - name: SonarCloud findings
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}
