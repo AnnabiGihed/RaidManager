@@ -1,0 +1,132 @@
+name: deploy-dev
+
+# Deploys main to the dev environment on the shared OVH server (ADR-0027, ADR-0028, #389).
+on:
+  # The review workflow starts it on main after merging, because its workflow-token merge triggers no push.
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+concurrency:
+  group: deploy-dev
+  cancel-in-progress: false
+
+jobs:
+  deploy:
+    if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 30
+    # Only main may use the dev environment's secrets (its deployment rule).
+    environment:
+      name: dev
+      url: https://raidmanager-dev.pivotsoftwares.com
+    env:
+      SLUG: dev
+      ASPNETCORE_ENVIRONMENT_NAME: Dev
+      POSTGRES_MEMORY_LIMIT: 192M
+      POSTGRES_SHARED_BUFFERS: 64MB
+      SITE: https://raidmanager-dev.pivotsoftwares.com
+      API_SITE: https://api.raidmanager-dev.pivotsoftwares.com
+      REMOTE_DIR: /opt/apps/raidmanager/dev
+      DEPLOY_HOST: ${{ vars.DEPLOY_HOST }}
+      TAG: ${{ github.sha }}
+    steps:
+      - uses: actions/checkout@v4
+      - uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: '10.0.x'
+      - name: Restore
+        env:
+          PIVOT_PACKAGES_USER: ${{ secrets.PIVOT_PACKAGES_USER }}
+          PIVOT_PACKAGES_TOKEN: ${{ secrets.PIVOT_PACKAGES_TOKEN }}
+        run: dotnet restore RaidManager.sln
+      - name: Generate the Compose file
+        run: >-
+          dotnet run --project src/Containers/Aspire/Hosting/RaidManager.AppHost --no-restore --
+          --operation publish --step publish --output-path "$RUNNER_TEMP/compose"
+      - name: Build the images
+        run: |
+          build() {
+            dotnet publish "$1" --no-restore --configuration Release -t:PublishContainer \
+              -p:ContainerRepository="$2" -p:ContainerImageTag="$TAG"
+          }
+          build src/Containers/API/RaidManager.ApiService/RaidManager.ApiService.csproj raidmanager-api
+          build src/Containers/UI/Hosting/RaidManager.Web/RaidManager.Web.csproj raidmanager-web
+          build src/Containers/Jobs/RaidManager.DiscordBot/RaidManager.DiscordBot.csproj raidmanager-discord-bot
+      # The key goes to an ssh-agent, never to the runner's disk (ADR-0028); the host key is pinned.
+      - name: Prepare the SSH connection
+        env:
+          DEPLOY_SSH_KEY: ${{ secrets.DEPLOY_SSH_KEY }}
+          DEPLOY_SSH_KNOWN_HOSTS: ${{ vars.DEPLOY_SSH_KNOWN_HOSTS }}
+        run: |
+          eval "$(ssh-agent -s)" > /dev/null
+          printf '%s\n' "$DEPLOY_SSH_KEY" | ssh-add - > /dev/null
+          printf '%s\n' "$DEPLOY_SSH_KNOWN_HOSTS" > "$RUNNER_TEMP/known_hosts"
+          {
+            echo "SSH_AUTH_SOCK=$SSH_AUTH_SOCK"
+            echo "SSH_AGENT_PID=$SSH_AGENT_PID"
+          } >> "$GITHUB_ENV"
+          cat > "$RUNNER_TEMP/remote" <<'SCRIPT'
+          #!/usr/bin/env bash
+          exec ssh -o BatchMode=yes -o StrictHostKeyChecking=yes -o UserKnownHostsFile="$RUNNER_TEMP/known_hosts" \
+            -o ConnectTimeout=20 -o ServerAliveInterval=15 "deploy@$DEPLOY_HOST" "$@"
+          SCRIPT
+          chmod +x "$RUNNER_TEMP/remote"
+      - name: Copy the images and the Compose file
+        run: |
+          remote="$RUNNER_TEMP/remote"
+          docker save "raidmanager-api:$TAG" "raidmanager-web:$TAG" "raidmanager-discord-bot:$TAG" | gzip | "$remote" "gunzip | docker load"
+          "$remote" "mkdir -p $REMOTE_DIR && cat > $REMOTE_DIR/docker-compose.yaml.next" < "$RUNNER_TEMP/compose/docker-compose.yaml"
+      # The values travel only through the SSH connection's input, never a command line or the log (ADR-0028).
+      - name: Write the environment file
+        env:
+          DISCORD_CLIENT_ID: ${{ vars.DISCORD_CLIENT_ID }}
+          DISCORD_CLIENT_SECRET: ${{ secrets.DISCORD_CLIENT_SECRET }}
+          DISCORD_BOT_TOKEN: ${{ secrets.DISCORD_BOT_TOKEN }}
+          WEBSITE_SERVICE_KEY: ${{ secrets.WEBSITE_SERVICE_KEY }}
+          POSTGRES_PASSWORD: ${{ secrets.POSTGRES_PASSWORD }}
+        run: |
+          {
+            printf 'DEPLOY_ENVIRONMENT=%s\n' "$SLUG"
+            printf 'ASPNETCORE_ENVIRONMENT=%s\n' "$ASPNETCORE_ENVIRONMENT_NAME"
+            printf 'API_PORT=8080\nWEB_PORT=8080\n'
+            printf 'API_IMAGE=raidmanager-api:%s\n' "$TAG"
+            printf 'WEB_IMAGE=raidmanager-web:%s\n' "$TAG"
+            printf 'DISCORD_BOT_IMAGE=raidmanager-discord-bot:%s\n' "$TAG"
+            printf 'POSTGRES_MEMORY_LIMIT=%s\nPOSTGRES_SHARED_BUFFERS=%s\n' "$POSTGRES_MEMORY_LIMIT" "$POSTGRES_SHARED_BUFFERS"
+            printf 'DISCORD_CLIENT_ID=%s\n' "$DISCORD_CLIENT_ID"
+            printf 'DISCORD_CLIENT_SECRET=%s\n' "$DISCORD_CLIENT_SECRET"
+            printf 'DISCORD_BOT_TOKEN=%s\n' "$DISCORD_BOT_TOKEN"
+            printf 'WEBSITE_SERVICE_KEY=%s\n' "$WEBSITE_SERVICE_KEY"
+            printf 'POSTGRES_PASSWORD=%s\n' "$POSTGRES_PASSWORD"
+          } | "$RUNNER_TEMP/remote" "umask 077 && cat > $REMOTE_DIR/.env.next"
+      - name: Deploy on the server
+        run: '"$RUNNER_TEMP/remote" "bash -s -- $SLUG deploy" < deploy/server/deploy-environment.sh'
+      # From outside, through the shared Caddy: a failure puts the previous version back.
+      - name: Smoke test
+        run: |
+          rollback() {
+            echo "::error::$1"
+            "$RUNNER_TEMP/remote" "bash -s -- $SLUG rollback" < deploy/server/deploy-environment.sh
+            exit 1
+          }
+          for _ in $(seq 1 20); do
+            home=$(curl -s -o /dev/null -w '%{http_code}' "$SITE/" || true)
+            [ "$home" = 200 ] && break
+            sleep 3
+          done
+          [ "$home" = 200 ] || rollback "The website answered $home instead of 200"
+          callback=$(jq -rn --arg uri "$SITE/signin-discord" '$uri | @uri')
+          location=$(curl -s -o /dev/null -w '%{redirect_url}' "$SITE/sign-in")
+          case "$location" in
+            https://discord.com/api/oauth2/authorize*"redirect_uri=$callback"*) echo "Sign-in redirects to Discord with $SITE/signin-discord" ;;
+            *) rollback "Sign-in didn't redirect to Discord with the HTTPS dev address" ;;
+          esac
+          # Caddy answers 503 while no API runs; the API itself answers 404 for an unknown companion route.
+          api=$(curl -s -o /dev/null -w '%{http_code}' "$API_SITE/companion/smoke-test" || true)
+          [ "$api" = 404 ] || rollback "The API answered $api through Caddy instead of 404"
+          echo "Smoke test passed: website 200, sign-in redirect, API reached"
+      - name: Stop the SSH agent
+        if: always()
+        run: ssh-agent -k > /dev/null 2>&1 || true

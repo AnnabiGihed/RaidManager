@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- The `deploy-dev` workflow deploys `main` to the dev environment after each merge: it builds the images, copies them
+  to the server over SSH with the dev deploy key, writes `.env` from the `dev` secrets, applies the migrations with the
+  new API image (`--Database:MigrateAndExit=true`), starts the new version, smoke-tests it through Caddy, and puts the
+  previous version back on any failure; unused images are removed (#389).
 - The AppHost publishes the Compose project each deployed environment runs: the website and API under the names the
   shared Caddy forwards to, on the external `web` network, with no published port; forwarded headers, the
   environment name and the Data Protection volume on; PostgreSQL capped, on a volume with a fixed name; no dashboard.

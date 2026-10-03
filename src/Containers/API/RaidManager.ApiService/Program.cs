@@ -1,10 +1,10 @@
 using FluentValidation;
-using Microsoft.EntityFrameworkCore;
 using Pivot.Framework.Application.Behaviors;
 using RaidManager.ApiService.Features.Characters;
 using RaidManager.ApiService.Features.Communities;
 using RaidManager.ApiService.Features.Identity;
 using RaidManager.ApiService.Features.Shared.Authentication;
+using RaidManager.ApiService.Features.Shared.Hosting;
 using RaidManager.ApiService.Features.Shared.OpenApi;
 using RaidManager.Infrastructure.Features.Communities;
 using RaidManager.Persistence.EntityFrameworkCore;
@@ -37,11 +37,16 @@ app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
 
-// Local development and tests start from an empty database; deployments apply migrations as a release step.
-if (app.Environment.IsDevelopment())
+// Local development and tests start from an empty database; a deployment runs the migrations as a step of its own.
+var migrateAndExit = app.Configuration.GetValue<bool>(DatabaseMigration.MigrateAndExitKey);
+if (app.Environment.IsDevelopment() || migrateAndExit)
 {
-    await using var scope = app.Services.CreateAsyncScope();
-    await scope.ServiceProvider.GetRequiredService<RaidManagerDbContext>().Database.MigrateAsync();
+    await DatabaseMigration.MigrateAsync(app.Services);
+}
+
+if (migrateAndExit)
+{
+    return;
 }
 
 app.MapOpenApi();

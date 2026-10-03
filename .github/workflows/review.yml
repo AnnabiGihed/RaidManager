@@ -149,7 +149,8 @@ jobs:
                 gh issue close "$issue" --repo "$GITHUB_REPOSITORY" --reason completed --comment "Completed by #$PR_NUMBER."
               fi
             done
-            for workflow in ci.yml docs.yml docs-publish.yml; do
+            # deploy-dev.yml deploys the merged main to the dev environment (#389).
+            for workflow in ci.yml docs.yml docs-publish.yml deploy-dev.yml; do
               gh workflow run "$workflow" --repo "$GITHUB_REPOSITORY" --ref main
             done
             exit 0
