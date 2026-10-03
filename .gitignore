@@ -14,3 +14,5 @@ site/
 appsettings.*.local.json
 secrets.json
 coverage-summary.md
+# Local output, such as the Compose files the AppHost publishes (README).
+artifacts/

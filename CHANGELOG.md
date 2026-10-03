@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- The AppHost publishes the Compose project each deployed environment runs: the website and API under the names the
+  shared Caddy forwards to, on the external `web` network, with no published port; forwarded headers, the
+  environment name and the Data Protection volume on; PostgreSQL capped, on a volume with a fixed name; no dashboard.
+  A test publishes it and checks that its `.env` template holds no value (#444).
 - The website keeps its Data Protection keys in the directory set by `DataProtection:KeysPath`, so a deployed
   website keeps its sessions across deployments; tests prove that forwarded headers make Discord sign-in return over
   HTTPS behind Caddy, and that the deployed `Dev` environment keeps the API reference off (#388).

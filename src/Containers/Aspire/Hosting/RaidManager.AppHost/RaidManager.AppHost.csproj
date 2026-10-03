@@ -4,7 +4,7 @@
     <PackageId>RaidManager.AppHost</PackageId>
     <Version>1.0.0</Version>
     <PackageTags>aspire;apphost;orchestration;development</PackageTags>
-    <Description>Aspire application host that composes RaidManager services and PostgreSQL for local development.</Description>
+    <Description>Aspire application host that composes RaidManager services and PostgreSQL for local development and publishes each deployed environment's Docker Compose project.</Description>
     <IsPackable>false</IsPackable>
     <OutputType>Exe</OutputType>
     <UserSecretsId>c9f2b516-7a43-4251-b819-567fd25edf64</UserSecretsId>
@@ -14,6 +14,7 @@
     <ProjectReference Include="../../../UI/Hosting/RaidManager.Web/RaidManager.Web.csproj" />
     <ProjectReference Include="../../../Jobs/RaidManager.DiscordBot/RaidManager.DiscordBot.csproj" />
     <PackageReference Include="Aspire.Hosting.AppHost" />
+    <PackageReference Include="Aspire.Hosting.Docker" />
     <PackageReference Include="Aspire.Hosting.PostgreSQL" />
   </ItemGroup>
 </Project>
