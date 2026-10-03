@@ -3,34 +3,51 @@
 # on the `web` network; until that container runs, the site answers 503 with a short message, over HTTPS with its own
 # certificate. Deployments never edit this file again.
 
-(raidmanager_site) {
-    encode gzip
-    reverse_proxy {args[0]}:8080
+(raidmanager_unavailable) {
     handle_errors 502 503 504 {
-        respond "RaidManager {args[1]}: not deployed yet, or restarting." 503
+        respond "RaidManager {args[0]}: not deployed yet, or restarting." 503
     }
 }
 
+(raidmanager_website) {
+    encode gzip
+    reverse_proxy {args[0]}:8080
+    import raidmanager_unavailable "{args[1]}"
+}
+
+# The website calls its API inside Docker; the public API hostname only serves the desktop companion's routes
+# (owner decision on #369), so /internal and /openapi are never reachable from the internet.
+(raidmanager_api) {
+    encode gzip
+    handle /companion/* {
+        reverse_proxy {args[0]}:8080
+    }
+    handle {
+        respond 404
+    }
+    import raidmanager_unavailable "{args[1]}"
+}
+
 raidmanager-dev.pivotsoftwares.com {
-    import raidmanager_site raidmanager-dev-web "dev website"
+    import raidmanager_website raidmanager-dev-web "dev website"
 }
 
 api.raidmanager-dev.pivotsoftwares.com {
-    import raidmanager_site raidmanager-dev-api "dev API"
+    import raidmanager_api raidmanager-dev-api "dev API"
 }
 
 raidmanager-test.pivotsoftwares.com {
-    import raidmanager_site raidmanager-test-web "test website"
+    import raidmanager_website raidmanager-test-web "test website"
 }
 
 api.raidmanager-test.pivotsoftwares.com {
-    import raidmanager_site raidmanager-test-api "test API"
+    import raidmanager_api raidmanager-test-api "test API"
 }
 
 raidmanager.pivotsoftwares.com {
-    import raidmanager_site raidmanager-prod-web "website"
+    import raidmanager_website raidmanager-prod-web "website"
 }
 
 api.raidmanager.pivotsoftwares.com {
-    import raidmanager_site raidmanager-prod-api "API"
+    import raidmanager_api raidmanager-prod-api "API"
 }

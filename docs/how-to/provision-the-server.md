@@ -73,8 +73,9 @@ From your machine, before RaidManager is deployed:
 curl -sI https://raidmanager-dev.pivotsoftwares.com
 ```
 
-Every hostname answers `503` with a valid certificate and the message "not deployed yet". A port scan shows only 22,
-80, 443 and 8080 open. Record the results on #374.
+Every website hostname answers `503` with a valid certificate and the message "not deployed yet". Each `api.`
+hostname answers `404`, except under `/companion/`, where it answers `503` until the API is deployed: only the
+desktop companion's routes are public. A port scan shows only 22, 80, 443 and 8080 open. Record the results on #374.
 
 ## 4. Later: sign in with a key only
 
