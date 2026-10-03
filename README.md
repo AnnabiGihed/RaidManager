@@ -60,8 +60,9 @@ dotnet build RaidManager.sln --no-restore
 dotnet test RaidManager.sln --no-build
 ```
 
-The executable tests cover the Domain and Application projects and, against a PostgreSQL container, the
-Entity Framework Core persistence and the API. The other test projects are placeholders.
+The tests cover the Domain, Application, Infrastructure, view model and website projects, the AppHost's application
+model, and, against a PostgreSQL container, the Entity Framework Core persistence and the API. The end-to-end test
+project is still a placeholder, and the Discord bot has no tests yet.
 
 To measure test coverage the way CI does, run the tests with the coverage settings and read the summary:
 
