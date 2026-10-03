@@ -26,6 +26,12 @@ public sealed class DiscordBackchannelStub : HttpMessageHandler
 
     /// <summary>Defines a server the stub lists by default that no community links to.</summary>
     public const string OtherServerId = "223456789012345678";
+
+    /// <summary>Defines the end of Discord's code exchange path.</summary>
+    private const string TokenPath = "/oauth2/token";
+
+    /// <summary>Defines the end of Discord's profile path.</summary>
+    private const string ProfilePath = "/users/@me";
     #endregion Constants
 
     #region Properties
@@ -35,6 +41,12 @@ public sealed class DiscordBackchannelStub : HttpMessageHandler
 
     /// <summary>Gets or sets the status Discord answers the server list with.</summary>
     public HttpStatusCode ServersStatus { get; set; } = HttpStatusCode.OK;
+
+    /// <summary>Gets or sets the status Discord answers the code exchange with.</summary>
+    public HttpStatusCode TokenStatus { get; set; } = HttpStatusCode.OK;
+
+    /// <summary>Gets or sets the status Discord answers the profile request with.</summary>
+    public HttpStatusCode ProfileStatus { get; set; } = HttpStatusCode.OK;
 
     /// <summary>Gets the authorization header of the last server list request.</summary>
     public string? ServersAuthorization { get; private set; }
@@ -51,9 +63,19 @@ public sealed class DiscordBackchannelStub : HttpMessageHandler
             return Task.FromResult(new HttpResponseMessage(ServersStatus) { Content = new StringContent(ServersJson, Encoding.UTF8, "application/json") });
         }
 
-        var json = path.EndsWith("/oauth2/token", StringComparison.Ordinal)
+        if (path.EndsWith(TokenPath, StringComparison.Ordinal) && TokenStatus != HttpStatusCode.OK)
+        {
+            return Task.FromResult(Refusal(TokenStatus, """{"error":"invalid_grant"}"""));
+        }
+
+        if (path.EndsWith(ProfilePath, StringComparison.Ordinal) && ProfileStatus != HttpStatusCode.OK)
+        {
+            return Task.FromResult(Refusal(ProfileStatus, """{"message":"401: Unauthorized","code":0}"""));
+        }
+
+        var json = path.EndsWith(TokenPath, StringComparison.Ordinal)
             ? """{"access_token":"test-access-token","token_type":"Bearer","expires_in":604800,"scope":"identify guilds"}"""
-            : path.EndsWith("/users/@me", StringComparison.Ordinal)
+            : path.EndsWith(ProfilePath, StringComparison.Ordinal)
                 ? $$"""{"id":"{{DiscordUserId}}","username":"arthas","global_name":"{{GlobalName}}","avatar":"{{AvatarHash}}","discriminator":"0"}"""
                 : null;
         return Task.FromResult(json is null
@@ -61,4 +83,13 @@ public sealed class DiscordBackchannelStub : HttpMessageHandler
             : new HttpResponseMessage(HttpStatusCode.OK) { Content = new StringContent(json, Encoding.UTF8, "application/json") });
     }
     #endregion Overrides
+
+    #region Private Helpers
+    /// <summary>Builds Discord's answer to an expired or revoked authorization.</summary>
+    /// <param name="status">The status Discord answers with.</param>
+    /// <param name="json">Discord's error body.</param>
+    /// <returns>The answer.</returns>
+    private static HttpResponseMessage Refusal(HttpStatusCode status, string json) =>
+        new(status) { Content = new StringContent(json, Encoding.UTF8, "application/json") };
+    #endregion Private Helpers
 }

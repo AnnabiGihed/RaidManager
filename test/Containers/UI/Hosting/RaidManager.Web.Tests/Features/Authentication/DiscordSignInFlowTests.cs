@@ -260,6 +260,71 @@ public sealed partial class DiscordSignInFlowTests
         SessionCookieWasIssued(callback).ShouldBeFalse();
     }
 
+    /// <summary>Completes a callback whose code Discord refuses, as it does for an expired or revoked authorization.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task RefusedCodeLeadsToTheRetryPageWithoutASession()
+    {
+        await using var site = new WebsiteFactory();
+        site.Discord.TokenStatus = HttpStatusCode.BadRequest;
+        using var browser = site.CreateBrowser();
+
+        var callback = await SignInAsync(browser, "/");
+
+        callback.Headers.Location.ShouldNotBeNull().OriginalString.ShouldBe(AuthenticationRoutes.SignInFailedFor("failed"));
+        SessionCookieWasIssued(callback).ShouldBeFalse();
+        site.IdentityApi.LastDiscordUserId.ShouldBeNull();
+        (await browser.GetStringAsync(AuthenticationRoutes.SignInFailedFor("failed"))).ShouldContain("Try again");
+    }
+
+    /// <summary>Completes a callback whose token Discord no longer accepts for the profile, as after a revocation.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task RevokedTokenLeadsToTheRetryPageWithoutASession()
+    {
+        await using var site = new WebsiteFactory();
+        site.Discord.ProfileStatus = HttpStatusCode.Unauthorized;
+        using var browser = site.CreateBrowser();
+
+        var callback = await SignInAsync(browser, "/");
+
+        callback.Headers.Location.ShouldNotBeNull().OriginalString.ShouldBe(AuthenticationRoutes.SignInFailedFor("failed"));
+        SessionCookieWasIssued(callback).ShouldBeFalse();
+        site.IdentityApi.LastDiscordUserId.ShouldBeNull();
+    }
+
+    /// <summary>Opens a protected page shortly before the session's lifetime ends.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task SessionStillOpensProtectedPagesWithinItsLifetime()
+    {
+        await using var site = new WebsiteFactory();
+        using var browser = site.CreateBrowser();
+        await SignInAsync(browser, "/");
+
+        site.Clock.Advance(TimeSpan.FromHours(11));
+        var review = await browser.GetAsync(CharacterRoutes.Review);
+
+        review.StatusCode.ShouldBe(HttpStatusCode.OK);
+    }
+
+    /// <summary>Opens a protected page after the session's lifetime has passed without activity.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task ExpiredSessionAsksToSignInAgain()
+    {
+        await using var site = new WebsiteFactory();
+        using var browser = site.CreateBrowser();
+        await SignInAsync(browser, "/");
+
+        site.Clock.Advance(TimeSpan.FromHours(12) + TimeSpan.FromMinutes(1));
+        var review = await browser.GetAsync(CharacterRoutes.Review);
+
+        review.StatusCode.ShouldBe(HttpStatusCode.Redirect);
+        review.Headers.Location.ShouldNotBeNull().GetLeftPart(UriPartial.Path).ShouldBe("https://discord.com/api/oauth2/authorize");
+        (await browser.GetStringAsync("/")).ShouldContain("Sign in with Discord");
+    }
+
     /// <summary>Asks to return to another site after sign-in.</summary>
     /// <returns>A task that completes when the test has run.</returns>
     [Fact]
