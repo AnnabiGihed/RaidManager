@@ -9,6 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- The website keeps its Data Protection keys in the directory set by `DataProtection:KeysPath`, so a deployed
+  website keeps its sessions across deployments; tests prove that forwarded headers make Discord sign-in return over
+  HTTPS behind Caddy, and that the deployed `Dev` environment keeps the API reference off (#388).
 - ADR-0029 proposes PostgreSQL instead of SQL Server, with one instance per environment, so dev, test and production
   fit on the shared OVH server (about 2.8 GB of 3.9 GB planned); ADR-0027's database and memory sections point to it
   (#410).

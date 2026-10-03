@@ -40,6 +40,9 @@ public sealed class WebsiteFactory : WebApplicationFactory<Program>
 
     /// <summary>Gets the fake of Discord's exchange when the bot is added.</summary>
     public FakeDiscordInstallClient DiscordInstall { get; } = new();
+
+    /// <summary>Gets extra settings a test applies before the website starts, as a deployed environment would.</summary>
+    public Dictionary<string, string> Settings { get; } = [];
     #endregion Properties
 
     #region Public Methods
@@ -61,6 +64,11 @@ public sealed class WebsiteFactory : WebApplicationFactory<Program>
         builder.UseSetting(RaidManagerAuthenticationExtensions.ClientIdKey, ClientId);
         builder.UseSetting(RaidManagerAuthenticationExtensions.ClientSecretKey, "test-client-secret");
         builder.UseSetting(RaidManagerAuthenticationExtensions.ServiceKeyKey, "test-website-service-key-0123456789abcdefghijkl");
+        foreach (var (key, value) in Settings)
+        {
+            builder.UseSetting(key, value);
+        }
+
         builder.ConfigureTestServices(services =>
         {
             services.RemoveAll<IIdentityApiClient>();
