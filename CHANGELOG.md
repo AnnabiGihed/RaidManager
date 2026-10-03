@@ -235,6 +235,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- Dependabot sends the week's GitHub Actions updates as one grouped pull request, with one task and one review,
+  instead of a pull request per action (#480).
 - The skills keep the session's lessons: rendering Mermaid without hiding errors, keeping command-line text away
   from the commands a script runs (Sonar S8705), the required sections of a pull request description, creating a
   Project view, and noting the first real failed dev deployment on #392 (#456).
