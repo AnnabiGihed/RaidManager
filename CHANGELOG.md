@@ -9,6 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- ADR-0029 proposes PostgreSQL instead of SQL Server, with one instance per environment, so dev, test and production
+  fit on the shared OVH server (about 2.8 GB of 3.9 GB planned); ADR-0027's database and memory sections point to it
+  (#410).
 - `project-automation.md` lists what is fully automated and what still needs the owner or the agent, with the work
   item for each gap; the Sprint 5 record lists the selections of 3 October; `raidmanager-board-operations` records the
   pitfalls of unchained commands, creation scripts that aren't safe to rerun, and the Project add racing the sub-issue

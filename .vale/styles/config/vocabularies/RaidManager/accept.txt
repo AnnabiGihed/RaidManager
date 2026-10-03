@@ -67,6 +67,7 @@ HTTP
 HttpOnly
 Icecrown
 IDE
+inbox
 Infisical
 inspectable
 IPv
@@ -138,6 +139,7 @@ signup
 signups
 SonarCloud
 SQL
+SQLite
 SSD
 subcase
 subdomain
