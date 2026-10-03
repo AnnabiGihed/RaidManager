@@ -166,6 +166,59 @@ Whoever closes or reopens an item sets its Status (`work-task-execution-and-comp
 
 The board report flags a mismatch between an item's close reason and its Status.
 
+## Automation coverage
+
+As of 2026-10-03, at the owner's request. **Fully automated** means neither the owner nor the agent does anything; **not
+automated** means one of them does it. Each gap the owner wants automated has a work item.
+
+### Fully automated
+
+| Area | Behavior | Done by |
+| --- | --- | --- |
+| Pull requests | Check formatting, build, run every test | `ci` |
+| Pull requests | Measure coverage, comment it, fail under 80% of changed lines or 60% in total | `ci` |
+| Pull requests | Fail on any SonarCloud finding | `ci` (`sonar` job), SonarCloud |
+| Pull requests | Check the description, the linked task's hierarchy and the mockup of user-interface changes | `docs` |
+| Pull requests | Check spelling, prose, Markdown, links, the OpenAPI contract, the site and wiki build, and identical skill trees | `docs` |
+| Review | Return a ready pull request to draft on new commits | `review` |
+| Review | Check the operator's comment when the pull request is marked ready, then request the peer | `review` |
+| Review | Keep the `review-gate` status current | `review` |
+| Review | Merge once every check and both reviews pass, delete the branch, close the linked tasks, run the checks on `main` | `review` |
+| Documentation | Publish GitHub Pages and the wiki after each merge | `docs-publish` |
+| Documentation | Check external links every Monday | `docs-links` |
+| Board | Check type, parent, contract, dependencies and mockup; keep the rule labels current | `project-hierarchy` |
+| Board | Reopen a parent closed too early, and a release milestone closed before its record shows the delivery | `project-hierarchy` |
+| Board | Start a new item in Backlog, add a new sub-issue to the Project | Project workflows |
+| Board | Set a task In Progress when a pull request links it, and close an issue set to Done | Project workflows |
+| Server | Install security updates daily | `unattended-upgrades` |
+| Server | Obtain and renew the six RaidManager certificates | shared Caddy |
+| Server | Back up the server daily | OVH Automated Backup |
+
+### Not automated
+
+| Area | Behavior | Who | Work item to automate it |
+| --- | --- | --- | --- |
+| Work items | Create, classify, link and write contracts; run the active-sprint gate; set Status, dates, assignee, sprint, estimates, Risk, stage and priority | Agent | none (judgment) |
+| Work items | After a merge, confirm it and delete the local branch | Agent | none |
+| Work items | Write the evidence comment, set Done and the Target date on the merged task | Agent | #424, #425 |
+| Work items | Validate and close parents against their criteria | Agent | #426 |
+| Work items | Run the board report and keep `scheduling-violation` current | Agent | #424 |
+| Work items | Plan sprints and releases and write their records | Agent | none (decisions) |
+| Changes | Branch, implement, check locally, open the draft pull request, fix findings, draft both review comments | Agent | none |
+| Review | Post the operator's review comment and mark the pull request ready | Owner | none (by design) |
+| Review | Approve the pull request | Peer | none (by design) |
+| Deployment | Build the images and deploy `main` to dev | Agent and owner | #376, #389 |
+| Deployment | Deliver the secrets to the server | Owner | #153, #386 |
+| Deployment | Configure each environment | Agent and owner | #375, #388 |
+| Deployment | Deploy each release to dev and test | Agent and owner | #427 |
+| Deployment | Confirm a release and deploy it to production | Owner | #432, #433 |
+| Deployment | Apply database migrations safely, with rollback | Agent | #434 |
+| Deployment | Record each deployment's result on the related items | Agent | #392 |
+| Releases | Tag, publish the GitHub release and update the release record | Agent | #435 |
+| Server | Provision the server, install the deploy key | Owner | none (done once, #374; key with #386) |
+| Other | Update dependencies | Agent | none yet |
+| Other | Fix a broken external link after the weekly report | Agent | none |
+
 ## One-time setup
 
 The API can create fields and views, but it can't switch a workflow off or set a view's grouping, so the owner does

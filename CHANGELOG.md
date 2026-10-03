@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- `project-automation.md` lists what is fully automated and what still needs the owner or the agent, with the work
+  item for each gap; the Sprint 5 record lists the selections of 3 October; `raidmanager-board-operations` records the
+  pitfalls of unchained commands, creation scripts that aren't safe to rerun, and the Project add racing the sub-issue
+  link (#437).
 - `raidmanager-board-operations` keeps closing keywords out of pull request prose and checks, right after opening a
   pull request, that GitHub links exactly its task (#422).
 - `raidmanager-conventions` gives owner steps one at a time with what, where, why and what to expect, keeps the
