@@ -110,7 +110,10 @@ adopt before a dedicated alignment PR.
 - **Never stop an app the owner started.** A `RaidManager.*` process you didn't start belongs to the owner (check its
   start time). If it locks `bin/` and the build fails, don't stop it: build elsewhere with `--artifacts-path` (the
   SQL Server tests can't load their native driver from a long scratch path, so say which tests didn't run) or ask
-  the owner. Stop only the processes and `sql-*` containers your own run started.
+  the owner. Stop only the processes and `sql-*` containers your own run started. The same holds for the owner's
+  Visual Studio (`devenv`) and its MSBuild nodes, even when they lock a scratch NuGet cache.
+- **A forced restore with another cache moves the assets file.** `dotnet restore --force` with `NUGET_PACKAGES`
+  pointed at a scratch folder rewrites `obj/project.assets.json` to that cache; run a normal restore afterwards.
 
 ## 6. API reference page (mandatory)
 
@@ -161,6 +164,18 @@ Rules for every documentation change:
   `.editorconfig`) also use. British spellings fail, and so does any Vale error (`fail_on_error: true`); Vale matches
   case, so add the capitalized form of a word when it starts sentences. Put code names in backticks, add only genuine project or
   technical terms to the list, keep it sorted, and never add a word to hide a misspelling.
+- **Word list order:** sorted without regard to case (`sorted(words, key=str.lower)`); check the order after adding.
+  Put a GitHub login such as `@AnnabiGihed` in backticks instead of adding it. Vale also flags possessives of
+  product names (`Docker's`, `Aspire's`): reword them ("the Docker repository").
+- **Run markdownlint before pushing**, as the docs check does. Node isn't installed in the agent's shell, so run it in
+  Docker:
+
+  ```bash
+  MSYS_NO_PATHCONV=1 docker run --rm -v "<repository path>:/work" -w /work node:20-alpine npx --yes markdownlint-cli2@0.18.1 "**/*.md" "#node_modules"
+  ```
+
+  When rewrapping a paragraph, no line may start with an issue number: `#376, which ...` at the start of a line is
+  read as a heading without a space (MD018). Reword so the number falls inside the line.
 
 ## 8. Test coverage gate (mandatory)
 
@@ -272,4 +287,31 @@ Git stores LF.
   `git diff --ignore-cr-at-eol --name-only` lists the real changes. Don't commit or report line-ending-only changes.
 - **Binary files** such as fonts are marked in `.gitattributes`; add a rule there for any new binary type.
 - **Long or quoted text in a shell:** a heredoc containing apostrophes can fail in the agent's shell. Write long files
-  with the editor tool or from a script file in the scratchpad instead.
+  with the editor tool or from a script file in the scratchpad instead. Make code and text edits with the editor tool
+  or a Python script, not `sed` with escaped patterns, which mangle `\n`, `\s` and quotes.
+- **Issue and pull request bodies** are written with `newline="\n"` too; a body with CRLF breaks the guard's heading
+  parsing (`raidmanager-board-operations`).
+
+## 13. Working with the owner (mandatory)
+
+The owner, Gihed Annabi, works with the agent through short messages and expects the same behavior in every session.
+
+- **Follow the specification and the skills to the letter.** When a request conflicts with a rule, a record or an
+  earlier decision, ask; never decide alone. Ask with the question tool, two to four options, the recommended one
+  first and marked "(Recommended)", each with its consequence. Product and scope questions are always asked.
+- **Record every owner decision on the issue it settles**, in the body under `### Owner decisions (<date>, recorded
+  here)` or as a comment, before acting on it. A request for new work becomes a work item in the hierarchy, selected
+  into the active sprint with the request recorded, before execution.
+- **Never enter credentials or ask for them.** The owner performs steps that need OVH, DNS, Discord developer portal
+  or GitHub settings access; ask for facts (server specifications, names) without credentials.
+- **"Merged"** means: confirm the merge yourself, clean up the branches, close the task and its validated parents
+  with evidence, run the board report, then report and propose the next item. Never act on "merged" before
+  `gh pr view` says `MERGED`.
+- **Report like this:** lead with the result; then what changed on the board and in the files, the checks run with
+  their results, what to review carefully, and the two drafted review comments verbatim. Name your own mistakes plainly
+  and say how they were fixed. Keep it short; no recap of earlier turns.
+- **Alternative review comments:** when the owner asks for another version (for example because a pipeline keeps
+  failing), give new texts, each checked with `verify_review.py`, never a lightly edited copy. When the review gate
+  fails because an existing review copies the operator's text, a new approval doesn't help: the existing review must
+  be edited, in the UI or with `gh api -X PUT repos/AnnabiGihed/RaidManager/pulls/<n>/reviews/<review id> -F body=@<file>`.
+- **Dates and times** are absolute and in Europe/Brussels (sprints start inclusive and end exclusive at 00:00).

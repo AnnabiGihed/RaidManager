@@ -42,7 +42,8 @@ authority; this skill applies it. The repository mechanics (branch, pull request
 5. **Complete a task** when its deliverable is complete and its verification is evidenced (spec §13): verify the
    evidence, close the issue as completed, set Status `Done` (A4), and set its Target date to the day it closed
    (Europe/Brussels; #397). A pull request's merge closes its task; check that the task shows `Done` and the closing
-   day afterwards.
+   day afterwards. The Project closes an issue when its Status becomes Done, so post the evidence comment before
+   setting Done (`raidmanager-board-operations`).
 6. **Cancel** an item: record the reason and its effect on the parent's scope, close it as not planned, and set
    Status `Canceled` (A3, A4). Set its Target date to the day it closed, and its Start date to the day work started,
    or to the closing day if none did.
