@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- ADR-0030 proposes how the desktop companion pairs and uploads: a code shown on the companion and confirmed on the
+  website, a revocable device token kept hashed by the API and encrypted with Windows DPAPI on the computer, expiry
+  after 180 days unused, snapshot ids against replay, and a keyed fingerprint of the WoW account as conflict
+  evidence; the companion threat model lists each threat and what remains (#363).
 - The `deploy-dev` workflow deploys `main` to the dev environment after each merge: it builds the images, copies them
   to the server over SSH with the dev deploy key, writes `.env` from the `dev` secrets, applies the migrations with the
   new API image (`--Database:MigrateAndExit=true`), starts the new version, smoke-tests it through Caddy, and puts the
