@@ -118,7 +118,8 @@ def item_id(number):
 6. Run `python scripts/work_gate.py report` and report its blocking categories.
 7. The merge starts the dev deployment. When it finishes, check that the task carries `deployed:dev`
    (`gh issue view <n> --json labels`) and say so in the report; if it carries `deploy-failed:dev`, report the failed
-   run and the bug it needs.
+   run and the bug it needs. The **first real** `deploy-failed:dev` is also noted on #392 with the run and the
+   labeled items: its failure path was accepted on unit tests (owner decision on #392).
 
 ### Deployment labels
 
@@ -136,6 +137,17 @@ The deployment workflows' `record` job sets `deployed:dev`, `deployed:test`, `de
   closes; a parent gets it when all its completed children have it, so it can follow its close by one deployment.
 - A release's `Deployed to production` line is evidence for its record, not the Released state: that still needs the
   owner's approval and the record (`work-stabilization-and-release-closure`).
+
+### Create a Project view
+
+The REST API creates a view with its filter; grouping, sorting and field sums are still set in the browser
+(`docs/reference/project-automation.md`, "One-time setup"):
+
+```bash
+gh api -X POST users/AnnabiGihed/projectsV2/2/views -f name="<name>" -f layout=table -f filter='<filter>'
+```
+
+Add the view to the Views table of `project-automation.md` in the same change.
 
 ### Bulk changes
 

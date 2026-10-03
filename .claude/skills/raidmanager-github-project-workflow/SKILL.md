@@ -86,8 +86,12 @@ generate the mockup with the `penpot-mockups` skill (ADR-0018), then have the ow
      `validate` check fails otherwise.
    - Reference the parents with `Refs #<number>`. Examples and parent references must not use closing keywords.
    - Map each task criterion to evidence, quote the coverage comment's numbers, and include the five required
-     sections and the completed author checklist from `pr-and-branching-standards`. Do not describe a skipped or
-     failing check as passed.
+     sections, in this order: `## What changed`, `## Why it changed`, `## How it was tested`, `## What to review
+     carefully`, `## Migration or deployment notes` (write `None.` if none), then `### Author self-review` with
+     its six checkboxes from `pr-and-branching-standards`. Do not describe a skipped or failing check as passed.
+   - Check the description before opening the PR, as the `validate` check does:
+     `PR_BODY="$(cat <body file>)" python scripts/validate_pr.py` must print "Pull-request description passed"
+     (#453 failed it once for the two last sections).
 6. Never mark the PR ready and never write a review or review comment in the operator's name: those are the
    operator's review (ADR-0006, ADR-0009). Tell the operator the draft is ready for their review once required CI is
    green. The operator posts a meaningful review comment and marks it Ready for review; the workflow then requests

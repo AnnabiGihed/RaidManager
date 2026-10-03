@@ -276,6 +276,11 @@ SonarCloud analyzes every pull request, and the required `sonar` check fails it 
   --pull-request <number> --commit <head sha>` prints each finding with its file, line and rule. Common ones in this
   repository: a string literal repeated three or more times (`python:S1192`, name it once as a constant), and
   `${{ }}` expressions inside `run:` (pass them through `env:`).
+- **Scripts never pass command-line text to a subprocess** (`pythonsecurity:S8705`, command argument injection).
+  Sonar traces an argument into `subprocess` even after `argparse` validation or `--end-of-options`. Use a constant
+  (the repository name), the script's own value (`next(name for name in CHOICES if name == args.x)`), or state the
+  process already has (`git rev-list HEAD` after checking `HEAD` equals the given commit), as
+  `scripts/record_deployment.py` does (#454).
 - **Fix every finding in the same pull request.** Only a finding that is genuinely wrong is marked as a false
   positive or accepted in SonarCloud, individually, with a reason naming the pull request. Never bulk-resolve.
 - **Evidence:** the `sonar` check is green on the head commit; say so in "How it was tested".
@@ -298,6 +303,17 @@ Git stores LF.
   or a Python script, not `sed` with escaped patterns, which mangle `\n`, `\s` and quotes.
 - **Issue and pull request bodies** are written with `newline="\n"` too; a body with CRLF breaks the guard's heading
   parsing (`raidmanager-board-operations`).
+
+- **Mermaid diagrams** are rendered with the pinned `minlag/mermaid-cli:11.12.0` in Docker (no Node locally), from
+  `docs/diagrams`:
+
+  ```bash
+  MSYS_NO_PATHCONV=1 docker run --rm -u root -v "$(pwd -W):/data" minlag/mermaid-cli:11.12.0 -i /data/<name>.mmd -o /data/<name>.svg -c /data/mermaid-config.json -b white
+  ```
+
+  Never pipe it through `tail`: a parse error then looks like success and the old SVG stays. Check the SVG's modification time, and render a PNG to the
+  scratchpad to look at it. In a sequence diagram, a `;` inside a message ends the statement and breaks parsing;
+  use commas or parentheses (#100).
 
 ## 13. Working with the owner (mandatory)
 

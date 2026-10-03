@@ -228,6 +228,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- The skills keep the session's lessons: rendering Mermaid without hiding errors, keeping command-line text away
+  from the commands a script runs (Sonar S8705), the required sections of a pull request description, creating a
+  Project view, and noting the first real failed dev deployment on #392 (#456).
 - The Discord sign-in sequence now shows the built, website-owned flow: the website runs the Discord exchange, gets
   the local user id from the API's internal route with its website key, looks up communities and pending claims,
   and sets its own cookie; the denied, failed and review branches are drawn (#100).
