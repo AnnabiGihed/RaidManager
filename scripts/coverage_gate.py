@@ -25,6 +25,8 @@ MAX_LISTED_FILES = 15
 REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
 # The summary is written only here; the CI workflow posts it as the run summary and the pull-request comment.
 SUMMARY_FILE = REPOSITORY_ROOT / "coverage-summary.md"
+# dotnet test writes the reports here (--results-directory TestResults).
+REPORTS_FOLDER = "TestResults"
 SKIPPED = "➖"
 PASSED = "✅"
 FAILED = "❌"
@@ -227,7 +229,8 @@ def main() -> int:
     if isinstance(sys.stdout, io.TextIOWrapper):
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--reports", type=Path, required=True, help="folder searched for coverage.cobertura.xml")
+    parser.add_argument("--reports", choices=(REPORTS_FOLDER,), default=REPORTS_FOLDER,
+                        help="folder at the repository root searched for coverage.cobertura.xml")
     parser.add_argument("--base", default="", help="base commit (full id) or ref of a pull request; empty checks the total only")
     parser.add_argument("--summary", action="store_true", help=f"also write the Markdown summary to {SUMMARY_FILE}")
     parser.add_argument("--min-total", type=float, default=MIN_TOTAL)
@@ -235,7 +238,7 @@ def main() -> int:
     args = parser.parse_args()
 
     root = REPOSITORY_ROOT
-    coverage = read_reports(sorted(args.reports.rglob("coverage.cobertura.xml")), root)
+    coverage = read_reports(sorted((root / REPORTS_FOLDER).rglob("coverage.cobertura.xml")), root)
     total = total_ratio(coverage)
     changed: Ratio | None = None
     uncovered: dict[str, list[int]] = {}
