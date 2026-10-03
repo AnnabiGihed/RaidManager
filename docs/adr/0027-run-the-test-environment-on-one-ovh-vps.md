@@ -87,8 +87,10 @@ What already runs on it, as read on 2026-10-03 (#374):
 The `deploy-dev` workflow deploys `main` to dev; the `review` workflow starts it after each merge, and it can be
 started by hand from the Actions tab. Its steps, with the server's part in `deploy/server/deploy-environment.sh`:
 
-1. Build the three images on the runner (`dotnet publish -t:PublishContainer`), tagged with the commit, and generate
-   the Compose file.
+1. Build the three images on the runner (`dotnet publish -t:PublishContainer`), tagged with the commit and the run
+   (`<commit>-<run id>-<attempt>`), and generate the Compose file. The tag is unique per run because image builds
+   aren't byte for byte identical: reusing the commit alone let a failed run move the running version's tag, and its
+   rollback restarted the containers (#449).
 2. Over SSH, with the environment's deploy key in an `ssh-agent`: load the images (`docker save` piped to
    `docker load`), copy the Compose file, and write `.env` from the environment's secrets, as `*.next` files.
 3. On the server: keep the current files as `*.previous`, switch to the new ones, start PostgreSQL, and run the new

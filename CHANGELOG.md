@@ -292,6 +292,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- A failed deployment's rollback no longer restarts the running version: `deploy-dev` tags each run's images
+  uniquely, so a rebuild of the same commit never moves the running version's tag (#450).
 - `provision.sh` no longer lists the SSH rule among the firewall rules that aren't RaidManager's: `ufw` names it
   `OpenSSH`, which the filter didn't recognize (#418).
 - Every work item now carries its parent's milestone, so the Release v1.0 view no longer shows tasks and
