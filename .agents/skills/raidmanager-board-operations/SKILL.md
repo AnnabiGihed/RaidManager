@@ -95,7 +95,7 @@ def item_id(number):
 1. Open the draft pull request. Its prose names other items without a closing keyword: never write close, closes,
    closed, fix, fixes, fixed, resolve, resolves or resolved right before an issue number, except in the one
    `Closes #<task>` line. Write "the merge of #414 shut #387" or "#387 was closed by a merge" instead.
-2. Check which issues GitHub linked, at once:
+2. Check which issues GitHub linked, a few seconds after opening (right after, the list is still empty):
    `gh pr view <n> --json closingIssuesReferences --jq '[.closingIssuesReferences[].number]'` must print exactly
    `[<task>]`. If not, edit the description with `gh pr edit <n> --body-file <file>` and check again before anything
    else; a linked closed item is set back to In Progress by the Project workflow "Pull request linked to issue".
