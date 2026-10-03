@@ -138,6 +138,20 @@ The deployment workflows' `record` job sets `deployed:dev`, `deployed:test`, `de
 - A release's `Deployed to production` line is evidence for its record, not the Released state: that still needs the
   owner's approval and the record (`work-stabilization-and-release-closure`).
 
+### Dependency update tasks
+
+Dependabot opens a pull request for each new release of a GitHub Action, and the `dependency-task` workflow gives it a
+task under #461 (`docs/reference/project-automation.md`, "Dependency updates"). The workflow can't write Project fields,
+so at the start of a session the board report shows `Pull request #<n> is open, but the task has no active sprint`.
+With the owner's standing approval recorded on #460, and without asking again:
+
+1. Select #461 into the active sprint if it isn't there (Status `In Progress`, Sprint, Delivery Stage Development),
+   and the task (Sprint, Status `In Review`, Delivery Stage Development, Start date today, assignee checked).
+2. Draft both review comments for the pull request, as for any other (`raidmanager-github-project-workflow`, step 6),
+   and tell the owner to tick its checklist while reviewing.
+3. A task the workflow closed as not planned gets Status `Canceled`, its Start and Target dates the closing day.
+4. After the merge, close it like any task ("Close after a merge"). #461 stays open.
+
 ### Create a Project view
 
 The REST API creates a view with its filter; grouping, sorting and field sums are still set in the browser

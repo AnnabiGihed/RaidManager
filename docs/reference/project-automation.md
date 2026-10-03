@@ -114,6 +114,26 @@ it succeeded or failed, with the built-in token:
 - The labels are only ever set by the workflow, never by hand. Each environment's labels are independent, so a
   card shows every environment its item runs in. The test and production workflows (#427, #433) run the same job.
 
+## Dependency updates
+
+Dependabot proposes each new release of a GitHub Action the workflows use, every Monday, as a pull request that keeps
+the commit-id pin and its version comment (`.github/dependabot.yml`, #460). Every pull request closes a task, so the
+`dependency-task` workflow runs `scripts/dependency_task.py` with the built-in token:
+
+- **Opened or reopened:** it creates a task under the standing improvement #461, with its contract, the improvement's
+  milestone and the owner as assignee, and writes `Closes #<task>` and the five required sections into the pull
+  request. The self-review checklist is left for the owner to tick.
+- **Closed without merging,** usually because a newer release replaced it: it closes the task as not planned with a
+  comment. A rerun creates nothing twice.
+
+The rest follows the usual rules, with two differences recorded on #460. The owner is the operator of a Dependabot
+pull request: they tick its checklist while reviewing, which re-runs `validate`, post their review comment and mark
+it ready, and a peer approves (`verify_review.py`, `review`). The built-in token can't write Project fields, so the
+board report lists the open pull request until the agent selects #461 and the task into the active sprint, with the
+owner's standing approval. Dependabot's branches, `dependabot/github_actions/...`, are the one exception to the
+branch names in `CONTRIBUTING.md`. Its runs see only Dependabot secrets, so the package feed credentials the `ci`
+build needs are also stored there.
+
 ## User-interface mockups
 
 Every item that changes what users see carries the `ui` label and links or shows its Penpot mockup
@@ -213,6 +233,7 @@ automated** means one of them does it. Each gap the owner wants automated has a 
 | Review | Keep the `review-gate` status current | `review` |
 | Review | Merge once every check and both reviews pass, delete the branch, close the linked tasks, run the checks on `main` | `review` |
 | Documentation | Publish GitHub Pages and the wiki after each merge | `docs-publish` |
+| Dependencies | Propose each new release of a GitHub Action as a pull request; give it a task under #461 and its description; cancel the task of an update closed without merging | Dependabot, `dependency-task` |
 | Documentation | Check external links every Monday | `docs-links` |
 | Board | Check type, parent, contract, dependencies and mockup; keep the rule labels current | `project-hierarchy` |
 | Board | Reopen a parent closed too early, and a release milestone closed before its record shows the delivery | `project-hierarchy` |
@@ -245,7 +266,9 @@ automated** means one of them does it. Each gap the owner wants automated has a 
 | Deployment | Record test and production deployments on the items (the `record` job in their workflows) | Agent | #427, #433 |
 | Releases | Tag, publish the GitHub release and update the release record | Agent | #435 |
 | Server | Provision the server, install the deploy key | Owner | none (done once, #374; key with #386) |
-| Other | Update dependencies | Agent | none yet |
+| Dependencies | Select each update's task, and #461, into the active sprint; set a canceled update's Status | Agent | none (§22: no token for Project fields) |
+| Dependencies | Review an update as its operator and tick its checklist | Owner | none (by design) |
+| Dependencies | Update NuGet packages and container images | Agent | none yet |
 | Other | Fix a broken external link after the weekly report | Agent | none |
 
 ## One-time setup

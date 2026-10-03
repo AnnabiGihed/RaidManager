@@ -43,7 +43,8 @@ jobs:
       REVIEWERS: AnnabiGihed anthermook
       GH_TOKEN: ${{ github.token }}
       PR_NUMBER: ${{ github.event.pull_request.number || github.event.workflow_run.pull_requests[0].number }}
-      AUTHOR: ${{ github.event.pull_request.user.login }}
+      # The operator: the author, or the owner for Dependabot's updates (owner decision on #460, verify_review.py).
+      AUTHOR: ${{ github.event.pull_request.user.login == 'dependabot[bot]' && 'AnnabiGihed' || github.event.pull_request.user.login }}
     steps:
       - uses: actions/checkout@v4
         with:

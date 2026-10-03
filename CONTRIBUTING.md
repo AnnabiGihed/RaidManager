@@ -20,6 +20,8 @@ personal token or repository secret.
 ## Branching
 
 Create short-lived `feature/<task-number>-<slug>` or `fix/<task-number>-<slug>` branches from `main`.
+Dependabot's `dependabot/...` branches are the one exception; each of its pull requests still closes its own task
+([dependency updates](docs/reference/project-automation.md#dependency-updates)).
 Keep each pull request focused on one task. Do not push directly to `main`.
 
 ## Commit messages

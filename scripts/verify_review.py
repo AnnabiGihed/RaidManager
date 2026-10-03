@@ -1,6 +1,7 @@
 """Enforce the two-step review, proven by meaningful review comments.
 
-The operator is the pull-request author, the person who ran the agent. They review first: a review comment on the
+The operator is the pull-request author, the person who ran the agent; for a dependency update opened by
+Dependabot, it is the repository owner (owner decision on #460). They review first: a review comment on the
 head commit that explains what they checked, then Ready for review on the draft. A peer (anyone but the author) then
 approves the head commit with a comment of their own. Every human review comment, whether a review summary or an
 inline comment, must be meaningful: long enough, not only generic praise, not random text, and, for a summary,
@@ -40,6 +41,9 @@ KEYBOARD_ROWS = ("qwertyuiop", "asdfghjkl", "zxcvbnm", "1234567890")
 TECHNICAL_ABBREVIATIONS = {"html", "http", "https", "xml", "css", "sql", "yml", "npm", "pnpm", "cdn", "ssh", "svg",
                            "pdf", "dns", "tcp", "crlf", "lf", "ts", "js", "md", "gh", "pr", "prs", "cs"}
 BOT_SUFFIX = "[bot]"
+# Bots whose pull requests the repository owner reviews as the operator (owner decision on #460).
+DEPENDENCY_BOTS = frozenset({"dependabot[bot]"})
+OWNER = "AnnabiGihed"
 
 
 @dataclass(frozen=True)
@@ -151,6 +155,11 @@ def comment_problems(text: str, change: Change, *, summary: bool) -> list[str]:
     if summary and not mentions_the_change(own_words, change):
         problems.append("it does not name a changed file or an identifier from the diff")
     return problems
+
+
+def operator_of(author: str) -> str:
+    """The person who reviews first: the author, or the owner for a dependency bot's pull request."""
+    return OWNER if author.lower() in DEPENDENCY_BOTS else author
 
 
 def is_person(login: str) -> bool:
@@ -322,7 +331,7 @@ def fetch_pull_request(repository: str, number: int) -> PullRequest:
     files = api_list(f"{base}/pulls/{number}/files")
     ready_events = [event for event in api_list(f"{base}/issues/{number}/timeline") if event.get("event") == "ready_for_review"]
     return PullRequest(
-        author=pull["user"]["login"],
+        author=operator_of(pull["user"]["login"]),
         is_draft=pull["draft"],
         head_sha=pull["head"]["sha"],
         ready_at=max((parse_time(event["created_at"]) for event in ready_events), default=None),
