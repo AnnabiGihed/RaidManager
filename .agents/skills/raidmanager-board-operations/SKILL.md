@@ -140,8 +140,8 @@ The deployment workflows' `record` job sets `deployed:dev`, `deployed:test`, `de
 
 ### Dependency update tasks
 
-Dependabot opens a pull request for each new release of a GitHub Action, and the `dependency-task` workflow gives it a
-task under #461 (`docs/reference/project-automation.md`, "Dependency updates"). The workflow can't write Project fields,
+Dependabot opens one grouped pull request a week for the new releases of GitHub Actions, and the `dependency-task`
+workflow gives it a task under #461 (`docs/reference/project-automation.md`, "Dependency updates"). The workflow can't write Project fields,
 so at the start of a session the board report shows `Pull request #<n> is open, but the task has no active sprint`.
 With the owner's standing approval recorded on #460, and without asking again:
 

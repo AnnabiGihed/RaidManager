@@ -116,8 +116,9 @@ it succeeded or failed, with the built-in token:
 
 ## Dependency updates
 
-Dependabot proposes each new release of a GitHub Action the workflows use, every Monday, as a pull request that keeps
-the commit-id pin and its version comment (`.github/dependabot.yml`, #460). Every pull request closes a task, so the
+Dependabot proposes the new releases of the GitHub Actions the workflows use every Monday, all in one grouped pull
+request that keeps commit-id pins and their version comment (`.github/dependabot.yml`, #460), so the owner reviews
+once a week. Every pull request closes a task, so the
 `dependency-task` workflow runs `scripts/dependency_task.py` with the built-in token:
 
 - **Opened or reopened:** it creates a task under the standing improvement #461, with its contract, the improvement's
@@ -233,7 +234,7 @@ automated** means one of them does it. Each gap the owner wants automated has a 
 | Review | Keep the `review-gate` status current | `review` |
 | Review | Merge once every check and both reviews pass, delete the branch, close the linked tasks, run the checks on `main` | `review` |
 | Documentation | Publish GitHub Pages and the wiki after each merge | `docs-publish` |
-| Dependencies | Propose each new release of a GitHub Action as a pull request; give it a task under #461 and its description; cancel the task of an update closed without merging | Dependabot, `dependency-task` |
+| Dependencies | Propose the week's new releases of GitHub Actions as one grouped pull request; give it a task under #461 and its description; cancel the task of an update closed without merging | Dependabot, `dependency-task` |
 | Documentation | Check external links every Monday | `docs-links` |
 | Board | Check type, parent, contract, dependencies and mockup; keep the rule labels current | `project-hierarchy` |
 | Board | Reopen a parent closed too early, and a release milestone closed before its record shows the delivery | `project-hierarchy` |
