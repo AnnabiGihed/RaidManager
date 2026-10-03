@@ -11,6 +11,7 @@ AppHost
 backend
 Baneveil
 binfile
+Bitwarden
 Blackrock
 Blazor
 boolean
@@ -48,6 +49,7 @@ GitHub
 GraphQL
 Graphviz
 Gravelines
+HashiCorp
 headlessly
 Hostname
 hostname
@@ -61,6 +63,7 @@ HTTP
 HttpOnly
 Icecrown
 IDE
+Infisical
 inspectable
 IPv
 js
@@ -92,6 +95,7 @@ OAuth
 onboarding
 Onyxia
 OpenAPI
+OpenID
 OVH
 Penpot
 picklist
@@ -152,6 +156,7 @@ validators
 vCores
 versioned
 versioning
+VPN
 VPS
 Warband
 Warcraft

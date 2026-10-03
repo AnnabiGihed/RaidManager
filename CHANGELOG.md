@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- ADR-0028 proposes how the test environment's secrets are kept and delivered: environment secrets of a GitHub
+  environment named `test`, limited to `main`, written to the server's `.env` file by the deploy workflow; a
+  dedicated, restricted SSH key for the deploy; a separate Discord application for the test environment; the rotation
+  of each secret; and user secrets kept for local development. The README gains its deployment notes (#364).
 - The `raidmanager-board-operations` skill holds the Project's field and option ids and the commands for creating,
   linking, starting, handing over and closing work items, bulk changes with a dry run and read-back, and the pitfalls
   met so far; `raidmanager-conventions` gains the lint quirks, Windows pitfalls and how the owner works with the

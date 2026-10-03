@@ -29,3 +29,4 @@
 | 0025 | [Classify work items by intent, with spikes under features](0025-classify-work-items-with-spikes-under-features.md) | Proposed, superseded in part by 0026 |
 | 0026 | [Adopt the Work Management and Delivery Specification](0026-adopt-the-work-management-specification.md) | Proposed |
 | 0027 | [Run the test environment on one OVH VPS with Docker Compose](0027-run-the-test-environment-on-one-ovh-vps.md) | Proposed |
+| 0028 | [Keep the test environment's secrets in a GitHub environment](0028-keep-the-test-secrets-in-a-github-environment.md) | Proposed |
