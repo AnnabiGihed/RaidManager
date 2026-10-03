@@ -6,7 +6,7 @@ using RaidManager.Domain.Features.Shared.Identifiers;
 
 namespace RaidManager.Persistence.EntityFrameworkCore.Features.Communities.Configurations;
 
-/// <summary>Maps the <see cref="Community"/> aggregate, its roles and its Discord role mappings to SQL Server tables.</summary>
+/// <summary>Maps the <see cref="Community"/> aggregate, its roles and its Discord role mappings to PostgreSQL tables.</summary>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-01<br/>

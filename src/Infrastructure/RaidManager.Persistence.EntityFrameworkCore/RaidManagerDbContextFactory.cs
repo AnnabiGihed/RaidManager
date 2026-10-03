@@ -14,14 +14,14 @@ internal sealed class RaidManagerDbContextFactory : IDesignTimeDbContextFactory<
 {
     #region Constants
     /// <summary>Defines the local development database used when no connection is given.</summary>
-    private const string LocalConnectionString = "Server=localhost;Database=RaidManager;Integrated Security=true;TrustServerCertificate=true";
+    private const string LocalConnectionString = "Host=localhost;Port=5432;Database=raidmanager;Username=postgres";
     #endregion Constants
 
     #region Public Methods
     /// <inheritdoc />
     public RaidManagerDbContext CreateDbContext(string[] args)
     {
-        var options = new DbContextOptionsBuilder<RaidManagerDbContext>().UseSqlServer(LocalConnectionString).Options;
+        var options = new DbContextOptionsBuilder<RaidManagerDbContext>().UseNpgsql(LocalConnectionString).Options;
         return new RaidManagerDbContext(options);
     }
     #endregion Public Methods

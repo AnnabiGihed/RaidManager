@@ -6,7 +6,7 @@ flowchart TB
         web[Web<br/>Blazor placeholder page]
         api[API<br/>ASP.NET Core foundation endpoint]
         bot[Discord bot host<br/>Worker logs startup only]
-        sql[(SQL Server<br/>Local development resource)]
+        db[(PostgreSQL<br/>Local development resource)]
     end
 
     developer -->|starts local environment<br/>dotnet run| apphost
@@ -15,12 +15,12 @@ flowchart TB
     apphost -->|starts process| web
     apphost -->|starts process| api
     apphost -->|starts process| bot
-    apphost -->|provisions resource| sql
+    apphost -->|provisions resource| db
     web -->|receives API service reference<br/>Aspire configuration only| api
     bot -->|receives API service reference<br/>Aspire configuration only| api
-    api -->|receives database reference<br/>Aspire configuration only| sql
+    api -->|receives database reference<br/>Aspire configuration only| db
 
     classDef person   fill:#fce5cd,stroke:#b45f06,stroke-width:1px,color:#000
     classDef internal fill:#cfe2f3,stroke:#2c5aa0,stroke-width:1px,color:#000
     class developer person
-    class apphost,web,api,bot,sql internal
+    class apphost,web,api,bot,db internal

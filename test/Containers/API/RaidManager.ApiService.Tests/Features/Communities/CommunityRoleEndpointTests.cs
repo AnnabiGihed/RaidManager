@@ -11,7 +11,7 @@ using RaidManager.Application.Features.Communities.Abstractions;
 
 namespace RaidManager.ApiService.Tests.Features.Communities;
 
-/// <summary>Verifies the officer roles endpoints against the real API and SQL Server, with Discord faked.</summary>
+/// <summary>Verifies the officer roles endpoints against the real API and PostgreSQL, with Discord faked.</summary>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-01<br/>

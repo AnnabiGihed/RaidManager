@@ -24,7 +24,8 @@ Source: [Mermaid](../diagrams/component-system.mmd).
 
 The website's Discord edge represents the sign-in journey.
 Token exchange and identity checks belong to the server-side workflow shown in the sign-in sequence.
-The SQL Server box records the chosen persistence technology, without inventing a production hosting service.
+The PostgreSQL box records the chosen persistence technology
+([ADR-0029](../adr/0029-store-data-in-postgresql.md)), without inventing a production hosting service.
 
 ## Shared API components
 

@@ -2,8 +2,12 @@ using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Shouldly;
 using Xunit;
+using RaidManager.Application.Features.Communities.Abstractions;
 using RaidManager.Domain.Features.Communities.Aggregates;
 using RaidManager.Domain.Features.Communities.Repositories;
+using RaidManager.Domain.Features.Identity.Aggregates;
+using RaidManager.Domain.Features.Identity.Repositories;
+using RaidManager.Domain.Features.Identity.ValueObjects;
 using RaidManager.Domain.Features.Shared.Enums;
 using RaidManager.Domain.Features.Shared.Identifiers;
 using RaidManager.Persistence.EntityFrameworkCore.Tests.Support;
@@ -11,24 +15,25 @@ using DomainUnitOfWork = Pivot.Framework.Domain.Repositories.IUnitOfWork;
 
 namespace RaidManager.Persistence.EntityFrameworkCore.Tests.Features.Communities;
 
-/// <summary>Verifies that the Community aggregate persists on SQL Server with its Discord role mappings.</summary>
+/// <summary>Verifies that the Community aggregate persists on PostgreSQL with its Discord role mappings.</summary>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-01<br/>
-/// Purpose: Proves the roles and mappings round-trip, one Discord role keeps several roles, a removed mapping's row goes, and one Discord server links once.
+/// Purpose: Proves the roles and mappings round-trip, one Discord role keeps several roles, a removed mapping's row goes, one Discord server links once,
+/// and communities are listed by name whatever the letter case.
 /// </remarks>
-[Collection(SqlServerTestGroup.Name)]
+[Collection(PostgreSqlTestGroup.Name)]
 public sealed class CommunityPersistenceTests
 {
     #region Fields
-    /// <summary>Stores the SQL Server fixture.</summary>
-    private readonly SqlServerFixture _database;
+    /// <summary>Stores the PostgreSQL fixture.</summary>
+    private readonly PostgreSqlFixture _database;
     #endregion Fields
 
     #region Constructors
     /// <summary>Initializes a new instance of the <see cref="CommunityPersistenceTests"/> class.</summary>
-    /// <param name="database">The SQL Server fixture.</param>
-    public CommunityPersistenceTests(SqlServerFixture database)
+    /// <param name="database">The PostgreSQL fixture.</param>
+    public CommunityPersistenceTests(PostgreSqlFixture database)
     {
         _database = database;
     }
@@ -61,7 +66,7 @@ public sealed class CommunityPersistenceTests
         reloaded.Audit.ShouldNotBeNull();
 
         var context = scope.ServiceProvider.GetRequiredService<RaidManagerDbContext>();
-        var storedRealm = await context.Database.SqlQuery<string>($"SELECT Realm AS Value FROM Communities WHERE Id = {community.Id.Value}").SingleAsync();
+        var storedRealm = await context.Database.SqlQuery<string>($"SELECT \"Realm\" AS \"Value\" FROM \"Communities\" WHERE \"Id\" = {community.Id.Value}").SingleAsync();
         storedRealm.ShouldBe(nameof(WarmaneRealm.Lordaeron));
         var eventTypes = await context.OutboxMessages.Select(message => message.EventType).ToListAsync();
         eventTypes.ShouldContain(type => type != null && type.Contains(".CommunityCreated,", StringComparison.Ordinal));
@@ -93,7 +98,7 @@ public sealed class CommunityPersistenceTests
         reloaded.RolesFor(["2001"]).Select(role => role.Id).ShouldBe([officer, raidLeader]);
         reloaded.RolesFor(["2002"]).ShouldBeEmpty();
         var rows = await scope.ServiceProvider.GetRequiredService<RaidManagerDbContext>().Database
-            .SqlQuery<int>($"SELECT COUNT(*) AS Value FROM CommunityRoleMappings WHERE CommunityId = {community.Id.Value}").SingleAsync();
+            .SqlQuery<int>($"SELECT COUNT(*)::int AS \"Value\" FROM \"CommunityRoleMappings\" WHERE \"CommunityId\" = {community.Id.Value}").SingleAsync();
         rows.ShouldBe(2);
     }
 
@@ -108,6 +113,29 @@ public sealed class CommunityPersistenceTests
         var secondLink = Community.Link(guildId, "Second link", WarmaneRealm.Icecrown, new UserId(Guid.NewGuid()));
 
         (await SaveNewAsync(secondLink)).ShouldBeFalse();
+    }
+
+    /// <summary>Lists an administrator's communities by name whatever the letter case, as on SQL Server (ADR-0029).</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task CommunitiesAreListedByNameWhateverTheirLetterCase()
+    {
+        var administrator = User.Register(DiscordUserId.Create(NewGuildId()), "Ordering administrator", null);
+        await using (var scope = _database.Services.CreateAsyncScope())
+        {
+            await scope.ServiceProvider.GetRequiredService<IUserRepository>().AddAsync(administrator);
+            (await scope.ServiceProvider.GetRequiredService<DomainUnitOfWork>().SaveChangesAsync()).IsSuccess.ShouldBeTrue();
+        }
+
+        foreach (var name in new[] { "beta Raiders", "Charlie Company", "alpha Guild" })
+        {
+            (await SaveNewAsync(Community.Link(NewGuildId(), name, WarmaneRealm.Icecrown, administrator.Id))).ShouldBeTrue();
+        }
+
+        await using var readScope = _database.Services.CreateAsyncScope();
+        var listed = await readScope.ServiceProvider.GetRequiredService<ICommunityReader>().ListAdministeredByAsync(administrator.Id, CancellationToken.None);
+
+        listed.Select(community => community.Name).ShouldBe(["alpha Guild", "beta Raiders", "Charlie Company"]);
     }
     #endregion Tests
 

@@ -1,7 +1,7 @@
 var builder = DistributedApplication.CreateBuilder(args);
 
-var sql = builder.AddSqlServer("sql").WithDataVolume();
-var database = sql.AddDatabase("Database", "RaidManager");
+var postgres = builder.AddPostgres("postgres").WithDataVolume();
+var database = postgres.AddDatabase("Database", "raidmanager");
 
 // The website proves itself to the API with this key (ADR-0011). Aspire generates it once and keeps it in user secrets.
 var websiteServiceKey = builder.AddParameter(

@@ -1,7 +1,7 @@
-using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
 using Pivot.Framework.Infrastructure.Abstraction.UnitOfWork;
 using Pivot.Framework.Infrastructure.Messaging.EntityFrameworkCore.Extensions;
+using Pivot.Framework.Infrastructure.Persistence.PostgreSQL.Extensions;
 using RaidManager.Application.Features.Characters.Abstractions;
 using RaidManager.Application.Features.Communities.Abstractions;
 using RaidManager.Domain.Features.Characters.Repositories;
@@ -18,7 +18,7 @@ using DomainUnitOfWork = Pivot.Framework.Domain.Repositories.IUnitOfWork;
 
 namespace RaidManager.Persistence.EntityFrameworkCore;
 
-/// <summary>Registers RaidManager's SQL Server persistence in a dependency-injection container.</summary>
+/// <summary>Registers RaidManager's PostgreSQL persistence in a dependency-injection container.</summary>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-09-30<br/>
@@ -29,13 +29,13 @@ public static class PersistenceServiceCollectionExtensions
     #region Public Methods
     /// <summary>Adds the RaidManager database context, unit of work, outbox writing, aggregate repositories and query readers.</summary>
     /// <param name="services">The service collection.</param>
-    /// <param name="connectionString">The SQL Server connection string.</param>
+    /// <param name="connectionString">The PostgreSQL connection string.</param>
     /// <returns>The same service collection.</returns>
     /// <remarks>No outbox drain mode or transport is registered: domain events are recorded but not yet delivered.</remarks>
     public static IServiceCollection AddRaidManagerPersistence(this IServiceCollection services, string connectionString)
     {
         ArgumentException.ThrowIfNullOrWhiteSpace(connectionString);
-        services.AddDbContext<RaidManagerDbContext>(options => options.UseSqlServer(connectionString));
+        services.AddPostgreSqlContext<RaidManagerDbContext>(connectionString);
         services.AddEfCoreWritePersistence<RaidManagerDbContext, RaidManagerUnitOfWork>(includeEventStore: false);
 
         // Application handlers depend on the domain IUnitOfWork, so it resolves to the same scoped unit of work.

@@ -11,24 +11,24 @@ using DomainUnitOfWork = Pivot.Framework.Domain.Repositories.IUnitOfWork;
 
 namespace RaidManager.Persistence.EntityFrameworkCore.Tests.Features.Identity;
 
-/// <summary>Verifies against SQL Server that a Discord account always resolves to one local user.</summary>
+/// <summary>Verifies against PostgreSQL that a Discord account always resolves to one local user.</summary>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-09-30<br/>
 /// Purpose: Proves the sign-in command reuses the user across sign-ins and that the database refuses a duplicate Discord account.
 /// </remarks>
-[Collection(SqlServerTestGroup.Name)]
+[Collection(PostgreSqlTestGroup.Name)]
 public sealed class DiscordSignInTests
 {
     #region Fields
-    /// <summary>Stores the SQL Server fixture.</summary>
-    private readonly SqlServerFixture _database;
+    /// <summary>Stores the PostgreSQL fixture.</summary>
+    private readonly PostgreSqlFixture _database;
     #endregion Fields
 
     #region Constructors
     /// <summary>Initializes a new instance of the <see cref="DiscordSignInTests"/> class.</summary>
-    /// <param name="database">The SQL Server fixture.</param>
-    public DiscordSignInTests(SqlServerFixture database)
+    /// <param name="database">The PostgreSQL fixture.</param>
+    public DiscordSignInTests(PostgreSqlFixture database)
     {
         _database = database;
     }

@@ -14,24 +14,24 @@ using DomainUnitOfWork = Pivot.Framework.Domain.Repositories.IUnitOfWork;
 
 namespace RaidManager.Persistence.EntityFrameworkCore.Tests.Features.Characters;
 
-/// <summary>Verifies that the Character aggregate persists on SQL Server and that claim decisions commit with their events.</summary>
+/// <summary>Verifies that the Character aggregate persists on PostgreSQL and that claim decisions commit with their events.</summary>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-09-30<br/>
 /// Purpose: Proves the mapping round-trips every part of the aggregate, the unit of work writes the outbox, and the migrations match the model.
 /// </remarks>
-[Collection(SqlServerTestGroup.Name)]
+[Collection(PostgreSqlTestGroup.Name)]
 public sealed class CharacterPersistenceTests
 {
     #region Fields
-    /// <summary>Stores the SQL Server fixture.</summary>
-    private readonly SqlServerFixture _database;
+    /// <summary>Stores the PostgreSQL fixture.</summary>
+    private readonly PostgreSqlFixture _database;
     #endregion Fields
 
     #region Constructors
     /// <summary>Initializes a new instance of the <see cref="CharacterPersistenceTests"/> class.</summary>
-    /// <param name="database">The SQL Server fixture.</param>
-    public CharacterPersistenceTests(SqlServerFixture database)
+    /// <param name="database">The PostgreSQL fixture.</param>
+    public CharacterPersistenceTests(PostgreSqlFixture database)
     {
         _database = database;
     }
@@ -44,7 +44,9 @@ public sealed class CharacterPersistenceTests
     public async Task SavedCharacterKeepsClaimsLoadoutsAndRaidSavesWhenReloaded()
     {
         var owner = new UserId(Guid.NewGuid());
-        var observedAtUtc = DateTimeOffset.UtcNow.AddMinutes(-5);
+
+        // Whole seconds: PostgreSQL keeps timestamps to the microsecond, not to .NET's 100 nanoseconds.
+        var observedAtUtc = DateTimeOffset.FromUnixTimeSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds()).AddMinutes(-5);
         var character = Character.Import(WarmaneRealm.Icecrown, CharacterName.Create("Roundtrip"), WowClass.DeathKnight, WowRace.Human, Faction.Alliance, 80);
         character.RequestClaim(owner, observedAtUtc).IsSuccess.ShouldBeTrue();
         character.ApproveClaim(owner, observedAtUtc).IsSuccess.ShouldBeTrue();

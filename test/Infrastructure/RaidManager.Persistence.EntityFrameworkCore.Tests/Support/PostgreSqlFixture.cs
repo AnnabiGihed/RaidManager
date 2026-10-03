@@ -1,27 +1,27 @@
 using MediatR;
 using Microsoft.EntityFrameworkCore;
 using Microsoft.Extensions.DependencyInjection;
-using Testcontainers.MsSql;
+using Testcontainers.PostgreSql;
 using Xunit;
 
 namespace RaidManager.Persistence.EntityFrameworkCore.Tests.Support;
 
-/// <summary>Starts one SQL Server container for the persistence tests and applies the RaidManager migrations to it.</summary>
+/// <summary>Starts one PostgreSQL container for the persistence tests and applies the RaidManager migrations to it.</summary>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-09-30<br/>
 /// Purpose: Tests persistence against the real database engine; the conventions forbid in-memory providers.
 /// </remarks>
-public sealed class SqlServerFixture : IAsyncLifetime
+public sealed class PostgreSqlFixture : IAsyncLifetime
 {
     #region Constants
-    /// <summary>Defines the SQL Server image, pinned to the major version the Aspire AppHost runs.</summary>
-    private const string SqlServerImage = "mcr.microsoft.com/mssql/server:2022-latest";
+    /// <summary>Defines the PostgreSQL image, the version the Aspire AppHost runs (ADR-0029).</summary>
+    public const string PostgreSqlImage = "postgres:18.3";
     #endregion Constants
 
     #region Fields
-    /// <summary>Stores the SQL Server container.</summary>
-    private readonly MsSqlContainer _container = new MsSqlBuilder(SqlServerImage).Build();
+    /// <summary>Stores the PostgreSQL container.</summary>
+    private readonly PostgreSqlContainer _container = new PostgreSqlBuilder(PostgreSqlImage).Build();
 
     /// <summary>Stores the root service provider built over the container.</summary>
     private ServiceProvider? _services;
@@ -32,7 +32,7 @@ public sealed class SqlServerFixture : IAsyncLifetime
     public string ConnectionString => _container.GetConnectionString();
 
     /// <summary>Gets the root service provider, wired as a host would wire RaidManager.</summary>
-    public IServiceProvider Services => _services ?? throw new InvalidOperationException("The SQL Server fixture has not started.");
+    public IServiceProvider Services => _services ?? throw new InvalidOperationException("The PostgreSQL fixture has not started.");
     #endregion Properties
 
     #region Public Methods
