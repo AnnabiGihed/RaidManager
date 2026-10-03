@@ -144,6 +144,14 @@ generate the mockup with the `penpot-mockups` skill (ADR-0018), then have the ow
      meaningful.
    - If the `review` job fails after every gate passed, GitHub refused the merge. Report it; re-running that job
      merges the PR. Never merge by hand.
+   - **One pull request at a time, or a stated merge order** (#484). Branch protection merges only a branch that is
+     up to date with `main`. When two handed-over pull requests are open and one merges, the other falls behind:
+     the `review` job fails with "the head branch is not up to date", and updating the branch creates a new head,
+     which needs a new review comment from the operator and a new peer approval given after it (#481). Hand over the
+     second pull request after the first merges, or tell the operator which to merge first and that the second needs
+     a new review; prefer different changelog sections so the update merges without a conflict.
+   - **Bring a branch up to date by merging `origin/main` into it** (`git merge origin/main`, then a normal push),
+     never by rebasing and force-pushing, even on an unreviewed draft (#479).
 7. After merge, verify the source branch was deleted and the task is closed and `Done`, then validate its parents
    with `work-task-execution-and-completion`.
    - **Branch cleanup is mandatory whenever you are told a PR is merged**, before any other work in that turn:

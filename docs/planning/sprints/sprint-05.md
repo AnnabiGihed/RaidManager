@@ -62,6 +62,10 @@ date on the Project, both inclusive) follows the blocked-by order; the item's ow
 | #409 Move the database from SQL Server to PostgreSQL | Improvement | 5 | 5 to 7 Oct | #410 (Architecture Analysis), #411 (Development) | None |
 | #455 Keep the session's deployment and review lessons in the skills | Improvement | 1 | 3 Oct | #456 (Business Analysis) | None |
 | #460 Update pinned GitHub Actions automatically | Improvement | 3 | 3 to 5 Oct | #462 (Development) | None |
+| #461 Keep pinned GitHub Actions current | Improvement | 1 | 3 to 17 Oct | generated per update (#469 to #473 canceled, #483) | None |
+| #474 validate misses the Closes line of a description saved with `\r\n` line endings | Bug | 1 | 3 Oct | #475 (Development) | None |
+| #476 The generated Dependabot description mentions a pinned commit id for tag updates | Bug | 1 | 3 Oct | #477 (Development) | None |
+| #484 Keep the merge-order and branch-update lessons in the skills | Improvement | 1 | 3 Oct | #485 (Business Analysis) | None |
 
 16 October is kept as a buffer.
 
@@ -104,6 +108,9 @@ and its task #388 wait for #409 and #411.
 | 2026-10-03 | #392 and #393 widened to dev, test and production, raised to P0 and moved first, on the owner's decisions recorded on #392: a label per environment on every delivered item, parent and release, a failure label, and the dev backfill. |
 | 2026-10-03 | #455 with #456 added on the owner's decision recorded on #455: the session's lessons in the skills before a new session. |
 | 2026-10-03 | #460 with #462 added on the owner's decisions recorded on #460: Dependabot updates of pinned actions, each with its own task under #461, which the agent selects into the active sprint as its tasks appear. |
+| 2026-10-03 | #461 selected with the generated tasks #469 to #473 (later canceled when grouping replaced them) and #483, under the standing approval on #460; #480 added to #460 on the owner's grouping decision. |
+| 2026-10-03 | Bugs #474 with #475 and #476 with #477 added at P0 on the owner's decision recorded on them: `validate` failed on a description saved in the browser, and the generated wording was wrong for tag updates. |
+| 2026-10-03 | #484 with #485 added on the owner's decision recorded on #484: the merge-order and branch-update lessons in the skills. |
 
 ## Outcome
 
