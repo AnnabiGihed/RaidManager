@@ -233,8 +233,6 @@ def main() -> int:
                         help="folder at the repository root searched for coverage.cobertura.xml")
     parser.add_argument("--base", default="", help="base commit (full id) or ref of a pull request; empty checks the total only")
     parser.add_argument("--summary", action="store_true", help=f"also write the Markdown summary to {SUMMARY_FILE}")
-    parser.add_argument("--min-total", type=float, default=MIN_TOTAL)
-    parser.add_argument("--min-changed", type=float, default=MIN_CHANGED)
     args = parser.parse_args()
 
     root = REPOSITORY_ROOT
@@ -248,8 +246,9 @@ def main() -> int:
             print(f"ERROR: {args.base} is neither a ref nor a full commit id in this repository; fetch it first.")
             return 1
         changed, uncovered = changed_ratio(coverage, changed_lines(git_diff(base, root)))
-    errors = gate_errors(total, changed, args.min_total, args.min_changed)
-    report = summary(coverage, total, changed, uncovered, errors, args.min_total, args.min_changed,
+    # The thresholds are ADR-0015 decisions, so they aren't options: changing one needs a new ADR.
+    errors = gate_errors(total, changed, MIN_TOTAL, MIN_CHANGED)
+    report = summary(coverage, total, changed, uncovered, errors, MIN_TOTAL, MIN_CHANGED,
                      unmeasured_projects(root, coverage))
     if args.summary:
         SUMMARY_FILE.write_text(report, encoding="utf-8")
