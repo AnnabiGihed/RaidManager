@@ -148,11 +148,12 @@ class ParseIssueTests(unittest.TestCase):
 
 
 class ArgumentTests(unittest.TestCase):
-    VALID = ["--environment", "dev", "--outcome", "success", "--commit", "abcdef1", "--run-url", RUN,
-             "--date", "2026-10-03", "--repository", "o/r"]
+    VALID = ["--environment", "dev", "--outcome", "success", "--commit", "a" * 40, "--run-url", RUN,
+             "--date", "2026-10-03"]
 
     def test_options_cannot_pass_as_values(self) -> None:
-        for name, value in (("--commit", "--output=x"), ("--commit", "main"), ("--repository", "-o/r"),
+        for name, value in (("--commit", "--output=x"), ("--commit", "main"), ("--commit", "abcdef1"),
+                            ("--environment", "staging"),
                             ("--run-url", "http://x"), ("--date", "today")):
             arguments = list(self.VALID)
             arguments[arguments.index(name) + 1] = value

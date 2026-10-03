@@ -15,19 +15,20 @@ the first run also labels everything delivered before it, and a rerun changes no
 Everything goes through `gh`: the workflow's built-in token in Actions (ADR-0026, specification §22), the operator's
 login locally. Comments are added only for changes after the first labeled run, never for the backfill.
 
-Usage: record_deployment.py --environment dev --outcome success --commit <sha> --run-url <url> [--dry-run]
+Usage, from a checkout of the deployed commit:
+    record_deployment.py --environment dev --outcome success --commit <sha> --run-url <url> --date <date> [--dry-run]
 """
 
 from __future__ import annotations
 
 import argparse
 import json
-import os
 import re
 import subprocess
 import sys
 from dataclasses import dataclass, field
 
+REPOSITORY = "AnnabiGihed/RaidManager"
 ENVIRONMENTS = ("dev", "test", "production")
 LABEL_COLORS = {"dev": "c2e0c6", "test": "bfdadc", "production": "0e8a16"}
 FAILED_COLOR = "d73a4a"
@@ -193,6 +194,10 @@ def gh(*args: str, stdin: str | None = None) -> str:
                           encoding="utf-8").stdout
 
 
+def git(*args: str) -> str:
+    return subprocess.run(["git", *args], capture_output=True, text=True, check=True, encoding="utf-8").stdout
+
+
 def fetch_issues(repository: str) -> dict[int, Issue]:
     owner, name = repository.split("/")
     issues: dict[int, Issue] = {}
@@ -255,21 +260,25 @@ def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n", 1)[0])
     parser.add_argument("--environment", choices=ENVIRONMENTS, required=True)
     parser.add_argument("--outcome", choices=("success", "failure"), required=True)
-    parser.add_argument("--commit", required=True, type=matching(r"[0-9a-f]{7,40}", "commit"))
+    parser.add_argument("--commit", required=True, type=matching(r"[0-9a-f]{40}", "full commit id"),
+                        help="the deployed commit, which must be checked out")
     parser.add_argument("--run-url", required=True, type=matching(r"https://[\w./-]+", "run address"))
     parser.add_argument("--date", required=True, type=matching(r"\d{4}-\d{2}-\d{2}", "date"),
                         help="the deployment date, YYYY-MM-DD")
-    parser.add_argument("--repository", type=matching(r"[\w.-]+/[\w.-]+", "repository"),
-                        default=os.environ.get("GITHUB_REPOSITORY", "AnnabiGihed/RaidManager"))
     parser.add_argument("--dry-run", action="store_true", help="print the changes without making them")
     args = parser.parse_args(argv)
 
-    history = set(subprocess.run(["git", "rev-list", "--end-of-options", args.commit], capture_output=True, text=True, check=True)
-                  .stdout.split())
-    issues = fetch_issues(args.repository)
-    plan = plan_deployment(issues, fetch_milestones(args.repository), history, args.environment,
+    head = git("rev-parse", "HEAD").strip()
+    if head != args.commit:
+        print(f"Check out the deployed commit {args.commit} first; HEAD is {head}.", file=sys.stderr)
+        return 1
+    history = set(git("rev-list", "HEAD").split())
+    # The script's own value, never the argument's text, reaches gh.
+    environment = next(name for name in ENVIRONMENTS if name == args.environment)
+    issues = fetch_issues(REPOSITORY)
+    plan = plan_deployment(issues, fetch_milestones(REPOSITORY), history, environment,
                            args.outcome == "success", args.run_url, args.commit, args.date)
-    print(f"{args.environment} {args.outcome} at {args.commit[:7]}: label {len(plan.add)} items, unlabel "
+    print(f"{environment} {args.outcome} at {args.commit[:7]}: label {len(plan.add)} items, unlabel "
           f"{len(plan.remove)}, comment on {len(plan.comments)}, update {len(plan.milestones)} milestones")
     for number, labels in sorted(plan.add.items()):
         print(f"  #{number} + {', '.join(labels)}")
@@ -278,8 +287,8 @@ def main(argv: list[str]) -> int:
     for number in sorted(plan.milestones):
         print(f"  milestone {number} description updated")
     if not args.dry_run:
-        ensure_labels(args.repository, args.environment)
-        apply(plan, args.repository)
+        ensure_labels(REPOSITORY, environment)
+        apply(plan, REPOSITORY)
     return 0
 
 

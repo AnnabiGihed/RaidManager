@@ -129,8 +129,9 @@ The deployment workflows' `record` job sets `deployed:dev`, `deployed:test`, `de
 - **Never set or remove these labels, or edit the milestone's `deployments` block, by hand.** The job recomputes
   them from the history of the deployed commit, so a wrong label means a wrong rule or input: fix the script with a
   bug.
-- To check what a deployment would change, run the script with `--dry-run` and the deployed commit; it reads with
-  your `gh` login and writes nothing.
+- To check what a deployment would change, run the script with `--dry-run` from a worktree checked out at the
+  deployed commit (`git worktree add <folder> <commit>`), with the full commit id; it reads with your `gh` login and
+  writes nothing.
 - A task closed without a pull request (evidence only) gets `deployed:<environment>` at the next deployment after it
   closes; a parent gets it when all its completed children have it, so it can follow its close by one deployment.
 - A release's `Deployed to production` line is evidence for its record, not the Released state: that still needs the
