@@ -264,6 +264,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- `provision.sh` no longer lists the SSH rule among the firewall rules that aren't RaidManager's: `ufw` names it
+  `OpenSSH`, which the filter didn't recognize (#418).
 - Every work item now carries its parent's milestone, so the Release v1.0 view no longer shows tasks and
   improvements without their parents; the hierarchy guard flags a child on another milestone `needs-parent` (#321).
 - The AppHost no longer logs a resource watch timeout every minute: the Aspire packages are pinned to 13.5.4, the AppHost
