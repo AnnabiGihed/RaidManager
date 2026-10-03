@@ -30,7 +30,8 @@ jobs:
       API_SITE: https://api.raidmanager-dev.pivotsoftwares.com
       REMOTE_DIR: /opt/apps/raidmanager/dev
       DEPLOY_HOST: ${{ vars.DEPLOY_HOST }}
-      TAG: ${{ github.sha }}
+      # Unique per run: a later run of the same commit must never move a tag the running or previous version uses (#449).
+      TAG: ${{ github.sha }}-${{ github.run_id }}-${{ github.run_attempt }}
     steps:
       - uses: actions/checkout@v4
       - uses: actions/setup-dotnet@v4
