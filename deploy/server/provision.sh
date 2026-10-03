@@ -25,6 +25,8 @@ readonly HOSTNAMES=(
     raidmanager.pivotsoftwares.com api.raidmanager.pivotsoftwares.com
 )
 readonly OPEN_PORTS=(OpenSSH 80/tcp 443/tcp)
+# How `ufw status` names those rules, including their (v6) twins; SSH shows under its profile name.
+readonly OWN_RULES_PATTERN='^(OpenSSH|22/tcp|80/tcp|443/tcp)[[:space:]]'
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 readonly SCRIPT_DIR
@@ -108,7 +110,7 @@ configure_firewall() {
         ufw --force enable
     fi
     local extra
-    extra="$(ufw status | grep 'ALLOW' | grep -Ev '^(22|80|443)/tcp' || true)"
+    extra="$(ufw status | grep 'ALLOW' | grep -Ev "$OWN_RULES_PATTERN" || true)"
     if [[ -n $extra ]]; then
         echo "Other rules are open; they aren't RaidManager's, so they're left as they are:"
         echo "$extra"
