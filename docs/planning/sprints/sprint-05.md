@@ -6,7 +6,7 @@ Specification](../../reference/work-management-specification.md) requires (§7, 
 | Field | Value |
 | --- | --- |
 | Sprint | Sprint 5 (Project iteration `Sprint 5`) |
-| State | Planned |
+| State | Active |
 | Start | 2026-10-03 00:00 Europe/Brussels, inclusive |
 | End | 2026-10-17 00:00 Europe/Brussels, exclusive |
 | Duration | Two weeks (specification §22) |
@@ -26,8 +26,11 @@ the delivery pace of Sprints 1 to 4. It isn't a measured velocity: Sprints 1 to 
 estimated afterwards, so Sprint 5 is the first sprint whose completed points count as velocity (specification §9).
 Spikes carry Story Points (#346) and keep their timebox.
 
-The sprint holds 75 points: 72 of delivery work and 3 of planning (#390, #394). That is 5 above the assumption, a risk
-the owner accepted when adding #392 and #394; the sprint review re-plans what doesn't finish.
+The sprint held 75 points at its start: 72 of delivery work and 3 of planning (#390, #394). That is 5 above the
+assumption, a risk the owner accepted when adding #392 and #394; the sprint review re-plans what doesn't finish.
+
+On 3 October, the owner's decisions added 11 points (#409, #415, #417, #421, #436), so the sprint holds 86 points, 16
+above the assumption, which is unchanged.
 
 ## Selected scope
 
@@ -52,6 +55,11 @@ date on the Project, both inclusive) follows the blocked-by order; the item's ow
 | #17 Discover WoW accounts and upload snapshots reliably | User story | 8 | 10 to 13 Oct | #384 (Development) | #15, #16 |
 | #376 Deploy main to the test environment automatically | Improvement | 8 | 10 to 13 Oct | #389 (Development) | #374, #375 |
 | #392 Show deployment status on GitHub and the Project | Improvement | 3 | 14 to 15 Oct | #393 (Deployment) | #376 |
+| #415 Keep the server provisioning lessons in the skills | Improvement | 2 | 3 Oct | #416 (Business Analysis) | None |
+| #417 provision.sh lists the SSH rule among the other firewall rules | Bug | 1 | 3 Oct | #418 (Development) | None |
+| #421 Keep closing keywords out of pull request prose | Improvement | 1 | 3 Oct | #422 (Business Analysis) | None |
+| #436 Record the day's planning and automation changes | Improvement | 2 | 3 Oct | #437 (Business Analysis) | None |
+| #409 Move the database from SQL Server to PostgreSQL | Improvement | 5 | 5 to 7 Oct | #410 (Architecture Analysis), #411 (Development) | None |
 
 16 October is kept as a buffer.
 
@@ -71,6 +79,10 @@ Each outcome item carries a Risk value on the Project with its reason in a comme
 stories #15, #16 and #17 and improvement #376, which form the two long chains of the sprint. The 14 vulnerabilities
 of improvement #209 may need more than one pull request.
 
+On 3 October the owner put the deployment chain first (#369): #387 and #386, then #388, then #389, with #363 done
+while a deployment task waits on an owner step. #409 (PostgreSQL) goes before the test environment's settings: #375
+and its task #388 wait for #409 and #411.
+
 ## Assignment history
 
 | Date | Change |
@@ -81,6 +93,11 @@ of improvement #209 may need more than one pull request.
 | 2026-10-02 | Every doable v0.3 item added on the owner's decision (#390): #15, #16, #17, #19, #153, #374, #375 and #376 with their tasks, and #390 to record it; the capacity assumption rises to 70 points. |
 | 2026-10-02 | #392 added on the owner's decision (#390), after #376. |
 | 2026-10-02 | #394 added on the owner's decision recorded on it: Delivery Stage, Risk and planned dates on the Project. |
+| 2026-10-03 | The deployment chain moved first on the owner's decision on #369. |
+| 2026-10-03 | #409 with #410 and #411 added on the owner's decision recorded on #409: PostgreSQL instead of SQL Server, at P1, so three environments fit the shared server. |
+| 2026-10-03 | #415 with #416, and bug #417 with #418, added on the owner's decision recorded on them: the provisioning lessons in the skills and the script's firewall message, split by intent. |
+| 2026-10-03 | #421 with #422 added on the owner's decision recorded on #421: keep closing keywords out of pull request prose. |
+| 2026-10-03 | #436 with #437 added on the owner's decision recorded on #436: record the day's selections, the automation coverage and the skill pitfalls; #410 narrowed to its ADR. |
 
 ## Outcome
 
