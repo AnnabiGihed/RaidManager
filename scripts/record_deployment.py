@@ -242,18 +242,29 @@ def apply(plan: Plan, repository: str) -> None:
            stdin=description)
 
 
+def matching(pattern: str, what: str):
+    """Builds an argument type that accepts only values matching the pattern, so no option reaches git or gh."""
+    def check(value: str) -> str:
+        if not re.fullmatch(pattern, value):
+            raise argparse.ArgumentTypeError(f"not a valid {what}: {value!r}")
+        return value
+    return check
+
+
 def main(argv: list[str]) -> int:
     parser = argparse.ArgumentParser(description=__doc__.split("\n\n", 1)[0])
     parser.add_argument("--environment", choices=ENVIRONMENTS, required=True)
     parser.add_argument("--outcome", choices=("success", "failure"), required=True)
-    parser.add_argument("--commit", required=True)
-    parser.add_argument("--run-url", required=True)
-    parser.add_argument("--date", required=True, help="the deployment date, YYYY-MM-DD")
-    parser.add_argument("--repository", default=os.environ.get("GITHUB_REPOSITORY", "AnnabiGihed/RaidManager"))
+    parser.add_argument("--commit", required=True, type=matching(r"[0-9a-f]{7,40}", "commit"))
+    parser.add_argument("--run-url", required=True, type=matching(r"https://[\w./-]+", "run address"))
+    parser.add_argument("--date", required=True, type=matching(r"\d{4}-\d{2}-\d{2}", "date"),
+                        help="the deployment date, YYYY-MM-DD")
+    parser.add_argument("--repository", type=matching(r"[\w.-]+/[\w.-]+", "repository"),
+                        default=os.environ.get("GITHUB_REPOSITORY", "AnnabiGihed/RaidManager"))
     parser.add_argument("--dry-run", action="store_true", help="print the changes without making them")
     args = parser.parse_args(argv)
 
-    history = set(subprocess.run(["git", "rev-list", args.commit], capture_output=True, text=True, check=True)
+    history = set(subprocess.run(["git", "rev-list", "--end-of-options", args.commit], capture_output=True, text=True, check=True)
                   .stdout.split())
     issues = fetch_issues(args.repository)
     plan = plan_deployment(issues, fetch_milestones(args.repository), history, args.environment,

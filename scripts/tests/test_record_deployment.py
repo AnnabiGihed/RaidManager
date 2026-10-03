@@ -8,7 +8,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from record_deployment import (  # noqa: E402
-    MARKER_END, MARKER_START, Issue, Milestone, delivered_items, milestone_description, parse_issue,
+    MARKER_END, MARKER_START, Issue, Milestone, delivered_items, main, milestone_description, parse_issue,
     plan_deployment,
 )
 
@@ -145,6 +145,19 @@ class ParseIssueTests(unittest.TestCase):
                                                          {"merged": False, "mergeCommit": None}]},
         }
         self.assertEqual(Issue(7, True, True, frozenset({"type:task"}), ("a",), (8, None), 4), parse_issue(node, "o/r"))
+
+
+class ArgumentTests(unittest.TestCase):
+    VALID = ["--environment", "dev", "--outcome", "success", "--commit", "abcdef1", "--run-url", RUN,
+             "--date", "2026-10-03", "--repository", "o/r"]
+
+    def test_options_cannot_pass_as_values(self) -> None:
+        for name, value in (("--commit", "--output=x"), ("--commit", "main"), ("--repository", "-o/r"),
+                            ("--run-url", "http://x"), ("--date", "today")):
+            arguments = list(self.VALID)
+            arguments[arguments.index(name) + 1] = value
+            with self.subTest(name=name, value=value), self.assertRaises(SystemExit):
+                main(arguments)
 
 
 if __name__ == "__main__":
