@@ -164,7 +164,9 @@ Rules for every documentation change:
   `.editorconfig`) also use. British spellings fail, and so does any Vale error (`fail_on_error: true`); Vale matches
   case, so add the capitalized form of a word when it starts sentences. Put code names in backticks, add only genuine project or
   technical terms to the list, keep it sorted, and never add a word to hide a misspelling.
-- **Word list order:** sorted without regard to case (`sorted(words, key=str.lower)`); check the order after adding.
+- **Word list order:** sorted without regard to case, with an uppercase form before its lowercase twin (`Dev` before
+  `dev`): `sorted(words, key=lambda w: (w.lower(), w))`, which is what the validator test checks. Add words to the
+  list read from `main` instead of passing it through a `set()`, which reorders such twins (#413).
   Put a GitHub login such as `@AnnabiGihed` in backticks instead of adding it. Vale also flags possessives of
   product names (`Docker's`, `Aspire's`): reword them ("the Docker repository").
 - **Run markdownlint before pushing**, as the docs check does. Node isn't installed in the agent's shell, so run it in
@@ -176,6 +178,9 @@ Rules for every documentation change:
 
   When rewrapping a paragraph, no line may start with an issue number: `#376, which ...` at the start of a line is
   read as a heading without a space (MD018). Reword so the number falls inside the line.
+- **Run the repository's script tests before pushing** any change to `scripts/`, the word list or the docs, as the
+  docs `validate` check does: `python -m unittest` from `scripts/tests`, and read its `Ran ... OK` line. Its output
+  includes lines such as "Flagged #170 needs-mockup" from fake data; they don't touch real issues.
 
 ## 8. Test coverage gate (mandatory)
 
@@ -304,6 +309,16 @@ The owner, Gihed Annabi, works with the agent through short messages and expects
   into the active sprint with the request recorded, before execution.
 - **Never enter credentials or ask for them.** The owner performs steps that need OVH, DNS, Discord developer portal
   or GitHub settings access; ask for facts (server specifications, names) without credentials.
+- **Give owner steps one at a time, in the chat** (owner decision, #387). Each step says what to do, where (which
+  program, which folder, PowerShell or the server), why in a sentence, and what the owner should see. Wait for the
+  owner's report before the next step. Never assume a tool or habit: ask how they sign in or work before a step
+  depends on it (the owner signed in to the server with a password through PuTTY).
+- **The agent never signs in to the owner's server.** To learn its state, give read-only commands that print no
+  secret and ask the owner to paste the output; check from outside what can be checked from outside (DNS, HTTPS,
+  certificates, SSH methods, a port scan), and record both on the issue. Read pasted output carefully: a `sudo grep`
+  logs its own command line, which can look like the match it searched for.
+- **Changes on a shared server never assume a fresh machine.** Ask what already runs there before writing a step,
+  and make every step only add, check before changing, and restore on failure (#374).
 - **"Merged"** means: confirm the merge yourself, clean up the branches, close the task and its validated parents
   with evidence, run the board report, then report and propose the next item. Never act on "merged" before
   `gh pr view` says `MERGED`.

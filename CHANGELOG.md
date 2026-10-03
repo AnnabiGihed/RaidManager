@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- `raidmanager-conventions` gives owner steps one at a time with what, where, why and what to expect, keeps the
+  agent off the owner's server, fixes the word list order rule, and requires the script tests before pushing;
+  `raidmanager-board-operations` records how to reopen a task that a merge closed before its server verification
+  (#416).
 - The public API hostnames of every environment serve only the desktop companion's routes under `/companion/` and
   answer 404 to everything else, including `/internal/...`; the website reaches its API inside Docker (#387).
 - `deploy/server/provision.sh` prepares the shared OVH server for the dev, test and production environments: no `root`
