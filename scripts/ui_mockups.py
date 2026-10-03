@@ -24,10 +24,11 @@ MOCKUP_FOLDER = "docs/mockups"
 REPOSITORY_MOCKUP = re.compile(r"docs/mockups/[\w./-]+?\.svg", re.IGNORECASE)
 PENPOT_LINK = re.compile(r"https://(?:design\.)?penpot\.app/\S+", re.IGNORECASE)
 NO_VISUAL_CHANGE = re.compile(r"^No visual change:[ \t]*\S.{9,}$", re.IGNORECASE | re.MULTILINE)
-FORM_ANSWER = re.compile(r"^###\s*User interface\s*\n+\s*(?P<answer>\S[^\n]*)", re.IGNORECASE | re.MULTILINE)
+FORM_ANSWER = re.compile(r"^###[ \t]*+User interface[ \t\r]*+\n\s*+(?P<answer>\S[^\n]*)", re.IGNORECASE | re.MULTILINE)
 UI_SUFFIXES = (".razor", ".razor.css", ".css", ".html", ".lua", ".toc")
 UI_FOLDERS = ("src/Containers/UI/", "addon/")
-MOCKUP_SUFFIXES = (".penpot", ".svg")
+PENPOT_SUFFIX = ".penpot"
+MOCKUP_SUFFIXES = (PENPOT_SUFFIX, ".svg")
 MAX_LISTED_FILES = 5
 # SVGs belong to the documentation (diagrams and mockups) or a web project's static assets; nothing else.
 SVG_FOLDERS = ("docs/",)
@@ -113,7 +114,7 @@ def placement_problems(root: Path) -> list[str]:
     problems: list[str] = []
     for path in repository_files(root, MOCKUP_SUFFIXES):
         relative = path.relative_to(root).as_posix()
-        if path.suffix == ".penpot" and not relative.startswith(f"{MOCKUP_FOLDER}/"):
+        if path.suffix == PENPOT_SUFFIX and not relative.startswith(f"{MOCKUP_FOLDER}/"):
             problems.append(f"{relative}: Penpot files live only in {MOCKUP_FOLDER}/")
         elif path.suffix == ".svg" and not relative.startswith(SVG_FOLDERS) and SVG_ASSET_SEGMENT not in f"/{relative}":
             problems.append(f"{relative}: SVG files live only in docs/ (mockups and diagrams) or a web project's wwwroot/")
@@ -130,11 +131,11 @@ def folder_problems(root: Path) -> list[str]:
         relative = path.relative_to(root).as_posix()
         if not path.name.endswith(MOCKUP_SUFFIXES):
             problems.append(f"{relative}: {MOCKUP_FOLDER} holds only .penpot sources and the SVGs rendered from them")
-        elif path.suffix == ".svg" and not path.with_suffix(".penpot").is_file():
-            problems.append(f"{relative}: missing its Penpot source {path.with_suffix('.penpot').name}")
-        elif path.suffix == ".penpot" and not path.with_suffix(".svg").is_file():
+        elif path.suffix == ".svg" and not path.with_suffix(PENPOT_SUFFIX).is_file():
+            problems.append(f"{relative}: missing its Penpot source {path.with_suffix(PENPOT_SUFFIX).name}")
+        elif path.suffix == PENPOT_SUFFIX and not path.with_suffix(".svg").is_file():
             problems.append(f"{relative}: missing its SVG; run python scripts/penpot_render.py {relative}")
-        elif path.suffix == ".penpot" and not is_current(path):
+        elif path.suffix == PENPOT_SUFFIX and not is_current(path):
             problems.append(f"{relative}: its SVG isn't the current rendering; run python scripts/penpot_render.py {relative}")
     return problems
 

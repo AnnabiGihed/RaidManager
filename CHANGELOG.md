@@ -309,6 +309,17 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- The 37 SonarCloud findings open on `main` are fixed (#365):
+  - The website, API and bot `Dockerfile` images run as the image's non-root `app` user.
+  - The documentation workflows pin the Lychee and Vale actions to full commit ids, install MkDocs from wheels only,
+    and run `npx` without package scripts.
+  - The scripts no longer act on any path or commit text from their command line. `penpot_render.py` renders only
+    files in `docs/mockups/`, and `build_wiki.py --write` writes to `site/wiki/`. `coverage_gate.py` reads
+    `TestResults`, `--summary` writes `coverage-summary.md` at the repository root, and `--base` must be a ref or a
+    full commit id the repository has.
+  - The remaining code smells (complex functions, nested conditionals, slow regular expressions, repeated literals)
+    are split or simplified without changing behavior.
+
 - A failed deployment's rollback no longer restarts the running version: `deploy-dev` tags each run's images
   uniquely, so a rebuild of the same commit never moves the running version's tag (#450).
 - `provision.sh` no longer lists the SSH rule among the firewall rules that aren't RaidManager's: `ufw` names it

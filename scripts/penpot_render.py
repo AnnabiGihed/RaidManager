@@ -23,6 +23,9 @@ FALLBACK_FONTS = "Segoe UI, Arial, sans-serif"
 FONT_STACK = f"Open Sans, {FALLBACK_FONTS}"
 DRAWN_TYPES = frozenset({"frame", "group", "rect", "circle", "text"})
 BOARD_GAP = 80
+# Mockups live only here (ADR-0018), so the command line renders nothing else.
+MOCKUPS = Path(__file__).resolve().parents[1] / "docs" / "mockups"
+TEXT_CASES = {"uppercase": str.upper, "lowercase": str.lower}
 
 
 def number(value: float) -> str:
@@ -161,7 +164,7 @@ class Renderer:
             size = float(style.get("fontSize", 14))
             line = "".join(leaf.get("text", "") for leaf in leaves)
             transform = style.get("textTransform", "none")
-            line = line.upper() if transform == "uppercase" else line.lower() if transform == "lowercase" else line
+            line = TEXT_CASES.get(transform, str)(line)
             align = style.get("textAlign", "left")
             anchor, x = {"center": ("middle", shape["x"] + shape["width"] / 2),
                          "right": ("end", shape["x"] + shape["width"])}.get(align, ("start", shape["x"]))
@@ -226,8 +229,13 @@ def main() -> int:
     parser.add_argument("penpot", type=Path, nargs="+", help="the .penpot files to render")
     parser.add_argument("--check", action="store_true", help="fail when an SVG isn't the current rendering")
     args = parser.parse_args()
+    known = {mockup.resolve(): mockup for mockup in sorted(MOCKUPS.glob("*.penpot"))}
+    outside = [str(requested) for requested in args.penpot if requested.resolve() not in known]
+    if outside:
+        print(f"ERROR: only .penpot files in {MOCKUPS} are rendered: {', '.join(outside)}")
+        return 1
     failed = False
-    for penpot in args.penpot:
+    for penpot in (known[requested.resolve()] for requested in args.penpot):
         svg, warnings = render(penpot)
         for warning in warnings:
             print(f"WARNING: {penpot}: {warning}")

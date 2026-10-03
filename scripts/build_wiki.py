@@ -17,10 +17,13 @@ from pathlib import Path
 
 
 DEFAULT_REPOSITORY = "AnnabiGihed/RaidManager"
+REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+# The pages are written only here, inside the ignored site/ folder; the docs-publish workflow pushes them.
+WIKI_OUTPUT = REPOSITORY_ROOT / "site" / "wiki"
 HOME_SOURCE = "index.md"
-NAV_ENTRY = re.compile(r"^(?P<indent>\s*)- (?P<title>[^:]+):\s*(?P<path>\S+\.md)?\s*$")
+NAV_ENTRY = re.compile(r"^(?P<indent>\s*+)- (?P<title>[^:]++):\s*+(?P<path>\S+\.md)?\s*$")
 INLINE_LINK = re.compile(r"(?P<prefix>!?\[[^\]]*\]\()(?P<target>[^)\s]+)(?P<suffix>(?:\s+\"[^\"]*\")?\))")
-REFERENCE_LINK = re.compile(r"^(?P<prefix>\s*\[[^\]]+\]:\s*)(?P<target>\S+)(?P<suffix>.*)$")
+REFERENCE_LINK = re.compile(r"^(?P<prefix>\s*+\[[^\]]++\]:\s*+)(?P<target>\S++)(?P<suffix>.*)$")
 FENCE = re.compile(r"^\s*(```|~~~)")
 EXTERNAL = re.compile(r"^(?:[a-z][a-z0-9+.-]*:|#|//)", re.IGNORECASE)
 
@@ -180,18 +183,21 @@ def write(wiki: Wiki, docs: Path, out: Path) -> None:
 
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
-    parser.add_argument("--root", type=Path, default=Path.cwd())
-    parser.add_argument("--out", type=Path, help="folder to write the wiki into; omit to only check")
+    parser.add_argument("--write", action="store_true", help=f"write the pages to {WIKI_OUTPUT}; omit to only check")
     parser.add_argument("--repository", default=DEFAULT_REPOSITORY)
     parser.add_argument("--commit", help="commit the pages are generated from, shown in the footer")
     args = parser.parse_args()
-    wiki = build(args.root, args.repository, args.commit)
+    wiki = build(REPOSITORY_ROOT, args.repository, args.commit)
     for error in wiki.errors:
         print(f"ERROR: {error}")
     if wiki.errors:
         return 1
-    with tempfile.TemporaryDirectory() as scratch:
-        write(wiki, args.root / "docs", args.out or Path(scratch))
+    if args.write:
+        shutil.rmtree(WIKI_OUTPUT, ignore_errors=True)
+        write(wiki, REPOSITORY_ROOT / "docs", WIKI_OUTPUT)
+    else:
+        with tempfile.TemporaryDirectory() as scratch:
+            write(wiki, REPOSITORY_ROOT / "docs", Path(scratch))
     print(f"Wiki built: {len(wiki.pages)} pages, {len(wiki.assets)} assets")
     return 0
 

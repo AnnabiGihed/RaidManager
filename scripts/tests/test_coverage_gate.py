@@ -2,6 +2,7 @@
 
 from __future__ import annotations
 
+import subprocess
 import sys
 import tempfile
 import unittest
@@ -9,7 +10,8 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from coverage_gate import (  # noqa: E402
-    MARKER, Coverage, Ratio, changed_lines, changed_ratio, gate_errors, line_ranges, read_reports, summary,
+    MARKER, Coverage, Ratio, changed_lines, changed_ratio, gate_errors, known_base, line_ranges, read_reports,
+    summary,
     total_ratio, unmeasured_projects,
 )
 
@@ -143,6 +145,32 @@ class SummaryTests(unittest.TestCase):
     def test_line_ranges_join_consecutive_numbers(self) -> None:
         self.assertEqual(line_ranges([1, 2, 3, 7, 9, 10]), "1-3, 7, 9-10")
 
+
+
+class KnownBaseTests(unittest.TestCase):
+    def setUp(self) -> None:
+        scratch = tempfile.TemporaryDirectory()
+        self.addCleanup(scratch.cleanup)
+        self.root = Path(scratch.name)
+        self.git("init", "--quiet", "--initial-branch=main")
+        (self.root / "file.txt").write_text("content\n", encoding="utf-8")
+        self.git("add", "file.txt")
+        self.git("-c", "user.name=Test", "-c", "user.email=test@example.com", "commit", "--quiet", "-m", "first")
+        self.commit = self.git("rev-parse", "HEAD").strip()
+
+    def git(self, *arguments: str) -> str:
+        return subprocess.run(["git", *arguments], cwd=self.root, check=True, capture_output=True, text=True).stdout
+
+    def test_a_ref_is_known(self) -> None:
+        self.assertEqual(known_base("main", self.root), "main")
+
+    def test_a_full_commit_id_is_known(self) -> None:
+        self.assertEqual(known_base(self.commit, self.root), self.commit)
+
+    def test_anything_else_is_refused(self) -> None:
+        for requested in ("missing", self.commit[:7], "main; rm -rf /", "--output=/tmp/x"):
+            with self.subTest(requested=requested):
+                self.assertIsNone(known_base(requested, self.root))
 
 if __name__ == "__main__":
     unittest.main()
