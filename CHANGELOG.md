@@ -313,6 +313,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- A pull request description saved in the browser, which GitHub stores with `\r\n` line endings, keeps its
+  `Closes #<task>` line: `validate` finds it, and the review workflow closes that task when it merges (#475).
 - The 37 SonarCloud findings open on `main` are fixed (#365):
   - The website, API and bot `Dockerfile` images run as the image's non-root `app` user.
   - The documentation workflows pin the Lychee and Vale actions to full commit ids, install MkDocs from wheels only,

@@ -116,10 +116,11 @@ jobs:
           HEAD_SHA: ${{ steps.gate.outputs.head_sha }}
         run: |
           # Only standalone closing lines before the first heading are instructions. Examples in the PR body are not.
+          # A body saved in the browser has CRLF line endings, so the carriage returns go first (#474).
           linked=$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json closingIssuesReferences \
             --jq '.closingIssuesReferences[].number')
           written=$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json body --jq .body \
-            | sed '/^## /,$d' | grep -iE '^Closes #[0-9]+[[:blank:]]*$' | grep -oE '[0-9]+' || true)
+            | tr -d '\r' | sed '/^## /,$d' | grep -iE '^Closes #[0-9]+[[:blank:]]*$' | grep -oE '[0-9]+' || true)
           closes=$(printf '%s\n%s\n' "$linked" "$written" | grep -E '^[0-9]+$' | sort -un || true)
           # GitHub needs a moment to take the new status into account, and it sometimes answers "Merge already in
           # progress" for minutes, so the merge is retried for about five minutes with growing waits.

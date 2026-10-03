@@ -21,6 +21,10 @@ class ClosingWorkItemsTests(unittest.TestCase):
     def test_inline_or_section_examples_do_not_close(self) -> None:
         self.assertEqual([], closing_numbers("An example Closes #7\n\n## Details\nCloses #12"))
 
+    def test_a_description_saved_in_the_browser_closes_the_same_tasks(self) -> None:
+        body = "Closes #470\r\nCloses #471 \r\n\r\nRefs #461\r\n\r\n## What changed\r\nCloses #12\r\n"
+        self.assertEqual([470, 471], closing_numbers(body))
+
 
 if __name__ == "__main__":
     unittest.main()
