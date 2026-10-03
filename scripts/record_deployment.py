@@ -107,8 +107,10 @@ def delivered_items(issues: dict[int, Issue], history: set[str]) -> set[int]:
     memo: dict[int, bool] = {}
 
     def delivered(number: int | None, path: frozenset[int]) -> bool:
-        issue = issues.get(number) if number is not None else None
-        if issue is None or not issue.completed or number in path:
+        if number is None or number in path:
+            return False
+        issue = issues.get(number)
+        if issue is None or not issue.completed:
             return False
         if number not in memo:
             if issue.children:
