@@ -60,6 +60,7 @@ date on the Project, both inclusive) follows the blocked-by order; the item's ow
 | #421 Keep closing keywords out of pull request prose | Improvement | 1 | 3 Oct | #422 (Business Analysis) | None |
 | #436 Record the day's planning and automation changes | Improvement | 2 | 3 Oct | #437 (Business Analysis) | None |
 | #409 Move the database from SQL Server to PostgreSQL | Improvement | 5 | 5 to 7 Oct | #410 (Architecture Analysis), #411 (Development) | None |
+| #455 Keep the session's deployment and review lessons in the skills | Improvement | 1 | 3 Oct | #456 (Business Analysis) | None |
 
 16 October is kept as a buffer.
 
@@ -100,6 +101,7 @@ and its task #388 wait for #409 and #411.
 | 2026-10-03 | #436 with #437 added on the owner's decision recorded on #436: record the day's selections, the automation coverage and the skill pitfalls; #410 narrowed to its ADR. |
 | 2026-10-03 | #376 pointed at dev (owner decision on #369) and its task #389 split, with the owner's approval, into #444 (the Compose files), #389 (the workflow) and #445 (the first deployment's verification); #376 and #389 now wait for #388 instead of #375, which closes after #445. |
 | 2026-10-03 | #392 and #393 widened to dev, test and production, raised to P0 and moved first, on the owner's decisions recorded on #392: a label per environment on every delivered item, parent and release, a failure label, and the dev backfill. |
+| 2026-10-03 | #455 with #456 added on the owner's decision recorded on #455: the session's lessons in the skills before a new session. |
 
 ## Outcome
 
