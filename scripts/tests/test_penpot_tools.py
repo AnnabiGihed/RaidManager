@@ -6,6 +6,7 @@ import json
 import sys
 import tempfile
 import unittest
+import unittest.mock
 import zipfile
 from pathlib import Path
 
@@ -16,7 +17,7 @@ from penpot_components import (  # noqa: E402
     AVATAR_TONES, BADGE_TONES, BOARD_H, BOARD_W, BUTTON_STYLES, NOTICE_TONES, OFFICER_PAGES, PLAYER, PLAYER_PAGES,
     ADDON_H, ADDON_W, PUBLIC_W, PUBLIC_X, WINDOW_H, WINDOW_W, addon_frame, app_screen, checkbox, companion_window, form_field, badge, button, notice, page_header, public_screen,
 )
-from penpot_render import is_current, render  # noqa: E402
+from penpot_render import is_current, main as render_main, render  # noqa: E402
 from penpot_scene import (  # noqa: E402
     HOUSE_PALETTE, FILE_VERSION, MIGRATIONS, ROOT_ID, Board, Circle, Click, Group, Rect, contrast_ratio, text, write_mockup,
     write_penpot,
@@ -132,8 +133,9 @@ class PenpotFileTests(unittest.TestCase):
         approve_button(boards).on_click = Click("open-overlay", "3 · Missing")
         with self.assertRaisesRegex(ValueError, "no board named '3 · Missing'"):
             write_penpot(self.path, "review", "Review", boards)
+        fresh = scene()
         with self.assertRaisesRegex(ValueError, "Flow 'Start' starts on a board that doesn't exist"):
-            write_penpot(self.path, "review", "Review", scene(), flows={"Start": "Nowhere"})
+            write_penpot(self.path, "review", "Review", fresh, flows={"Start": "Nowhere"})
 
     def test_low_contrast_text_stops_the_generation(self) -> None:
         board = Board("Board", 0, 0, 300, 100, "#FFFFFF", [
@@ -150,8 +152,10 @@ class PenpotFileTests(unittest.TestCase):
         write_penpot(self.path, "ok", "Page", [board], palette={"Surface/card": "#FFFFFF", "Custom/badge": "#123456"})
 
     def test_a_colour_has_one_name_in_the_palette(self) -> None:
+        boards = scene()
+        palette = {"A/white": "#FFFFFF", "B/white": "#ffffff"}
         with self.assertRaisesRegex(ValueError, "these have several: #ffffff"):
-            write_penpot(self.path, "dup", "Page", scene(), palette={"A/white": "#FFFFFF", "B/white": "#ffffff"})
+            write_penpot(self.path, "dup", "Page", boards, palette=palette)
 
     def test_icons_need_graphic_contrast_only(self) -> None:
         board = Board("Board", 0, 0, 300, 100, "#FFFFFF", [
@@ -268,8 +272,8 @@ class ComponentTests(unittest.TestCase):
         names = layer_names(app_screen("1 · Characters", 0, 0, "My characters", [], user=PLAYER).children)
         self.assertNotIn("Officer navigation", names)
         self.assertNotIn("Schedule link", names)
-        self.assertIn("Bryn Valewood", [item.text for item in find(app_screen("b", 0, 0, "Raids", [], user=PLAYER).children,
-                                                                    "User card").children if hasattr(item, "text")])
+        self.assertIn("Bryn Valewood", [item.content for item in find(app_screen("b", 0, 0, "Raids", [], user=PLAYER).children,
+                                                                    "User card").children if hasattr(item, "content")])
 
     def test_the_active_page_is_marked_and_navigation_links_to_boards(self) -> None:
         board = app_screen("1 · Overview", 0, 0, "Raids", [], links={"Overview": "2 · Other"})
@@ -278,7 +282,7 @@ class ComponentTests(unittest.TestCase):
         self.assertNotIn("Active mark", layer_names(other.children))
         self.assertEqual(other.on_click, Click("navigate", "2 · Other"))
         self.assertIsNone(active.on_click)
-        breadcrumb = [item.text for item in find(board.children, "Breadcrumb").children if hasattr(item, "text")]
+        breadcrumb = [item.content for item in find(board.children, "Breadcrumb").children if hasattr(item, "content")]
         self.assertEqual(breadcrumb, ["CITADEL VANGUARD", "/", "RAIDS"])
 
     def test_every_component_passes_contrast_in_a_generated_file(self) -> None:
@@ -311,8 +315,8 @@ class ComponentTests(unittest.TestCase):
     def test_a_user_without_a_community_sees_an_empty_community_card(self) -> None:
         board = app_screen("1 · New", 0, 0, "Overview", [], community=None, user=PLAYER)
         card = find(board.children, "Community card")
-        self.assertIn("No community yet", [item.text for item in card.children if hasattr(item, "text")])
-        breadcrumb = [item.text for item in find(board.children, "Breadcrumb").children if hasattr(item, "text")]
+        self.assertIn("No community yet", [item.content for item in card.children if hasattr(item, "content")])
+        breadcrumb = [item.content for item in find(board.children, "Breadcrumb").children if hasattr(item, "content")]
         self.assertEqual(breadcrumb[0], "RAIDMANAGER")
         write_penpot(self.path, "new", "New", [board])
 
@@ -382,6 +386,19 @@ class ComponentTests(unittest.TestCase):
         self.assertGreater(width(button("Wide", 0, 0, "Approve all characters")), width(button("Short", 0, 0, "OK")))
         self.assertEqual(width(button("Fixed", 0, 0, "OK", width=120)), 120)
 
+
+
+class RenderCommandTests(unittest.TestCase):
+    def test_files_outside_the_mockup_folder_are_refused(self) -> None:
+        with tempfile.TemporaryDirectory() as scratch:
+            outside = Path(scratch) / "screen.penpot"
+            outside.write_bytes(b"")
+            arguments = ["penpot_render.py", str(outside)]
+            with unittest.mock.patch.object(sys, "argv", arguments), \
+                    unittest.mock.patch("builtins.print") as printed:
+                self.assertEqual(render_main(), 1)
+            self.assertFalse(outside.with_suffix(".svg").exists())
+            self.assertIn("only .penpot files in", printed.call_args.args[0])
 
 if __name__ == "__main__":
     unittest.main()

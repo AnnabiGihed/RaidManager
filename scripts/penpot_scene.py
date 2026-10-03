@@ -180,7 +180,7 @@ class Text:
     name: str
     x: float
     top: float
-    text: str
+    content: str
     size: float = 14
     weight: int = 400
     color: str = "#EFF5FA"
@@ -236,8 +236,8 @@ def text_width(item: Text) -> float:
     """Estimates the width of a growing text box; Penpot measures the real width when the file opens."""
     if item.width:
         return item.width
-    factor = 0.62 if item.text.isupper() else 0.53
-    return round(len(item.text) * item.size * factor + len(item.text) * item.spacing + 2, 1)
+    factor = 0.62 if item.content.isupper() else 0.53
+    return round(len(item.content) * item.size * factor + len(item.content) * item.spacing + 2, 1)
 
 
 def bounds(item: Item) -> tuple[float, float, float, float]:
@@ -269,7 +269,7 @@ def offset(item: Item, dx: float, dy: float) -> Item:
     if isinstance(item, Circle):
         return Circle(item.name, item.cx + dx, item.cy + dy, item.r, item.fill)
     if isinstance(item, Text):
-        return Text(item.name, item.x + dx, item.top + dy, item.text, item.size, item.weight, item.color, item.width,
+        return Text(item.name, item.x + dx, item.top + dy, item.content, item.size, item.weight, item.color, item.width,
                     item.align, item.spacing, item.icon)
     return Group(item.name, [offset(child, dx, dy) for child in item.children], item.on_click)
 
@@ -395,7 +395,7 @@ class PenpotWriter:
                      "letterSpacing": f"{item.spacing:g}", "textTransform": "none", "textDecoration": "none",
                      "textDirection": "ltr", "textAlign": item.align, "fills": self.library.fill(item.color),
                      "typographyRefId": typography_id, "typographyRefFile": self.library.file_id}
-            paragraph = {"type": "paragraph", **style, "children": [{"text": item.text, **style}]}
+            paragraph = {"type": "paragraph", **style, "children": [{"text": item.content, **style}]}
             shape = {**base, "type": "text", **geometry(*bounds(item)),
                      "growType": "fixed" if item.width else "auto-width",
                      "content": {"type": "root", "verticalAlign": "top",
@@ -429,6 +429,33 @@ def flatten(items: list[Item]) -> list[Rect | Circle | Text]:
     return drawn
 
 
+def covers(behind: Rect | Circle, layer: Text) -> bool:
+    """Tells whether an opaque shape lies wholly behind a text layer."""
+    opaque = isinstance(behind, Circle) or (behind.fill is not None and behind.opacity == 1)
+    if not opaque or not behind.fill:
+        return False
+    x, y, w, h = bounds(layer)
+    bx, by, bw, bh = bounds(behind)
+    return bx <= x and by <= y and bx + bw >= x + w and by + bh >= y + h
+
+
+def background_of(board: Board, below: list[Rect | Circle | Text], layer: Text) -> str:
+    """Finds the colour behind a text: the topmost opaque shape covering it, or the board."""
+    background = board.fill
+    for behind in below:
+        if not isinstance(behind, Text) and covers(behind, layer):
+            background = behind.fill or background
+    return background
+
+
+def minimum_contrast(layer: Text) -> float:
+    """Gives the WCAG AA contrast a text layer needs: graphic for icons, lower for large text."""
+    if layer.icon:
+        return ICON_CONTRAST
+    large = layer.size >= 24 or (layer.size >= 18.66 and layer.weight >= 700)
+    return LARGE_TEXT_CONTRAST if large else NORMAL_TEXT_CONTRAST
+
+
 def contrast_problems(boards: list[Board]) -> list[str]:
     """Checks each text against the topmost opaque shape behind it, or the board, for WCAG AA contrast."""
     problems: list[str] = []
@@ -437,20 +464,11 @@ def contrast_problems(boards: list[Board]) -> list[str]:
         for index, layer in enumerate(layers):
             if not isinstance(layer, Text):
                 continue
-            x, y, w, h = bounds(layer)
-            background = board.fill
-            for behind in layers[:index]:
-                if isinstance(behind, Text):
-                    continue
-                bx, by, bw, bh = bounds(behind)
-                opaque = isinstance(behind, Circle) or (behind.fill is not None and behind.opacity == 1)
-                if opaque and behind.fill and bx <= x and by <= y and bx + bw >= x + w and by + bh >= y + h:
-                    background = behind.fill
-            large = layer.size >= 24 or (layer.size >= 18.66 and layer.weight >= 700)
-            minimum = ICON_CONTRAST if layer.icon else LARGE_TEXT_CONTRAST if large else NORMAL_TEXT_CONTRAST
+            background = background_of(board, layers[:index], layer)
+            minimum = minimum_contrast(layer)
             ratio = contrast_ratio(layer.color, background)
             if ratio < minimum:
-                problems.append(f"{board.name}: text {layer.name!r} ({layer.text!r}) has contrast {ratio:.2f}:1 on "
+                problems.append(f"{board.name}: text {layer.name!r} ({layer.content!r}) has contrast {ratio:.2f}:1 on "
                                 f"{background}; WCAG AA needs {minimum:g}:1")
     return problems
 

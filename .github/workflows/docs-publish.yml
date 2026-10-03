@@ -21,7 +21,7 @@ jobs:
           python-version: '3.12'
       - name: Build documentation
         run: |
-          python -m pip install mkdocs-material==9.6.22
+          python -m pip install --only-binary :all: mkdocs-material==9.6.22
           python -m mkdocs build --strict --site-dir site
       - name: Upload GitHub Pages artifact
         uses: actions/upload-pages-artifact@v4
@@ -63,7 +63,7 @@ jobs:
         with:
           python-version: '3.12'
       - name: Build the wiki pages
-        run: python scripts/build_wiki.py --out "$RUNNER_TEMP/pages" --repository "$GITHUB_REPOSITORY" --commit "$GITHUB_SHA"
+        run: python scripts/build_wiki.py --write --repository "$GITHUB_REPOSITORY" --commit "$GITHUB_SHA"
       - name: Publish the wiki
         env:
           GH_TOKEN: ${{ github.token }}
@@ -74,7 +74,7 @@ jobs:
             exit 1
           fi
           find "$wiki" -mindepth 1 -maxdepth 1 ! -name .git -exec rm -rf {} +
-          cp -R "$RUNNER_TEMP/pages/." "$wiki/"
+          cp -R "$GITHUB_WORKSPACE/site/wiki/." "$wiki/"
           cd "$wiki"
           git add --all
           if git diff --cached --quiet; then

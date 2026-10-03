@@ -22,6 +22,12 @@ MIN_TOTAL = 60.0
 MARKER = "<!-- coverage-report -->"
 HUNK = re.compile(r"^@@ -\d+(?:,\d+)? \+(?P<start>\d+)(?:,(?P<count>\d+))? @@")
 MAX_LISTED_FILES = 15
+REPOSITORY_ROOT = Path(__file__).resolve().parents[1]
+# The summary is written only here; the CI workflow posts it as the run summary and the pull-request comment.
+SUMMARY_FILE = REPOSITORY_ROOT / "coverage-summary.md"
+SKIPPED = "➖"
+PASSED = "✅"
+FAILED = "❌"
 
 
 @dataclass
@@ -58,19 +64,23 @@ def relative_path(filename: str, sources: list[str], root: Path) -> str | None:
     return None
 
 
+def read_report(path: Path, root: Path, coverage: Coverage) -> None:
+    """Adds the src/ lines of one Cobertura report to the merged coverage."""
+    report = ElementTree.parse(path).getroot()
+    sources = [source.text or "" for source in report.iter("source")]
+    for package in report.iter("package"):
+        project = package.get("name", "")
+        for cls in package.iter("class"):
+            relative = relative_path(cls.get("filename", ""), sources, root)
+            if relative is not None and relative.startswith("src/"):
+                for line in cls.iter("line"):
+                    coverage.add(relative, project, int(line.get("number", "0")), int(line.get("hits", "0")) > 0)
+
+
 def read_reports(paths: list[Path], root: Path) -> Coverage:
     coverage = Coverage()
     for path in paths:
-        report = ElementTree.parse(path).getroot()
-        sources = [source.text or "" for source in report.iter("source")]
-        for package in report.iter("package"):
-            project = package.get("name", "")
-            for cls in package.iter("class"):
-                relative = relative_path(cls.get("filename", ""), sources, root)
-                if relative is None or not relative.startswith("src/"):
-                    continue
-                for line in cls.iter("line"):
-                    coverage.add(relative, project, int(line.get("number", "0")), int(line.get("hits", "0")) > 0)
+        read_report(path, root, coverage)
     return coverage
 
 
@@ -142,11 +152,39 @@ def cell(ratio: Ratio) -> str:
     return "n/a" if ratio.percent is None else f"{ratio.percent:.1f}%"
 
 
+def status(ratio: Ratio, minimum: float) -> str:
+    if ratio.percent is None:
+        return SKIPPED
+    return PASSED if ratio.percent >= minimum else FAILED
+
+
+def uncovered_section(uncovered: dict[str, list[int]]) -> list[str]:
+    """Lists the uncovered changed lines of the first files, in a collapsed section."""
+    if not uncovered:
+        return []
+    lines = ["", "<details><summary>Uncovered changed lines</summary>", ""]
+    for path, numbers in list(uncovered.items())[:MAX_LISTED_FILES]:
+        lines.append(f"- `{path}`: {line_ranges(numbers)}")
+    if len(uncovered) > MAX_LISTED_FILES:
+        lines.append(f"- … and {len(uncovered) - MAX_LISTED_FILES} more files")
+    return [*lines, "", "</details>"]
+
+
+def project_section(coverage: Coverage) -> list[str]:
+    """Tabulates the coverage of each project, in a collapsed section."""
+    by_project: dict[str, list[str]] = {}
+    for path, project in coverage.projects.items():
+        by_project.setdefault(project, []).append(path)
+    lines = ["", "<details><summary>By project</summary>", "", "| Project | Covered lines | Coverage |",
+             "| --- | ---: | ---: |"]
+    for project in sorted(by_project):
+        ratio = total_ratio(coverage, by_project[project])
+        lines.append(f"| {project} | {ratio.covered} / {ratio.total} | {cell(ratio)} |")
+    return [*lines, "", "</details>", ""]
+
+
 def summary(coverage: Coverage, total: Ratio, changed: Ratio | None, uncovered: dict[str, list[int]],
             errors: list[str], min_total: float, min_changed: float, unmeasured: list[str] | None = None) -> str:
-    def status(ratio: Ratio, minimum: float) -> str:
-        return "➖" if ratio.percent is None else ("✅" if ratio.percent >= minimum else "❌")
-
     lines = [MARKER, "## Test coverage", ""]
     lines.append("❌ **The coverage gate failed.**" if errors else "✅ **The coverage gate passed.**")
     lines += ["", "| Scope | Covered lines | Coverage | Minimum | |", "| --- | ---: | ---: | ---: | --- |"]
@@ -162,29 +200,26 @@ def summary(coverage: Coverage, total: Ratio, changed: Ratio | None, uncovered: 
     if unmeasured:
         lines += ["", "No test loads these projects, so they have no coverage data and the total leaves them out: "
                   + ", ".join(f"`{name}`" for name in unmeasured) + "."]
-    if uncovered:
-        lines += ["", "<details><summary>Uncovered changed lines</summary>", ""]
-        for path, numbers in list(uncovered.items())[:MAX_LISTED_FILES]:
-            lines.append(f"- `{path}`: {line_ranges(numbers)}")
-        if len(uncovered) > MAX_LISTED_FILES:
-            lines.append(f"- … and {len(uncovered) - MAX_LISTED_FILES} more files")
-        lines += ["", "</details>"]
-    by_project: dict[str, list[str]] = {}
-    for path, project in coverage.projects.items():
-        by_project.setdefault(project, []).append(path)
-    lines += ["", "<details><summary>By project</summary>", "", "| Project | Covered lines | Coverage |",
-              "| --- | ---: | ---: |"]
-    for project in sorted(by_project):
-        ratio = total_ratio(coverage, by_project[project])
-        lines.append(f"| {project} | {ratio.covered} / {ratio.total} | {cell(ratio)} |")
-    lines += ["", "</details>", ""]
+    lines += uncovered_section(uncovered)
+    lines += project_section(coverage)
     return "\n".join(lines)
 
 
-def git_diff(base: str, root: Path) -> str:
-    result = subprocess.run(["git", "diff", "-U0", "--no-color", "--no-renames", base, "HEAD", "--", "src"],
-                            cwd=root, check=True, capture_output=True, text=True, encoding="utf-8")
+def git(root: Path, *arguments: str) -> str:
+    result = subprocess.run(["git", *arguments], cwd=root, check=True, capture_output=True, text=True, encoding="utf-8")
     return result.stdout
+
+
+def known_base(requested: str, root: Path) -> str | None:
+    """Finds the requested base among the repository's refs and commits, so only git's own value reaches git."""
+    refs = git(root, "for-each-ref", "--format=%(refname:short)").split()
+    objects = git(root, "cat-file", "--batch-all-objects", "--batch-check=%(objectname) %(objecttype)").splitlines()
+    commits = [line.split()[0] for line in objects if line.endswith(" commit")]
+    return next((name for name in [*refs, *commits] if name == requested), None)
+
+
+def git_diff(base: str, root: Path) -> str:
+    return git(root, "diff", "-U0", "--no-color", "--no-renames", base, "HEAD", "--", "src")
 
 
 def main() -> int:
@@ -193,24 +228,28 @@ def main() -> int:
         sys.stdout.reconfigure(encoding="utf-8", errors="replace")
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--reports", type=Path, required=True, help="folder searched for coverage.cobertura.xml")
-    parser.add_argument("--root", type=Path, default=Path.cwd())
-    parser.add_argument("--base", default="", help="base commit of a pull request; empty checks the total only")
-    parser.add_argument("--summary", type=Path, help="file the Markdown summary is written to")
+    parser.add_argument("--base", default="", help="base commit (full id) or ref of a pull request; empty checks the total only")
+    parser.add_argument("--summary", action="store_true", help=f"also write the Markdown summary to {SUMMARY_FILE}")
     parser.add_argument("--min-total", type=float, default=MIN_TOTAL)
     parser.add_argument("--min-changed", type=float, default=MIN_CHANGED)
     args = parser.parse_args()
 
-    coverage = read_reports(sorted(args.reports.rglob("coverage.cobertura.xml")), args.root)
+    root = REPOSITORY_ROOT
+    coverage = read_reports(sorted(args.reports.rglob("coverage.cobertura.xml")), root)
     total = total_ratio(coverage)
     changed: Ratio | None = None
     uncovered: dict[str, list[int]] = {}
     if args.base:
-        changed, uncovered = changed_ratio(coverage, changed_lines(git_diff(args.base, args.root)))
+        base = known_base(args.base, root)
+        if base is None:
+            print(f"ERROR: {args.base} is neither a ref nor a full commit id in this repository; fetch it first.")
+            return 1
+        changed, uncovered = changed_ratio(coverage, changed_lines(git_diff(base, root)))
     errors = gate_errors(total, changed, args.min_total, args.min_changed)
     report = summary(coverage, total, changed, uncovered, errors, args.min_total, args.min_changed,
-                     unmeasured_projects(args.root, coverage))
+                     unmeasured_projects(root, coverage))
     if args.summary:
-        args.summary.write_text(report, encoding="utf-8")
+        SUMMARY_FILE.write_text(report, encoding="utf-8")
     print(report)
     return 1 if errors else 0
 

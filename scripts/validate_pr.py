@@ -17,10 +17,11 @@ REQUIRED_SECTIONS = (
 
 # Only this item may stay unchecked when the pull request opens: CI and approval happen afterwards.
 DEFERRED_ITEM = "Required CI checks pass"
+SELF_REVIEW_HEADING = "### Author self-review"
 
 
 def unchecked_self_review_items(body: str) -> list[str]:
-    section = body.split("### Author self-review", 1)[1] if "### Author self-review" in body else ""
+    section = body.split(SELF_REVIEW_HEADING, 1)[1] if SELF_REVIEW_HEADING in body else ""
     items = [line.strip()[len("- [ ]"):].strip() for line in section.splitlines() if line.strip().startswith("- [ ]")]
     return [item for item in items if not item.startswith(DEFERRED_ITEM)]
 
@@ -32,7 +33,7 @@ def validate(body: str) -> list[str]:
         errors.append("PR description must contain the five required sections in order")
     if not closing_numbers(body):
         errors.append("PR description must have a standalone Closes #number line before the first section")
-    if "### Author self-review" not in body or "- [" not in body:
+    if SELF_REVIEW_HEADING not in body or "- [" not in body:
         errors.append("PR description must include the author self-review checklist")
     for item in unchecked_self_review_items(body):
         errors.append(f"Author self-review item is not checked: {item}")
