@@ -3,13 +3,15 @@
 - Status: Proposed
 - Date: 2026-10-03
 - Deciders: Gihed Annabi
-- Amended: 2026-10-03, by #387, while still Proposed (owner decisions on #374, #369 and #387)
+- Amended: 2026-10-03, by #387, while still Proposed (owner decisions on #374, #369 and #387); database and memory
+  amended by [ADR-0029](0029-store-data-in-postgresql.md) (#410)
 
 The server turned out to be in use already: it hosts the `pivotsoftwares.com` website and Delivery Atlas behind one
 shared Caddy. The amendment keeps RaidManager beside them: it joins the shared proxy instead of running its own,
 the server isn't reinstalled, the memory budget counts what already runs, and provisioning only adds. A second
 amendment the same day adds the sites of the dev and production environments the owner decided on #369, so the shared
-Caddyfile is edited once; the rest of this record still describes the test environment until #410 revises it.
+Caddyfile is edited once. ADR-0029 then replaces SQL Server with PostgreSQL, one instance per environment, and its
+memory budget covers the three environments; the rest of this record still describes the test environment.
 
 ## Context
 
@@ -17,7 +19,8 @@ Release v0.3 deploys RaidManager to a test environment on an OVH VPS-1 (owner de
 the Aspire application runs there before the server is provisioned (#374), configured (#375) and deployed to
 automatically (#376).
 
-The application is four resources in `RaidManager.AppHost`: the website, the API, the Discord bot and SQL Server. The
+The application is four resources in `RaidManager.AppHost`: the website, the API, the Discord bot and the database
+(SQL Server, then PostgreSQL by ADR-0029). The
 desktop companion uploads to the API from players' machines (ADR-0002), so the API is public as well as the website.
 
 The server, as ordered by the owner (#380, 2026-10-03):
@@ -87,27 +90,14 @@ What already runs on it, as read on 2026-10-03 (#374):
 - **The applications listen on plain HTTP inside the Compose network** and trust the proxy's forwarded headers, so
   they see the original scheme and host. Discord sign-in redirects to
   `https://raidmanager-test.pivotsoftwares.com/signin-discord`.
-- **SQL Server, the bot and the Aspire dashboard publish no port.** The dashboard binds to `127.0.0.1` on the server
-  and is reached through an SSH tunnel.
+- **The databases and the bots publish no port.** The Aspire dashboard doesn't run on the server (ADR-0029).
 
-### SQL Server Express beside the applications
+### The database
 
-SQL Server fits if its memory is capped. It runs the same `mssql/server:2022` image as the local run, with
-`MSSQL_PID=Express`, which the license allows in production too, and `MSSQL_MEMORY_LIMIT_MB=2048`, since SQL
-Server on Linux needs 2 GB. Express caps its buffer pool at about 1.4 GB, well below the limit. The planned memory:
-
-| Process | Planned memory |
-| --- | --- |
-| Ubuntu and Docker | 0.5 GB |
-| Shared Caddy, website and Delivery Atlas (measured: 46 MB) | 0.1 GB |
-| SQL Server Express | 2.0 GB at most |
-| API, website and bot | 0.75 GB together |
-| Aspire dashboard | 0.15 GB |
-| Total | 3.5 GB of the 3.7 GiB (about 3.9 GB) the system sees |
-
-A 2 GB swap file absorbs peaks. If the measured use stays above 3.5 GB, the dashboard is the first thing to remove.
-The database stays in a Docker volume on the local disk. The images take about 3 GB, so the 40 GB disk keeps the
-current and the previous images, and the workflow prunes older ones.
+[ADR-0029](0029-store-data-in-postgresql.md) replaces the SQL Server Express instance first planned here (2 GB of
+memory) with PostgreSQL, one instance per environment, and gives the memory budget for the three environments:
+about 2.8 GB of the 3.7 GiB the system sees, with the 2 GB swap file for peaks. Each database stays in a Docker volume
+on the local disk. Each environment keeps its current and previous images, and the workflow prunes older ones.
 
 ### The server
 
@@ -116,7 +106,8 @@ current and the previous images, and the workflow prunes older ones.
   `root` can't sign in over SSH, and SSH accepts keys only once the owner signs in with a key (#387).
 - `ufw` allows 22, 80 and 443 for RaidManager. Docker bypasses `ufw` for published ports, which is why only Caddy
   publishes any. RaidManager doesn't need the 8080 rule; provisioning reports it and leaves it to the owner.
-- OVH's daily automated backup covers the server and the database volume. Test data can be lost without harm.
+- OVH's daily automated backup covers the server and the database volumes. A logical backup of production's database
+  comes with the production work (ADR-0029).
 
 ## Changes the applications need
 
@@ -131,8 +122,8 @@ These belong to #375 (settings) and #376 (pipeline), not to this decision:
 - **Data protection keys:** the website keeps its keys in a Docker volume. Otherwise, each deployment signs everyone
   out and breaks protected community links (`CommunityLinkProtector`).
 - **Environment name:** the containers run as `Staging`, which keeps Development-only pages such as `/scalar` off.
-- **Secrets:** the Discord client secret, the bot token, the website key and the SQL password reach the containers as
-  #103 decides. Until then, the `.env` file on the server holds no value.
+- **Secrets:** the Discord client secret, the bot token, the website key and the database password reach the
+  containers as #103 decides. Until then, the `.env` file on the server holds no value.
 
 ## Provisioning steps for #374
 
@@ -167,8 +158,9 @@ server (owner decision on #374).
 
 **Negative**
 
-- Memory is tight: SQL Server takes half the server, and a heavy test load can swap. Moving the database to a managed
-  service or a larger VPS is the way out if that happens.
+- Memory stays tight with three environments, even with PostgreSQL: about 2.8 GB of 3.9 GB is planned, and a heavy
+  load can swap. A larger VPS, or moving production off the shared server (owner decision on #369: later), is the way
+  out if that happens.
 - One server has no redundancy; a failed deployment or an OVH incident takes the environment down until it's fixed.
 - RaidManager shares the server with the `pivotsoftwares.com` website and Delivery Atlas: a memory peak in one can
   slow the others, and a broken edit of the shared Caddyfile would affect all of them, which is why provisioning
