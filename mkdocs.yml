@@ -16,7 +16,7 @@ nav:
   - Review a pull request: how-to/review-a-pull-request.md
   - Design a screen: how-to/design-a-screen.md
   - Set up Discord: how-to/set-up-discord.md
-  - Provision the test server: how-to/provision-the-test-server.md
+  - Provision the server: how-to/provision-the-server.md
   - Glossary: glossary.md
   - API contracts: reference/api-contracts.md
   - Project automation: reference/project-automation.md

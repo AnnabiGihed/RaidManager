@@ -1,8 +1,9 @@
 #!/usr/bin/env bash
-# Prepares the shared OVH server for the RaidManager test environment (ADR-0027).
+# Prepares the shared OVH server for the RaidManager dev, test and production environments (ADR-0027).
 # Author: Gihed Annabi
 #
-# Run it from your admin account: sudo bash provision.sh [deploy-public-key-file]
+# Run it from your admin account: sudo bash provision.sh [--keys-only] [deploy-public-key-file]
+#   --keys-only  also turns off SSH password sign-in. Use it only after you have signed in with your SSH key.
 # It only adds what is missing, so it is safe to run again. It never reinstalls anything, resets the firewall, or
 # stops the applications already on the server.
 set -euo pipefail
@@ -15,17 +16,37 @@ readonly PROXY_CONFIG_IN_CONTAINER=/etc/caddy/Caddyfile
 readonly SHARED_NETWORK=web
 readonly SWAP_FILE=/swapfile
 readonly SWAP_SIZE=2G
-readonly SSHD_DROP_IN=/etc/ssh/sshd_config.d/10-raidmanager.conf
-readonly SITE_MARKER="# RaidManager test environment (ADR-0027)"
-readonly HOSTNAMES=(raidmanager-test.pivotsoftwares.com api.raidmanager-test.pivotsoftwares.com)
+readonly SSHD_NO_ROOT=/etc/ssh/sshd_config.d/10-raidmanager-no-root.conf
+readonly SSHD_KEYS_ONLY=/etc/ssh/sshd_config.d/11-raidmanager-keys-only.conf
+readonly SITE_MARKER="# RaidManager environments (ADR-0027)"
+readonly HOSTNAMES=(
+    raidmanager-dev.pivotsoftwares.com api.raidmanager-dev.pivotsoftwares.com
+    raidmanager-test.pivotsoftwares.com api.raidmanager-test.pivotsoftwares.com
+    raidmanager.pivotsoftwares.com api.raidmanager.pivotsoftwares.com
+)
 readonly OPEN_PORTS=(OpenSSH 80/tcp 443/tcp)
 
 SCRIPT_DIR="$(cd -- "$(dirname -- "${BASH_SOURCE[0]}")" && pwd)"
 readonly SCRIPT_DIR
 readonly SITES_FILE="$SCRIPT_DIR/raidmanager.Caddyfile"
 
+KEYS_ONLY=false
+DEPLOY_KEY_FILE=""
+ADMIN=""
+
 step() { printf '\n== %s\n' "$1"; }
 fail() { printf 'ERROR: %s\n' "$1" >&2; exit 1; }
+
+parse_arguments() {
+    local argument
+    for argument in "$@"; do
+        case $argument in
+            --keys-only) KEYS_ONLY=true ;;
+            -*) fail "unknown option $argument; usage: sudo bash provision.sh [--keys-only] [deploy-public-key-file]" ;;
+            *) DEPLOY_KEY_FILE=$argument ;;
+        esac
+    done
+}
 
 check_preconditions() {
     step "Checking the server"
@@ -34,12 +55,8 @@ check_preconditions() {
     . /etc/os-release
     [[ $ID == ubuntu ]] || fail "expected Ubuntu, found $ID"
 
-    local admin="${SUDO_USER:-}"
-    [[ -n $admin && $admin != root ]] || fail "run it with sudo from your admin account, not as root"
-    local admin_home
-    admin_home="$(getent passwd "$admin" | cut -d: -f6)"
-    [[ -s $admin_home/.ssh/authorized_keys ]] ||
-        fail "$admin has no SSH key in $admin_home/.ssh/authorized_keys; password sign-in must stay on"
+    ADMIN="${SUDO_USER:-}"
+    [[ -n $ADMIN && $ADMIN != root ]] || fail "run it with sudo from your admin account, not as root"
 
     command -v docker >/dev/null || fail "Docker is missing; install Docker Engine and the Compose plugin first"
     docker compose version >/dev/null || fail "the Docker Compose plugin is missing"
@@ -47,20 +64,36 @@ check_preconditions() {
     docker inspect "$PROXY_CONTAINER" >/dev/null || fail "the shared proxy container '$PROXY_CONTAINER' isn't running"
     [[ -f $PROXY_CADDYFILE ]] || fail "the shared proxy's Caddyfile isn't at $PROXY_CADDYFILE"
     [[ -f $SITES_FILE ]] || fail "copy raidmanager.Caddyfile next to this script"
-    echo "Ubuntu $VERSION_ID, admin account $admin, Docker and the shared proxy found"
+    echo "Ubuntu $VERSION_ID, admin account $ADMIN, Docker and the shared proxy found"
+}
+
+signed_in_with_key() {
+    # A key in authorized_keys isn't enough (another tool may have put it there): require a real key sign-in.
+    journalctl --quiet --since "-30 days" _COMM=sshd 2>/dev/null | grep -q "Accepted publickey for $ADMIN from" ||
+        grep -qs "Accepted publickey for $ADMIN from" /var/log/auth.log
+}
+
+apply_sshd_setting() {
+    local file="$1" content="$2"
+    printf '%s\n' "$content" >"$file"
+    # Ubuntu 24.04 starts SSH through a socket, so the directory sshd -t needs may not exist yet.
+    install -d -m 755 /run/sshd
+    sshd -t || { rm -f "$file"; fail "sshd rejected $file; it is removed and nothing changed"; }
 }
 
 harden_ssh() {
-    step "SSH: keys only, no root sign-in"
-    cat >"$SSHD_DROP_IN" <<'CONF'
-# RaidManager test environment (ADR-0027): keys only, no root sign-in.
+    step "SSH: no root sign-in"
+    apply_sshd_setting "$SSHD_NO_ROOT" "# RaidManager (ADR-0027): no root sign-in over SSH.
+PermitRootLogin no"
+    if [[ $KEYS_ONLY == true ]]; then
+        signed_in_with_key ||
+            fail "$ADMIN has never signed in with an SSH key in the last 30 days; set up your key and sign in with it first"
+        apply_sshd_setting "$SSHD_KEYS_ONLY" "# RaidManager (ADR-0027): keys only.
 PasswordAuthentication no
-KbdInteractiveAuthentication no
-PermitRootLogin no
-CONF
-    # Ubuntu 24.04 starts SSH through a socket, so the directory sshd -t needs may not exist yet.
-    install -d -m 755 /run/sshd
-    sshd -t || { rm -f "$SSHD_DROP_IN"; fail "sshd rejected the settings; nothing changed"; }
+KbdInteractiveAuthentication no"
+    elif [[ ! -f $SSHD_KEYS_ONLY ]]; then
+        echo "Password sign-in stays on. Once you sign in with your SSH key, run this script again with --keys-only."
+    fi
     systemctl try-reload-or-restart ssh
     sshd -T | grep -Ei '^(passwordauthentication|kbdinteractiveauthentication|permitrootlogin) '
 }
@@ -114,7 +147,7 @@ create_deploy_user() {
     install -d -o "$DEPLOY_USER" -g "$DEPLOY_USER" -m 700 "/home/$DEPLOY_USER/.ssh"
     install -d -o "$DEPLOY_USER" -g "$DEPLOY_USER" -m 750 "$APP_DIR"
 
-    local key_file="${1:-}"
+    local key_file="$DEPLOY_KEY_FILE"
     if [[ -n $key_file ]]; then
         [[ -f $key_file ]] || fail "public key file $key_file not found"
         local keys="/home/$DEPLOY_USER/.ssh/authorized_keys"
@@ -170,12 +203,13 @@ add_proxy_sites() {
 }
 
 main() {
+    parse_arguments "$@"
     check_preconditions
     harden_ssh
     configure_firewall
     enable_security_upgrades
     add_swap
-    create_deploy_user "${1:-}"
+    create_deploy_user
     add_proxy_sites
     step "Done"
 }

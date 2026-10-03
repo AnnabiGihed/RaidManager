@@ -3,11 +3,13 @@
 - Status: Proposed
 - Date: 2026-10-03
 - Deciders: Gihed Annabi
-- Amended: 2026-10-03, by #387, while still Proposed (owner decision on #374)
+- Amended: 2026-10-03, by #387, while still Proposed (owner decisions on #374, #369 and #387)
 
 The server turned out to be in use already: it hosts the `pivotsoftwares.com` website and Delivery Atlas behind one
 shared Caddy. The amendment keeps RaidManager beside them: it joins the shared proxy instead of running its own,
-the server isn't reinstalled, the memory budget counts what already runs, and provisioning only adds.
+the server isn't reinstalled, the memory budget counts what already runs, and provisioning only adds. A second
+amendment the same day adds the sites of the dev and production environments the owner decided on #369, so the shared
+Caddyfile is edited once; the rest of this record still describes the test environment until #410 revises it.
 
 ## Context
 
@@ -60,18 +62,22 @@ What already runs on it, as read on 2026-10-03 (#374):
 - **The server's shared Caddy stays the only container with published ports**, 80 and 443. It obtains and renews
   Let's Encrypt certificates by itself and forwards each hostname to its container. RaidManager doesn't run a proxy
   of its own, and the AppHost adds none.
-- **RaidManager adds two sites to the shared Caddyfile**, kept in the repository as
-  `deploy/test-server/raidmanager.Caddyfile`. They forward to `raidmanager-web:8080` and `raidmanager-api:8080`. Until
-  those containers exist, `handle_errors` answers 503 with a short message, so both hostnames get their certificates
-  before the first deployment, and a deployment never edits the shared file.
-- **The website and API containers join the external network `web`** under the aliases `raidmanager-web` and
-  `raidmanager-api`. SQL Server and the bot stay on the RaidManager Compose network.
-- **Hostnames (owner decision on #380):**
+- **RaidManager adds six sites to the shared Caddyfile**, one website and one API for each environment, kept in the
+  repository as `deploy/server/raidmanager.Caddyfile`. Each forwards to its container on port 8080. Until that
+  container exists, `handle_errors` answers 503 with a short message, so every hostname gets its certificate before
+  its first deployment, and a deployment never edits the shared file.
+- **Each environment's website and API containers join the external network `web`** under the aliases below. The
+  database and the bots stay on each environment's own Compose network.
+- **Hostnames (owner decisions on #380 and #369):**
 
-  | Hostname | Container |
-  | --- | --- |
-  | `raidmanager-test.pivotsoftwares.com` | website |
-  | `api.raidmanager-test.pivotsoftwares.com` | API |
+  | Environment | Hostname | Container alias |
+  | --- | --- | --- |
+  | Dev | `raidmanager-dev.pivotsoftwares.com` | `raidmanager-dev-web` |
+  | Dev | `api.raidmanager-dev.pivotsoftwares.com` | `raidmanager-dev-api` |
+  | Test | `raidmanager-test.pivotsoftwares.com` | `raidmanager-test-web` |
+  | Test | `api.raidmanager-test.pivotsoftwares.com` | `raidmanager-test-api` |
+  | Production | `raidmanager.pivotsoftwares.com` | `raidmanager-prod-web` |
+  | Production | `api.raidmanager.pivotsoftwares.com` | `raidmanager-prod-api` |
 
 - **The applications listen on plain HTTP inside the Compose network** and trust the proxy's forwarded headers, so
   they see the original scheme and host. Discord sign-in redirects to
@@ -102,7 +108,7 @@ current and the previous images, and the workflow prunes older ones.
 
 - Ubuntu 24.04 with Docker Engine and the Compose plugin, already installed, and unattended security upgrades.
 - A `deploy` user that owns `/opt/apps/raidmanager`, beside the other applications, and belongs to the `docker` group.
-  SSH accepts keys only, and `root` can't sign in over SSH.
+  `root` can't sign in over SSH, and SSH accepts keys only once the owner signs in with a key (#387).
 - `ufw` allows 22, 80 and 443 for RaidManager. Docker bypasses `ufw` for published ports, which is why only Caddy
   publishes any. RaidManager doesn't need the 8080 rule; provisioning reports it and leaves it to the owner.
 - OVH's daily automated backup covers the server and the database volume. Test data can be lost without harm.
@@ -123,20 +129,21 @@ These belong to #375 (settings) and #376 (pipeline), not to this decision:
 
 ## Provisioning steps for #374
 
-The server is never reinstalled: that would erase the applications already on it. `deploy/test-server/provision.sh`
+The server is never reinstalled: that would erase the applications already on it. `deploy/server/provision.sh`
 does steps 3 to 5; it only adds what is missing, so it can run again, and it never resets the firewall or stops
-another application. The how-to [Provision the test server](../how-to/provision-the-test-server.md) has the commands.
+another application. The how-to [Provision the server](../how-to/provision-the-server.md) has the commands.
 
-1. **Owner:** at the DNS provider of `pivotsoftwares.com`, add A records for `raidmanager-test` and
-   `api.raidmanager-test` pointing at the server's IPv4 address, and AAAA records if the server has IPv6.
-2. **Owner:** copy `deploy/test-server` to the server and run `sudo bash provision.sh` from the `ubuntu` account.
-3. The script turns off SSH password and `root` sign-in, after checking that `ubuntu` signs in with a key; allows
-   22, 80 and 443 in `ufw`; and turns on unattended security upgrades.
+1. **Owner:** at the DNS provider of `pivotsoftwares.com`, add an A record for each of the six hostnames above,
+   pointing at the server's IPv4 address, and AAAA records if the server has IPv6.
+2. **Owner:** copy `deploy/server` to the server and run `sudo bash provision.sh` from the `ubuntu` account.
+3. The script turns off `root` sign-in over SSH, allows 22, 80 and 443 in `ufw`, and turns on unattended security
+   upgrades. Password sign-in stays on until the owner runs it again with `--keys-only`, which it accepts only after
+   `ubuntu` has signed in with an SSH key.
 4. It creates the 2 GB swap file and the `deploy` user in the `docker` group, with `/opt/apps/raidmanager`.
-5. Once both hostnames resolve to the server, it appends the two sites to `/opt/apps/proxy/Caddyfile`, validates it
+5. Once all six hostnames resolve to the server, it appends the six sites to `/opt/apps/proxy/Caddyfile`, validates it
    and reloads Caddy; if Caddy rejects it, the previous file is put back.
-6. Check from outside: SSH works with a key only, no port other than 22, 80, 443 and the owner's 8080 is open, and
-   both hostnames answer 503 over HTTPS with a valid certificate.
+6. Check from outside: no port other than 22, 80, 443 and the owner's 8080 is open, every hostname answers 503 over
+   HTTPS with a valid certificate, and, after `--keys-only`, password sign-in is refused.
 
 Steps 1 and 2 need the owner's DNS and server access, and the agent never enters credentials or signs in to the
 server (owner decision on #374).
