@@ -3,6 +3,11 @@
 - Status: Proposed
 - Date: 2026-10-03
 - Deciders: Gihed Annabi
+- Amended: 2026-10-03, by #387, while still Proposed (owner decision on #374)
+
+The server turned out to be in use already: it hosts the `pivotsoftwares.com` website and Delivery Atlas behind one
+shared Caddy. The amendment keeps RaidManager beside them: it joins the shared proxy instead of running its own,
+the server isn't reinstalled, the memory budget counts what already runs, and provisioning only adds.
 
 ## Context
 
@@ -24,6 +29,19 @@ The server, as ordered by the owner (#380, 2026-10-03):
 | Image | Ubuntu 24.04 |
 | Backup | OVH Automated Backup Standard |
 
+What already runs on it, as read on 2026-10-03 (#374):
+
+| Property | Value |
+| --- | --- |
+| Memory seen by the system | 3.7 GiB, no swap |
+| Disk | 38 GB, 34 GB free |
+| Docker | Engine 29.8.2, Compose 5.6.0 |
+| Applications | the `pivotsoftwares.com` website (`pivot-website`) and Delivery Atlas (`delivery-atlas`), each in its own folder under `/opt/apps` |
+| Proxy | one `caddy:2` container (`caddy`), the only one publishing ports 80 and 443, with its Caddyfile at `/opt/apps/proxy/Caddyfile` |
+| Network | the applications reach the proxy through the external Docker network `web` and publish no port |
+| Administrator account | `ubuntu`, with sudo and Docker access |
+| Firewall | `ufw` active, allowing 22, 80, 443 and 8080 |
+
 ## Decision
 
 ### Containers from the AppHost, through Docker Compose
@@ -37,11 +55,17 @@ The server, as ordered by the owner (#380, 2026-10-03):
   pulls from no registry, so it holds no registry credentials; how the workflow authenticates over SSH is #103's
   decision.
 
-### Caddy in front, with Let's Encrypt certificates
+### The shared Caddy in front, with Let's Encrypt certificates
 
-- **Caddy is the only container with published ports**, 80 and 443. It obtains and renews Let's Encrypt
-  certificates by itself and forwards each hostname to its container. The AppHost adds it in publish mode only, with
-  a `Caddyfile` mounted read-only, so it is in the same Compose file.
+- **The server's shared Caddy stays the only container with published ports**, 80 and 443. It obtains and renews
+  Let's Encrypt certificates by itself and forwards each hostname to its container. RaidManager doesn't run a proxy
+  of its own, and the AppHost adds none.
+- **RaidManager adds two sites to the shared Caddyfile**, kept in the repository as
+  `deploy/test-server/raidmanager.Caddyfile`. They forward to `raidmanager-web:8080` and `raidmanager-api:8080`. Until
+  those containers exist, `handle_errors` answers 503 with a short message, so both hostnames get their certificates
+  before the first deployment, and a deployment never edits the shared file.
+- **The website and API containers join the external network `web`** under the aliases `raidmanager-web` and
+  `raidmanager-api`. SQL Server and the bot stay on the RaidManager Compose network.
 - **Hostnames (owner decision on #380):**
 
   | Hostname | Container |
@@ -63,11 +87,12 @@ Server on Linux needs 2 GB. Express caps its buffer pool at about 1.4 GB, well b
 
 | Process | Planned memory |
 | --- | --- |
-| Ubuntu, Docker and Caddy | 0.5 GB |
+| Ubuntu and Docker | 0.5 GB |
+| Shared Caddy, website and Delivery Atlas (measured: 46 MB) | 0.1 GB |
 | SQL Server Express | 2.0 GB at most |
 | API, website and bot | 0.75 GB together |
 | Aspire dashboard | 0.15 GB |
-| Total | 3.4 GB of 4 GB |
+| Total | 3.5 GB of the 3.7 GiB (about 3.9 GB) the system sees |
 
 A 2 GB swap file absorbs peaks. If the measured use stays above 3.5 GB, the dashboard is the first thing to remove.
 The database stays in a Docker volume on the local disk. The images take about 3 GB, so the 40 GB disk keeps the
@@ -75,16 +100,19 @@ current and the previous images, and the workflow prunes older ones.
 
 ### The server
 
-- Ubuntu 24.04 with Docker Engine and the Compose plugin from the Docker repository, and unattended security upgrades.
-- A `deploy` user that owns `/opt/raidmanager` and belongs to the `docker` group. SSH accepts keys only, and `root`
-  can't sign in over SSH.
-- `ufw` allows 22, 80 and 443 only. Docker bypasses `ufw` for published ports, which is why only Caddy publishes any.
+- Ubuntu 24.04 with Docker Engine and the Compose plugin, already installed, and unattended security upgrades.
+- A `deploy` user that owns `/opt/apps/raidmanager`, beside the other applications, and belongs to the `docker` group.
+  SSH accepts keys only, and `root` can't sign in over SSH.
+- `ufw` allows 22, 80 and 443 for RaidManager. Docker bypasses `ufw` for published ports, which is why only Caddy
+  publishes any. RaidManager doesn't need the 8080 rule; provisioning reports it and leaves it to the owner.
 - OVH's daily automated backup covers the server and the database volume. Test data can be lost without harm.
 
 ## Changes the applications need
 
 These belong to #375 (settings) and #376 (pipeline), not to this decision:
 
+- **Shared network:** the Compose file puts the website and the API on the external network `web` with the aliases
+  above, and publishes no port.
 - **Forwarded headers:** the website and the API call `UseForwardedHeaders` for the proxy's scheme and host, or Discord
   sign-in builds an `http` redirect.
 - **Data protection keys:** the website keeps its keys in a Docker volume. Otherwise, each deployment signs everyone
@@ -95,18 +123,23 @@ These belong to #375 (settings) and #376 (pipeline), not to this decision:
 
 ## Provisioning steps for #374
 
-1. **Owner:** in the OVH control panel, install the server with the Ubuntu 24.04 image and add your SSH public key.
-2. **Owner:** at the DNS provider of `pivotsoftwares.com`, add A records for `raidmanager-test` and
-   `api.raidmanager-test` pointing at the server's IPv4 address, and AAAA records if the server has IPv6.
-3. Create the `deploy` user, install its key, then turn off SSH password and `root` sign-in.
-4. Turn on `ufw` for 22, 80 and 443, and turn on unattended security upgrades.
-5. Install Docker Engine and the Compose plugin, add `deploy` to the `docker` group, and create the 2 GB swap file.
-6. Create `/opt/raidmanager` for the Compose file, the `Caddyfile` and the `.env` file, owned by `deploy`.
-7. Check from outside: SSH works with a key only, ports other than 22, 80 and 443 are closed, and both hostnames
-   resolve to the server.
+The server is never reinstalled: that would erase the applications already on it. `deploy/test-server/provision.sh`
+does steps 3 to 5; it only adds what is missing, so it can run again, and it never resets the firewall or stops
+another application. The how-to [Provision the test server](../how-to/provision-the-test-server.md) has the commands.
 
-Steps 1 and 2 need the owner's OVH and DNS access, and the agent never enters credentials. Steps 3 to 7 run over SSH,
-by the owner or by the agent once the owner gives it a session.
+1. **Owner:** at the DNS provider of `pivotsoftwares.com`, add A records for `raidmanager-test` and
+   `api.raidmanager-test` pointing at the server's IPv4 address, and AAAA records if the server has IPv6.
+2. **Owner:** copy `deploy/test-server` to the server and run `sudo bash provision.sh` from the `ubuntu` account.
+3. The script turns off SSH password and `root` sign-in, after checking that `ubuntu` signs in with a key; allows
+   22, 80 and 443 in `ufw`; and turns on unattended security upgrades.
+4. It creates the 2 GB swap file and the `deploy` user in the `docker` group, with `/opt/apps/raidmanager`.
+5. Once both hostnames resolve to the server, it appends the two sites to `/opt/apps/proxy/Caddyfile`, validates it
+   and reloads Caddy; if Caddy rejects it, the previous file is put back.
+6. Check from outside: SSH works with a key only, no port other than 22, 80, 443 and the owner's 8080 is open, and
+   both hostnames answer 503 over HTTPS with a valid certificate.
+
+Steps 1 and 2 need the owner's DNS and server access, and the agent never enters credentials or signs in to the
+server (owner decision on #374).
 
 ## Consequences
 
@@ -115,6 +148,7 @@ by the owner or by the agent once the owner gives it a session.
 - The test environment runs the same app model as the local run, so a new resource in the AppHost reaches the
   server without a second definition.
 - One small server, one Compose file and automatic certificates keep the setup within what one person can maintain.
+- Sharing the proxy adds no container and no port, and the other applications keep running untouched.
 - No registry or feed credential is stored on the server.
 
 **Negative**
@@ -122,6 +156,9 @@ by the owner or by the agent once the owner gives it a session.
 - Memory is tight: SQL Server takes half the server, and a heavy test load can swap. Moving the database to a managed
   service or a larger VPS is the way out if that happens.
 - One server has no redundancy; a failed deployment or an OVH incident takes the environment down until it's fixed.
+- RaidManager shares the server with the `pivotsoftwares.com` website and Delivery Atlas: a memory peak in one can
+  slow the others, and a broken edit of the shared Caddyfile would affect all of them, which is why provisioning
+  validates it and restores the previous file on failure.
 - Copying images over SSH sends every image in full each time, which is slower than pulling only the changed layers
   from a registry.
 
@@ -129,4 +166,5 @@ by the owner or by the agent once the owner gives it a session.
 
 - Whether production later runs on the same pattern, on a larger server, is for a later release to decide.
 - Docker Compose support in Aspire is recent; if `aspire publish` can't express the Caddy container or the volume for
-  data protection keys, #376 adds a small Compose override file and records why.
+  data protection keys, #376 adds a small Compose override file and records why. The same holds for the external
+  `web` network and the aliases.

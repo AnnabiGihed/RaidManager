@@ -1,2 +1,6 @@
 # Font files are binary; never convert their line endings.
 *.woff2 binary
+
+# Server scripts and configuration run on Linux; keep LF in every checkout.
+*.sh text eol=lf
+*.Caddyfile text eol=lf
