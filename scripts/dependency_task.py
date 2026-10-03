@@ -67,7 +67,7 @@ None: no screen changes.
 Review and merge Dependabot's update {pull_request.url}: {pull_request.title}.
 
 ### Bounded deliverable
-The pinned versions that pull request changes in `.github/workflows/`.
+The action versions that pull request changes in `.github/workflows/`.
 
 ### Execution scope
 Only the files Dependabot changed; any adaptation the new release needs is a separate task.
@@ -96,12 +96,13 @@ No visual change: a dependency update of the GitHub Actions workflows.
 
 ## What changed
 
-{pull_request.title}: Dependabot changes the pinned commit id and its version comment in the workflows this pull
-request lists. The release notes are linked in its commit message.
+{pull_request.title}: Dependabot changes the version of the action in the workflows this pull request lists,
+whether a tag such as `@v4` or a commit id with its version comment. The release notes are linked in its commit
+message.
 
 ## Why it changed
 
-Pinned actions stay current without anyone watching for releases (#460). The task #{task} was created for this
+The workflows' actions stay current without anyone watching for releases (#460). The task #{task} was created for this
 update by the `dependency-task` workflow.
 
 ## How it was tested

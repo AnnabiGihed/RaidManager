@@ -76,6 +76,13 @@ class ContentTests(unittest.TestCase):
         ticked = body.replace("- [ ] I ", "- [x] I ")
         self.assertEqual(validate(ticked), [])
 
+    def test_the_description_fits_tags_and_pins(self) -> None:
+        body = pull_request_body(UPDATE, 480)
+        self.assertIn("changes the version of the action", body)
+        self.assertIn("a tag such as `@v4` or a commit id", body)
+        self.assertNotIn("pinned commit id", body)
+        self.assertNotIn("pinned versions", task_body(UPDATE))
+
 
 class FindTaskTests(unittest.TestCase):
     def test_only_an_open_task_of_the_same_pull_request_is_found(self) -> None:
