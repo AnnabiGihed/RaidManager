@@ -4,7 +4,7 @@
 - Date: 2026-10-03
 - Deciders: Gihed Annabi
 - Amended: 2026-10-03, by #387, while still Proposed (owner decisions on #374, #369 and #387); database and memory
-  amended by [ADR-0029](0029-store-data-in-postgresql.md) (#410)
+  amended by [ADR-0029](0029-store-data-in-postgresql.md) (#410); application settings amended by #388
 
 The server turned out to be in use already: it hosts the `pivotsoftwares.com` website and Delivery Atlas behind one
 shared Caddy. The amendment keeps RaidManager beside them: it joins the shared proxy instead of running its own,
@@ -111,19 +111,26 @@ on the local disk. Each environment keeps its current and previous images, and t
 
 ## Changes the applications need
 
-These belong to #375 (settings) and #376 (pipeline), not to this decision:
+The applications support these settings (#388); the deploy workflow (#389) sets them in each environment's Compose
+file:
 
 - **Shared network:** the Compose file puts the website and the API on the external network `web` with the aliases
   above, and publishes no port.
-- **Internal API address:** the website's API address is the container alias, `http://raidmanager-<env>-api:8080`,
-  not the public hostname, which forwards only `/companion/`.
-- **Forwarded headers:** the website and the API call `UseForwardedHeaders` for the proxy's scheme and host, or Discord
-  sign-in builds an `http` redirect.
-- **Data protection keys:** the website keeps its keys in a Docker volume. Otherwise, each deployment signs everyone
-  out and breaks protected community links (`CommunityLinkProtector`).
-- **Environment name:** the containers run as `Staging`, which keeps Development-only pages such as `/scalar` off.
+- **Internal API address:** the website reaches its API through Aspire service discovery (`https+http://api`), which
+  the generated Compose file resolves to the environment's own `api` service, never the public hostname, which
+  forwards only `/companion/`.
+- **Forwarded headers:** the website and the API run with `ASPNETCORE_FORWARDEDHEADERS_ENABLED=true`, so they trust
+  Caddy's `X-Forwarded-Proto`; Caddy keeps the original host. Without it, Discord sign-in builds an `http` redirect.
+  Trusting any sender is safe here only because the containers publish no port: Caddy is the only way in.
+- **Data protection keys:** the website keeps its keys in the directory set by `DataProtection__KeysPath`, on a
+  volume. Otherwise, each deployment signs everyone out and breaks protected community links
+  (`CommunityLinkProtector`).
+- **Environment names:** the containers run as `Dev`, `Test` or `Production` (owner decision on #388). None counts as
+  Development, so Development-only pages such as `/scalar` and the automatic migrations stay off; the first
+  deployment applies migrations as a step of its own (#389, then #434).
 - **Secrets:** the Discord client secret, the bot token, the website key and the database password reach the
-  containers as #103 decides. Until then, the `.env` file on the server holds no value.
+  containers from each environment's GitHub environment, as [ADR-0028](0028-keep-the-test-secrets-in-a-github-environment.md)
+  decides.
 
 ## Provisioning steps for #374
 
