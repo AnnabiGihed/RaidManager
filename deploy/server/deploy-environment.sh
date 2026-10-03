@@ -16,7 +16,11 @@ readonly PROBE_IMAGE="curlimages/curl:8.11.1"
 readonly READY_ATTEMPTS=30
 readonly MIGRATION_ATTEMPTS=10
 
-fail() { printf 'ERROR: %s\n' "$1" >&2; exit 1; }
+fail() {
+    local message="$1"
+    printf 'ERROR: %s\n' "$message" >&2
+    exit 1
+}
 
 compose() {
     docker compose -p "$PROJECT" --project-directory "$DIR" -f "$DIR/docker-compose.yaml" --env-file "$DIR/.env" "$@"
@@ -24,7 +28,8 @@ compose() {
 
 # Prints the HTTP status a service answers with on the environment's own network.
 status_of() {
-    docker run --rm --network "${PROJECT}_aspire" "$PROBE_IMAGE" -s -o /dev/null -m 5 -w '%{http_code}' "$1" || true
+    local url="$1"
+    docker run --rm --network "${PROJECT}_aspire" "$PROBE_IMAGE" -s -o /dev/null -m 5 -w '%{http_code}' "$url" || true
 }
 
 wait_until_ready() {
