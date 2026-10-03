@@ -66,6 +66,11 @@ What already runs on it, as read on 2026-10-03 (#374):
   repository as `deploy/server/raidmanager.Caddyfile`. Each forwards to its container on port 8080. Until that
   container exists, `handle_errors` answers 503 with a short message, so every hostname gets its certificate before
   its first deployment, and a deployment never edits the shared file.
+- **The public API hostnames serve the desktop companion only** (owner decision on #369). Each `api.` site forwards
+  the paths under `/companion/` and answers 404 to everything else, including `/internal/...` and `/openapi`, so the
+  routes only the website uses are never reachable from the internet. The website calls its API inside Docker, at
+  `http://raidmanager-<env>-api:8080`, never through the public hostname. The API still checks its own
+  authentication behind the proxy.
 - **Each environment's website and API containers join the external network `web`** under the aliases below. The
   database and the bots stay on each environment's own Compose network.
 - **Hostnames (owner decisions on #380 and #369):**
@@ -119,6 +124,8 @@ These belong to #375 (settings) and #376 (pipeline), not to this decision:
 
 - **Shared network:** the Compose file puts the website and the API on the external network `web` with the aliases
   above, and publishes no port.
+- **Internal API address:** the website's API address is the container alias, `http://raidmanager-<env>-api:8080`,
+  not the public hostname, which forwards only `/companion/`.
 - **Forwarded headers:** the website and the API call `UseForwardedHeaders` for the proxy's scheme and host, or Discord
   sign-in builds an `http` redirect.
 - **Data protection keys:** the website keeps its keys in a Docker volume. Otherwise, each deployment signs everyone

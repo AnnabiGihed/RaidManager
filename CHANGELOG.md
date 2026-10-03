@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- The public API hostnames of every environment serve only the desktop companion's routes under `/companion/` and
+  answer 404 to everything else, including `/internal/...`; the website reaches its API inside Docker (#387).
 - `deploy/server/provision.sh` prepares the shared OVH server for the dev, test and production environments: no `root`
   sign-in, and keys-only SSH when asked with `--keys-only` after a key sign-in; the firewall, security upgrades, swap,
   the `deploy` user, and six RaidManager sites in the shared Caddy, which answer 503 until each environment is
