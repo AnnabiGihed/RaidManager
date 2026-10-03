@@ -224,6 +224,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- The Discord sign-in sequence now shows the built, website-owned flow: the website runs the Discord exchange, gets
+  the local user id from the API's internal route with its website key, looks up communities and pending claims,
+  and sets its own cookie; the denied, failed and review branches are drawn (#100).
 - ADR-0028 now keeps the secrets of the dev, test and production environments in three GitHub environments: `main`
   deploys to dev only, release tags to test and production only, one deploy key and one Discord application per
   environment, and the database password for PostgreSQL. The README's deployment notes cover the three environments
