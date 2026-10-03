@@ -10,6 +10,7 @@ from pathlib import Path
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 from verify_review import (  # noqa: E402
     FAILURE, PENDING, SUCCESS, Change, InlineComment, PullRequest, Review, comment_problems, gate_result,
+    operator_of,
 )
 
 
@@ -180,6 +181,14 @@ class GateResultTests(unittest.TestCase):
         request = review(PEER, "CHANGES_REQUESTED", "Please make EnsureNotLocked in Raid.cs report every locked target, not only the first.", 5)
         self.assertEqual(SUCCESS, gate_result(pull_request([operator_review(), request, approval(minutes=10)]))[0])
 
+
+
+class OperatorTests(unittest.TestCase):
+    def test_the_owner_reviews_dependabot_updates_first(self) -> None:
+        self.assertEqual("AnnabiGihed", operator_of("dependabot[bot]"))
+
+    def test_a_person_s_pull_request_is_reviewed_first_by_its_author(self) -> None:
+        self.assertEqual("anthermook", operator_of("anthermook"))
 
 if __name__ == "__main__":
     unittest.main()

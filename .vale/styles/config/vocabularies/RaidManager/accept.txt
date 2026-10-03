@@ -33,6 +33,7 @@ debuff
 debuffs
 deduplication
 deliverables
+Dependabot
 Dev
 dev
 DevOps

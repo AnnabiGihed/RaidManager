@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- Dependabot proposes each new release of a GitHub Action every Monday, keeping the commit-id pins of #365. The
+  `dependency-task` workflow gives each of its pull requests a task under #461 and the description the `validate`
+  check needs, and cancels the task of an update Dependabot closes without merging; the owner reviews these pull
+  requests as the operator, and the agent selects their tasks into the sprint (#462).
 - Sign-in tests prove the rest of story #13: a code or token Discord refuses, as it does after an expired or revoked
   authorization, leads to the retry page without a session, and a session left unused past its 12 hours asks the
   player to sign in again, while one used within them still opens protected pages (#362).
