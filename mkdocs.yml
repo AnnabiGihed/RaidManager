@@ -62,7 +62,7 @@ nav:
       - Work item classification: adr/0025-classify-work-items-with-spikes-under-features.md
       - Work management specification adoption: adr/0026-adopt-the-work-management-specification.md
       - OVH test environment: adr/0027-run-the-test-environment-on-one-ovh-vps.md
-      - Test environment secrets: adr/0028-keep-the-test-secrets-in-a-github-environment.md
+      - Environment secrets: adr/0028-keep-the-test-secrets-in-a-github-environment.md
       - PostgreSQL: adr/0029-store-data-in-postgresql.md
 theme:
   name: material
