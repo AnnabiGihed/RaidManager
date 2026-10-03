@@ -153,6 +153,12 @@ Their secrets never live in the repository or in user secrets
   Then deploy that environment again, so the server picks up the new value. ADR-0028 lists every secret and how to
   rotate it.
 
+To see what an environment runs, publish the AppHost's Compose file and its `.env` template, which holds no value:
+
+```bash
+dotnet run --project src/Containers/Aspire/Hosting/RaidManager.AppHost -- --operation publish --step publish --output-path artifacts/compose
+```
+
 ### Change the database schema
 
 The database is PostgreSQL ([ADR-0029](docs/adr/0029-store-data-in-postgresql.md)). Data from the earlier SQL Server

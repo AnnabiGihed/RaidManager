@@ -4,7 +4,8 @@
 - Date: 2026-10-03
 - Deciders: Gihed Annabi
 - Amended: 2026-10-03, by #387, while still Proposed (owner decisions on #374, #369 and #387); database and memory
-  amended by [ADR-0029](0029-store-data-in-postgresql.md) (#410); application settings amended by #388
+  amended by [ADR-0029](0029-store-data-in-postgresql.md) (#410); application settings amended by #388; Compose
+  generation detailed by #444
 
 The server turned out to be in use already: it hosts the `pivotsoftwares.com` website and Delivery Atlas behind one
 shared Caddy. The amendment keeps RaidManager beside them: it joins the shared proxy instead of running its own,
@@ -52,8 +53,34 @@ What already runs on it, as read on 2026-10-03 (#374):
 ### Containers from the AppHost, through Docker Compose
 
 - **Aspire generates the Compose file.** The AppHost adds `Aspire.Hosting.Docker` (13.5.4, the pinned Aspire
-  version) and a Docker Compose environment, so `aspire publish` writes `docker-compose.yaml` and an `.env` template
-  from the same app model that runs locally. No hand-written Compose file can drift from the AppHost.
+  version) and a Docker Compose environment, so publishing writes `docker-compose.yaml` and an `.env` template from
+  the same app model that runs locally. No hand-written Compose file can drift from the AppHost, and no override file
+  is needed (#444). Publishing runs the AppHost itself:
+
+  ```bash
+  dotnet run --project src/Containers/Aspire/Hosting/RaidManager.AppHost -- --operation publish --step publish --output-path <folder>
+  ```
+
+- **One file serves the three environments.** Each runs it as its own Compose project, named
+  `raidmanager-dev`, `raidmanager-test` or `raidmanager-prod` with `docker compose -p`, so its volumes and network are
+  its own, and the workflow fills its `.env`:
+
+  | `.env` key | Value | From |
+  | --- | --- | --- |
+  | `DEPLOY_ENVIRONMENT` | `dev`, `test` or `prod`, in the container names Caddy forwards to | the workflow |
+  | `ASPNETCORE_ENVIRONMENT` | `Dev`, `Test` or `Production` (#388) | the workflow |
+  | `API_PORT`, `WEB_PORT` | `8080`, the port Caddy's sites use | the workflow |
+  | `API_IMAGE`, `WEB_IMAGE`, `DISCORD_BOT_IMAGE` | the images the run built | the workflow |
+  | `POSTGRES_MEMORY_LIMIT`, `POSTGRES_SHARED_BUFFERS` | `192M` and `64MB` for dev and test, `320M` and `128MB` for production (ADR-0029) | the workflow |
+  | `DISCORD_CLIENT_ID`, `DISCORD_CLIENT_SECRET`, `DISCORD_BOT_TOKEN`, `WEBSITE_SERVICE_KEY`, `POSTGRES_PASSWORD` | the environment's values | its GitHub environment ([ADR-0028](0028-keep-the-test-secrets-in-a-github-environment.md)) |
+
+  The published template holds no value; a test checks it, so no local secret can reach it.
+- **Volumes with fixed names.** The database's volume is `postgres-data` when published, because the generated name
+  hashes the build folder, and a new hash on another build machine would start an empty database. The website's
+  `data-protection` volume is mounted on `/home/app`: the images run as the non-root `app` user, and Docker gives a
+  new volume the owner of its folder only when the image already has that folder (tested on the .NET 10 image).
+- **No dashboard and no restart by hand:** the Compose environment has no Aspire dashboard (ADR-0029), and every
+  service restarts unless stopped.
 - **Images are built in GitHub Actions, never on the server.** Building needs the Pivot.Framework feed credentials
   and more memory than the server can spare. The workflow (#376) builds the images, copies them to the server over
   SSH (`docker save` piped to `docker load`), copies the Compose file, and runs `docker compose up -d`. The server
