@@ -116,6 +116,26 @@ def item_id(number):
 5. Validate the parent independently (`work-task-execution-and-completion`, action 8) and close it the same way, with
    its own evidence comment. A spike closes when its question is answered and the owner reviewed the answer.
 6. Run `python scripts/work_gate.py report` and report its blocking categories.
+7. The merge starts the dev deployment. When it finishes, check that the task carries `deployed:dev`
+   (`gh issue view <n> --json labels`) and say so in the report; if it carries `deploy-failed:dev`, report the failed
+   run and the bug it needs.
+
+### Deployment labels
+
+The deployment workflows' `record` job sets `deployed:dev`, `deployed:test`, `deployed:production` and
+`deploy-failed:<environment>` on items, and a `Deployed to <environment>` line on release milestones
+(`scripts/record_deployment.py`, spec §22, A9, owner decisions on #392). They show the owner what runs where.
+
+- **Never set or remove these labels, or edit the milestone's `deployments` block, by hand.** The job recomputes
+  them from the history of the deployed commit, so a wrong label means a wrong rule or input: fix the script with a
+  bug.
+- To check what a deployment would change, run the script with `--dry-run` from a worktree checked out at the
+  deployed commit (`git worktree add <folder> <commit>`), with the full commit id; it reads with your `gh` login and
+  writes nothing.
+- A task closed without a pull request (evidence only) gets `deployed:<environment>` at the next deployment after it
+  closes; a parent gets it when all its completed children have it, so it can follow its close by one deployment.
+- A release's `Deployed to production` line is evidence for its record, not the Released state: that still needs the
+  owner's approval and the record (`work-stabilization-and-release-closure`).
 
 ### Bulk changes
 
@@ -146,5 +166,5 @@ For any change to many items (filling past values, field values, splits):
 
 ## Sources
 
-- Owner decisions on #323, #346, #394 and #397; spec §8, §11, §13, §15 and §22.
+- Owner decisions on #323, #346, #392, #394 and #397; spec §8, §11, §13, §15 and §22.
 - `docs/reference/project-automation.md` for the configuration this skill operates.

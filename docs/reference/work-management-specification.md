@@ -502,6 +502,7 @@ Recheck platform support when adopting the configuration, especially for Azure D
 | Sprint 1 | 2026-10-02 00:00 to 2026-10-16 00:00 Europe/Brussels, for adopting this specification only. |
 | Planning records | Repository files: `docs/planning/sprints/sprint-NN.md` and `docs/planning/releases/<version>.md`, changed through pull requests. A release milestone's description links its record. |
 | Automation access | No token or repository secret. Workflows enforce what the built-in `GITHUB_TOKEN` can read (issues, labels, milestones, dependencies, pull requests). Rules that need Project fields run as the agent preflight and on-demand board report, with the owner's local `gh` login. |
+| Deployment status | *Amended 2026-10-03 (A9).* Each deployment workflow labels what it delivered with the built-in token: `deployed:dev`, `deployed:test` or `deployed:production` on completed items, on parents whose completed children all carry it, and as a line in the description of a release milestone whose items are all closed and delivered; a failure labels the items it would have delivered `deploy-failed:<environment>` until the next success. Nobody sets these labels by hand. |
 | Story Points | Agents estimate and record the rationale on the issue; the owner may change an estimate. |
 | Penpot mockup tasks | Delivery Stage Functional Analysis: the owner confirming the mockup is the accepted functional specification. |
 | Release v1.0 target date | Unknown: needs owner decision once Sprint 1 provides a velocity to forecast from. |
@@ -518,3 +519,4 @@ Recheck platform support when adopting the configuration, especially for Azure D
 | A6 | 2026-10-02 | Status mapping of existing items (section 20). | #323 decision 4 |
 | A7 | 2026-10-02 | Contract backfill of existing items (section 20). | #323 decision 11 |
 | A8 | 2026-10-02 | RaidManager project policies (section 22). | #323 decisions 1, 3, 5, 10, 13, 14 |
+| A9 | 2026-10-03 | Deployment status labels per environment (section 22). | #392 owner decisions 2026-10-03 |

@@ -46,6 +46,10 @@ option, and the new values were added beside it. Change single-select options on
 | Stabilization | Table | `is:issue sprint:"v1.0 stabilization"` | The release's final sprint quality work. |
 | Blocked work | Table | `is:issue is:open status:Blocked` | Blocking reasons and prerequisites. |
 | Scheduling violations | Table | `is:issue label:"scheduling-violation"` | Items the board report flags. |
+| Deployed to dev | Table | `is:issue label:"deployed:dev"` | What runs in dev (§22, A9). |
+| Deployed to test | Table | `is:issue label:"deployed:test"` | What runs in test (§22, A9). |
+| Deployed to production | Table | `is:issue label:"deployed:production"` | What runs in production (§22, A9). |
+| Failed deployments | Table | `is:issue label:"deploy-failed:dev","deploy-failed:test","deploy-failed:production"` | Items a failed deployment didn't deliver (§22, A9). |
 | Roadmap | Roadmap | epics and features | Feature and epic progress and forecasts. |
 | Release plan | Roadmap | stories, improvements, bugs and spikes | Every release on one timeline, like an Azure DevOps delivery plan. |
 | Releases | Table | stories, improvements, bugs and spikes | Each release's items with their count and Story Points. |
@@ -85,6 +89,30 @@ option, and the new values were added beside it. Change single-select options on
   story, improvement, bug or spike and a feature. Reference other items with `Refs #N`.
 - A child closed as *not planned* or *duplicate* counts as closed but not as completed. An item closed that way is
   abandoned, so the completion and parent rules don't apply to it.
+
+## Deployment status
+
+Every deployment marks what it delivered, so the Project shows what runs in each environment (#392, specification
+§22, A9). The deployment workflow's `record` job runs `scripts/record_deployment.py` after the deployment, whether
+it succeeded or failed, with the built-in token:
+
+| Label | Color | Meaning |
+| --- | --- | --- |
+| `deployed:dev` | Light green | Delivered by a successful dev deployment. |
+| `deployed:test` | Light blue | Delivered by a successful test deployment. |
+| `deployed:production` | Green | Delivered by a successful production deployment. |
+| `deploy-failed:<environment>` | Red | A deployment that would have delivered it failed; the next success removes it. |
+
+- **Items:** a completed item is delivered when every merged pull request that closed it is in the history of the
+  deployed commit; one closed without a pull request counts once it is closed. A completed parent is delivered
+  when all its completed children are; canceled children don't count. A reopened item loses its label.
+- **Releases:** a release milestone whose issues are all closed and delivered gets a line in its description,
+  `Deployed to <environment>: <date>, <run>, <commit>`, between `deployments` markers; the line goes away if that
+  stops being true. Released still needs the release record and the owner's approval (specification §6, §13).
+- **Comments:** each newly labeled item gets a comment linking the run, except during the first run in an
+  environment, which labels everything delivered before it without comments.
+- The labels are only ever set by the workflow, never by hand. Each environment's labels are independent, so a
+  card shows every environment its item runs in. The test and production workflows (#427, #433) run the same job.
 
 ## User-interface mockups
 
@@ -190,6 +218,8 @@ automated** means one of them does it. Each gap the owner wants automated has a 
 | Board | Reopen a parent closed too early, and a release milestone closed before its record shows the delivery | `project-hierarchy` |
 | Board | Start a new item in Backlog, add a new sub-issue to the Project | Project workflows |
 | Board | Set a task In Progress when a pull request links it, and close an issue set to Done | Project workflows |
+| Deployment | Deploy `main` to dev after each merge, smoke-test it, put the previous version back on a failure | `deploy-dev` |
+| Deployment | Label the delivered items, their parents and releases `deployed:dev`, or `deploy-failed:dev` on a failure | `deploy-dev` (`record` job) |
 | Server | Install security updates daily | `unattended-upgrades` |
 | Server | Obtain and renew the six RaidManager certificates | shared Caddy |
 | Server | Back up the server daily | OVH Automated Backup |
@@ -207,13 +237,12 @@ automated** means one of them does it. Each gap the owner wants automated has a 
 | Changes | Branch, implement, check locally, open the draft pull request, fix findings, draft both review comments | Agent | none |
 | Review | Post the operator's review comment and mark the pull request ready | Owner | none (by design) |
 | Review | Approve the pull request | Peer | none (by design) |
-| Deployment | Build the images and deploy `main` to dev | Agent and owner | #376, #389 |
 | Deployment | Deliver the secrets to the server | Owner | #153, #386 |
 | Deployment | Configure each environment | Agent and owner | #375, #388 |
 | Deployment | Deploy each release to dev and test | Agent and owner | #427 |
 | Deployment | Confirm a release and deploy it to production | Owner | #432, #433 |
 | Deployment | Apply database migrations safely, with rollback | Agent | #434 |
-| Deployment | Record each deployment's result on the related items | Agent | #392 |
+| Deployment | Record test and production deployments on the items (the `record` job in their workflows) | Agent | #427, #433 |
 | Releases | Tag, publish the GitHub release and update the release record | Agent | #435 |
 | Server | Provision the server, install the deploy key | Owner | none (done once, #374; key with #386) |
 | Other | Update dependencies | Agent | none yet |

@@ -37,7 +37,8 @@ authority; this skill applies it. Publication and deployment need the owner's ex
    and set its state to Ready.
 4. **Ask the owner for approval** to publish or deploy, and record the approval.
 5. **Publish or deploy** only after approval, then record the evidence and the actual delivery date, and set the
-   state to Released.
+   state to Released. In RaidManager, the evidence includes the `Deployed to production` line the deployment adds to
+   the release milestone's description, once every item carries `deployed:production` (spec §22, A9).
 6. **Close the milestone** only after the delivery evidence is recorded (spec §6).
 7. If necessary work remains when stabilization ends, ask the owner to revise the scope, the date or the next sprints
    (spec §12).
