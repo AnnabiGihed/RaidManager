@@ -315,6 +315,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- The description written for a Dependabot update says it changes the action's version, true for a tag such as
+  `@v4` as for a commit id, instead of always mentioning a pinned commit id (#477).
 - A pull request description saved in the browser, which GitHub stores with `\r\n` line endings, keeps its
   `Closes #<task>` line: `validate` finds it, and the review workflow closes that task when it merges (#475).
 - The 37 SonarCloud findings open on `main` are fixed (#365):
