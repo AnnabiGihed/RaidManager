@@ -181,6 +181,8 @@ Rules for every documentation change:
 - **Run the repository's script tests before pushing** any change to `scripts/`, the word list or the docs, as the
   docs `validate` check does: `python -m unittest` from `scripts/tests`, and read its `Ran ... OK` line. Its output
   includes lines such as "Flagged #170 needs-mockup" from fake data; they don't touch real issues.
+- **Type-check the scripts too:** the same check runs `python -m mypy` from the repository root (install
+  `mypy==1.11.2`); run it before pushing any change to `scripts/`, because `unittest` passes code mypy rejects (#454).
 
 ## 8. Test coverage gate (mandatory)
 
