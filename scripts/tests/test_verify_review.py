@@ -185,10 +185,10 @@ class GateResultTests(unittest.TestCase):
 
 class OperatorTests(unittest.TestCase):
     def test_the_owner_reviews_dependabot_updates_first(self) -> None:
-        self.assertEqual(operator_of("dependabot[bot]"), "AnnabiGihed")
+        self.assertEqual("AnnabiGihed", operator_of("dependabot[bot]"))
 
     def test_a_person_s_pull_request_is_reviewed_first_by_its_author(self) -> None:
-        self.assertEqual(operator_of("anthermook"), "anthermook")
+        self.assertEqual("anthermook", operator_of("anthermook"))
 
 if __name__ == "__main__":
     unittest.main()

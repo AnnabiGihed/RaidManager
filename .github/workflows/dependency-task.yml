@@ -12,7 +12,10 @@ permissions: {}
 
 jobs:
   task:
-    if: github.event.pull_request.user.login == 'dependabot[bot]'
+    # Dependabot's branches are in this repository; a fork's pull request never runs this job.
+    if: >-
+      github.event.pull_request.user.login == 'dependabot[bot]' &&
+      github.event.pull_request.head.repo.full_name == github.repository
     runs-on: ubuntu-latest
     concurrency:
       group: dependency-task-${{ github.event.pull_request.number }}

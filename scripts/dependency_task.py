@@ -215,28 +215,27 @@ def reopen_canceled(tasks: list[int]) -> list[int]:
     return reopened
 
 
-def main() -> int:
+def main() -> None:
     number = int(os.environ["PR_NUMBER"])
     pull_request = fetch_pull_request(number)
     if pull_request.author != BOT:
         print(f"#{number} was opened by @{pull_request.author}, not Dependabot; nothing to do.")
-        return 0
+        return
     if os.environ.get("PR_ACTION") == "closed":
         if pull_request.merged:
             print(f"#{number} merged; the review workflow closes its task.")
-            return 0
+            return
         task = cancel_task(pull_request)
         print(f"#{number} closed without merging; " + (f"task #{task} canceled." if task else "it had no open task."))
-        return 0
+        return
     linked = closing_numbers(pull_request.body)
     if linked:
         reopened = reopen_canceled(linked) if os.environ.get("PR_ACTION") == "reopened" else []
         print(f"#{number} already closes {', '.join(f'#{task}' for task in linked)}"
               + (f"; reopened {', '.join(f'#{task}' for task in reopened)}." if reopened else "."))
-        return 0
+        return
     print(f"#{number} closes task #{open_task(pull_request)} under #{UPDATES}.")
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()

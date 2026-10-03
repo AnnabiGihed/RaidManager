@@ -50,11 +50,11 @@ def pull(author: str = BOT, body: str = "Bumps lychee-action.", merged: bool = F
     return {"title": UPDATE.title, "body": body, "user": {"login": author}, "html_url": UPDATE.url, "merged": merged}
 
 
-def run(fake: FakeGitHub, action: str) -> int:
+def run(fake: FakeGitHub, action: str) -> None:
     environment = {"PR_NUMBER": "470", "PR_ACTION": action}
     with unittest.mock.patch.object(dependency_task, "api", fake), \
             unittest.mock.patch.dict(os.environ, environment), unittest.mock.patch("builtins.print"):
-        return dependency_task.main()
+        dependency_task.main()
 
 
 class ContentTests(unittest.TestCase):
@@ -89,7 +89,7 @@ class FindTaskTests(unittest.TestCase):
 class RunTests(unittest.TestCase):
     def test_an_opened_update_gets_a_linked_task_and_a_description(self) -> None:
         fake = FakeGitHub(pull(), [])
-        self.assertEqual(run(fake, "opened"), 0)
+        run(fake, "opened")
         created, linked, described = fake.changes
         self.assertEqual(created[:2], ("POST", "issues"))
         self.assertEqual((created[2]["labels"], created[2]["assignees"], created[2]["milestone"]),
