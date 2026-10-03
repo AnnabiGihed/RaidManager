@@ -92,8 +92,15 @@ def item_id(number):
 
 ### Hand over
 
-Open the draft pull request, set the task `In Review`, run `sonar_gate.py` on the head commit, and draft both review
-comments (`raidmanager-github-project-workflow`, step 6).
+1. Open the draft pull request. Its prose names other items without a closing keyword: never write close, closes,
+   closed, fix, fixes, fixed, resolve, resolves or resolved right before an issue number, except in the one
+   `Closes #<task>` line. Write "the merge of #414 shut #387" or "#387 was closed by a merge" instead.
+2. Check which issues GitHub linked, a few seconds after opening (right after, the list is still empty):
+   `gh pr view <n> --json closingIssuesReferences --jq '[.closingIssuesReferences[].number]'` must print exactly
+   `[<task>]`. If not, edit the description with `gh pr edit <n> --body-file <file>` and check again before anything
+   else; a linked closed item is set back to In Progress by the Project workflow "Pull request linked to issue".
+3. Set the task `In Review`, run `sonar_gate.py` on the head commit, and draft both review comments
+   (`raidmanager-github-project-workflow`, step 6).
 
 ### Close after a merge
 
@@ -131,6 +138,7 @@ For any change to many items (filling past values, field values, splits):
 | `gh issue view` refuses `--comments` together with `--json`. | Use `--json body,comments -q ...`. |
 | A record task created afterwards to document finished work gave its parent a start after its close. | When a derived start falls after the close, use the item's own creation date. |
 | Planning records drifted from the board after splits and moves. | Generate item lists in records from the Project, never by hand, and compare them before a review. |
+| The description of #419 said a merge "closed" #387. GitHub read it as a closing keyword and linked #387, and the Project workflow "Pull request linked to issue" set the closed #387 back to In Progress. `Refs #N` doesn't link. | Keep closing keywords out of prose and check `closingIssuesReferences` after opening each pull request ("Hand over"). The workflow is right to stay on: it only acts on linked issues. |
 | A pull request whose task is verified outside the repository (a run on the server) closed the task on merge, before the verification, three times in #387. | Say in the pull request and the report to merge only after the verification. If it merges first, reopen the task, set it Blocked with the reason, the person responsible and the unblock condition, clear its Target date, and close it again with the evidence once verified. |
 
 ## Sources

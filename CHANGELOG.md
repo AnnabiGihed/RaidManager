@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- `raidmanager-board-operations` keeps closing keywords out of pull request prose and checks, right after opening a
+  pull request, that GitHub links exactly its task (#422).
 - `raidmanager-conventions` gives owner steps one at a time with what, where, why and what to expect, keeps the
   agent off the owner's server, fixes the word list order rule, and requires the script tests before pushing;
   `raidmanager-board-operations` records how to reopen a task that a merge closed before its server verification
