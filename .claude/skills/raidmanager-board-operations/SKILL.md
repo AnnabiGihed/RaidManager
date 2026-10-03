@@ -131,6 +131,7 @@ For any change to many items (filling past values, field values, splits):
 | `gh issue view` refuses `--comments` together with `--json`. | Use `--json body,comments -q ...`. |
 | A record task created afterwards to document finished work gave its parent a start after its close. | When a derived start falls after the close, use the item's own creation date. |
 | Planning records drifted from the board after splits and moves. | Generate item lists in records from the Project, never by hand, and compare them before a review. |
+| A pull request whose task is verified outside the repository (a run on the server) closed the task on merge, before the verification, three times in #387. | Say in the pull request and the report to merge only after the verification. If it merges first, reopen the task, set it Blocked with the reason, the person responsible and the unblock condition, clear its Target date, and close it again with the evidence once verified. |
 
 ## Sources
 
