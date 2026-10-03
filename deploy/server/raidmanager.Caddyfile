@@ -1,0 +1,36 @@
+# RaidManager environments (ADR-0027)
+# provision.sh appends these sites to the shared proxy's Caddyfile once. Each forwards to its environment's container
+# on the `web` network; until that container runs, the site answers 503 with a short message, over HTTPS with its own
+# certificate. Deployments never edit this file again.
+
+(raidmanager_site) {
+    encode gzip
+    reverse_proxy {args[0]}:8080
+    handle_errors 502 503 504 {
+        respond "RaidManager {args[1]}: not deployed yet, or restarting." 503
+    }
+}
+
+raidmanager-dev.pivotsoftwares.com {
+    import raidmanager_site raidmanager-dev-web "dev website"
+}
+
+api.raidmanager-dev.pivotsoftwares.com {
+    import raidmanager_site raidmanager-dev-api "dev API"
+}
+
+raidmanager-test.pivotsoftwares.com {
+    import raidmanager_site raidmanager-test-web "test website"
+}
+
+api.raidmanager-test.pivotsoftwares.com {
+    import raidmanager_site raidmanager-test-api "test API"
+}
+
+raidmanager.pivotsoftwares.com {
+    import raidmanager_site raidmanager-prod-web "website"
+}
+
+api.raidmanager.pivotsoftwares.com {
+    import raidmanager_site raidmanager-prod-api "API"
+}

@@ -127,7 +127,7 @@ The test environment runs on one OVH server at `https://raidmanager-test.pivotso
 `https://api.raidmanager-test.pivotsoftwares.com`
 ([ADR-0027](docs/adr/0027-run-the-test-environment-on-one-ovh-vps.md)). It isn't deployed yet: the server, its
 settings and the deploy workflow are planned for release v0.3. The server is shared with other applications;
-[Provision the test server](docs/how-to/provision-the-test-server.md) prepares it without touching them.
+[Provision the server](docs/how-to/provision-the-server.md) prepares it without touching them.
 
 Its secrets never live in the repository or in user secrets
 ([ADR-0028](docs/adr/0028-keep-the-test-secrets-in-a-github-environment.md)):

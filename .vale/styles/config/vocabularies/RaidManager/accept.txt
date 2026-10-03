@@ -33,10 +33,13 @@ debuff
 debuffs
 deduplication
 deliverables
+dev
+Dev
 DevOps
 dialogs
 diff
 DNS
+EdDSA
 EF
 emoji
 enum
@@ -99,6 +102,7 @@ OpenAPI
 OpenID
 OpenSSH
 OVH
+passphrase
 Penpot
 picklist
 PlantUML
@@ -106,6 +110,7 @@ PowerShell
 pre
 prerendering
 PRs
+PuTTYgen
 Pyright
 queueing
 Radzen
