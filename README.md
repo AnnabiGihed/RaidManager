@@ -121,6 +121,27 @@ The API asks Discord for each member's roles with the bot's token
 
 The AppHost passes it to the API, which refuses to start without it.
 
+### Deploy to the test environment
+
+The test environment runs on one OVH server at `https://raidmanager-test.pivotsoftwares.com`, with the API at
+`https://api.raidmanager-test.pivotsoftwares.com`
+([ADR-0027](docs/adr/0027-run-the-test-environment-on-one-ovh-vps.md)). It isn't deployed yet: the server, its
+settings and the deploy workflow are planned for release v0.3.
+
+Its secrets never live in the repository or in user secrets
+([ADR-0028](docs/adr/0028-keep-the-test-secrets-in-a-github-environment.md)):
+
+- They are environment secrets of the GitHub environment `test`, which only workflow runs from `main` can read. The
+  deploy workflow writes them to the server at each deployment.
+- The test environment has its own Discord application, "RaidManager Test", separate from the one you use locally.
+- Set or change a value from your own machine; `gh` asks for it at the prompt:
+
+  ```bash
+  gh secret set DISCORD_CLIENT_SECRET --env test
+  ```
+
+  Then run the deploy workflow, so the server picks up the new value. ADR-0028 lists every secret and how to rotate it.
+
 ### Change the database schema
 
 The persistence schema is managed with Entity Framework Core migrations, using the repository's local `dotnet-ef`
