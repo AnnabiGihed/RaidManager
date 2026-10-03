@@ -1,26 +1,33 @@
 sequenceDiagram
     autonumber
-    participant P as Player
+    participant P as Player's browser
     participant W as Website
-    participant API as Identity workflow
     participant D as Discord
-    P->>W: Sign in
-    W->>API: Begin Discord authorization
-    API-->>W: Authorization redirect with request correlation
-    W->>D: Request player consent
-    D-->>W: Return authorization result
-    W->>API: Complete correlated sign-in
-    API->>D: Validate authorization and obtain Discord identity
-    alt Denied or invalid authorization
-        API-->>W: Sign-in failed with retry guidance
-        W-->>P: Show failure
-    else Authorized
-        API->>API: Resolve local user and community permissions
-        API-->>W: Establish authenticated application session
-        W->>API: Query pending character claims
-        alt Pending claims exist
-            API-->>W: Open mandatory approval page
-        else No pending claims
-            API-->>W: Open community raid view
+    participant API as API
+    P->>W: GET /sign-in
+    W-->>P: Redirect to Discord, asking for identify and guilds
+    P->>D: Consent screen
+    alt Player denies
+        D-->>P: Return to /signin-discord, access denied
+        P->>W: /signin-discord
+        W-->>P: Redirect to /sign-in/failed?reason=denied, with a retry
+    else Player authorizes
+        D-->>P: Return to /signin-discord with a code
+        P->>W: /signin-discord with the code and state
+        W->>D: Exchange the code, read the Discord identity
+        alt Exchange or state check fails
+            W-->>P: Redirect to /sign-in/failed?reason=failed, with a retry
+        else Identity read
+            W->>API: POST /internal/identity/discord-sign-in with the website key
+            API-->>W: The local user id, the same on every sign-in
+            W->>D: GET /users/@me/guilds with the sign-in token
+            W->>API: Find the communities of those servers
+            W->>API: Get the player's pending character claims
+            W-->>P: Set the session cookie (HttpOnly, Secure, SameSite Lax), without keeping the Discord token
+            alt Pending claims, or the check failed
+                W-->>P: Redirect to /characters/review
+            else No pending claims
+                W-->>P: Redirect to the requested local page
+            end
         end
     end

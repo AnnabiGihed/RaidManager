@@ -1,12 +1,17 @@
 # Account and character sequences
 
-These planned sequences show the actor and component responsibilities behind onboarding and synchronization.
-Application programming interface (API) messages are conceptual operations; endpoint paths are not yet defined.
+These sequences show the actor and component responsibilities behind onboarding and synchronization.
+The sign-in sequence shows the built flow with its real routes; the others are still planned, and their application
+programming interface (API) messages are conceptual operations.
 
 ## Discord sign-in
 
-The server validates the Discord authorization result, establishes local identity, and checks for pending claims.
-Newly discovered characters lead the next website sign-in to approval.
+The website owns the sign-in, as [ADR-0011](../adr/0011-website-session-and-api-trust.md) decides. It runs the Discord
+authorization exchange itself and asks the API, with its website key, for the player's local user id. Then it looks up
+the player's communities and pending claims, and sets its own session cookie. The Discord token is never stored.
+A denied or failed authorization ends on a failure page with a retry.
+Pending claims, or a claim check that fails, send the player to the review page; otherwise they return to the page
+they asked for.
 
 [![Discord sign-in sequence including denied authorization and the approval redirect](../diagrams/sequence-sign-in.svg)](../diagrams/sequence-sign-in.svg)
 
