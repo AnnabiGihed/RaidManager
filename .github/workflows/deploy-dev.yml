@@ -131,3 +131,27 @@ jobs:
       - name: Stop the SSH agent
         if: always()
         run: ssh-agent -k > /dev/null 2>&1 || true
+
+  # Marks the delivered items and releases deployed:dev, or deploy-failed:dev on a failure (#392). A job of its own,
+  # so the token that writes issues never shares a job with the dev secrets.
+  record:
+    needs: deploy
+    if: always() && (needs.deploy.result == 'success' || needs.deploy.result == 'failure')
+    runs-on: ubuntu-latest
+    timeout-minutes: 15
+    permissions:
+      contents: read
+      issues: write
+      pull-requests: read
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
+      - name: Record the deployment on the items
+        env:
+          GH_TOKEN: ${{ github.token }}
+          OUTCOME: ${{ needs.deploy.result }}
+          RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
+        run: >-
+          python scripts/record_deployment.py --environment dev --outcome "$OUTCOME" --commit "$GITHUB_SHA"
+          --run-url "$RUN_URL" --date "$(TZ=Europe/Brussels date +%F)"

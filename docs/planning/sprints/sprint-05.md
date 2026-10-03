@@ -54,7 +54,7 @@ date on the Project, both inclusive) follows the blocked-by order; the item's ow
 | #375 Configure the test environment | Improvement | 3 | 8 to 9 Oct | #388 (Deployment) | #103, #374 |
 | #17 Discover WoW accounts and upload snapshots reliably | User story | 8 | 10 to 13 Oct | #384 (Development) | #15, #16 |
 | #376 Deploy main to the dev environment automatically | Improvement | 8 | 3 to 9 Oct | #444 (Development), #389 (Development), #445 (Deployment) | #374, #388 |
-| #392 Show deployment status on GitHub and the Project | Improvement | 3 | 14 to 15 Oct | #393 (Deployment) | #376 |
+| #392 Show deployment status on GitHub and the Project | Improvement | 3 | 3 Oct | #393 (Deployment) | #376 |
 | #415 Keep the server provisioning lessons in the skills | Improvement | 2 | 3 Oct | #416 (Business Analysis) | None |
 | #417 provision.sh lists the SSH rule among the other firewall rules | Bug | 1 | 3 Oct | #418 (Development) | None |
 | #421 Keep closing keywords out of pull request prose | Improvement | 1 | 3 Oct | #422 (Business Analysis) | None |
@@ -99,6 +99,7 @@ and its task #388 wait for #409 and #411.
 | 2026-10-03 | #421 with #422 added on the owner's decision recorded on #421: keep closing keywords out of pull request prose. |
 | 2026-10-03 | #436 with #437 added on the owner's decision recorded on #436: record the day's selections, the automation coverage and the skill pitfalls; #410 narrowed to its ADR. |
 | 2026-10-03 | #376 pointed at dev (owner decision on #369) and its task #389 split, with the owner's approval, into #444 (the Compose files), #389 (the workflow) and #445 (the first deployment's verification); #376 and #389 now wait for #388 instead of #375, which closes after #445. |
+| 2026-10-03 | #392 and #393 widened to dev, test and production, raised to P0 and moved first, on the owner's decisions recorded on #392: a label per environment on every delivered item, parent and release, a failure label, and the dev backfill. |
 
 ## Outcome
 

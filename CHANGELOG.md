@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- Each dev deployment marks what it delivered: completed items, parents whose completed children all are, and
+  releases whose items all are get `deployed:dev`, or `deploy-failed:dev` with a comment when the deployment fails;
+  a release milestone's description notes the deployment. The first run labels everything already deployed. The
+  test and production workflows will run the same job (#393).
 - ADR-0030 proposes how the desktop companion pairs and uploads: a code shown on the companion and confirmed on the
   website, a revocable device token kept hashed by the API and encrypted with Windows DPAPI on the computer, expiry
   after 180 days unused, snapshot ids against replay, and a keyed fingerprint of the WoW account as conflict
