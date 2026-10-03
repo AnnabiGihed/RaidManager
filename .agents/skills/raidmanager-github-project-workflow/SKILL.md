@@ -28,6 +28,9 @@ authority (ADR-0026), applied by eight skills:
 | `work-stabilization-and-release-closure` | Stabilization, readiness, approval, delivery and release closure. |
 | `work-board-configuration-and-validation` | Project fields, views, workflows, forms, the guard and the board report. |
 
+The commands for all of this (ids, creating and linking items, setting fields, the closing order) are in
+`raidmanager-board-operations`.
+
 ## Source of truth
 
 - Repository: `AnnabiGihed/RaidManager`; [Raid Manager project](https://github.com/users/AnnabiGihed/projects/2).
@@ -51,8 +54,9 @@ generate the mockup with the `penpot-mockups` skill (ADR-0018), then have the ow
 2. Pass the active-sprint gate of `work-sprint-planning-and-eligibility` before starting and before resuming. If it
    fails, stop and report the violated rule.
 3. Run `git branch --show-current`, fetch the latest `main`, and create one short-lived `feature/<task-number>-<slug>`
-   or `fix/<task-number>-<slug>` branch from `origin/main`. No branch from an epic, feature, story, improvement, bug
-   or spike number, no `develop` branch, and no direct push to `main`. Set Status and Delivery Stage as
+   or `fix/<task-number>-<slug>` branch from `origin/main`. Documentation, planning and skill changes use `feature/`
+   too: no `docs/`, `chore/` or other prefix (`CONTRIBUTING.md`). No branch from an epic, feature, story, improvement,
+   bug or spike number, no `develop` branch, and no direct push to `main`. Set Status and Delivery Stage as
    `work-task-execution-and-completion` describes.
 4. For UI work, open the item's mockup first and build to it. If the implementation must differ, update the
    `.penpot` source and the SVG export in the same change (`docs/how-to/design-a-screen.md`).
@@ -117,6 +121,11 @@ generate the mockup with the `penpot-mockups` skill (ADR-0018), then have the ow
      print("copy of each other:", is_copy(PEER, OPERATOR))
      PY
      ```
+
+     The shape that works: a first sentence `Operator review of #<pr>. I checked ...` (or `Peer review of #<pr>. I
+     compared ...`), then four bullets, each naming a file, identifier or issue from the change and what was verified
+     about it. The operator speaks as the owner ("as I decided on #367"); the peer checks the code, records and links.
+     Run the check from the repository folder, after the PR exists.
 
      When the operator asks for another version of one comment, write a new one and check it the same way.
    - The `review` workflow merges the PR itself once every gate passes (ADR-0008). Never queue or perform the merge

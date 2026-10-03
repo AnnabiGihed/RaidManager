@@ -1,0 +1,138 @@
+---
+name: raidmanager-board-operations
+description: >-
+  Mandatory recipes for operating the Raid Manager GitHub Project through `gh` and the GraphQL API: the field and option
+  ids, creating and linking work items, setting fields, starting, handing over and closing work in the right order,
+  bulk changes with a dry run and read-back, and the pitfalls met so far. Use it with the work-* skills, which hold
+  the rules; this skill holds the commands.
+---
+
+# Raid Manager board operations
+
+The work-* skills and the [Work Management and Delivery
+Specification](../../../docs/reference/work-management-specification.md) say what must happen; this skill says how
+to do it on this board without relearning it. Every command runs with the owner's local `gh` login, never a personal
+token or a repository secret (spec §22).
+
+## Ids
+
+Repository `AnnabiGihed/RaidManager`, Project `PVT_kwHOAPL9-M4BlGGp`
+([Raid Manager](https://github.com/users/AnnabiGihed/projects/2)). Re-read them with the configuration query in
+`work-board-configuration-and-validation` if a call fails with an unknown id.
+
+| Field | Field id | Values (option or iteration id) |
+| --- | --- | --- |
+| Status | `PVTSSF_lAHOAPL9-M4BlGGpzhj0P78` | Backlog `f75ad846`, Ready `d41c15e0`, In Progress `47fc9ee4`, In Review `46ac76c5`, Blocked `b83f351d`, Done `98236657`, Canceled `ac06ee45` |
+| Sprint | `PVTIF_lAHOAPL9-M4BlGGpzhkI2OE` | Sprint 5 `fec91ce7`, Sprint 6 `cdd05023`, Sprint 7 `053be665`, Sprint 8 `31bb5757`, Sprint 9 `cada5356`, Sprint 10 `80b42dc6`, Sprint 11 `67fd9191`, Sprint 12 `b54e4a68`, Sprint 13 `41a62d5c`, Sprint 14 `fbb423c7`, Sprint 15 `52e6c533`, Sprint 16 `4b0add8b` (Sprints 1 to 4: `8ffad868`, `269b4c63`, `f7855cd9`, `b9635598`) |
+| Delivery Stage | `PVTSSF_lAHOAPL9-M4BlGGpzhkI2OI` | Business Analysis `9d9164e9`, Functional Analysis `8eadb407`, Architecture Analysis `e1670f61`, Development `ecb25aca`, Testing `68dcaffd`, Deployment `9313482e` |
+| Story Points | `PVTF_lAHOAPL9-M4BlGGpzhkI2PE` | a number |
+| Risk | `PVTSSF_lAHOAPL9-M4BlGGpzhkNU0o` | Low `047760b3`, Medium `8b7214fc`, High `099e0d7c` |
+| Priority | `PVTSSF_lAHOAPL9-M4BlGGpzhj0VHg` | P0 Critical `2e29488f`, P1 High `14c3c65c`, P2 Normal `1abe36cd`, P3 Later `fe47cb25` |
+| Area | `PVTSSF_lAHOAPL9-M4BlGGpzhj0VFo` | Access & Community `8b9dc37d`, Character Sync `838ab2cb`, Raid Planning `a8e0cade`, Readiness `f05c3162`, Roster `50ac204c`, Raid Night `ac665257`, Platform `5ddc6272` |
+| Start date | `PVTF_lAHOAPL9-M4BlGGpzhj0VdY` | a date |
+| Target date | `PVTF_lAHOAPL9-M4BlGGpzhj0VeU` | a date |
+
+Milestones are releases: v0.1 #2, v0.2 #3, v0.3 #4, v0.4 #5, v1.0 #1. The sprint each release owns is in the
+"Sprint sequence" table of its record in `docs/planning/releases/`.
+
+## Recipes
+
+Write every multi-step change as a short Python script in the scratchpad that calls `gh` through `subprocess`,
+rather than as shell one-liners: quoting and escaping in the agent's shell mangle `\n`, `$` and apostrophes.
+
+```python
+import json, subprocess
+from pathlib import Path
+REPO_DIR = "D:/Work/Personal Project/RaidManager"
+PROJECT = "PVT_kwHOAPL9-M4BlGGp"
+
+def gh(*args):
+    return subprocess.run(["gh", *args], capture_output=True, text=True, check=True,
+                          encoding="utf-8", cwd=REPO_DIR).stdout
+
+def set_field(item_id, field_id, value):
+    """value: 'singleSelectOptionId:"<id>"', 'iterationId:"<id>"', 'number:3' or 'date:"2026-10-03"'."""
+    gh("api", "graphql", "-f", "query=mutation{updateProjectV2ItemFieldValue(input:{projectId:\"%s\",itemId:\"%s\","
+       "fieldId:\"%s\",value:{%s}}){projectV2Item{id}}}" % (PROJECT, item_id, field_id, value))
+
+def item_id(number):
+    return gh("api", "graphql", "-f", "query={repository(owner:\"AnnabiGihed\",name:\"RaidManager\"){issue(number:%d)"
+              "{projectItems(first:2){nodes{id}}}}}" % number,
+              "--jq", ".data.repository.issue.projectItems.nodes[0].id").strip()
+```
+
+### Create a work item
+
+1. Classify it first (`work-classification-and-hierarchy`) and pick its parent.
+2. Write the body with exactly the headings of its issue form in `.github/ISSUE_TEMPLATE/` (`### Parent`,
+   `### Purpose`, and so on), to a file written with `newline="\n"`. Record what the owner decided in the body under
+   `### Owner decisions (<date>, recorded here)`.
+3. Create it with its type label, milestone and assignee:
+   `gh issue create --title "<Type>: <title>" --body-file <absolute path> --label type:<type> --milestone v0.3
+   --assignee AnnabiGihed`. Pass an absolute path: `gh` runs from the repository folder.
+4. Link the parent at once with the child's database id (not its number):
+   `gh api -X POST repos/AnnabiGihed/RaidManager/issues/<parent>/sub_issues -F sub_issue_id=<child id>`, where the id
+   comes from `gh api repos/AnnabiGihed/RaidManager/issues/<child> --jq .id`. Add `-F replace_parent=true` to move it.
+5. Add it to the Project with `addProjectV2ItemById(input:{projectId, contentId: <issue node id>})` and set Status,
+   Sprint, Delivery Stage, Priority, Area and, for outcome items, Story Points and Risk.
+6. Record the estimate and the risk as a comment on outcome items:
+   `Estimate: **3 Story Points**. Rationale: ... Estimated by the agent (specification sections 9 and 22).` and
+   `Risk: **Low**. Reason: ... (agent assessment; the owner may change it).`
+7. Dependencies are native links:
+   `gh api -X POST repos/AnnabiGihed/RaidManager/issues/<n>/dependencies/blocked_by -F issue_id=<blocker id>`.
+
+### Start work
+
+1. `python scripts/work_gate.py preflight <task>`. A new item can be missing from the Project's item list for a minute:
+   if the result says it isn't on the Project, wait 20 seconds and run it again, up to a few minutes. Never change
+   dates or sprints to pass a failing gate.
+2. Set the task `In Progress`, check its assignee, and set its Start date to today in Europe/Brussels. Do the same for
+   each parent up to the epic that has no actual start yet (#397).
+3. Branch from `origin/main` as `feature/<task>-<slug>` or `fix/<task>-<slug>` only.
+
+### Hand over
+
+Open the draft pull request, set the task `In Review`, run `sonar_gate.py` on the head commit, and draft both review
+comments (`raidmanager-github-project-workflow`, step 6).
+
+### Close after a merge
+
+1. Confirm the merge on its own: `gh pr view <n> --json state,mergedAt`. Never clean up on the owner's word alone;
+   an earlier session deleted a branch and closed a task before the merge had happened. Check that `mergedAt` falls
+   inside the task's active sprint (A5).
+2. Clean up the branches (`raidmanager-github-project-workflow`, step 7).
+3. **Comment first, then set Done.** The Project closes an issue as soon as its Status becomes Done, so post the
+   evidence comment before changing the Status, or the issue closes without it. Then set the Target date to the
+   closing day and Status `Done`.
+4. After a few seconds, check `gh issue view <n> --json state,stateReason`. If it is still open, close it with
+   `gh issue close <n> -r completed`. `gh issue close` has no `-q` flag.
+5. Validate the parent independently (`work-task-execution-and-completion`, action 8) and close it the same way, with
+   its own evidence comment. A spike closes when its question is answered and the owner reviewed the answer.
+6. Run `python scripts/work_gate.py report` and report its blocking categories.
+
+### Bulk changes
+
+For any change to many items (filling past values, field values, splits):
+
+1. Read the items with a paginated query that prints one JSON object per line:
+   `gh api graphql --paginate -f query=<query with $endCursor> --jq '.data.node.items.nodes[]'`, with
+   `pageInfo { hasNextPage endCursor }` in the query.
+2. **Dry run:** compute every change and print the counts and the exceptions; look at the exceptions before writing.
+3. Apply with `--apply`, skipping values already set, so a rerun after a failure is safe.
+4. **Read back** from the Project and check for gaps; post the read-back on the improvement that asked for it.
+
+## Pitfalls met so far
+
+| Pitfall | Fix |
+| --- | --- |
+| A body written on Windows without `newline="\n"` got `\r\r\n` line endings, and the guard couldn't read its headings. | Write bodies with `newline="\n"`; when editing a body read with `gh issue view --json body`, replace `\r\n` with `\n` first. |
+| Setting Status to Done closed the issue before its evidence comment was posted. | Comment first, then set Done (above). |
+| Single-select options recreated without their ids wiped every item's value. | Update options with their existing ids (`work-board-configuration-and-validation`). |
+| `gh issue view` refuses `--comments` together with `--json`. | Use `--json body,comments -q ...`. |
+| A record task created afterwards to document finished work gave its parent a start after its close. | When a derived start falls after the close, use the item's own creation date. |
+| Planning records drifted from the board after splits and moves. | Generate item lists in records from the Project, never by hand, and compare them before a review. |
+
+## Sources
+
+- Owner decisions on #323, #346, #394 and #397; spec §8, §11, §13, §15 and §22.
+- `docs/reference/project-automation.md` for the configuration this skill operates.

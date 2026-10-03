@@ -17,6 +17,8 @@ Project skills live in `.agents/skills/` and, identically, in `.claude/skills/` 
 - For work management (creating, classifying and planning work items, sprints, releases, status and completion),
   follow `docs/reference/work-management-specification.md` through the eight `.agents/skills/work-*/SKILL.md` skills
   (ADR-0026).
+- For operating the GitHub Project (field and option ids, creating and linking items, setting fields, the closing
+  order, bulk changes and known pitfalls), use `.agents/skills/raidmanager-board-operations/SKILL.md`.
 - For delivering a change (branch, pull request, review comments, merge and cleanup), use
   `.agents/skills/raidmanager-github-project-workflow/SKILL.md`. A linked task issue is required before implementation.
 - For `.csproj` creation or package metadata changes, use `.agents/skills/raidmanager-project-packaging/SKILL.md`.

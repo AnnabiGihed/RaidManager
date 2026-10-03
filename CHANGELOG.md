@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- The `raidmanager-board-operations` skill holds the Project's field and option ids and the commands for creating,
+  linking, starting, handing over and closing work items, bulk changes with a dry run and read-back, and the pitfalls
+  met so far; `raidmanager-conventions` gains the lint quirks, Windows pitfalls and how the owner works with the
+  agent, so a new agent session keeps the same practices (#404).
 - ADR-0027 proposes how the test environment runs on the OVH VPS-1: containers generated from the AppHost with
   Docker Compose, Caddy with Let's Encrypt in front of `raidmanager-test.pivotsoftwares.com` and its `api.`
   subdomain, SQL Server Express capped at 2 GB, images built in GitHub Actions, and the provisioning steps (#380).
