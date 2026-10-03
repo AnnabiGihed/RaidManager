@@ -209,6 +209,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- ADR-0028 now keeps the secrets of the dev, test and production environments in three GitHub environments: `main`
+  deploys to dev only, release tags to test and production only, one deploy key and one Discord application per
+  environment, and the database password for PostgreSQL. The README's deployment notes cover the three environments
+  (#386).
 - RaidManager stores its data in PostgreSQL instead of SQL Server (ADR-0029): the persistence project uses
   Pivot.Framework's PostgreSQL package, the AppHost runs `postgres`, one fresh migration replaces the six SQL Server
   ones, and the tests run against PostgreSQL 18.3 containers. Local data from the SQL Server volume isn't carried

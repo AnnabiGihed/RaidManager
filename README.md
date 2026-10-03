@@ -122,27 +122,36 @@ The API asks Discord for each member's roles with the bot's token
 
 The AppHost passes it to the API, which refuses to start without it.
 
-### Deploy to the test environment
+### Deploy to the environments
 
-The test environment runs on one OVH server at `https://raidmanager-test.pivotsoftwares.com`, with the API at
-`https://api.raidmanager-test.pivotsoftwares.com`
-([ADR-0027](docs/adr/0027-run-the-test-environment-on-one-ovh-vps.md)). It isn't deployed yet: the server, its
-settings and the deploy workflow are planned for release v0.3. The server is shared with other applications;
-[Provision the server](docs/how-to/provision-the-server.md) prepares it without touching them.
+RaidManager has three environments on one shared OVH server
+([ADR-0027](docs/adr/0027-run-the-test-environment-on-one-ovh-vps.md)), none deployed yet:
 
-Its secrets never live in the repository or in user secrets
+| Environment | Website | Deployed |
+| --- | --- | --- |
+| Dev | `https://raidmanager-dev.pivotsoftwares.com` | on every merge to `main` |
+| Test | `https://raidmanager-test.pivotsoftwares.com` | on every release |
+| Production | `https://raidmanager.pivotsoftwares.com` | when a release is tested and confirmed |
+
+Each API is at the same address with `api.` in front, and serves only the desktop companion's routes. The server is
+shared with other applications; [Provision the server](docs/how-to/provision-the-server.md) prepares it without
+touching them.
+
+Their secrets never live in the repository or in user secrets
 ([ADR-0028](docs/adr/0028-keep-the-test-secrets-in-a-github-environment.md)):
 
-- They are environment secrets of the GitHub environment `test`, which only workflow runs from `main` can read. The
-  deploy workflow writes them to the server at each deployment.
-- The test environment has its own Discord application, "RaidManager Test", separate from the one you use locally.
+- They are environment secrets of the GitHub environments `dev`, `test` and `production`, with the same names in
+  each. Only `main` can deploy to `dev`, and only release tags (`v*`) to `test` and `production`. The deploy workflow
+  writes them to the server at each deployment.
+- Each environment has its own Discord application, separate from the one you use locally, and its own deploy key.
 - Set or change a value from your own machine; `gh` asks for it at the prompt:
 
   ```bash
   gh secret set DISCORD_CLIENT_SECRET --env test
   ```
 
-  Then run the deploy workflow, so the server picks up the new value. ADR-0028 lists every secret and how to rotate it.
+  Then deploy that environment again, so the server picks up the new value. ADR-0028 lists every secret and how to
+  rotate it.
 
 ### Change the database schema
 

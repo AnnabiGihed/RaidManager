@@ -42,8 +42,8 @@ Nothing is deployed yet, so no stored data has to move.
 - **No instance publishes a port.** Each is reachable only on its environment's Compose network, never on the shared
   `web` network.
 - **Its password is a secret** delivered like the others ([ADR-0028](0028-keep-the-test-secrets-in-a-github-environment.md));
-  the AppHost's PostgreSQL password parameter replaces `sql-password` in ADR-0028's table, which #386 revises for the
-  three environments.
+  the AppHost's PostgreSQL password parameter replaces `sql-password`, and ADR-0028 names it `POSTGRES_PASSWORD` in
+  each environment.
 - **Memory is capped per instance:** `shared_buffers` of 64 MB with a 192 MB container limit for dev and test, and
   128 MB with a 320 MB limit for production.
 
