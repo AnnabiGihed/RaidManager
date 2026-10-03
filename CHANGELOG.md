@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- The addon snapshot contract, schema version 1: every section of a character's SavedVariables snapshot is observed
+  or unavailable, with its observation time, so an unavailable value is never read as an empty one; raw game values
+  only, and a complete-scan flag on raid saves. Fixtures cover one character, two account folders, an incomplete
+  scan and raid saves with reset data (#38).
 - Dependabot proposes each new release of a GitHub Action every Monday, keeping the commit-id pins of #365. The
   `dependency-task` workflow gives each of its pull requests a task under #461 and the description the `validate`
   check needs, and cancels the task of an update Dependabot closes without merging; the owner reviews these pull

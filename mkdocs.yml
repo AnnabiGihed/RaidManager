@@ -20,6 +20,7 @@ nav:
   - Provision the server: how-to/provision-the-server.md
   - Glossary: glossary.md
   - API contracts: reference/api-contracts.md
+  - Addon snapshot contract: reference/addon-savedvariables.md
   - Project automation: reference/project-automation.md
   - Work management specification: reference/work-management-specification.md
   - Warmane lockout evidence: reference/warmane-lockout-rules.md

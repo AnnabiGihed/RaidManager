@@ -46,7 +46,7 @@ date on the Project, both inclusive) follows the blocked-by order; the item's ow
 | #373 Choose how RaidManager runs on the OVH VPS-1 | Spike | 3 (2 days) | 3 to 4 Oct | #380 (Architecture Analysis) | None |
 | #13 Sign in with Discord and keep a secure session | User story | 5 | 3 to 6 Oct | #100 (Architecture Analysis), #362 (Testing) | None |
 | #209 Fix the SonarCloud findings on main | Improvement | 5 | 3 to 7 Oct | #365 (Development) | None |
-| #16 Capture visited characters in the WoW addon | User story | 8 | 5 to 9 Oct | #38 (Architecture Analysis), #383 (Development) | None |
+| #16 Capture visited characters in the WoW addon | User story | 8 | 3 to 9 Oct | #38 (Architecture Analysis), #383, #487, #488, #489 (Development) | None |
 | #374 Provision the OVH test server | Improvement | 5 | 5 to 7 Oct | #387 (Deployment) | #373 |
 | #15 Pair and revoke a desktop companion | User story | 8 | 6 to 9 Oct | #382 (Development) | #37 |
 | #153 Store and deliver deployment secrets | Improvement | 5 | 6 to 8 Oct | #386 (Deployment) | #103 |
@@ -111,6 +111,7 @@ and its task #388 wait for #409 and #411.
 | 2026-10-03 | #461 selected with the generated tasks #469 to #473 (later canceled when grouping replaced them) and #483, under the standing approval on #460; #480 added to #460 on the owner's grouping decision. |
 | 2026-10-03 | Bugs #474 with #475 and #476 with #477 added at P0 on the owner's decision recorded on them: `validate` failed on a description saved in the browser, and the generated wording was wrong for tag updates. |
 | 2026-10-03 | #484 with #485 added on the owner's decision recorded on #484: the merge-order and branch-update lessons in the skills. |
+| 2026-10-03 | #383 split on the owner's decision recorded on #16: #383 keeps the addon, its tools and identity; #487 (professions and gear), #488 (loadouts) and #489 (raid saves) follow it. #38 started early, on 3 October. |
 
 ## Outcome
 
