@@ -3,6 +3,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.DependencyInjection.Extensions;
 using Microsoft.Extensions.Options;
 using RaidManager.Companion.Client.Configuration;
+using RaidManager.Companion.Client.Features.Notices;
 using RaidManager.Companion.Client.Features.Pairing;
 using RaidManager.Companion.Client.Features.Tokens;
 using RaidManager.Companion.Client.Features.Tray;
@@ -24,7 +25,7 @@ public static class CompanionClientServiceCollectionExtensions
     #endregion Fields
 
     #region Public Methods
-    /// <summary>Registers the options, the API client, the token store and the view models.</summary>
+    /// <summary>Registers the options, the API client, the token store, the keeps-running notice and the view models.</summary>
     /// <param name="services">The service collection.</param>
     /// <param name="configuration">The configuration holding the <c>Companion</c> section.</param>
     /// <returns>The same collection, for chaining.</returns>
@@ -36,6 +37,8 @@ public static class CompanionClientServiceCollectionExtensions
             .ValidateOnStart();
         services.TryAddSingleton(TimeProvider.System);
         services.TryAddSingleton(TokenFileLocation.ForCurrentUser());
+        services.TryAddSingleton(NoticeMarkerLocation.ForCurrentUser());
+        services.AddSingleton<KeepsRunningNotice>();
         services.AddSingleton<ITokenStore, TokenStore>();
         services.AddHttpClient<ICompanionApi, CompanionApi>((provider, client) =>
         {

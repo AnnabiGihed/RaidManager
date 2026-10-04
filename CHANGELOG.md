@@ -9,6 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- The first time the companion's window is closed, a small notification at the bottom right of the screen says
+  "RaidManager Companion is still running" and to quit it from its icon in the notification area; it closes after 6
+  seconds or on a click, and never shows again (board 21, #530).
 - The companion pairing mockup gains board 21: the first time the companion's window is closed, a Windows notification
   says "RaidManager Companion is still running" and to quit it from its icon in the notification area; later closes stay
   silent (#529).

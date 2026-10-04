@@ -6,6 +6,7 @@ using RaidManager.Companion.Client;
 using RaidManager.Companion.Client.Features.Shared;
 using RaidManager.Companion.Client.Features.Tokens;
 using RaidManager.Companion.Features.Shared;
+using RaidManager.Companion.Features.Shell;
 using RaidManager.Companion.Features.Tokens;
 
 namespace RaidManager.Companion.Composition;
@@ -51,6 +52,7 @@ internal static class CompanionHost
         services.AddSingleton(shell);
         services.AddSingleton<IApplicationShell>(shell);
         services.AddSingleton<IBrowserLauncher, AvaloniaBrowserLauncher>();
+        services.AddSingleton<KeepsRunningNoticePresenter>();
         if (OperatingSystem.IsWindows())
         {
             services.AddSingleton<ITokenProtector, DpapiTokenProtector>();
