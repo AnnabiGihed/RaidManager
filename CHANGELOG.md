@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- ADR-0033 (Proposed): players will install the companion from the Microsoft Store as an MSIX the Store signs, built on
+  a Windows runner only when the companion changes and published to the Store by GitHub Actions on every merge; the
+  listing stays private on dev until the release that ships the companion. The spike's prototype package ran on Windows
+  11 (#533).
 - The first time the companion's window is closed, a small notification at the bottom right of the screen says
   "RaidManager Companion is still running" and to quit it from its icon in the notification area; it closes after 6
   seconds or on a click, and never shows again (board 21, #530).

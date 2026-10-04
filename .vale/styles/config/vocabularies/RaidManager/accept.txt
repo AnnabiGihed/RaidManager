@@ -46,6 +46,7 @@ DPAPI
 EdDSA
 EF
 emoji
+Entra
 enum
 Excalidraw
 FASFC

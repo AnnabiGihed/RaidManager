@@ -34,3 +34,4 @@
 | 0030 | [Pair the companion with a confirmed code and a revocable device token](0030-pair-the-companion-with-a-confirmed-code.md) | Accepted |
 | 0031 | [Build the WoW addon in Lua 5.1 in `src/Addon`, checked by busted, luacheck and StyLua](0031-build-the-wow-addon-in-lua-under-src-addon.md) | Proposed |
 | 0032 | [Build the Windows companion in Avalonia with a window and a tray icon](0032-build-the-windows-companion-in-avalonia.md) | Accepted |
+| 0033 | [Publish the companion through the Microsoft Store from GitHub Actions](0033-publish-the-companion-through-the-microsoft-store.md) | Proposed |
