@@ -23,6 +23,10 @@ without a code. 13. The code can't be checked; Try again shows 1. Each offers "S
 15. No paired companions yet. 16. The companions can't be loaded; Try again shows 2.
 17. The confirmation failed, on the confirm page.
 
+Companion state added by #514 (owner decisions on #514, 2026-10-04):
+18. The tray icon, its tooltip and its menu. Open, or a click on the icon, shows the window (5); Quit exits. Closing
+the window hides it here. Windows draws the menu in the system theme, so the board fixes its entries, not its look.
+
 Uploads come with #384, so "Last upload" says "No upload yet" until then (owner decision on #513). Times are in UTC,
 as on the character review page.
 
@@ -69,6 +73,7 @@ EXPIRED_LIST = "14 · Website: expired companion, revoke failed"
 EMPTY_LIST = "15 · Website: no paired companions"
 LIST_FAILED = "16 · Website: companions can't be loaded"
 CONFIRM_FAILED = "17 · Website: confirmation failed"
+TRAY = "18 · Companion: tray menu"
 NO_UPLOAD = "No upload yet"
 CONFIRM_SUBTITLE = "Check that the code matches the one on your companion, then confirm. Only pair a computer you use."
 TRY_AGAIN = "Nothing changed. Try again in a moment."
@@ -284,6 +289,47 @@ def unpaired() -> list[Item]:
     ]
 
 
+def tray() -> list[Item]:
+    taskbar_top = 552
+    icon_x = 344
+    menu_x, menu_y, menu_w = 236, 404, 200
+    return [
+        text("Heading", WINDOW_PADDING, 60, "In the notification area", 18, 700),
+        text("Note line 1", WINDOW_PADDING, 90, "A click on the icon opens the window; a right click", 14, 400,
+             SECONDARY),
+        text("Note line 2", WINDOW_PADDING, 110, "shows this menu. Closing the window hides it here.", 14, 400,
+             SECONDARY),
+        text("Note line 3", WINDOW_PADDING, 140, "Windows draws the menu in the system theme.", 12, 400, MUTED),
+        Group("Tooltip", [
+            Rect("Background", 236, 188, 200, 32, P["Surface/raised"], 1, 4, DIVIDER),
+            text("Label", 236, 209, "RaidManager Companion", 12, 400, P["Text/primary"], 200, "center"),
+        ]),
+        text("Tooltip caption", 236, 240, "Tooltip, on hover", 12, 400, MUTED, 200, "center"),
+        Group("Tray menu", [
+            Rect("Background", menu_x, menu_y, menu_w, 81, P["Surface/raised"], 1, 8, DIVIDER),
+            Group("Open item", [
+                Rect("Highlight", menu_x + 4, menu_y + 4, menu_w - 8, 32, P["Surface/selected"], 1, 4),
+                text("Label", menu_x + 16, menu_y + 25, "Open", 14, 600),
+            ], Click("navigate", WAITING)),
+            Rect("Separator", menu_x + 8, menu_y + 40, menu_w - 16, 1, DIVIDER),
+            Group("Quit item", [
+                text("Label", menu_x + 16, menu_y + 66, "Quit", 14),
+            ]),
+        ]),
+        Group("Taskbar", [
+            Rect("Background", 0, taskbar_top, WINDOW_W, 48, P["Surface/sidebar"]),
+            Rect("Divider", 0, taskbar_top, WINDOW_W, 1, DIVIDER),
+            Circle("Other icon 1", 296, taskbar_top + 24, 6, P["Text/muted"]),
+            Circle("Other icon 2", 320, taskbar_top + 24, 6, P["Text/muted"]),
+            Group("RaidManager tray icon", [
+                Rect("Hover", icon_x - 8, taskbar_top + 8, 32, 32, P["Surface/selected"], 1, 4),
+                Rect("Mark", icon_x, taskbar_top + 16, 16, 16, ACCENT, 1, 4),
+            ], Click("navigate", WAITING)),
+            text("Clock", 392, taskbar_top + 29, "17:20", 12, 400, P["Text/primary"], 64, "center"),
+        ]),
+    ]
+
+
 def boards() -> list[Board]:
     column, row = BOARD_W + BOARD_GAP, BOARD_H + BOARD_GAP
     window = WINDOW_W + BOARD_GAP
@@ -302,6 +348,7 @@ def boards() -> list[Board]:
         companion_window(PAIRED, window, row, paired()),
         companion_window(EXPIRED, 2 * window, row, expired()),
         companion_window(UNPAIRED, 3 * window, row, unpaired()),
+        Board(TRAY, 4 * window, row, WINDOW_W, 600, P["Surface/page"], tray()),
         website(CODE_EXPIRED, 0, code_problem(
             "This code expired", "Codes last 10 minutes. Get a new code in the companion.", "warning"), 2 * row),
         website(CODE_USED, column, code_problem(
@@ -325,7 +372,7 @@ def boards() -> list[Board]:
 def main(repository: Path = REPOSITORY) -> Path:
     return write_mockup(repository, "companion-pairing", "Companion pairing", boards(),
                         flows={"Pair a companion": WAITING, "Revoke a companion": PAIRED_LIST,
-                               "Expired code": EXPIRED, "Revoked companion": UNPAIRED,
+                               "Expired code": EXPIRED, "Revoked companion": UNPAIRED, "Tray menu": TRAY,
                                "Code problems on the website": CODE_EXPIRED,
                                "Companions can't be loaded": LIST_FAILED})
 
