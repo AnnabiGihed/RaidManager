@@ -9,6 +9,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- The API pairs a desktop companion as ADR-0030 decides, now Accepted: the companion starts a pairing on
+  `POST /companion/pairings` and gets a code to show, the signed-in player checks and confirms the code through the
+  website's internal routes within 10 minutes, and the companion collects its device token once on
+  `POST /companion/pairings/token`. The API keeps only hashes of the device code and token, checks the token on every
+  `/companion/` route, and refuses a missing, unknown, revoked or 180-days-unused one with 401 and its reason. The
+  website's routes list a player's companions and revoke one at once. Pairing starts and token polls are
+  rate-limited per address, code checks per player (#382).
 - The addon captures the raid saves: it asks the game when the character enters the world, on a new zone and on
   `/rm sync`, at most once every five seconds, and records each saved instance with its lockout id, seconds to
   reset, difficulty, size and whether it is locked or extended, marking the scan incomplete when an instance can't

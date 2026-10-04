@@ -185,6 +185,122 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                     b.ToTable("Communities", (string)null);
                 });
 
+            modelBuilder.Entity("RaidManager.Domain.Features.Companions.Aggregates.Companion", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("DeletedOnUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<string>("Label")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<DateTimeOffset>("LastUsedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset>("PairedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<DateTimeOffset?>("RevokedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("TokenHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .IsUnicode(false)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<Guid>("UserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<int>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("TokenHash")
+                        .IsUnique();
+
+                    b.HasIndex("UserId");
+
+                    b.ToTable("Companions", (string)null);
+                });
+
+            modelBuilder.Entity("RaidManager.Domain.Features.Companions.Aggregates.CompanionPairing", b =>
+                {
+                    b.Property<Guid>("Id")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("Code")
+                        .IsRequired()
+                        .HasMaxLength(6)
+                        .IsUnicode(false)
+                        .HasColumnType("character varying(6)");
+
+                    b.Property<Guid?>("CompanionId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("ComputerLabel")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<DateTimeOffset?>("ConfirmedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<Guid?>("ConfirmedByUserId")
+                        .HasColumnType("uuid");
+
+                    b.Property<string>("DeletedBy")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime?>("DeletedOnUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("DeviceCodeHash")
+                        .IsRequired()
+                        .HasMaxLength(64)
+                        .IsUnicode(false)
+                        .HasColumnType("character varying(64)");
+
+                    b.Property<DateTimeOffset>("ExpiresAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<bool>("IsDeleted")
+                        .HasColumnType("boolean");
+
+                    b.Property<DateTimeOffset>("RequestedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("State")
+                        .IsRequired()
+                        .HasMaxLength(16)
+                        .HasColumnType("character varying(16)");
+
+                    b.Property<int>("Version")
+                        .IsConcurrencyToken()
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Code");
+
+                    b.HasIndex("DeviceCodeHash")
+                        .IsUnique();
+
+                    b.ToTable("CompanionPairings", (string)null);
+                });
+
             modelBuilder.Entity("RaidManager.Domain.Features.Identity.Aggregates.User", b =>
                 {
                     b.Property<Guid>("Id")
@@ -715,6 +831,74 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                     b.Navigation("RoleMappings");
 
                     b.Navigation("Roles");
+                });
+
+            modelBuilder.Entity("RaidManager.Domain.Features.Companions.Aggregates.Companion", b =>
+                {
+                    b.OwnsOne("Pivot.Framework.Domain.Primitives.AuditInfo", "Audit", b1 =>
+                        {
+                            b1.Property<Guid>("CompanionId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("CreatedBy")
+                                .HasColumnType("text")
+                                .HasColumnName("Audit_CreatedBy");
+
+                            b1.Property<DateTime>("CreatedOnUtc")
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("Audit_CreatedOnUtc");
+
+                            b1.Property<string>("ModifiedBy")
+                                .HasColumnType("text")
+                                .HasColumnName("Audit_ModifiedBy");
+
+                            b1.Property<DateTime?>("ModifiedOnUtc")
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("Audit_ModifiedOnUtc");
+
+                            b1.HasKey("CompanionId");
+
+                            b1.ToTable("Companions", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("CompanionId");
+                        });
+
+                    b.Navigation("Audit");
+                });
+
+            modelBuilder.Entity("RaidManager.Domain.Features.Companions.Aggregates.CompanionPairing", b =>
+                {
+                    b.OwnsOne("Pivot.Framework.Domain.Primitives.AuditInfo", "Audit", b1 =>
+                        {
+                            b1.Property<Guid>("CompanionPairingId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<string>("CreatedBy")
+                                .HasColumnType("text")
+                                .HasColumnName("Audit_CreatedBy");
+
+                            b1.Property<DateTime>("CreatedOnUtc")
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("Audit_CreatedOnUtc");
+
+                            b1.Property<string>("ModifiedBy")
+                                .HasColumnType("text")
+                                .HasColumnName("Audit_ModifiedBy");
+
+                            b1.Property<DateTime?>("ModifiedOnUtc")
+                                .HasColumnType("timestamp with time zone")
+                                .HasColumnName("Audit_ModifiedOnUtc");
+
+                            b1.HasKey("CompanionPairingId");
+
+                            b1.ToTable("CompanionPairings", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("CompanionPairingId");
+                        });
+
+                    b.Navigation("Audit");
                 });
 
             modelBuilder.Entity("RaidManager.Domain.Features.Identity.Aggregates.User", b =>

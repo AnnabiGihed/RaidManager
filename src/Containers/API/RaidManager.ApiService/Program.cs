@@ -2,11 +2,13 @@ using FluentValidation;
 using Pivot.Framework.Application.Behaviors;
 using RaidManager.ApiService.Features.Characters;
 using RaidManager.ApiService.Features.Communities;
+using RaidManager.ApiService.Features.Companions;
 using RaidManager.ApiService.Features.Identity;
 using RaidManager.ApiService.Features.Shared.Authentication;
 using RaidManager.ApiService.Features.Shared.Hosting;
 using RaidManager.ApiService.Features.Shared.OpenApi;
 using RaidManager.Infrastructure.Features.Communities;
+using RaidManager.Infrastructure.Features.Companions;
 using RaidManager.Persistence.EntityFrameworkCore;
 using Scalar.AspNetCore;
 
@@ -16,6 +18,8 @@ builder.Services.AddOpenApi(options =>
 {
     options.AddDocumentTransformer<WebsiteServiceKeyTransformer>();
     options.AddOperationTransformer<WebsiteServiceKeyTransformer>();
+    options.AddDocumentTransformer<CompanionTokenTransformer>();
+    options.AddOperationTransformer<CompanionTokenTransformer>();
 });
 builder.Services.AddProblemDetails();
 builder.Services.AddSingleton(TimeProvider.System);
@@ -29,13 +33,17 @@ builder.Services.AddRaidManagerPersistence(
     builder.Configuration.GetConnectionString("Database")
         ?? throw new InvalidOperationException("Configure the 'Database' connection string; the Aspire AppHost provides it."));
 builder.Services.AddRaidManagerDiscord(builder.Configuration);
+builder.Services.AddRaidManagerCompanions();
 builder.Services.AddWebsiteServiceAuthentication(builder.Configuration);
+builder.Services.AddCompanionTokenAuthentication();
+builder.Services.AddCompanionRateLimits(builder.Configuration);
 
 var app = builder.Build();
 app.UseExceptionHandler();
 app.UseHttpsRedirection();
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseRateLimiter();
 
 // Local development and tests start from an empty database; a deployment runs the migrations as a step of its own.
 var migrateAndExit = app.Configuration.GetValue<bool>(DatabaseMigration.MigrateAndExitKey);
@@ -56,13 +64,15 @@ if (app.Environment.IsDevelopment())
 {
     app.MapScalarApiReference(options => options
         .WithTitle("RaidManager API")
-        .AddPreferredSecuritySchemes(WebsiteServiceDefaults.Scheme));
+        .AddPreferredSecuritySchemes(WebsiteServiceDefaults.Scheme, CompanionTokenDefaults.Scheme));
 }
 
 app.MapGet("/", () => Results.Ok(new { service = "RaidManager.ApiService", status = "foundation" }));
 app.MapIdentityEndpoints();
 app.MapCharacterClaimEndpoints();
 app.MapCommunityEndpoints();
+app.MapCompanionEndpoints();
+app.MapCompanionManagementEndpoints();
 app.MapDefaultEndpoints();
 await app.RunAsync();
 
