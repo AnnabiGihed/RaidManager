@@ -70,6 +70,7 @@ nav:
       - Companion pairing: adr/0030-pair-the-companion-with-a-confirmed-code.md
       - WoW addon in Lua: adr/0031-build-the-wow-addon-in-lua-under-src-addon.md
       - Windows companion in Avalonia: adr/0032-build-the-windows-companion-in-avalonia.md
+      - Companion in the Microsoft Store: adr/0033-publish-the-companion-through-the-microsoft-store.md
 theme:
   name: material
 markdown_extensions:
