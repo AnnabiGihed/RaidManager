@@ -44,6 +44,12 @@ describe("the equipment sets capture", function()
         )
     end)
 
+    it("records a missing item without the -1 the client gives for its id", function()
+        local ns, api = load()
+
+        assert.are.same({ slot = 10, status = "unavailable", reason = "missing" }, ns.CaptureSetSlot(api, 10, -1, -1))
+    end)
+
     it("marks an item unavailable when its link can't be read", function()
         local ns, api = load({ GetInventoryItemLink = world.Nothing })
 

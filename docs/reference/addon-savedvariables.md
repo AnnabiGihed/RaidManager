@@ -133,10 +133,10 @@ with `reason = "unreadable-link"` when the link holds no complete item string.
 | `items[].slots[].location` | string | Where the item is: `"equipped"`, `"bags"` or `"bank"`. |
 
 A set item in the bank is only readable while the bank is open: its slot is `status = "unavailable"` with
-`reason = "in-bank"`, `location = "bank"` and the `itemId` the set records. A slot is also unavailable, with the
-`itemId`, when the set's item is nowhere on the character (`reason = "missing"`) or its link can't be read
-(`reason = "not-cached"`). The section is `"unavailable"` with `reason = "not-loaded"` while the game hasn't
-loaded a set's name.
+`reason = "in-bank"`, `location = "bank"` and the `itemId` the set records. A slot is also unavailable when the
+set's item is nowhere on the character (`reason = "missing"`), with `itemId` only when the game gives the item's id
+(Warmane's client gives `-1`, which isn't kept), or when its link can't be read (`reason = "not-cached"`, with the
+`itemId`). The section is `"unavailable"` with `reason = "not-loaded"` while the game hasn't loaded a set's name.
 
 ### `talents`
 
