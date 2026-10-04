@@ -98,7 +98,10 @@ generate the mockup with the `penpot-mockups` skill (ADR-0018), then have the ow
    the peer, and any new commit returns the PR to draft.
    - **Hand over only a clean PR:** wait for `python scripts/sonar_gate.py --project AnnabiGihed_RaidManager
      --pull-request <number> --commit <head sha> --timeout 1200` to report no finding, and fix every finding first
-     (`raidmanager-conventions` §11).
+     (`raidmanager-conventions` §11). Run it only once the PR's `sonar` check has finished on the head commit
+     (`gh pr checks <number>` no longer shows it pending): right after a push, the gate reported "no open issue" for
+     #516 while SonarCloud was still analyzing, and the `sonar` check then failed on a code smell the owner had to
+     point out.
    - **Draft both review comments, every PR (mandatory).** With the summary of the PR, give the operator two texts
      to post, never posting them yourself, approving, or marking ready:
      1. the **operator's review comment**, about product and design intent: what the operator checked and why it is

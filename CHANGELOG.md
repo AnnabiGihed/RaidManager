@@ -270,6 +270,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- The skills hold the companion session's lessons: run the Sonar gate only after the `sonar` check finished, compare a
+  page with its mockup through headless Chrome when the browser pane is too small, never pass `class` to a shared
+  component, keep a sidebar entry lit on the pages under it with `MatchesSubpaths`, give class value objects their equality
+  operators, and add the boards for states a mockup lacks before building them (#518).
 - "New session" from the owner starts a fixed routine in `AGENTS.md` and `raidmanager-conventions`: a checkpoint, the
   session's lessons recorded through a work item and one pull request, and a handover message with fixed parts. The
   addon skill holds what Warmane's client was seen to answer, the in-game check with the contract checker and the

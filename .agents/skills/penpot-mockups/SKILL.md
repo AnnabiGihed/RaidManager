@@ -33,6 +33,11 @@ imports as-is, so no Penpot API, MCP server, plugin or access token is needed.
   `needs-mockup` label (ADR-0017).
 - **Never decide the product in the design.** Show only fields the API or domain provides, with realistic values.
   When a screen depends on an open question (what happens next, who acts), ask it on the task first.
+- **States missing from an approved mockup get boards first.** When a UI task needs states the mockup doesn't show
+  (errors, empty lists, expired items), ask the owner; their choice on #513, the recommended option, was to add the
+  boards to the same file in the UI task's pull request, built from the existing components, and to have them confirm
+  the boards in Penpot before handover. Keep the existing boards' numbers, since other tasks cite them, and number
+  the new ones after.
 
 ## Design system in the file
 
@@ -99,7 +104,10 @@ The generator turns the design into a small design system that a designer keeps 
    Stage Functional Analysis (work management specification §22), and that the task passes the active-sprint gate
    (`work-sprint-planning-and-eligibility`).
 2. Read the API contract and the story's criteria; list the states the screen shows and the journeys between them.
-3. Write `scripts/mockups/<screen_name>.py`:
+3. To extend an existing screen, first check that the committed `.penpot` is still the script's output: run the
+   script's `main()` with a scratchpad folder as the repository root and compare both files with the committed ones.
+   If they differ, the owner edited the design in Penpot, and the downloaded file, not the script, is the source.
+   Write `scripts/mockups/<screen_name>.py`:
    - `app_screen(...)` for each state of a website screen (`Board(name, x, y, width, height, fill, children)`
      otherwise), with the shared components from `scripts/penpot_components.py`;
    - `Rect`, `Circle`, `Group(name, children, on_click)`, and

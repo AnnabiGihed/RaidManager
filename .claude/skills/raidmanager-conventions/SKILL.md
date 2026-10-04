@@ -195,6 +195,10 @@ Coverage is measured and enforced on every pull request
   `dotnet test RaidManager.sln --no-build --settings coverage.runsettings --results-directory TestResults`, then
   `python scripts/coverage_gate.py --reports TestResults --base origin/main`. The summary lists every uncovered
   changed line; add tests for them in the same PR.
+- **Value objects compared with `==`.** A value object that is a class (such as `PairingCode`) compares by reference
+  unless it overloads `==` and `!=`; repository doubles in application tests then miss every match (11 tests failed in
+  #382). Give such a value object `Equals`, `GetHashCode` and both operators. EF Core still translates `==` on a
+  converted property to SQL with the operators in place, as the PostgreSQL API tests of #382 showed.
 - **Run the gate after committing.** `coverage_gate.py` compares committed changes with `--base`, so uncommitted work
   shows as "0 / 0 changed lines". Commit first, then run it on the fresh `TestResults`.
 - **Evidence:** quote the changed-lines and total percentages from the coverage comment in the PR's "How it was
@@ -258,6 +262,21 @@ A mockup comes before the screen, for every user interface: website, companion, 
   signed-in pages, dump the component's markup from a throwaway bUnit test into the scratchpad and open it with those
   stylesheets in the browser. When the browser pane is hidden it can't take screenshots: check the computed styles
   and sizes instead, and say so. Never commit the throwaway test or the preview files.
+- **When the browser pane is too small to judge**, render both sides to PNG with headless Chrome and read the images
+  (#513): crop each board out of the mockup SVG by copying it to the scratchpad with the root `viewBox` set to the
+  board (`"<x> <y> 1440 900"`, `width="1440" height="900"`), and write each dumped page to an HTML file in the
+  scratchpad that links the Radzen `material-base.css` from the NuGet cache, the two `wwwroot` stylesheets and
+  `obj/Debug/net10.0/scopedcss/bundle/RaidManager.Web.styles.css` by `file:///` URL, with the markup in a
+  `rm-theme-dark` frame 240 px from the left and 64 px from the top. Then run
+  `chrome.exe --headless=new --hide-scrollbars --allow-file-access-from-files --window-size=1440,900
+  --screenshot=<png> <file URL>` for each.
+- **Never pass `class` to a shared component** such as `SurfaceCard`: its `@attributes` come after its own `class`
+  and replace it, so the card lost its look on the confirm page of #513. Wrap the component in an element of the
+  page that carries the size or placement.
+- **The Radzen menu ignores a per-item `Match`** (Radzen 11.5): set on a `RadzenPanelMenuItem`, it doesn't highlight
+  subpages. A shell entry that must stay lit under its route sets `MatchesSubpaths` on `ShellEntry`, and
+  `NavigationSection` passes `Selected` itself; the menu keeps matching whole paths, so Overview at `/` isn't lit
+  everywhere (#513).
 - **Product decisions stay with the owner.** Draft layouts freely, but when a UI task depends on an open product
   question, ask it on the task instead of designing an answer. Deliberate deviations update the mockup in the same PR.
 
@@ -272,6 +291,8 @@ SonarCloud analyzes every pull request, and the required `sonar` check fails it 
 - **Hand over only at zero findings.** Wait for `sonar_gate.py` on the head commit before giving the owner the PR
   summary and its review comments; never present a PR whose findings the owner would have to point out. Name a
   repeated string literal once as a constant while writing a script, rather than after Sonar flags it.
+- **Wait for the analysis first.** Run the gate below only after the PR's `sonar` check finished on the head
+  commit; a gate run during the analysis can report nothing (#516).
 - **Check before asking for review:** `python scripts/sonar_gate.py --project AnnabiGihed_RaidManager
   --pull-request <number> --commit <head sha>` prints each finding with its file, line and rule. Common ones in this
   repository: a string literal repeated three or more times (`python:S1192`, name it once as a constant), and
@@ -298,7 +319,11 @@ Git stores LF.
 - **Line-ending-only diffs:** a regenerated file that differs only in line endings shows as modified;
   `git diff --ignore-cr-at-eol --name-only` lists the real changes. Don't commit or report line-ending-only changes.
 - **Binary files** such as fonts are marked in `.gitattributes`; add a rule there for any new binary type.
-- **Long or quoted text in a shell:** a heredoc containing apostrophes can fail in the agent's shell. Write long files
+- **Throwaway tests build with the analyzers on.** A preview test added to a test project only to dump markup
+  fails the build on documentation and ordering rules; start it with `#pragma warning disable`, since it is deleted
+  before committing.
+- **Long or quoted text in a shell:** a heredoc containing apostrophes can fail in the agent's shell, even with a
+  quoted delimiter (`<<'EOF'`), which happened three times in #382 and #513. Write long files
   with the editor tool or from a script file in the scratchpad instead. Make code and text edits with the editor tool
   or a Python script, not `sed` with escaped patterns, which mangle `\n`, `\s` and quotes.
 - **Issue and pull request bodies** are written with `newline="\n"` too; a body with CRLF breaks the guard's heading

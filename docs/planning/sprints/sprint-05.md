@@ -48,7 +48,7 @@ date on the Project, both inclusive) follows the blocked-by order; the item's ow
 | #209 Fix the SonarCloud findings on main | Improvement | 5 | 3 to 7 Oct | #365 (Development) | None |
 | #16 Capture visited characters in the WoW addon | User story | 8 | 3 to 9 Oct | #38 (Architecture Analysis), #383, #487, #488, #489 (Development) | None |
 | #374 Provision the OVH test server | Improvement | 5 | 5 to 7 Oct | #387 (Deployment) | #373 |
-| #15 Pair and revoke a desktop companion | User story | 8 | 6 to 9 Oct | #382 (Development) | #37 |
+| #15 Pair and revoke a desktop companion | User story | 8 | 4 to 16 Oct | #382, #513, #514 (Development) | #37 |
 | #153 Store and deliver deployment secrets | Improvement | 5 | 6 to 8 Oct | #386 (Deployment) | #103 |
 | #19 Inspect and manage character profiles | User story | 5 | 7 to 10 Oct | #385 (Development) | #38 |
 | #375 Configure the test environment | Improvement | 3 | 8 to 9 Oct | #388 (Deployment) | #103, #374 |
@@ -72,6 +72,7 @@ date on the Project, both inclusive) follows the blocked-by order; the item's ow
 | #503 A missing equipment set item is recorded with `itemId` -1 | Bug | 1 | 4 Oct | #504 (Development) | None |
 | #507 The snapshot contract misreads the difficulty of single-size raids | Bug | 1 | 4 Oct | #508 (Development) | None |
 | #510 Keep the session's lessons and a standing new-session routine | Improvement | 2 | 4 Oct | #511 (Business Analysis) | None |
+| #517 Keep the companion session's lessons in the skills | Improvement | 1 | 4 Oct | #518 (Business Analysis) | None |
 
 16 October is kept as a buffer.
 
@@ -122,6 +123,9 @@ and its task #388 wait for #409 and #411.
 | 2026-10-04 | #383 started; on the owner's decision recorded on #491 and #383, an addon change doesn't deploy dev. |
 | 2026-10-04 | Bugs #499 with #500, #503 with #504 and #507 with #508 added on the owner's decisions recorded on them: defects the owner's in-game checks found in the contract and the addon. |
 | 2026-10-04 | #510 with #511 added on the owner's decision recorded on #510: the session's lessons and the standing "new session" routine. |
+| 2026-10-04 | #382 split on the owner's decision recorded on #15: #382 keeps the pairing API (ADR-0030 Accepted in its pull request), #513 takes the website's confirm and revoke pages (12 to 14 Oct) and #514 the Windows companion (14 to 16 Oct), both blocked by #382. |
+| 2026-10-04 | #513 widened on the owner's decisions recorded on it: mockup boards for the missing states first, "No upload yet" until #384, expired companions, and Companion & sync in the sidebar. |
+| 2026-10-04 | #517 with #518 added under the standing approval on #510: the companion session's lessons in the skills. |
 
 ## Outcome
 
