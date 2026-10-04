@@ -157,10 +157,11 @@ jobs:
                 gh issue close "$issue" --repo "$GITHUB_REPOSITORY" --reason completed --comment "Completed by #$PR_NUMBER."
               fi
             done
-            # deploy-dev.yml deploys the merged main to the dev environment (#389).
-            for workflow in ci.yml docs.yml docs-publish.yml deploy-dev.yml; do
+            # deploy-dev.yml deploys the merged main to the dev environment (#389), when a deployed file changed (#491).
+            for workflow in ci.yml docs.yml docs-publish.yml; do
               gh workflow run "$workflow" --repo "$GITHUB_REPOSITORY" --ref main
             done
+            gh workflow run deploy-dev.yml --repo "$GITHUB_REPOSITORY" --ref main -f trigger=merge
             exit 0
           fi
           # A required check that is still running re-runs this job when it finishes, and that run merges.

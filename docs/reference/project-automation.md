@@ -94,7 +94,15 @@ option, and the new values were added beside it. Change single-select options on
 
 Every deployment marks what it delivered, so the Project shows what runs in each environment (#392, specification
 §22, A9). The deployment workflow's `record` job runs `scripts/record_deployment.py` after the deployment, whether
-it succeeded or failed, with the built-in token:
+it succeeded or failed, with the built-in token.
+
+A merge deploys dev only when it changes a file that can affect the deployment (#491, A10): anything under `src/`
+and `deploy/`, the build files (`Directory.Build.props`, `Directory.Packages.props`, `nuget.config`, `global.json`,
+`dotnet-tools.json`, `RaidManager.sln`) or `deploy-dev.yml`. The `changes` job of `deploy-dev` runs
+`scripts/deploy_changes.py`, which compares `main` with the commit of the last successful dev deployment, so a change
+from a failed or skipped run is deployed by the next one. When nothing deployed changed, the build and deployment are
+skipped and `record` still runs as a success, since dev already runs the same images. A run started by hand from the
+Actions tab always deploys. The labels follow these rules:
 
 | Label | Color | Meaning |
 | --- | --- | --- |
@@ -240,7 +248,7 @@ automated** means one of them does it. Each gap the owner wants automated has a 
 | Board | Reopen a parent closed too early, and a release milestone closed before its record shows the delivery | `project-hierarchy` |
 | Board | Start a new item in Backlog, add a new sub-issue to the Project | Project workflows |
 | Board | Set a task In Progress when a pull request links it, and close an issue set to Done | Project workflows |
-| Deployment | Deploy `main` to dev after each merge, smoke-test it, put the previous version back on a failure | `deploy-dev` |
+| Deployment | Deploy `main` to dev after a merge that changes a deployed file, smoke-test it, put the previous version back on a failure | `deploy-dev` |
 | Deployment | Label the delivered items, their parents and releases `deployed:dev`, or `deploy-failed:dev` on a failure | `deploy-dev` (`record` job) |
 | Server | Install security updates daily | `unattended-upgrades` |
 | Server | Obtain and renew the six RaidManager certificates | shared Caddy |
