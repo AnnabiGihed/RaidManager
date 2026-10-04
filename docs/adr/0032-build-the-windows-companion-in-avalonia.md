@@ -38,9 +38,14 @@ renders views without a screen.
 | `src/Containers/UI/Hosting/RaidManager.Companion` | `net10.0` | The Avalonia application: `App`, the window and its views for states 5 to 8, the tray icon and menu, the DPAPI protector, the theme, the composition root |
 
 Tests mirror them, both in the existing Linux job and coverage gate:
-`test/Containers/UI/Core/RaidManager.Companion.Client.Tests` (behavior of every state, with Reqnroll where it is
-business behavior) and `test/Containers/UI/Hosting/RaidManager.Companion.Tests` (headless view and tray tests). Only
-the DPAPI protector can't run on Linux; its round-trip test runs on Windows and is skipped elsewhere.
+
+- `test/Containers/UI/Core/RaidManager.Companion.Client.Tests`: the behavior of every state, on the repository's
+  xUnit v2 with Reqnroll where it is business behavior.
+- `test/Containers/UI/Hosting/RaidManager.Companion.Tests`: headless view and tray tests on xUnit v3, which
+  `Avalonia.Headless.XUnit` 12 requires. They use headless drawing, so CI needs no native rendering library.
+
+Only the DPAPI protector can't run on Linux: it is marked `[SupportedOSPlatform("windows")]` for the platform
+analyzer, and its round-trip test runs on Windows and is skipped elsewhere.
 
 ### The application
 
@@ -52,9 +57,13 @@ the DPAPI protector can't run on Linux; its round-trip test runs on Windows and 
   decision on #514), so #384 can keep watching folders. Its look is a board of the `companion-pairing` mockup.
 - **One instance per Windows user:** a second start brings the running window forward through a named mutex and
   event.
-- **Theme:** one `Theme.axaml` resource dictionary holds the palette and type scale of
-  [ADR-0019](0019-dark-design-system-with-an-app-shell.md), with the same names as `raidmanager-theme.css`; views use
-  only its resources.
+- **Theme:** theme resource dictionaries hold the palette and type scale of
+  [ADR-0019](0019-dark-design-system-with-an-app-shell.md), named after the variables of `raidmanager-theme.css`;
+  views use only their resources. Open Sans is embedded as static `.ttf` files, because Avalonia reads neither the
+  website's `.woff2` files nor variable fonts.
+- **Build telemetry off:** Avalonia's build package sends anonymous build data unless `AVALONIA_TELEMETRY_OPTOUT=1` is
+  set. Every workflow step that builds the companion sets it, and the owner sets it on their computer (owner
+  decision on #520).
 
 ### Pairing client (ADR-0030)
 
@@ -106,8 +115,8 @@ The companion reads `ApiBaseUrl` and `WebsiteBaseUrl` from `appsettings.json` ne
 
 **Negative**
 
-- New dependencies: the Avalonia packages and `System.Security.Cryptography.ProtectedData`, added to
-  `Directory.Packages.props`.
+- New dependencies: the Avalonia packages, `System.Security.Cryptography.ProtectedData` and `xunit.v3`, added to
+  `Directory.Packages.props`; the host's tests use xUnit v3 while the other test projects stay on v2.
 - Avalonia isn't WPF: some WPF habits (styles, triggers, some controls) differ.
 - Unsigned executables show a SmartScreen warning.
 
