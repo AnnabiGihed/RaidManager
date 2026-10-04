@@ -133,7 +133,10 @@ with `reason = "unreadable-link"` when the link holds no complete item string.
 | `items[].slots[].location` | string | Where the item is: `"equipped"`, `"bags"` or `"bank"`. |
 
 A set item in the bank is only readable while the bank is open: its slot is `status = "unavailable"` with
-`reason = "in-bank"` and the `itemId` the set records.
+`reason = "in-bank"`, `location = "bank"` and the `itemId` the set records. A slot is also unavailable, with the
+`itemId`, when the set's item is nowhere on the character (`reason = "missing"`) or its link can't be read
+(`reason = "not-cached"`). The section is `"unavailable"` with `reason = "not-loaded"` while the game hasn't
+loaded a set's name.
 
 ### `talents`
 
@@ -152,6 +155,8 @@ A set item in the bank is only readable while the bank is open: its slot is `sta
 | `groups[].glyphs[].enabled` | boolean | Whether the socket is unlocked at the character's level. |
 | `groups[].glyphs[].empty` | boolean | `true` when an unlocked socket has no glyph. |
 | `groups[].glyphs[].spellId` | number | The spell id of the glyph. |
+
+The section is `"unavailable"` with `reason = "not-loaded"` while the game hasn't loaded the talent trees.
 
 ### `lockouts`
 

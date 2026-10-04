@@ -29,6 +29,91 @@ function M.Link(itemString)
     return "|cffa335ee|H" .. itemString .. "|h[Item]|h|r"
 end
 
+--- The equipment manager, bag and location functions that answer with a character's equipment sets.
+---@param sets table[] the items of an equipmentSets section
+---@return table
+function M.EquipmentManager(sets)
+    local bag, bagSlot, links = 0, 0, {}
+    local itemIds, locations = {}, {}
+    for _, set in ipairs(sets) do
+        local ids, places = {}, {}
+        for _, entry in ipairs(set.slots) do
+            if entry.ignored then
+                ids[entry.slot], places[entry.slot] = 1, 1
+            elseif entry.empty then
+                ids[entry.slot], places[entry.slot] = 0, 0
+            elseif entry.location == "bank" then
+                ids[entry.slot] = entry.itemId
+                places[entry.slot] = { bank = true, slot = entry.slot }
+            elseif entry.location == "bags" then
+                bagSlot = bagSlot + 1
+                links[bag .. ":" .. bagSlot] = M.Link(entry.itemString)
+                ids[entry.slot] = entry.itemId
+                places[entry.slot] = { bags = true, bag = bag, slot = bagSlot }
+            else
+                ids[entry.slot] = entry.itemId or 0
+                places[entry.slot] = { player = true, slot = entry.slot }
+            end
+        end
+        itemIds[set.name], locations[set.name] = ids, places
+    end
+    return {
+        GetNumEquipmentSets = function()
+            return #sets
+        end,
+        GetEquipmentSetInfo = function(index)
+            return sets[index].name, sets[index].icon
+        end,
+        GetEquipmentSetItemIDs = function(name)
+            return itemIds[name]
+        end,
+        GetEquipmentSetLocations = function(name)
+            return locations[name]
+        end,
+        EquipmentManager_UnpackLocation = function(location)
+            return location.player, location.bank, location.bags, location.slot, location.bag
+        end,
+        GetContainerItemLink = function(atBag, atSlot)
+            return links[atBag .. ":" .. atSlot]
+        end,
+    }
+end
+
+--- The talent and glyph functions that answer with a talents section.
+---@param talents table an observed talents section
+---@return table
+function M.TalentFrame(talents)
+    return {
+        GetNumTalentGroups = function()
+            return #talents.groups
+        end,
+        GetActiveTalentGroup = function()
+            return talents.activeGroup
+        end,
+        GetNumTalentTabs = function()
+            return #talents.groups[1].tabs
+        end,
+        GetTalentTabInfo = function(tab, _, _, group)
+            local entry = talents.groups[group].tabs[tab]
+            return entry.name, "Interface\\TalentFrame\\Icon", entry.pointsSpent
+        end,
+        GetNumTalents = function(tab)
+            return #talents.groups[1].tabs[tab].ranks
+        end,
+        GetTalentInfo = function(tab, index, _, _, group)
+            local rank = tonumber(talents.groups[group].tabs[tab].ranks:sub(index, index))
+            return "Talent " .. index, "Interface\\Icons\\Talent", 1, 1, rank, 5
+        end,
+        GetNumGlyphSockets = function()
+            return #talents.groups[1].glyphs
+        end,
+        GetGlyphSocketInfo = function(socket, group)
+            local glyph = talents.groups[group].glyphs[socket]
+            return glyph.enabled and 1 or nil, glyph.type, glyph.spellId
+        end,
+    }
+end
+
 --- The skill list functions for a list of rows.
 ---@param lines table[]
 ---@return table
@@ -105,6 +190,13 @@ function M.Arthasdk(overrides)
     world.GetInventoryItemTexture = function(_, slot)
         local entry = equipped[slot]
         return entry and entry.itemString and "Interface\\Icons\\INV_Misc_QuestionMark" or nil
+    end
+    local character = addon.FixtureCharacter()
+    local managers = { M.EquipmentManager(character.equipmentSets.items), M.TalentFrame(character.talents) }
+    for _, functions in ipairs(managers) do
+        for name, value in pairs(functions) do
+            world[name] = value
+        end
     end
     for name, value in pairs(overrides or {}) do
         world[name] = value

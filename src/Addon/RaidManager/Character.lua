@@ -8,6 +8,8 @@ ns.CAPTURES = {
     { section = "guild", capture = ns.CaptureGuild },
     { section = "professions", capture = ns.CaptureProfessions },
     { section = "equipped", capture = ns.CaptureEquipped },
+    { section = "equipmentSets", capture = ns.CaptureEquipmentSets },
+    { section = "talents", capture = ns.CaptureTalents },
 }
 
 local function captureOf(section)

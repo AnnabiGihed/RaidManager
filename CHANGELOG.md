@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- The addon captures the loadouts: each saved equipment set with every slot's item and where it is (worn, in the
+  bags, or unavailable in the bank or missing), and both talent groups with the points, the rank of each talent and
+  the glyphs, the active group flagged. It captures them again when the sets, the gear, the talents, the active
+  group or a glyph change. The addon's version is 0.3.0 (#488).
 - The addon captures the professions, from the skill lines under the client's localized professions and secondary
   skills headers, and the equipped gear, slot by slot with item, enchant, gems, suffix and unique id; it captures
   them again when the skill list or the player's inventory changes. A collapsed header, an item the client hasn't
