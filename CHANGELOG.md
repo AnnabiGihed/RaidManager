@@ -340,6 +340,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- An equipment set's item that is gone from the character is recorded as missing without `itemId = -1`: Warmane's
+  client gives `-1` instead of the item's id, and the addon no longer copies it. The addon's version is 0.3.1
+  (#504).
 - The snapshot contract says an item string's gem fields hold gem enchantment ids, as the game writes them, not the
   gems' item ids, and its fixtures use such ids; the owner's check in the game showed the difference (#500).
 - Each merge starts `ci`, `docs`, `docs-publish` and `deploy-dev` on `main` once: a later review run of a pull

@@ -19,7 +19,12 @@ function ns.CaptureSetSlot(api, slot, itemId, location)
         return { slot = slot, empty = true }
     end
     if location == nil or location == (api.EQUIPMENT_SET_ITEM_MISSING or DEFAULT_ITEM_MISSING) then
-        return { slot = slot, status = "unavailable", reason = "missing", itemId = itemId }
+        local missing = { slot = slot, status = "unavailable", reason = "missing" }
+        -- Warmane's client gives -1 instead of the id of an item that is gone; only a real id is kept (#503).
+        if itemId > DEFAULT_IGNORED_SLOT then
+            missing.itemId = itemId
+        end
+        return missing
     end
     local onPlayer, inBank, inBags, itemSlot, bag = api.EquipmentManager_UnpackLocation(location)
     if inBank then
