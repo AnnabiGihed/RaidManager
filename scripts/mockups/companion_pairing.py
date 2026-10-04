@@ -82,6 +82,11 @@ NO_UPLOAD = "No upload yet"
 CONFIRM_SUBTITLE = "Check that the code matches the one on your companion, then confirm. Only pair a computer you use."
 TRY_AGAIN = "Nothing changed. Try again in a moment."
 INNER_W = WINDOW_W - 2 * WINDOW_PADDING
+TEXT = P["Text/primary"]
+CODE_CARD, CODE_LABEL_LAYER = "Code card", "Code label"
+TRY_AGAIN_BUTTON, TRY_AGAIN_LABEL = "Try again button", "Try again"
+NEW_CODE_BUTTON, NEW_CODE_LABEL = "New code button", "Get a new code"
+PAIR_HEADING = "Pair with RaidManager"
 
 
 def label(name: str, x: float, y: float, value: str) -> Item:
@@ -93,9 +98,9 @@ def confirm() -> list[Item]:
     x = CONTENT_X + 24
     return [
         page_header("Companion", "Pair this companion", CONFIRM_SUBTITLE),
-        Group("Code card", [
+        Group(CODE_CARD, [
             *card(CONTENT_X, top, width, 300),
-            label("Code label", x, top + 36, CODE_LABEL),
+            label(CODE_LABEL_LAYER, x, top + 36, CODE_LABEL),
             text("Code", x, top + 84, CODE, 32, 700, ACCENT, None, "left", 4),
             text("Expiry", x, top + 110, "Expires in 9 minutes", 13, 400, SECONDARY),
             label("Computer label", x, top + 156, "COMPUTER"),
@@ -171,7 +176,7 @@ def code_problem(title: str, message: str, tone: str, retry: bool = False) -> li
                          notice("Code notice", CONTENT_X, top, width, title, message, tone)]
     x = CONTENT_X
     if retry:
-        items.append(button("Try again button", x, top + 96, "Try again", "primary", 112, Click("navigate", CONFIRM)))
+        items.append(button(TRY_AGAIN_BUTTON, x, top + 96, TRY_AGAIN_LABEL, "primary", 112, Click("navigate", CONFIRM)))
         x += 120
     items.append(button("Companions button", x, top + 96, "See paired companions", "secondary", None,
                         Click("navigate", EXPIRED_LIST)))
@@ -184,7 +189,7 @@ def empty_companions() -> list[Item]:
         companions_header(),
         Group("Empty state", [
             *card(CONTENT_X, top, CONTENT_W, 136),
-            text("Title", CONTENT_X, top + 56, "No paired computers yet", 18, 700, P["Text/primary"], CONTENT_W,
+            text("Title", CONTENT_X, top + 56, "No paired computers yet", 18, 700, TEXT, CONTENT_W,
                  "center"),
             text("Message", CONTENT_X, top + 88, "To pair a computer, start pairing in its companion.", 14, 400,
                  SECONDARY, CONTENT_W, "center"),
@@ -198,7 +203,7 @@ def companions_failed() -> list[Item]:
         companions_header(),
         notice("Error message", CONTENT_X, top, CONTENT_W, "We couldn't load your companions",
                "Nothing was revoked. Try again in a moment.", "danger"),
-        button("Try again button", CONTENT_X, top + 96, "Try again", "primary", 112, Click("navigate", PAIRED_LIST)),
+        button(TRY_AGAIN_BUTTON, CONTENT_X, top + 96, TRY_AGAIN_LABEL, "primary", 112, Click("navigate", PAIRED_LIST)),
     ]
 
 
@@ -230,18 +235,18 @@ def window_heading(title: str, lines: list[str], top: float = TITLE_BAR_H + 52) 
 
 
 def pending_code_card(y: float) -> Group:
-    return Group("Code card", [
+    return Group(CODE_CARD, [
         *card(WINDOW_PADDING, y, INNER_W, 124),
-        label("Code label", WINDOW_PADDING + 24, y + 32, CODE_LABEL),
+        label(CODE_LABEL_LAYER, WINDOW_PADDING + 24, y + 32, CODE_LABEL),
         text("Getting code", WINDOW_PADDING, y + 76, "Getting a code…", 18, 700, SECONDARY, INNER_W, "center"),
     ])
 
 
 def code_card(y: float, expired: bool) -> Group:
     colour = MUTED if expired else ACCENT
-    return Group("Code card", [
+    return Group(CODE_CARD, [
         *card(WINDOW_PADDING, y, INNER_W, 124),
-        label("Code label", WINDOW_PADDING + 24, y + 32, CODE_LABEL),
+        label(CODE_LABEL_LAYER, WINDOW_PADDING + 24, y + 32, CODE_LABEL),
         text("Code", WINDOW_PADDING, y + 78, CODE, 32, 700, colour, INNER_W, "center", 4),
         text("Expiry", WINDOW_PADDING, y + 104, "Expired" if expired else "Expires in 9:42", 13, 400,
              MUTED if expired else SECONDARY, INNER_W, "center"),
@@ -250,35 +255,35 @@ def code_card(y: float, expired: bool) -> Group:
 
 def waiting() -> list[Item]:
     return [
-        *window_heading("Pair with RaidManager", ["Open the website, sign in with Discord, and", "confirm this code."]),
+        *window_heading(PAIR_HEADING, ["Open the website, sign in with Discord, and", "confirm this code."]),
         code_card(TITLE_BAR_H + 128, False),
         Group("Status", [Circle("Dot", WINDOW_PADDING + 5, TITLE_BAR_H + 297, 5, P["Accent/amber"]),
                          text("Label", WINDOW_PADDING + 18, TITLE_BAR_H + 302,
                               "Waiting for confirmation on the website", 13, 400, SECONDARY)]),
         button("Open website button", WINDOW_PADDING, TITLE_BAR_H + 336, "Open the website", "primary", INNER_W,
                Click("navigate", CONFIRM)),
-        button("New code button", WINDOW_PADDING, TITLE_BAR_H + 388, "Get a new code", "secondary", INNER_W),
+        button(NEW_CODE_BUTTON, WINDOW_PADDING, TITLE_BAR_H + 388, NEW_CODE_LABEL, "secondary", INNER_W),
     ]
 
 
 def getting_code() -> list[Item]:
     return [
-        *window_heading("Pair with RaidManager", ["Open the website, sign in with Discord, and", "confirm this code."]),
+        *window_heading(PAIR_HEADING, ["Open the website, sign in with Discord, and", "confirm this code."]),
         pending_code_card(TITLE_BAR_H + 128),
         Group("Status", [Circle("Dot", WINDOW_PADDING + 5, TITLE_BAR_H + 297, 5, MUTED),
                          text("Label", WINDOW_PADDING + 18, TITLE_BAR_H + 302,
                               "Asking RaidManager for a code", 13, 400, SECONDARY)]),
         button("Open website button", WINDOW_PADDING, TITLE_BAR_H + 336, "Open the website", "disabled", INNER_W),
-        button("New code button", WINDOW_PADDING, TITLE_BAR_H + 388, "Get a new code", "disabled", INNER_W),
+        button(NEW_CODE_BUTTON, WINDOW_PADDING, TITLE_BAR_H + 388, NEW_CODE_LABEL, "disabled", INNER_W),
     ]
 
 
 def code_request_failed() -> list[Item]:
     return [
-        *window_heading("Pair with RaidManager", ["The companion needs a code from RaidManager first."]),
+        *window_heading(PAIR_HEADING, ["The companion needs a code from RaidManager first."]),
         notice("Unreachable notice", WINDOW_PADDING, TITLE_BAR_H + 108, INNER_W, "We couldn't reach RaidManager",
                "Check your connection, then try again.", "danger"),
-        button("Try again button", WINDOW_PADDING, TITLE_BAR_H + 204, "Try again", "primary", INNER_W,
+        button(TRY_AGAIN_BUTTON, WINDOW_PADDING, TITLE_BAR_H + 204, TRY_AGAIN_LABEL, "primary", INNER_W,
                Click("navigate", GETTING_CODE)),
     ]
 
@@ -289,7 +294,7 @@ def paired() -> list[Item]:
     return [
         Circle("Success circle", middle, top + 36, 36, P["Status/success background"]),
         text("Success mark", middle - 20, top + 50, "✓", 40, 800, ACCENT, 40, "center", icon=True),
-        text("Heading", 0, top + 124, f"Paired with {PLAYER.name}", 18, 700, P["Text/primary"], WINDOW_W, "center"),
+        text("Heading", 0, top + 124, f"Paired with {PLAYER.name}", 18, 700, TEXT, WINDOW_W, "center"),
         text("Message line 1", 0, top + 154, "This computer can now upload your character data.", 14, 400,
              SECONDARY, WINDOW_W, "center"),
         text("Message line 2", 0, top + 174, "Next, choose the WoW folders to watch.", 14, 400, SECONDARY, WINDOW_W,
@@ -302,11 +307,11 @@ def paired() -> list[Item]:
 
 def expired() -> list[Item]:
     return [
-        *window_heading("Pair with RaidManager", ["This code can't be confirmed anymore."]),
+        *window_heading(PAIR_HEADING, ["This code can't be confirmed anymore."]),
         code_card(TITLE_BAR_H + 108, True),
         notice("Expired notice", WINDOW_PADDING, TITLE_BAR_H + 256, INNER_W, "This code expired",
                "Codes last 10 minutes. Get a new one to try again.", "warning"),
-        button("New code button", WINDOW_PADDING, TITLE_BAR_H + 352, "Get a new code", "primary", INNER_W,
+        button(NEW_CODE_BUTTON, WINDOW_PADDING, TITLE_BAR_H + 352, NEW_CODE_LABEL, "primary", INNER_W,
                Click("navigate", WAITING)),
     ]
 
@@ -336,7 +341,7 @@ def tray() -> list[Item]:
         text("Note line 3", WINDOW_PADDING, 140, "Windows draws the menu in the system theme.", 12, 400, MUTED),
         Group("Tooltip", [
             Rect("Background", 236, 188, 200, 32, P["Surface/raised"], 1, 4, DIVIDER),
-            text("Label", 236, 209, "RaidManager Companion", 12, 400, P["Text/primary"], 200, "center"),
+            text("Label", 236, 209, "RaidManager Companion", 12, 400, TEXT, 200, "center"),
         ]),
         text("Tooltip caption", 236, 240, "Tooltip, on hover", 12, 400, MUTED, 200, "center"),
         Group("Tray menu", [
@@ -353,13 +358,13 @@ def tray() -> list[Item]:
         Group("Taskbar", [
             Rect("Background", 0, taskbar_top, WINDOW_W, 48, P["Surface/sidebar"]),
             Rect("Divider", 0, taskbar_top, WINDOW_W, 1, DIVIDER),
-            Circle("Other icon 1", 296, taskbar_top + 24, 6, P["Text/muted"]),
-            Circle("Other icon 2", 320, taskbar_top + 24, 6, P["Text/muted"]),
+            Circle("Other icon 1", 296, taskbar_top + 24, 6, MUTED),
+            Circle("Other icon 2", 320, taskbar_top + 24, 6, MUTED),
             Group("RaidManager tray icon", [
                 Rect("Hover", icon_x - 8, taskbar_top + 8, 32, 32, P["Surface/selected"], 1, 4),
                 Rect("Mark", icon_x, taskbar_top + 16, 16, 16, ACCENT, 1, 4),
             ], Click("navigate", WAITING)),
-            text("Clock", 392, taskbar_top + 29, "17:20", 12, 400, P["Text/primary"], 64, "center"),
+            text("Clock", 392, taskbar_top + 29, "17:20", 12, 400, TEXT, 64, "center"),
         ]),
     ]
 
