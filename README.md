@@ -108,8 +108,9 @@ dotnet run --project src/Containers/UI/Hosting/RaidManager.Companion
 ```
 
 The companion shows a pairing code and opens the website's pairing page. Closing its window keeps it in the
-notification area; Quit in its tray menu ends it. It keeps its device token, encrypted for your Windows user, in
-`%LOCALAPPDATA%\RaidManager\companion.dat`.
+notification area; Quit in its tray menu ends it. While paired, it checks its pairing every 5 minutes and whenever you
+open it, so a computer you revoke on the website shows "Uploads stopped". It keeps its device token, encrypted for
+your Windows user, in `%LOCALAPPDATA%\RaidManager\companion.dat`.
 
 To build the single executable players get, for the `Dev`, `Test` or `Production` addresses:
 

@@ -380,6 +380,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- A running companion now notices that its computer was revoked: while paired it checks its token every 5 minutes and
+  whenever the player opens it from the tray or starts it again, and a refusal shows "Uploads stopped" and forgets the
+  token; a check that can't reach RaidManager keeps the pairing. Before, it checked only when its process started, and
+  closing the window doesn't end the process (#525).
 - The snapshot contract says a raid's `difficulty` is read with its `maxPlayers`: a raid with a single size, such
   as `Gruul's Lair`, reports difficulty `1` whatever its size, as the owner's saves showed; the `raid-save` fixture
   holds one (#508).

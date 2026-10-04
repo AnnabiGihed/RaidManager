@@ -96,7 +96,7 @@ internal sealed class PairingStates : IDisposable
         await ViewModel.StartCommand.ExecuteAsync();
         if (state == PairingState.Expired)
         {
-            _time.AdvanceSeconds(5, () => ViewModel.State != PairingState.Waiting);
+            _time.AdvanceSeconds(5, () => ViewModel.State is PairingState.Expired or PairingState.Revoked or PairingState.CodeRequestFailed);
         }
     }
 

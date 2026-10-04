@@ -4,6 +4,7 @@ using Avalonia.Headless.XUnit;
 using Moq;
 using RaidManager.Companion.Client.Features.Shared;
 using RaidManager.Companion.Client.Features.Tray;
+using RaidManager.Companion.Tests.Support;
 using Shouldly;
 using Xunit;
 
@@ -51,8 +52,9 @@ public sealed class AppTests
     public void TrayCommandsReachTheShell()
     {
         var shell = new Mock<IApplicationShell>();
+        using var states = new PairingStates();
         var app = Application.Current!;
-        app.DataContext = new TrayViewModel(shell.Object);
+        app.DataContext = new TrayViewModel(shell.Object, states.ViewModel);
         var icon = TrayIcon.GetIcons(app)!.Single();
         var items = icon.Menu!.Items;
 

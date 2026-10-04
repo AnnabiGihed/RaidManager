@@ -118,7 +118,7 @@ public sealed class CompanionPairingOnThisComputerStepDefinitions : IDisposable
     /// <summary>Advances the clock one second at a time, letting the flow reach its next wait each time.</summary>
     /// <param name="seconds">The seconds.</param>
     [When("{int} seconds pass")]
-    public void WhenSecondsPass(int seconds) => _time.AdvanceSeconds(seconds, () => _viewModel.State != PairingState.Waiting);
+    public void WhenSecondsPass(int seconds) => _time.AdvanceSeconds(seconds, () => _viewModel.State is PairingState.Expired or PairingState.Revoked or PairingState.CodeRequestFailed);
     #endregion When Steps
 
     #region Then Steps

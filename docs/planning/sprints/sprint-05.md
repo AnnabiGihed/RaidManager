@@ -74,6 +74,9 @@ date on the Project, both inclusive) follows the blocked-by order; the item's ow
 | #510 Keep the session's lessons and a standing new-session routine | Improvement | 2 | 4 Oct | #511 (Business Analysis) | None |
 | #517 Keep the companion session's lessons in the skills | Improvement | 1 | 4 Oct | #518 (Business Analysis) | None |
 | #520 Write the Avalonia skills for the desktop companion | Improvement | 2 | 4 to 5 Oct | #521 (Development) | None |
+| #524 A running companion never learns it was revoked | Bug | 2 | 4 to 5 Oct | #525 (Development) | None |
+| #526 The paired companions list misses a computer after Confirm | Bug | 1 | 6 Oct | #527 (Development) | None |
+| #528 Tell the player the companion keeps running when its window closes | Improvement | 3 | 6 to 8 Oct | #529 (Functional Analysis), #530 (Development) | None |
 
 16 October is kept as a buffer.
 
@@ -130,6 +133,7 @@ and its task #388 wait for #409 and #411.
 | 2026-10-04 | #514 started with ADR-0032 (Proposed, approved by the owner): an Avalonia companion instead of WPF, so its tests run on Linux CI; a tray-menu board, close to tray and a self-contained executable, recorded on #514. |
 | 2026-10-04 | #520 with #521 added under a reopened #259 on the owner's decision recorded on them: the Avalonia skills before #514 writes code, which now waits for #521; Avalonia build telemetry turned off everywhere. |
 | 2026-10-04 | #514 widened on the owner's decisions recorded on it: boards 18 (tray menu), 19 (getting a code) and 20 (code request failed) added to the companion pairing mockup and confirmed; "Choose folders" hidden from state 6 until #384. |
+| 2026-10-04 | #523 merged before the owner's check on dev, so #514 was reopened as Blocked. The check found four things; on the owner's decisions recorded on them, bugs #524 with #525 and #526 with #527 and improvement #528 with #529 and #530 were added before #385, and re-pairing the same computer stays as designed. #514 waits for #525. |
 
 ## Outcome
 
