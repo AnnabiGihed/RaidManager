@@ -9,7 +9,7 @@ ns.EQUIPPED_SLOTS = 19
 local ITEM_STRING_PARTS = 9
 
 --- Reads the ids of an item link; GetItemInfo isn't used, since it answers nothing for items the client hasn't cached.
----@param link string|nil such as "|cffa335ee|Hitem:51312:3817:41398:40117:0:0:0:1218372352:80|h[Name]|h|r"
+---@param link string|nil such as "|cffa335ee|Hitem:51312:3817:3628:3519:0:0:0:1218372352:80|h[Name]|h|r"
 ---@return table|nil the item's fields, or nil when the link holds no complete item string
 function ns.ParseItemLink(link)
     local body = link and link:match("item:([%-%d:]+)")

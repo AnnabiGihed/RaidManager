@@ -110,10 +110,10 @@ with `reason = "not-loaded"` while the skill list is empty.
 | `slots[].slot` | number | The inventory slot, `1` (head) to `19` (tabard); `4` is the shirt. |
 | `slots[].empty` | boolean | `true` when nothing is equipped there; then no item field is present. |
 | `slots[].status` | string | `"unavailable"` when the slot holds an item the game didn't describe; then no item field is present. |
-| `slots[].itemString` | string | The item string from the link, `"item:itemId:enchantId:gem1:gem2:gem3:gem4:suffixId:uniqueId:level"`. |
+| `slots[].itemString` | string | The item string from the link, `"item:itemId:enchantId:gem1:gem2:gem3:gem4:suffixId:uniqueId:level"`, where `gem1` to `gem4` are gem enchantment ids. |
 | `slots[].itemId` | number | The item id. |
 | `slots[].enchantId` | number | The enchant id, `0` when none. |
-| `slots[].gems` | table | The four gem ids in socket order, `0` for an empty or missing socket. |
+| `slots[].gems` | table | The four gem enchantment ids in socket order, such as `3628`, `0` for an empty or missing socket. They aren't the gems' item ids: RaidManager maps them to gems. |
 | `slots[].suffixId` | number | The random suffix id; it can be negative. |
 | `slots[].uniqueId` | number | The unique id. |
 
