@@ -1,7 +1,5 @@
-using Avalonia.Threading;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Time.Testing;
 using Moq;
 using RaidManager.Companion.Client.Configuration;
 using RaidManager.Companion.Client.Features.Pairing;
@@ -38,7 +36,7 @@ internal sealed class PairingStates : IDisposable
     private readonly Mock<ITokenStore> _store = new();
 
     /// <summary>Stores the clock.</summary>
-    private readonly FakeTimeProvider _time = new(Start);
+    private readonly DispatcherFlowClock _time = new(Start);
     #endregion Fields
 
     #region Constructors
@@ -98,11 +96,7 @@ internal sealed class PairingStates : IDisposable
         await ViewModel.StartCommand.ExecuteAsync();
         if (state == PairingState.Expired)
         {
-            for (var second = 0; second < 5; second++)
-            {
-                _time.Advance(TimeSpan.FromSeconds(1));
-                Dispatcher.UIThread.RunJobs();
-            }
+            _time.AdvanceSeconds(5, () => ViewModel.State != PairingState.Waiting);
         }
     }
 

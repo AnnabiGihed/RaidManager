@@ -1,7 +1,6 @@
 using System.ComponentModel;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
-using Microsoft.Extensions.Time.Testing;
 using RaidManager.Companion.Client.Configuration;
 using RaidManager.Companion.Client.Features.Pairing;
 using RaidManager.Companion.Client.Tests.Support;
@@ -15,8 +14,8 @@ namespace RaidManager.Companion.Client.Tests.Features.Pairing;
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-04<br/>
 /// Purpose: Technical tests of <see cref="PairingViewModel"/>: the properties the view binds to, a new code that
-/// replaces the shown one, a browser that refuses or fails, a store that fails while pairing, and disposal. Flows run
-/// off the test framework's synchronization context, as in the scenarios.
+/// replaces the shown one, a browser that refuses or fails, a store that fails while pairing, and disposal. Time
+/// advances through <see cref="FlowClock"/>, as in the scenarios.
 /// </remarks>
 public sealed class PairingViewModelTests : IDisposable
 {
@@ -31,7 +30,7 @@ public sealed class PairingViewModelTests : IDisposable
     private readonly FakeBrowserLauncher _browser = new();
 
     /// <summary>Stores the clock.</summary>
-    private readonly FakeTimeProvider _time = new(PairingViewModels.Start);
+    private readonly FlowClock _time = new(PairingViewModels.Start);
 
     /// <summary>Stores the view model under test.</summary>
     private readonly PairingViewModel _viewModel;
@@ -178,7 +177,7 @@ public sealed class PairingViewModelTests : IDisposable
             _api.AnswerPoll(TokenPoll.Collected(new PairedCompanion(Guid.NewGuid(), "Bryn", "token")));
             await Task.Run(viewModel.StartCommand.ExecuteAsync);
 
-            Advance(5);
+            Advance(5, viewModel);
 
             viewModel.State.ShouldBe(PairingState.CodeRequestFailed);
         }
@@ -193,7 +192,7 @@ public sealed class PairingViewModelTests : IDisposable
         await Task.Run(viewModel.StartCommand.ExecuteAsync);
 
         viewModel.Dispose();
-        Advance(10);
+        _time.Advance(TimeSpan.FromSeconds(10));
 
         _api.PollCount.ShouldBe(0);
         viewModel.State.ShouldBe(PairingState.Waiting);
@@ -223,14 +222,13 @@ public sealed class PairingViewModelTests : IDisposable
     #endregion Tests
 
     #region Private Helpers
-    /// <summary>Advances the clock one second at a time.</summary>
+    /// <summary>Advances the clock one second at a time, letting the flow reach its next wait each time.</summary>
     /// <param name="seconds">The seconds.</param>
-    private void Advance(int seconds)
+    /// <param name="viewModel">The view model whose flow runs, if not the default one.</param>
+    private void Advance(int seconds, PairingViewModel? viewModel = null)
     {
-        for (var second = 0; second < seconds; second++)
-        {
-            _time.Advance(TimeSpan.FromSeconds(1));
-        }
+        var flowOwner = viewModel ?? _viewModel;
+        _time.AdvanceSeconds(seconds, () => flowOwner.State != PairingState.Waiting);
     }
     #endregion Private Helpers
 

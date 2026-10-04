@@ -1,4 +1,3 @@
-using Microsoft.Extensions.Time.Testing;
 using RaidManager.Companion.Client.Features.Pairing;
 using RaidManager.Companion.Client.Tests.Support;
 using Reqnroll;
@@ -11,8 +10,8 @@ namespace RaidManager.Companion.Client.Tests.Features.Pairing;
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-04<br/>
 /// Purpose: Verifies the companion's side of ADR-0030 through the pairing view model: the code and the website, the
-/// polling interval and back-off, a confirmed or expired code, and the check of a stored pairing. The flow runs off
-/// the test framework's synchronization context, so each second the clock advances runs it to its next wait.
+/// polling interval and back-off, a confirmed or expired code, and the check of a stored pairing. Each second the
+/// clock advances, the steps wait until the flow has reached its next wait or ended.
 /// </remarks>
 [Binding]
 [Scope(Feature = "Companion pairing on this computer")]
@@ -34,7 +33,7 @@ public sealed class CompanionPairingOnThisComputerStepDefinitions : IDisposable
     private readonly FakeBrowserLauncher _browser = new();
 
     /// <summary>Stores the clock.</summary>
-    private readonly FakeTimeProvider _time = new(PairingViewModels.Start);
+    private readonly FlowClock _time = new(PairingViewModels.Start);
 
     /// <summary>Stores the view model under test.</summary>
     private readonly PairingViewModel _viewModel;
@@ -116,16 +115,10 @@ public sealed class CompanionPairingOnThisComputerStepDefinitions : IDisposable
     [When("the companion starts")]
     public Task WhenTheCompanionStarts() => StartAsync();
 
-    /// <summary>Advances the clock one second at a time.</summary>
+    /// <summary>Advances the clock one second at a time, letting the flow reach its next wait each time.</summary>
     /// <param name="seconds">The seconds.</param>
     [When("{int} seconds pass")]
-    public void WhenSecondsPass(int seconds)
-    {
-        for (var second = 0; second < seconds; second++)
-        {
-            _time.Advance(TimeSpan.FromSeconds(1));
-        }
-    }
+    public void WhenSecondsPass(int seconds) => _time.AdvanceSeconds(seconds, () => _viewModel.State != PairingState.Waiting);
     #endregion When Steps
 
     #region Then Steps
