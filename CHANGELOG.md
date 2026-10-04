@@ -12,7 +12,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - The addon captures the professions, from the skill lines under the client's localized professions and secondary
   skills headers, and the equipped gear, slot by slot with item, enchant, gems, suffix and unique id; it captures
   them again when the skill list or the player's inventory changes. A collapsed header, an item the client hasn't
-  described yet and an unreadable link are recorded as unavailable, never as empty (#487).
+  described yet and an unreadable link are recorded as unavailable, never as empty. The addon's version is 0.2.0, so
+  a snapshot shows which version wrote it (#487).
 - The RaidManager addon for WoW 3.3.5a, in `src/Addon/RaidManager/`: on entering the world it writes the
   character's identity, guild, client and server time into `RaidManagerDB`, following the snapshot contract, with
   the other sections unavailable until their capture comes; `/rm` shows the sections and `/rm sync` captures again.

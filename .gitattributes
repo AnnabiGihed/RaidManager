@@ -4,3 +4,7 @@
 # Server scripts and configuration run on Linux; keep LF in every checkout.
 *.sh text eol=lf
 *.Caddyfile text eol=lf
+
+# The WoW addon and its specs: StyLua checks LF line endings, on Windows checkouts too (ADR-0031).
+*.lua text eol=lf
+*.toc text eol=lf
