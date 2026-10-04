@@ -1,0 +1,41 @@
+/* Placement only: the parts are shared components, and colors come from the project-wide theme. */
+.companions-page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    box-sizing: border-box;
+    max-width: 1168px;
+    /* With the content area's own 16 px, the page starts where the mockup's content does. */
+    padding: 24px;
+}
+
+/* The note sits 24 px under the table, as in boards 2 and 4. */
+.companions-column {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.companion-name {
+    color: var(--rm-text-primary);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.companion-time {
+    color: var(--rm-text-secondary);
+    font-size: 13px;
+    white-space: nowrap;
+}
+
+.companion-upload,
+.companion-note {
+    color: var(--rm-text-muted);
+    font-size: 13px;
+}
+
+.companions-note {
+    margin: 0;
+    color: var(--rm-text-muted);
+    font-size: 13px;
+}

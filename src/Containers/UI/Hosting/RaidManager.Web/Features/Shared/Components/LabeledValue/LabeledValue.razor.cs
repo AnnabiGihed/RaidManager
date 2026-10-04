@@ -21,6 +21,10 @@ public sealed partial class LabeledValue
     [EditorRequired]
     public string Value { get; set; } = string.Empty;
 
+    /// <summary>Gets or sets a value indicating whether the value is plain text rather than emphasized, as a computer name under its label.</summary>
+    [Parameter]
+    public bool Plain { get; set; }
+
     /// <summary>Gets or sets the optional line under the value.</summary>
     [Parameter]
     public string? Note { get; set; }
@@ -28,5 +32,8 @@ public sealed partial class LabeledValue
     /// <summary>Gets or sets attributes passed through to the block, such as a test id.</summary>
     [Parameter(CaptureUnmatchedValues = true)]
     public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
+
+    /// <summary>Gets the value's classes.</summary>
+    private string ValueClass => Plain ? "labeled-value-value labeled-value-plain" : "labeled-value-value";
     #endregion Properties
 }

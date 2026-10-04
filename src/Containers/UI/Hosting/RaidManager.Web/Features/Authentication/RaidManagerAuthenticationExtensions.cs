@@ -3,8 +3,10 @@ using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Authentication.Cookies;
 using RaidManager.ViewModels.Features.Characters;
 using RaidManager.ViewModels.Features.Communities;
+using RaidManager.ViewModels.Features.Companions;
 using RaidManager.Web.Features.Characters;
 using RaidManager.Web.Features.Communities;
+using RaidManager.Web.Features.Companions;
 
 namespace RaidManager.Web.Features.Authentication;
 
@@ -101,6 +103,7 @@ public static class RaidManagerAuthenticationExtensions
         services.AddHttpClient<IIdentityApiClient, IdentityApiClient>(AddressApi);
         services.AddHttpClient<ICharacterClaimsApiClient, CharacterClaimsApiClient>(AddressApi);
         services.AddHttpClient<ICommunitiesApiClient, CommunitiesApiClient>(AddressApi);
+        services.AddHttpClient<ICompanionsApiClient, CompanionsApiClient>(AddressApi);
 
         // Adding the bot to a server uses the same Discord application as sign-in (docs/how-to/set-up-discord.md).
         services.AddSingleton(new DiscordApplicationCredentials(clientId, clientSecret));

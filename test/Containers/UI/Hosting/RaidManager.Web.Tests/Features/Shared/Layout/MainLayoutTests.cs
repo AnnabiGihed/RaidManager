@@ -102,17 +102,34 @@ public sealed class MainLayoutTests : BunitContext
 
     /// <summary>Lists only existing pages and highlights the current one.</summary>
     [Fact]
-    public void NavigationListsOverviewAndHighlightsIt()
+    public void NavigationListsThePlayerPagesAndHighlightsTheCurrentOne()
     {
         AddAuthorization().SetAuthorized("Arthas Menethil");
 
         var layout = RenderLayout();
 
         layout.Find(".shell-navigation").TextContent.ShouldContain("PLAYER");
-        layout.FindAll(".shell-navigation a").Select(link => link.GetAttribute("href")).ShouldBe(["/"]);
+        layout.FindAll(".shell-navigation a").Select(link => link.GetAttribute("href")).ShouldBe(["/", "/companion"]);
         layout.Markup.ShouldNotContain("OFFICER");
         layout.Find(".rz-navigation-item-wrapper-active").TextContent.ShouldContain("Overview");
         layout.Find("[data-testid=breadcrumb-page]").TextContent.ShouldBe("Overview");
+    }
+
+    /// <summary>Highlights Companion &amp; sync on the confirm page under it (owner decision on #513).</summary>
+    [Fact]
+    public void ConfirmPageHighlightsCompanionAndSync()
+    {
+        AddAuthorization().SetAuthorized("Arthas Menethil");
+        Services.GetRequiredService<NavigationManager>().NavigateTo("/companion/pair?code=K7M-4QX");
+
+        var layout = RenderLayout();
+
+        layout.Find("[data-testid=breadcrumb-page]").TextContent.ShouldBe("Companion & sync");
+        layout.Find(".rz-navigation-item-wrapper-active").TextContent.ShouldContain("Companion & sync");
+
+        Services.GetRequiredService<NavigationManager>().NavigateTo("/");
+
+        layout.WaitForAssertion(() => layout.FindAll(".rz-navigation-item-wrapper-active").ShouldHaveSingleItem().TextContent.ShouldContain("Overview"));
     }
 
     /// <summary>Follows navigation to a page outside the sidebar in the breadcrumb.</summary>

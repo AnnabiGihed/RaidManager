@@ -1,0 +1,66 @@
+@page "/companion"
+
+<PageTitle>Paired companions</PageTitle>
+
+<div class="companions-page">
+    <PageHeading Eyebrow="Companion" Title="Paired companions" Subtitle="These computers can upload your character data. Revoke one you no longer use." />
+
+    @if (_notice is { } notice)
+    {
+        <Toast Title="@notice.Title" Message="@notice.Detail" Tone="@CompanionTones.ToastOf(notice.Kind)" data-testid="companions-notice" />
+    }
+
+    @if (ViewModel.Status == CompanionPageStatus.Loading)
+    {
+        <TextNote Text="Loading your companions…" />
+    }
+    else if (ViewModel.Status == CompanionPageStatus.Failed)
+    {
+        <div class="companions-column">
+            <Notice Tone="NoticeTone.Danger" Title="We couldn't load your companions" Message="Nothing was revoked. Try again in a moment." data-testid="load-failed" />
+            <div>
+                <ActionButton Text="Try again" Click="LoadAsync" />
+            </div>
+        </div>
+    }
+    else if (ViewModel.Companions.Count == 0)
+    {
+        <EmptyState Title="No paired computers yet" Message="To pair a computer, start pairing in its companion." ShowsMark="false" data-testid="no-companions" />
+    }
+    else
+    {
+        <div class="companions-column">
+            <DataTable Items="@ViewModel.Companions" Headings="@Headings" Key="@(companion => companion.CompanionId)" ColumnWidths="@ColumnWidths" RowHeight="72" data-testid="companions">
+                <RowTemplate Context="companion">
+                    <td class="companion-name">@companion.Label</td>
+                    <td class="companion-time">@ViewModel.PairedLabel(companion)</td>
+                    <td class="companion-upload">@PairedCompanionsViewModel.NoUploadLabel</td>
+                    <td><TagChip Text="@companion.Status" Tone="@(companion.IsActive ? TagChipTone.Success : TagChipTone.Neutral)" /></td>
+                    <td>
+                        @if (companion.IsActive)
+                        {
+                            <ActionButton Text="Revoke" Appearance="ActionButtonAppearance.Secondary" Disabled="@(ViewModel.Revoking is not null)" Click="@(() => AskToRevoke(companion))" data-testid="@($"revoke-{companion.Label}")" />
+                        }
+                        else if (companion.Status == PairedCompanion.RevokedStatus)
+                        {
+                            <span class="companion-note">@ViewModel.RevokedLabel(companion)</span>
+                        }
+                        else
+                        {
+                            <span class="companion-note">@PairedCompanionsViewModel.ExpiredNote</span>
+                        }
+                    </td>
+                </RowTemplate>
+            </DataTable>
+            <p class="companions-note">To pair another computer, start pairing in its companion.</p>
+        </div>
+    }
+
+    @if (_revoking is { } revoking)
+    {
+        <ConfirmDialog Title="@PairedCompanionsViewModel.RevokeTitle(revoking)" Message="@PairedCompanionsViewModel.RevokeMessage()"
+                       Detail="@PairedCompanionsViewModel.RevokeAdvice"
+                       ConfirmText="Revoke" ConfirmAppearance="ActionButtonAppearance.Danger" OnConfirm="RevokeAsync" OnCancel="CancelRevoke"
+                       data-testid="revoke-dialog" />
+    }
+</div>

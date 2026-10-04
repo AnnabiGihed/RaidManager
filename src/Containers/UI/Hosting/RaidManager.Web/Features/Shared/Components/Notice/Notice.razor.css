@@ -20,6 +20,11 @@
     background: var(--rm-status-danger-background);
 }
 
+.notice-warning {
+    border-color: var(--rm-status-warning-border);
+    background: var(--rm-status-warning-background);
+}
+
 .notice-mark {
     display: inline-flex;
     flex: none;
@@ -40,6 +45,11 @@
 .notice-danger .notice-mark {
     background: var(--rm-status-danger);
     color: var(--rm-status-on-danger);
+}
+
+.notice-warning .notice-mark {
+    background: var(--rm-accent-amber);
+    color: var(--rm-brand-on-accent);
 }
 
 .notice-text {
@@ -70,4 +80,12 @@
 .notice-danger .notice-title,
 .notice-danger .notice-message {
     color: var(--rm-status-danger-text);
+}
+
+.notice-warning .notice-title {
+    color: var(--rm-status-warning-title);
+}
+
+.notice-warning .notice-message {
+    color: var(--rm-status-warning-text);
 }

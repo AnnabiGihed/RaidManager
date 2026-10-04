@@ -29,10 +29,15 @@ public sealed partial class Notice
     public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
 
     /// <summary>Gets the classes for the tone.</summary>
-    private string CssClass => Tone == NoticeTone.Danger ? "notice notice-danger" : "notice notice-info";
+    private string CssClass => Tone switch
+    {
+        NoticeTone.Danger => "notice notice-danger",
+        NoticeTone.Warning => "notice notice-warning",
+        _ => "notice notice-info",
+    };
 
     /// <summary>Gets the mark that names the tone without color.</summary>
-    private string Mark => Tone == NoticeTone.Danger ? "!" : "i";
+    private string Mark => Tone == NoticeTone.Info ? "i" : "!";
 
     /// <summary>Gets the role: an alert interrupts a screen reader, a status doesn't.</summary>
     private string Role => Tone == NoticeTone.Danger ? "alert" : "status";

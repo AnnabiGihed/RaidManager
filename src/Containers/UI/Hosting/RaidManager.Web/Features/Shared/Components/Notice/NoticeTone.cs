@@ -13,4 +13,7 @@ public enum NoticeTone
 
     /// <summary>Something went wrong or was refused, marked "!".</summary>
     Danger,
+
+    /// <summary>Something can't go on as asked and the reader can fix it, marked "!".</summary>
+    Warning,
 }

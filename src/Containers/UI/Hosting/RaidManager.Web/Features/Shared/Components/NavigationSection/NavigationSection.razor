@@ -4,7 +4,7 @@
     <RadzenPanelMenu Match="NavLinkMatch.All" DisplayStyle="MenuItemDisplayStyle.Text">
         @foreach (var entry in Entries)
         {
-            <RadzenPanelMenuItem @key="entry.Route" Text="@entry.Title" Path="@entry.Route" />
+            <RadzenPanelMenuItem @key="entry.Route" Text="@entry.Title" Path="@entry.Route" Selected="@IsUnder(entry)" />
         }
     </RadzenPanelMenu>
 </div>
