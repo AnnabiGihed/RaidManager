@@ -1,9 +1,47 @@
 -- Author: Gihed Annabi
 -- Purpose: Stubs of the WoW 3.3.5a API that answer as the client does for the one-character fixture's character.
+local addon = dofile("test/Addon/helpers/addon.lua")
+
 local M = {}
 
 -- 2026-10-04 12:00:00 UTC, the fixture's observation time.
 M.NOW = 1791043200
+
+-- The skill list as the client shows it: headers, then their rows; the fixture's professions are under two of them.
+M.SKILL_LINES = {
+    { "Professions", true, true },
+    { "Blacksmithing", false, false, 450, 0, 0, 450 },
+    { "Mining", false, false, 450, 0, 0, 450 },
+    { "Secondary Skills", true, true },
+    { "Cooking", false, false, 300, 0, 0, 450 },
+    { "First Aid", false, false, 450, 0, 0, 450 },
+    { "Fishing", false, false, 1, 0, 0, 75 },
+    { "Weapon Skills", true, true },
+    { "Two-Handed Swords", false, false, 400, 0, 0, 400 },
+    { "Languages", true, true },
+    { "Orcish", false, false, 300, 0, 0, 300 },
+}
+
+--- The client's link for an item string, as GetInventoryItemLink returns it.
+---@param itemString string
+---@return string
+function M.Link(itemString)
+    return "|cffa335ee|H" .. itemString .. "|h[Item]|h|r"
+end
+
+--- The skill list functions for a list of rows.
+---@param lines table[]
+---@return table
+function M.SkillList(lines)
+    return {
+        GetNumSkillLines = function()
+            return #lines
+        end,
+        GetSkillLineInfo = function(index)
+            return unpack(lines[index])
+        end,
+    }
+end
 
 --- The API of Arthasdk on Icecrown, with any function replaced by the given overrides.
 ---@param overrides table|nil
@@ -53,6 +91,21 @@ function M.Arthasdk(overrides)
             return 14, 0
         end,
     }
+    -- The localized header names, as the client's global strings define them.
+    world.TRADE_SKILLS = "Professions"
+    world.SECONDARY_SKILLS = "Secondary Skills:"
+    for name, value in pairs(M.SkillList(M.SKILL_LINES)) do
+        world[name] = value
+    end
+    local equipped = addon.FixtureCharacter().equipped.slots
+    world.GetInventoryItemLink = function(_, slot)
+        local entry = equipped[slot]
+        return entry and entry.itemString and M.Link(entry.itemString) or nil
+    end
+    world.GetInventoryItemTexture = function(_, slot)
+        local entry = equipped[slot]
+        return entry and entry.itemString and "Interface\\Icons\\INV_Misc_QuestionMark" or nil
+    end
     for name, value in pairs(overrides or {}) do
         world[name] = value
     end

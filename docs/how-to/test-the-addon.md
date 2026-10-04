@@ -29,7 +29,8 @@ In Git Bash on Windows, put `MSYS_NO_PATHCONV=1` before `docker run` and use `$(
 1. Copy the `src/Addon/RaidManager` folder into `Interface/AddOns` of the 3.3.5a client, so that
    `Interface/AddOns/RaidManager/RaidManager.toc` exists.
 2. Start the game, check that RaidManager is enabled in the character selection's AddOns list, and log in.
-3. Type `/rm`. The chat lists each section of the snapshot with its status, such as `identity: observed`.
+3. Type `/rm`. The chat lists each section of the snapshot with its status, such as `identity: observed`; a
+   section the addon doesn't capture yet shows `unavailable (not-captured)`.
 4. Type `/reload`, which makes the game write the file.
 5. Open `WTF/Account/<ACCOUNT>/SavedVariables/RaidManager.lua` and send its contents for comparison with the
    fixtures. It holds no password or other credential.

@@ -96,7 +96,10 @@ RaidManagerDB = {
 | `items[].rank` | number | The current skill. |
 | `items[].maxRank` | number | The maximum skill of the character's current training. |
 
-A character with no profession has `items = {}`.
+A character with no profession has `items = {}`. The headers are found by the client's localized names
+(`TRADE_SKILLS` and `SECONDARY_SKILLS`, without a final colon). The section is `"unavailable"` with
+`reason = "collapsed"` when the player collapsed one of these headers in the skill list, which hides its rows, and
+with `reason = "not-loaded"` while the skill list is empty.
 
 ### `equipped`
 
@@ -113,6 +116,9 @@ A character with no profession has `items = {}`.
 | `slots[].gems` | table | The four gem ids in socket order, `0` for an empty or missing socket. |
 | `slots[].suffixId` | number | The random suffix id; it can be negative. |
 | `slots[].uniqueId` | number | The unique id. |
+
+A slot is `"unavailable"` with `reason = "not-cached"` when the game shows an item there but gives no link yet, and
+with `reason = "unreadable-link"` when the link holds no complete item string.
 
 ### `equipmentSets`
 

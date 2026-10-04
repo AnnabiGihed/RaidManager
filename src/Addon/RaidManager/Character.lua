@@ -2,6 +2,23 @@
 -- Purpose: Captures the logged-in character into its snapshot, from the sections this version knows.
 local _, ns = ...
 
+-- The sections this version captures, each with its capture function; the others stay unavailable (not-captured).
+ns.CAPTURES = {
+    { section = "identity", capture = ns.CaptureIdentity },
+    { section = "guild", capture = ns.CaptureGuild },
+    { section = "professions", capture = ns.CaptureProfessions },
+    { section = "equipped", capture = ns.CaptureEquipped },
+}
+
+local function captureOf(section)
+    for _, entry in ipairs(ns.CAPTURES) do
+        if entry.section == section then
+            return entry.capture
+        end
+    end
+    return nil
+end
+
 --- Captures the logged-in character into the saved table and returns its snapshot.
 ---@param api table the WoW API
 ---@param db table the prepared RaidManagerDB
@@ -15,23 +32,26 @@ function ns.CaptureCharacter(api, db, now)
     local character = ns.CharacterSnapshot(db, realm, name, now)
     character.client = ns.CaptureClient(api)
     character.serverTime = ns.CaptureServerTime(api, now)
-    ns.StoreSection(character, "identity", ns.CaptureIdentity(api, now), now)
-    ns.StoreSection(character, "guild", ns.CaptureGuild(api, now), now)
+    for _, entry in ipairs(ns.CAPTURES) do
+        ns.StoreSection(character, entry.section, entry.capture(api, now), now)
+    end
     return character
 end
 
---- Captures the guild again, once the game has loaded it after login.
+--- Captures one section again, when the game reports that it changed or finished loading.
 ---@param api table the WoW API
 ---@param db table the prepared RaidManagerDB
 ---@param now number seconds since 1970
+---@param section string a section of ns.CAPTURES
 ---@return table|nil the snapshot, or nil when the character isn't captured yet
-function ns.CaptureGuildAgain(api, db, now)
+function ns.CaptureAgain(api, db, now, section)
     local realm, name = api.GetRealmName(), api.UnitName("player")
     local character = realm and name and db.characters[ns.CharacterKey(realm, name)]
-    if not character then
+    local capture = captureOf(section)
+    if not character or not capture then
         return nil
     end
-    ns.StoreSection(character, "guild", ns.CaptureGuild(api, now), now)
+    ns.StoreSection(character, section, capture(api, now), now)
     return character
 end
 
