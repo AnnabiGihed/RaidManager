@@ -26,6 +26,8 @@ without a code. 13. The code can't be checked; Try again shows 1. Each offers "S
 Companion state added by #514 (owner decisions on #514, 2026-10-04):
 18. The tray icon, its tooltip and its menu. Open, or a click on the icon, shows the window (5); Quit exits. Closing
 the window hides it here. Windows draws the menu in the system theme, so the board fixes its entries, not its look.
+19. Getting a code: state 5's layout while the companion asks for a code, its buttons disabled.
+20. Couldn't get a code: RaidManager didn't answer; Try again shows 19.
 
 Uploads come with #384, so "Last upload" says "No upload yet" until then (owner decision on #513). Times are in UTC,
 as on the character review page.
@@ -74,6 +76,8 @@ EMPTY_LIST = "15 · Website: no paired companions"
 LIST_FAILED = "16 · Website: companions can't be loaded"
 CONFIRM_FAILED = "17 · Website: confirmation failed"
 TRAY = "18 · Companion: tray menu"
+GETTING_CODE = "19 · Companion: getting a code"
+CODE_REQUEST_FAILED = "20 · Companion: couldn't get a code"
 NO_UPLOAD = "No upload yet"
 CONFIRM_SUBTITLE = "Check that the code matches the one on your companion, then confirm. Only pair a computer you use."
 TRY_AGAIN = "Nothing changed. Try again in a moment."
@@ -225,6 +229,14 @@ def window_heading(title: str, lines: list[str], top: float = TITLE_BAR_H + 52) 
     return items
 
 
+def pending_code_card(y: float) -> Group:
+    return Group("Code card", [
+        *card(WINDOW_PADDING, y, INNER_W, 124),
+        label("Code label", WINDOW_PADDING + 24, y + 32, CODE_LABEL),
+        text("Getting code", WINDOW_PADDING, y + 76, "Getting a code…", 18, 700, SECONDARY, INNER_W, "center"),
+    ])
+
+
 def code_card(y: float, expired: bool) -> Group:
     colour = MUTED if expired else ACCENT
     return Group("Code card", [
@@ -246,6 +258,28 @@ def waiting() -> list[Item]:
         button("Open website button", WINDOW_PADDING, TITLE_BAR_H + 336, "Open the website", "primary", INNER_W,
                Click("navigate", CONFIRM)),
         button("New code button", WINDOW_PADDING, TITLE_BAR_H + 388, "Get a new code", "secondary", INNER_W),
+    ]
+
+
+def getting_code() -> list[Item]:
+    return [
+        *window_heading("Pair with RaidManager", ["Open the website, sign in with Discord, and", "confirm this code."]),
+        pending_code_card(TITLE_BAR_H + 128),
+        Group("Status", [Circle("Dot", WINDOW_PADDING + 5, TITLE_BAR_H + 297, 5, MUTED),
+                         text("Label", WINDOW_PADDING + 18, TITLE_BAR_H + 302,
+                              "Asking RaidManager for a code", 13, 400, SECONDARY)]),
+        button("Open website button", WINDOW_PADDING, TITLE_BAR_H + 336, "Open the website", "disabled", INNER_W),
+        button("New code button", WINDOW_PADDING, TITLE_BAR_H + 388, "Get a new code", "disabled", INNER_W),
+    ]
+
+
+def code_request_failed() -> list[Item]:
+    return [
+        *window_heading("Pair with RaidManager", ["The companion needs a code from RaidManager first."]),
+        notice("Unreachable notice", WINDOW_PADDING, TITLE_BAR_H + 108, INNER_W, "We couldn't reach RaidManager",
+               "Check your connection, then try again.", "danger"),
+        button("Try again button", WINDOW_PADDING, TITLE_BAR_H + 204, "Try again", "primary", INNER_W,
+               Click("navigate", GETTING_CODE)),
     ]
 
 
@@ -349,6 +383,8 @@ def boards() -> list[Board]:
         companion_window(EXPIRED, 2 * window, row, expired()),
         companion_window(UNPAIRED, 3 * window, row, unpaired()),
         Board(TRAY, 4 * window, row, WINDOW_W, 600, P["Surface/page"], tray()),
+        companion_window(GETTING_CODE, 5 * window, row, getting_code()),
+        companion_window(CODE_REQUEST_FAILED, 6 * window, row, code_request_failed()),
         website(CODE_EXPIRED, 0, code_problem(
             "This code expired", "Codes last 10 minutes. Get a new code in the companion.", "warning"), 2 * row),
         website(CODE_USED, column, code_problem(
@@ -373,6 +409,7 @@ def main(repository: Path = REPOSITORY) -> Path:
     return write_mockup(repository, "companion-pairing", "Companion pairing", boards(),
                         flows={"Pair a companion": WAITING, "Revoke a companion": PAIRED_LIST,
                                "Expired code": EXPIRED, "Revoked companion": UNPAIRED, "Tray menu": TRAY,
+                               "Code can't be requested": CODE_REQUEST_FAILED,
                                "Code problems on the website": CODE_EXPIRED,
                                "Companions can't be loaded": LIST_FAILED})
 
