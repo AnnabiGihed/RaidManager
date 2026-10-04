@@ -66,12 +66,12 @@ hostnames forward only `/companion/` (owner decision on #369).
   more than 180 days 401 `Companion.Expired`, each with `WWW-Authenticate: Bearer error="invalid_token"`. Last use is
   recorded at most once an hour.
 - **Pairing codes** are six characters from `23456789ABCDEFGHJKMNPQRSTUVWXYZ`, shown as `XXX-XXX`; the routes accept
-  them with or without the dash and in any case. A code another player can't use: the lookup and the confirmation
-  answer 404 for an unknown code, and 409 `CompanionPairing.Expired` or `CompanionPairing.AlreadyConfirmed`.
+  them with or without the dash and in any case. Looking a code up or confirming it answers 404 for an unknown code,
+  and 409 `CompanionPairing.Expired` or `CompanionPairing.AlreadyConfirmed`.
 - **Revocation** answers 404 for a companion the player doesn't have and 409 when it was already revoked.
 - **Rate limits** answer 429 `RateLimit.Exceeded` with `Retry-After`: 10 pairing starts per address per 10 minutes,
-  60 token polls per address per minute, and 10 code lookups or confirmations per player per 10 minutes. The
-  `Companion:RateLimits` configuration section changes them.
+  60 token polls per address per minute, and 10 code checks (looking a code up or confirming it) per player per 10
+  minutes. The `Companion:RateLimits` configuration section changes them.
 
 ## Planned contract areas
 
