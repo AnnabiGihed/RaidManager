@@ -86,6 +86,7 @@ loadouts
 logout
 Lordaeron
 Lua
+luacheck
 macOS
 Malware
 malware
@@ -149,6 +150,7 @@ SonarCloud
 SQL
 SQLite
 SSD
+StyLua
 subcase
 subdomain
 sudo
