@@ -100,7 +100,11 @@ def confirm() -> list[Item]:
 def companions_table(revoked: bool, linked: bool, expired: bool = False) -> Group:
     top, head_h, row_h = CONTENT_TOP + 120, 44, 72
     columns = {"computer": 24, "paired": 300, "upload": 520, "status": 760, "action": 900}
-    laptop_status = "Expired" if expired else "Revoked" if revoked else "Active"
+    laptop_status = "Active"
+    if expired:
+        laptop_status = "Expired"
+    elif revoked:
+        laptop_status = "Revoked"
     laptop_paired = "12 Mar, 21:40 UTC" if expired else "12 Sep, 21:40 UTC"
     rows = [(DESKTOP, "Today, 14:02 UTC", "Active"), (LAPTOP, laptop_paired, laptop_status)]
     items: list[Item] = card(CONTENT_X, top, CONTENT_W, head_h + row_h * len(rows) + 8)
