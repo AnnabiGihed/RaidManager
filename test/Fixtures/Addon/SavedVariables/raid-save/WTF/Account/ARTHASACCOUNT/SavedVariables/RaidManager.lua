@@ -1010,6 +1010,18 @@ RaidManagerDB = {
                         ["extended"] = false,
                     }, -- [3]
                     {
+                        ["name"] = "Gruul's Lair",
+                        ["lockoutId"] = 14142135,
+                        ["idMostSig"] = 0,
+                        ["resetSeconds"] = 345600,
+                        ["difficulty"] = 1,
+                        ["difficultyName"] = "25 Player",
+                        ["maxPlayers"] = 25,
+                        ["isRaid"] = true,
+                        ["locked"] = true,
+                        ["extended"] = false,
+                    }, -- [4]
+                    {
                         ["name"] = "The Forge of Souls",
                         ["lockoutId"] = 16180339,
                         ["idMostSig"] = 0,
@@ -1020,7 +1032,7 @@ RaidManagerDB = {
                         ["isRaid"] = false,
                         ["locked"] = true,
                         ["extended"] = false,
-                    }, -- [4]
+                    }, -- [5]
                 },
             },
         },

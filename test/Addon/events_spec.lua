@@ -157,7 +157,7 @@ describe("the loaded addon", function()
 
         assert.are.equal(1, saves.requests)
         assert.are.equal("not-answered", before)
-        assert.are.equal(4, #game.env.RaidManagerDB.characters["Icecrown|Arthasdk"].lockouts.items)
+        assert.are.equal(5, #game.env.RaidManagerDB.characters["Icecrown|Arthasdk"].lockouts.items)
     end)
 
     it("asks again on a new zone, at most once every few seconds", function()

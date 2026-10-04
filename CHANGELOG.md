@@ -344,6 +344,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- The snapshot contract says a raid's `difficulty` is read with its `maxPlayers`: a raid with a single size, such
+  as `Gruul's Lair`, reports difficulty `1` whatever its size, as the owner's saves showed; the `raid-save` fixture
+  holds one (#508).
 - An equipment set's item that is gone from the character is recorded as missing without `itemId = -1`: Warmane's
   client gives `-1` instead of the item's id, and the addon no longer copies it. The addon's version is 0.3.1
   (#504).
