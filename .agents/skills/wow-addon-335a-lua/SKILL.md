@@ -278,6 +278,35 @@ values must not be relied on.
   `WTF/Account/<ACCOUNT>/SavedVariables/RaidManager.lua`, and `/console scriptErrors 1` to surface Lua errors.
 - Test on a character with an extended lockout, one with no equipment sets, one with a single talent group, a
   non-English client when possible, and a character name with non-ASCII letters (the file stores UTF-8 bytes).
+- **Every capture change bumps the addon's version** in the TOC, `ns.ADDON_VERSION` in `Snapshot.lua` and
+  `snapshot_spec.lua`, so a file shows which build wrote each snapshot (#487). Snapshots of characters not logged in
+  since keep the sections of the older build, `not-captured` included; that is expected.
+- **The owner checks each capture pull request in the game before it merges** (owner decision on #16): the agent
+  gives the steps of `docs/how-to/test-the-addon.md`, the owner sends `/rm`'s lines and the file's path. The agent
+  copies the file into the scratchpad and checks it with the specs' contract helper:
+
+  ```bash
+  MSYS_NO_PATHCONV=1 docker run --rm -v "$(pwd -W):/repo:ro" -v "<scratchpad folder>:/ingame:ro" -w /repo rm-lua-tools:local lua -e 'local c = dofile("test/Addon/helpers/contract.lua"); local f = assert(loadfile("/ingame/RaidManager.lua")); local e = {}; setfenv(f, e); f(); print(#c.Problems(e.RaidManagerDB) .. " contract problems, addon " .. e.RaidManagerDB.addonVersion)'
+  ```
+
+  A merge before that check closes the task too early: reopen it as Blocked until the check is recorded.
+- **Local tools:** `rm-lua-tools:local` is built once from Debian bookworm, as `docs/how-to/test-the-addon.md`
+  shows; it lives only in the local Docker cache. `nickblah/lua:5.1-luarocks` is on Debian buster, whose packages are
+  gone, so busted and luacheck can't be built in it. StyLua checks LF line endings; `.gitattributes` keeps `*.lua` and
+  `*.toc` in LF on Windows too.
+
+### Verified on Warmane (Icecrown, enUS client 12340, 2026-10-04)
+
+What the owner's files showed, and the addon and contract now follow:
+
+| Fact | Consequence |
+| --- | --- |
+| An item string's gem fields hold gem enchantment ids, such as `3628`, not the gems' item ids. | `gems` stores them raw; RaidManager maps them (#499). |
+| `GetEquipmentSetItemIDs` gives `-1` for a set item that is gone from the character, with location `-1`. | The slot is `missing` without `itemId` (#503). |
+| A raid with one size reports difficulty `1` whatever its size (`Gruul's Lair` 25, `Molten Core` 40). | `difficulty` is read with `maxPlayers` (#507). |
+| `Riding` is a row under the `Secondary Skills` header; the headers are `Professions` and `Secondary Skills`. | Professions keep it raw; RaidManager ignores `Riding` when it maps professions. |
+| Expired saves that can still be extended come back with `locked = false`. | They are kept and flagged, never dropped. |
+| `GetGuildInfo` answered at login on every character checked; the server clock read UTC. | `not-loaded` stays for slower cases; `serverTime` agrees with `capturedAt`. |
 
 ## Completion criteria
 

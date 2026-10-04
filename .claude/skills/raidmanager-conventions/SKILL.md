@@ -348,3 +348,43 @@ The owner, Gihed Annabi, works with the agent through short messages and expects
   fails because an existing review copies the operator's text, a new approval doesn't help: the existing review must
   be edited, in the UI or with `gh api -X PUT repos/AnnabiGihed/RaidManager/pulls/<n>/reviews/<review id> -F body=@<file>`.
 - **Dates and times** are absolute and in Europe/Brussels (sprints start inclusive and end exclusive at 00:00).
+- **The owner's in-game file.** When the owner sends the path of `RaidManager.lua` after an addon check, read it,
+  copy it into the scratchpad (the game may rewrite or move it at any moment) and run the contract checker on the
+  copy (`wow-addon-335a-lua` §10). Record the evidence on the task without the characters' GUIDs.
+
+## 14. Ending a session ("new session", mandatory)
+
+The owner ends a session with the words "new session" (owner decision on #510). That alone starts this routine; never
+ask the owner to repeat what it contains.
+
+1. **Checkpoint.** Leave no step half done: finish the current command, or commit and push the work in progress and
+   record its state on its task. Report anything waiting on the owner.
+2. **Lessons work item.** Create, without asking again (standing approval on #510), an improvement under #156,
+   "keep the session's lessons", with one task, selected into the active sprint, both with their contracts and the
+   request recorded. If no sprint is active, stop and ask.
+3. **What goes in, and where.** Only what a later session needs and can't read from the code or the board:
+   - mistakes made and the rule that prevents them;
+   - routines the owner asked for or corrected;
+   - facts verified about external systems (the game client, GitHub, the server);
+   - choices the owner made the same way several times, as the recommended option;
+   - pitfalls met in tools and checks.
+
+   Each goes into the skill that owns the topic, in both trees; a rule for every session goes into `AGENTS.md`.
+   Never into the agent's memory: the skills hold working knowledge. The sprint record lists every item added
+   during the session with its decision, and the changelog gets an entry.
+4. **Pull request.** One task, one branch, one draft pull request, with the usual checks and both review comments.
+5. **Handover message.** Give, in one fenced `text` block the owner can paste, a message with these parts, short and
+   with issue and pull request numbers instead of explanations:
+   - **Start:** read `AGENTS.md`, `raidmanager-conventions` (§13, §14), `raidmanager-board-operations` and
+     `raidmanager-github-project-workflow`; run `python scripts/work_gate.py report` and report its violations.
+   - **State at handover:** each open pull request with what to do when the owner says "merged" (which items close,
+     which parents to validate, which check after the merge), each Blocked item with its unblock condition, the
+     sprint and release with their dates.
+   - **Automation in force** that changes what happens after a merge (dev deployment rule, Dependabot routine).
+   - **Remaining order** of the sprint, and the backlog items not to start without the owner.
+   - **Rules for every task:** preflight; one task, branch and draft pull request; the checks before handover; both
+     review comments checked; never post, approve, mark ready or merge; reopen as Blocked a task its merge closed
+     before its verification.
+   - **Working with the owner:** owner steps one at a time (what, where, why, what to expect); no sign-in to the
+     server, no credentials; questions on any conflict or product choice.
+   - **Next:** the first action of the new session.

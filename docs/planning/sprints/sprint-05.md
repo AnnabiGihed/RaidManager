@@ -68,6 +68,10 @@ date on the Project, both inclusive) follows the blocked-by order; the item's ow
 | #484 Keep the merge-order and branch-update lessons in the skills | Improvement | 1 | 3 Oct | #485 (Business Analysis) | None |
 | #491 Deploy to dev only when a merge changes what dev runs | Improvement | 3 | 4 to 5 Oct | #492 (Deployment) | None |
 | #493 Every merge dispatches the main workflows twice | Bug | 1 | 4 Oct | #494 (Deployment) | None |
+| #499 The snapshot contract calls gem enchantment ids gem ids | Bug | 1 | 4 Oct | #500 (Development) | None |
+| #503 A missing equipment set item is recorded with `itemId` -1 | Bug | 1 | 4 Oct | #504 (Development) | None |
+| #507 The snapshot contract misreads the difficulty of single-size raids | Bug | 1 | 4 Oct | #508 (Development) | None |
+| #510 Keep the session's lessons and a standing new-session routine | Improvement | 2 | 4 Oct | #511 (Business Analysis) | None |
 
 16 October is kept as a buffer.
 
@@ -116,6 +120,8 @@ and its task #388 wait for #409 and #411.
 | 2026-10-03 | #383 split on the owner's decision recorded on #16: #383 keeps the addon, its tools and identity; #487 (professions and gear), #488 (loadouts) and #489 (raid saves) follow it. #38 started early, on 3 October. |
 | 2026-10-04 | #491 with #492 and bug #493 with #494 added on the owner's decisions recorded on them: deploy dev only when a merge changes what it runs, and dispatch the main workflows once per merge. |
 | 2026-10-04 | #383 started; on the owner's decision recorded on #491 and #383, an addon change doesn't deploy dev. |
+| 2026-10-04 | Bugs #499 with #500, #503 with #504 and #507 with #508 added on the owner's decisions recorded on them: defects the owner's in-game checks found in the contract and the addon. |
+| 2026-10-04 | #510 with #511 added on the owner's decision recorded on #510: the session's lessons and the standing "new session" routine. |
 
 ## Outcome
 
