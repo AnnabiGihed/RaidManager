@@ -19,11 +19,18 @@ end)
 
 ns.On("PLAYER_ENTERING_WORLD", capture)
 
-ns.On("PLAYER_GUILD_UPDATE", function(unit)
-    if unit == nil or unit == "player" then
-        ns.CaptureGuildAgain(ns.api, RaidManagerDB, ns.api.time())
+local function captureAgainFor(section)
+    return function(unit)
+        if unit == nil or unit == "player" then
+            ns.CaptureAgain(ns.api, RaidManagerDB, ns.api.time(), section)
+        end
     end
-end)
+end
+
+-- Sections the game finishes loading, or that change, after the character entered the world.
+ns.On("PLAYER_GUILD_UPDATE", captureAgainFor("guild"))
+ns.On("SKILL_LINES_CHANGED", captureAgainFor("professions"))
+ns.On("UNIT_INVENTORY_CHANGED", captureAgainFor("equipped"))
 
 --- Handles /rm and /raidmanager: "sync" captures again, anything else shows what the snapshot holds.
 ---@param message string the text after the command, trimmed

@@ -4,7 +4,7 @@ local addon = dofile("test/Addon/helpers/addon.lua")
 local contract = dofile("test/Addon/helpers/contract.lua")
 local world = dofile("test/Addon/helpers/world.lua")
 
-local NOT_YET = { "professions", "equipped", "equipmentSets", "talents", "lockouts" }
+local NOT_YET = { "equipmentSets", "talents", "lockouts" }
 
 describe("capturing the character", function()
     local fixture = addon.FixtureCharacter()
@@ -15,12 +15,14 @@ describe("capturing the character", function()
         return ns, api, ns.InitializeDatabase(nil)
     end
 
-    it("writes the realm, name, client, server time, identity and guild of the fixture", function()
+    it("writes the realm, name, client, server time, identity, guild, professions and gear of the fixture", function()
         local ns, api, db = load()
 
         local character = ns.CaptureCharacter(api, db, world.NOW)
 
-        for _, field in ipairs({ "realm", "name", "capturedAt", "client", "serverTime", "identity", "guild" }) do
+        local fields = { "realm", "name", "capturedAt", "client", "serverTime", "identity", "guild", "professions" }
+        fields[#fields + 1] = "equipped"
+        for _, field in ipairs(fields) do
             assert.are.same(fixture[field], character[field], field)
         end
         assert.are.equal(character, db.characters["Icecrown|Arthasdk"])
@@ -76,7 +78,7 @@ describe("capturing the character", function()
         ns.CaptureCharacter(api, db, world.NOW)
         guildLoaded = true
 
-        local character = ns.CaptureGuildAgain(api, db, world.NOW + 5)
+        local character = ns.CaptureAgain(api, db, world.NOW + 5, "guild")
 
         assert.are.equal("observed", character.guild.status)
         assert.are.equal("Dark Templars", character.guild.name)
@@ -86,7 +88,14 @@ describe("capturing the character", function()
     it("doesn't capture the guild of a character not captured yet", function()
         local ns, api, db = load()
 
-        assert.is_nil(ns.CaptureGuildAgain(api, db, world.NOW))
+        assert.is_nil(ns.CaptureAgain(api, db, world.NOW, "guild"))
+    end)
+
+    it("doesn't capture again a section this version doesn't know", function()
+        local ns, api, db = load()
+        ns.CaptureCharacter(api, db, world.NOW)
+
+        assert.is_nil(ns.CaptureAgain(api, db, world.NOW, "talents"))
     end)
 
     it("describes each section's status for the slash command", function()
@@ -97,6 +106,7 @@ describe("capturing the character", function()
 
         assert.are.equal("Icecrown|Arthasdk", lines[1])
         assert.are.equal("identity: observed", lines[2])
-        assert.are.equal("professions: unavailable (not-captured)", lines[4])
+        assert.are.equal("professions: observed", lines[4])
+        assert.are.equal("equipmentSets: unavailable (not-captured)", lines[6])
     end)
 end)

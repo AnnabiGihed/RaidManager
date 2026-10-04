@@ -8,5 +8,7 @@
 Core.lua
 Snapshot.lua
 Capture\Identity.lua
+Capture\Professions.lua
+Capture\Gear.lua
 Character.lua
 Events.lua

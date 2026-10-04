@@ -11,10 +11,15 @@ describe("the loaded addon", function()
     end
 
     it("loads every file the TOC lists", function()
-        assert.are.same(
-            { "Core.lua", "Snapshot.lua", "Capture/Identity.lua", "Character.lua", "Events.lua" },
-            addon.TocFiles()
-        )
+        assert.are.same({
+            "Core.lua",
+            "Snapshot.lua",
+            "Capture/Identity.lua",
+            "Capture/Professions.lua",
+            "Capture/Gear.lua",
+            "Character.lua",
+            "Events.lua",
+        }, addon.TocFiles())
     end)
 
     it("prepares the saved table when the client loads it, and stops listening", function()
@@ -54,6 +59,46 @@ describe("the loaded addon", function()
 
         assert.are.equal("unavailable", before)
         assert.are.equal("observed", game.env.RaidManagerDB.characters["Icecrown|Arthasdk"].guild.status)
+    end)
+
+    it("captures the professions again when the skill list changes", function()
+        local lines = { { "Professions", true, true } }
+        local game = loaded({
+            GetNumSkillLines = function()
+                return #lines
+            end,
+            GetSkillLineInfo = function(index)
+                return unpack(lines[index])
+            end,
+        })
+        game.Fire("PLAYER_ENTERING_WORLD")
+        lines[2] = { "Tailoring", false, false, 1, 0, 0, 75 }
+
+        game.Fire("SKILL_LINES_CHANGED")
+
+        local items = game.env.RaidManagerDB.characters["Icecrown|Arthasdk"].professions.items
+        assert.are.same({ { name = "Tailoring", header = "Professions", rank = 1, maxRank = 75 } }, items)
+    end)
+
+    it("captures the gear again when the player's inventory changes, not another unit's", function()
+        local wearsShirt = false
+        local game = loaded({
+            GetInventoryItemLink = function(_, slot)
+                if slot == 4 and wearsShirt then
+                    return world.Link("item:45:0:0:0:0:0:0:0:80")
+                end
+            end,
+            GetInventoryItemTexture = world.Nothing,
+        })
+        game.Fire("PLAYER_ENTERING_WORLD")
+        wearsShirt = true
+
+        game.Fire("UNIT_INVENTORY_CHANGED", "target")
+        local before = game.env.RaidManagerDB.characters["Icecrown|Arthasdk"].equipped.slots[4]
+        game.Fire("UNIT_INVENTORY_CHANGED", "player")
+
+        assert.is_true(before.empty)
+        assert.are.equal(45, game.env.RaidManagerDB.characters["Icecrown|Arthasdk"].equipped.slots[4].itemId)
     end)
 
     it("shows the snapshot's sections with /rm", function()
