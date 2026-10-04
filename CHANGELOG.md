@@ -380,6 +380,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- After the player confirms a code, the paired companions list now shows the computer without a refresh: the companion
+  creates its row when it collects its token at its next poll, a few seconds after the confirmation, so the list reloads
+  every 2 seconds, for up to 30 seconds, until the computer is listed (#527).
 - A running companion now notices that its computer was revoked: while paired it checks its token every 5 minutes and
   whenever the player opens it from the tray or starts it again, and a refusal shows "Uploads stopped" and forgets the
   token; a check that can't reach RaidManager keeps the pairing. Before, it checked only when its process started, and

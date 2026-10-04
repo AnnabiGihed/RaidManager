@@ -83,6 +83,24 @@ public sealed class PairedCompanionsTests : BunitContext
         notice.QuerySelector(".toast-title")!.TextContent.ShouldBe("BRYN-DESKTOP is paired");
     }
 
+    /// <summary>After a confirmation, the list reloads until the computer's companion has created its row (#526).</summary>
+    [Fact]
+    public void ConfirmedComputerAppearsOnceItsCompanionCollectsItsToken()
+    {
+        var time = new ArmedTimeProvider(DateTimeOffset.UtcNow);
+        Services.AddSingleton<TimeProvider>(time);
+
+        var page = RenderPage("/companion?paired=BRYN-DESKTOP");
+        SpinWait.SpinUntil(() => time.Armed > 0, TimeSpan.FromSeconds(10)).ShouldBeTrue();
+        page.FindAll("tbody tr").ShouldBeEmpty();
+        _api.Companions = [new PairedCompanion(Guid.NewGuid(), "BRYN-DESKTOP", time.GetUtcNow(), PairedCompanion.ActiveStatus, null)];
+        time.Advance(PairedCompanionsViewModel.ReloadInterval);
+
+        page.WaitForAssertion(() => page.FindAll("tbody tr").Count.ShouldBe(1));
+        page.Find("[data-testid=companions-notice] .toast-title").TextContent.ShouldBe("BRYN-DESKTOP is paired");
+        _api.Calls.ShouldBe(["list", "list"]);
+    }
+
     /// <summary>Revokes a companion after confirming, as boards 3 and 4.</summary>
     [Fact]
     public void RevokingAsksForConfirmationFirst()

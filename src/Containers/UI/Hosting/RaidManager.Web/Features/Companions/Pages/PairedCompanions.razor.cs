@@ -10,7 +10,7 @@ namespace RaidManager.Web.Features.Companions.Pages;
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-04<br/>
-/// Purpose: The Companion &amp; sync page (companion pairing boards 2 to 4 and 14 to 16, story #15). The companions load after the first interactive render, so prerendering doesn't call the API twice.
+/// Purpose: The Companion &amp; sync page (companion pairing boards 2 to 4 and 14 to 16, story #15). The companions load after the first interactive render, so prerendering doesn't call the API twice. Arriving from a confirmation, the page reloads every 2 seconds until the computer is listed, for up to 30 seconds (#526).
 /// </remarks>
 [Authorize]
 public sealed partial class PairedCompanions : IDisposable
@@ -44,6 +44,10 @@ public sealed partial class PairedCompanions : IDisposable
     /// <summary>Gets or sets the view model that lists and revokes the companions.</summary>
     [Inject]
     private PairedCompanionsViewModel ViewModel { get; set; } = default!;
+
+    /// <summary>Gets or sets the clock the reloads wait on.</summary>
+    [Inject]
+    private TimeProvider TimeProvider { get; set; } = default!;
     #endregion Properties
 
     #region Public Methods
@@ -72,6 +76,7 @@ public sealed partial class PairedCompanions : IDisposable
         {
             await LoadAsync();
             StateHasChanged();
+            await WaitForPairedComputerAsync();
         }
     }
     #endregion Overrides
@@ -84,6 +89,25 @@ public sealed partial class PairedCompanions : IDisposable
         var state = AuthenticationState is null ? null : await AuthenticationState;
         var userId = Guid.TryParse(state?.User.FindFirst(RaidManagerClaimTypes.UserId)?.Value, out var id) ? id : (Guid?)null;
         await ViewModel.LoadAsync(userId, _lifetime.Token);
+    }
+
+    /// <summary>Reloads the list until the computer just confirmed appears, the wait runs out, or the player leaves.</summary>
+    /// <returns>A task that completes when the waiting ends.</returns>
+    private async Task WaitForPairedComputerAsync()
+    {
+        try
+        {
+            while (ViewModel.IsWaitingFor(Paired))
+            {
+                await Task.Delay(PairedCompanionsViewModel.ReloadInterval, TimeProvider, _lifetime.Token);
+                await ViewModel.ReloadAsync(_lifetime.Token);
+                StateHasChanged();
+            }
+        }
+        catch (OperationCanceledException) when (_lifetime.IsCancellationRequested)
+        {
+            // The player left the page; nothing is left to show.
+        }
     }
 
     /// <summary>Asks for confirmation before revoking a companion.</summary>

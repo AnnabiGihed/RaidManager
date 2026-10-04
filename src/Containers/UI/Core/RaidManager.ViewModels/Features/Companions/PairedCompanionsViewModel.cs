@@ -6,7 +6,7 @@ namespace RaidManager.ViewModels.Features.Companions;
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-04<br/>
-/// Purpose: Holds the state and wording of the paired companions list (companion pairing boards 2 to 4 and 14 to 16, owner decisions on #513). Uploads come with #384, so the list says No upload yet.
+/// Purpose: Holds the state and wording of the paired companions list (companion pairing boards 2 to 4 and 14 to 16, owner decisions on #513). Uploads come with #384, so the list says No upload yet. After a confirmation the list waits for the companion to collect its token, which creates its row (owner decision on #526).
 /// </remarks>
 public sealed class PairedCompanionsViewModel
 {
@@ -22,6 +22,15 @@ public sealed class PairedCompanionsViewModel
     #endregion Constants
 
     #region Fields
+    /// <summary>Gets how long the page waits between two reloads while the confirmed computer is missing.</summary>
+    public static readonly TimeSpan ReloadInterval = TimeSpan.FromSeconds(2);
+
+    /// <summary>Stores how long the list waits for the confirmed computer (owner decision on #526).</summary>
+    private static readonly TimeSpan WaitLimit = TimeSpan.FromSeconds(30);
+
+    /// <summary>Stores how far back a pairing still counts as the one just confirmed, for clock differences.</summary>
+    private static readonly TimeSpan PairingSlack = TimeSpan.FromMinutes(1);
+
     /// <summary>Stores the companions API client.</summary>
     private readonly ICompanionsApiClient _api;
 
@@ -30,6 +39,9 @@ public sealed class PairedCompanionsViewModel
 
     /// <summary>Stores the signed-in player.</summary>
     private Guid _userId;
+
+    /// <summary>Stores when the list was first loaded, which starts the wait for a confirmed computer.</summary>
+    private DateTimeOffset? _firstLoadedAt;
     #endregion Fields
 
     #region Constructors
@@ -93,10 +105,50 @@ public sealed class PairedCompanionsViewModel
         {
             Companions = await _api.GetCompanionsAsync(id, cancellationToken);
             Status = CompanionPageStatus.Ready;
+            _firstLoadedAt ??= _timeProvider.GetUtcNow();
         }
         catch (Exception exception) when (CompanionApiFailures.IsApiFailure(exception, cancellationToken))
         {
             Status = CompanionPageStatus.Failed;
+        }
+    }
+
+    /// <summary>
+    /// Determines whether the list should reload to show a computer the player just confirmed: its companion creates
+    /// its row when it collects its token, a few seconds after the confirmation (#526).
+    /// </summary>
+    /// <param name="label">The confirmed computer's label, or <see langword="null"/> when the player didn't come from a confirmation.</param>
+    /// <returns><see langword="true"/> while the computer is missing and the 30-second wait hasn't run out.</returns>
+    public bool IsWaitingFor(string? label)
+    {
+        if (string.IsNullOrWhiteSpace(label) || Status != CompanionPageStatus.Ready || _firstLoadedAt is not { } loadedAt)
+        {
+            return false;
+        }
+
+        var listed = Companions.Any(companion => companion.IsActive
+                                                 && string.Equals(companion.Label, label, StringComparison.OrdinalIgnoreCase)
+                                                 && companion.PairedAtUtc >= loadedAt - PairingSlack);
+        return !listed && _timeProvider.GetUtcNow() < loadedAt + WaitLimit;
+    }
+
+    /// <summary>Reloads the companions without showing the loading state; a failed reload keeps the list shown.</summary>
+    /// <param name="cancellationToken">A token tied to the page's lifetime.</param>
+    /// <returns>A task that completes when the list is reloaded or the failure is ignored.</returns>
+    public async Task ReloadAsync(CancellationToken cancellationToken)
+    {
+        if (Status != CompanionPageStatus.Ready)
+        {
+            return;
+        }
+
+        try
+        {
+            Companions = await _api.GetCompanionsAsync(_userId, cancellationToken);
+        }
+        catch (Exception exception) when (CompanionApiFailures.IsApiFailure(exception, cancellationToken))
+        {
+            // The list shown stays right; the next reload, or the player's refresh, tries again.
         }
     }
 
