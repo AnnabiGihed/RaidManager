@@ -336,6 +336,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- The snapshot contract says an item string's gem fields hold gem enchantment ids, as the game writes them, not the
+  gems' item ids, and its fixtures use such ids; the owner's check in the game showed the difference (#500).
 - Each merge starts `ci`, `docs`, `docs-publish` and `deploy-dev` on `main` once: a later review run of a pull
   request already merged now stops, instead of dispatching them, and deploying dev, a second time (#494).
 - The description written for a Dependabot update says it changes the action's version, true for a tag such as

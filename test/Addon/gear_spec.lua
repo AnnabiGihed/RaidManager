@@ -20,13 +20,13 @@ describe("the gear capture", function()
     it("reads an item string with enchant, gems, a negative suffix and a unique id", function()
         local ns = load()
 
-        local item = ns.ParseItemLink(world.Link("item:50693:3817:40117:40118:0:0:-39:1074591232:80"))
+        local item = ns.ParseItemLink(world.Link("item:50693:3817:3519:3530:0:0:-39:1074591232:80"))
 
         assert.are.same({
-            itemString = "item:50693:3817:40117:40118:0:0:-39:1074591232:80",
+            itemString = "item:50693:3817:3519:3530:0:0:-39:1074591232:80",
             itemId = 50693,
             enchantId = 3817,
-            gems = { 40117, 40118, 0, 0 },
+            gems = { 3519, 3530, 0, 0 },
             suffixId = -39,
             uniqueId = 1074591232,
         }, item)
