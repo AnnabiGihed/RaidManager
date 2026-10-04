@@ -66,6 +66,8 @@ date on the Project, both inclusive) follows the blocked-by order; the item's ow
 | #474 validate misses the Closes line of a description saved with `\r\n` line endings | Bug | 1 | 3 Oct | #475 (Development) | None |
 | #476 The generated Dependabot description mentions a pinned commit id for tag updates | Bug | 1 | 3 Oct | #477 (Development) | None |
 | #484 Keep the merge-order and branch-update lessons in the skills | Improvement | 1 | 3 Oct | #485 (Business Analysis) | None |
+| #491 Deploy to dev only when a merge changes what dev runs | Improvement | 3 | 4 to 5 Oct | #492 (Deployment) | None |
+| #493 Every merge dispatches the main workflows twice | Bug | 1 | 4 Oct | #494 (Deployment) | None |
 
 16 October is kept as a buffer.
 
@@ -112,6 +114,7 @@ and its task #388 wait for #409 and #411.
 | 2026-10-03 | Bugs #474 with #475 and #476 with #477 added at P0 on the owner's decision recorded on them: `validate` failed on a description saved in the browser, and the generated wording was wrong for tag updates. |
 | 2026-10-03 | #484 with #485 added on the owner's decision recorded on #484: the merge-order and branch-update lessons in the skills. |
 | 2026-10-03 | #383 split on the owner's decision recorded on #16: #383 keeps the addon, its tools and identity; #487 (professions and gear), #488 (loadouts) and #489 (raid saves) follow it. #38 started early, on 3 October. |
+| 2026-10-04 | #491 with #492 and bug #493 with #494 added on the owner's decisions recorded on them: deploy dev only when a merge changes what it runs, and dispatch the main workflows once per merge. |
 
 ## Outcome
 

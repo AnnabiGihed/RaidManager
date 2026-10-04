@@ -4,6 +4,11 @@ name: deploy-dev
 on:
   # The review workflow starts it on main after merging, because its workflow-token merge triggers no push.
   workflow_dispatch:
+    inputs:
+      trigger:
+        description: 'Why it runs: "merge" deploys only when a deployed file changed (#491); a manual run always deploys.'
+        required: false
+        default: manual
 
 permissions:
   contents: read
@@ -13,8 +18,31 @@ concurrency:
   cancel-in-progress: false
 
 jobs:
-  deploy:
+  # A merge that changes nothing dev runs skips the build and the deployment (owner decisions on #491).
+  changes:
     if: github.ref == 'refs/heads/main'
+    runs-on: ubuntu-latest
+    timeout-minutes: 5
+    permissions:
+      contents: read
+      deployments: read
+    outputs:
+      deploy: ${{ steps.decide.outputs.deploy }}
+    steps:
+      - uses: actions/checkout@v7
+        with:
+          fetch-depth: 0
+          persist-credentials: false
+      - name: Compare with the last successful dev deployment
+        id: decide
+        env:
+          GH_TOKEN: ${{ github.token }}
+          TRIGGER: ${{ inputs.trigger }}
+        run: python scripts/deploy_changes.py >> "$GITHUB_OUTPUT"
+
+  deploy:
+    needs: changes
+    if: github.ref == 'refs/heads/main' && needs.changes.outputs.deploy == 'true'
     runs-on: ubuntu-latest
     timeout-minutes: 30
     # Only main may use the dev environment's secrets (its deployment rule).
@@ -133,10 +161,14 @@ jobs:
         run: ssh-agent -k > /dev/null 2>&1 || true
 
   # Marks the delivered items and releases deployed:dev, or deploy-failed:dev on a failure (#392). A job of its own,
-  # so the token that writes issues never shares a job with the dev secrets.
+  # so the token that writes issues never shares a job with the dev secrets. A skipped deployment is recorded as a
+  # success: dev already runs the same images (owner decision on #491, specification section 22, A10).
   record:
-    needs: deploy
-    if: always() && (needs.deploy.result == 'success' || needs.deploy.result == 'failure')
+    needs: [changes, deploy]
+    if: >-
+      always() && needs.changes.result == 'success' &&
+      (needs.deploy.result == 'success' || needs.deploy.result == 'failure' ||
+        (needs.deploy.result == 'skipped' && needs.changes.outputs.deploy == 'false'))
     runs-on: ubuntu-latest
     timeout-minutes: 15
     permissions:
@@ -150,7 +182,7 @@ jobs:
       - name: Record the deployment on the items
         env:
           GH_TOKEN: ${{ github.token }}
-          OUTCOME: ${{ needs.deploy.result }}
+          OUTCOME: ${{ needs.deploy.result == 'skipped' && 'success' || needs.deploy.result }}
           RUN_URL: ${{ github.server_url }}/${{ github.repository }}/actions/runs/${{ github.run_id }}
         run: >-
           python scripts/record_deployment.py --environment dev --outcome "$OUTCOME" --commit "$GITHUB_SHA"

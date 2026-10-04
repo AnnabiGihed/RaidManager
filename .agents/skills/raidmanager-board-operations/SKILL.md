@@ -133,6 +133,9 @@ The deployment workflows' `record` job sets `deployed:dev`, `deployed:test`, `de
 - To check what a deployment would change, run the script with `--dry-run` from a worktree checked out at the
   deployed commit (`git worktree add <folder> <commit>`), with the full commit id; it reads with your `gh` login and
   writes nothing.
+- A merge that changes no deployed file (documentation, skills, tests, scripts, other workflows) skips the build
+  and deployment, and its `record` job still labels the items `deployed:dev` (#491, A10). Read "the dev deployment
+  of a merge succeeded" as both jobs of `deploy-dev` succeeding or `deploy` being skipped with a successful `record`.
 - A task closed without a pull request (evidence only) gets `deployed:<environment>` at the next deployment after it
   closes; a parent gets it when all its completed children have it, so it can follow its close by one deployment.
 - A release's `Deployed to production` line is evidence for its record, not the Released state: that still needs the

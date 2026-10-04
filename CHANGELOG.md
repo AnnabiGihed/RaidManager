@@ -239,6 +239,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- A merge deploys dev only when it changes a file that can affect the deployment: `src/`, `deploy/`, the build files
+  or `deploy-dev.yml`, compared with the last successful dev deployment. Otherwise `deploy-dev` skips the build and
+  the deployment and still marks the delivered items `deployed:dev`; a run started by hand always deploys. The
+  specification records it as amendment A10 (#492).
 - The workflow skill hands over one pull request at a time or states the merge order, and brings a branch up to date
   by merging `main` instead of a forced push; the board skill lists the out-of-date pull request and the missing closing
   link of a workflow-written description among its pitfalls (#485).
