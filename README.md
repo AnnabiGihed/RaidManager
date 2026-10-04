@@ -61,7 +61,8 @@ dotnet test RaidManager.sln --no-build
 ```
 
 The tests cover the Domain, Application, Infrastructure, view model and website projects, the AppHost's application
-model, and, against a PostgreSQL container, the Entity Framework Core persistence and the API. The end-to-end test
+model, the desktop companion (its window tests run headless), and, against a PostgreSQL container, the Entity
+Framework Core persistence and the API. The end-to-end test
 project is still a placeholder, and the Discord bot has no tests yet.
 
 To measure test coverage the way CI does, run the tests with the coverage settings and read the summary:
@@ -88,6 +89,37 @@ window only shows logs. Wait until `postgres`, `api`, and `web` show **Running**
 PostgreSQL image, and the API then creates the database schema. The website is at
 `https://localhost:55365`, and the interactive API reference is at `https://localhost:55366/scalar` (linked as
 "API reference" in the dashboard).
+
+### Run the desktop companion
+
+The desktop companion is a Windows application in Avalonia
+([ADR-0032](docs/adr/0032-build-the-windows-companion-in-avalonia.md)). Avalonia's build package sends anonymous build
+telemetry unless `AVALONIA_TELEMETRY_OPTOUT` is set, and RaidManager opts out. Set it once as a Windows user variable,
+then open a new terminal:
+
+```powershell
+[Environment]::SetEnvironmentVariable("AVALONIA_TELEMETRY_OPTOUT", "1", "User")
+```
+
+Start the AppHost first, then the companion. A local run uses the `Development` addresses (the local API and website):
+
+```bash
+dotnet run --project src/Containers/UI/Hosting/RaidManager.Companion
+```
+
+The companion shows a pairing code and opens the website's pairing page. Closing its window keeps it in the
+notification area; Quit in its tray menu ends it. It keeps its device token, encrypted for your Windows user, in
+`%LOCALAPPDATA%\RaidManager\companion.dat`.
+
+To build the single executable players get, for the `Dev`, `Test` or `Production` addresses:
+
+```bash
+dotnet publish src/Containers/UI/Hosting/RaidManager.Companion -p:PublishProfile=win-x64 -p:CompanionEnvironment=Dev
+```
+
+The executable and its settings files land in `src/Containers/UI/Hosting/RaidManager.Companion/bin/publish/win-x64`.
+CI builds the `Dev` one on every pull request as the `raidmanager-companion-win-x64-dev` artifact. It isn't signed
+yet, so Windows SmartScreen warns on its first start.
 
 ### Sign in with Discord locally
 

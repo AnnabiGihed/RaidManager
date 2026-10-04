@@ -129,6 +129,7 @@ and its task #388 wait for #409 and #411.
 | 2026-10-04 | #517 with #518 added under the standing approval on #510: the companion session's lessons in the skills. |
 | 2026-10-04 | #514 started with ADR-0032 (Proposed, approved by the owner): an Avalonia companion instead of WPF, so its tests run on Linux CI; a tray-menu board, close to tray and a self-contained executable, recorded on #514. |
 | 2026-10-04 | #520 with #521 added under a reopened #259 on the owner's decision recorded on them: the Avalonia skills before #514 writes code, which now waits for #521; Avalonia build telemetry turned off everywhere. |
+| 2026-10-04 | #514 widened on the owner's decisions recorded on it: boards 18 (tray menu), 19 (getting a code) and 20 (code request failed) added to the companion pairing mockup and confirmed; "Choose folders" hidden from state 6 until #384. |
 
 ## Outcome
 

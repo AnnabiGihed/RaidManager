@@ -76,6 +76,7 @@ BUTTON_STYLES = {
     "primary": (ACCENT, None, ON_ACCENT),
     "secondary": (RAISED, DIVIDER, TEXT),
     "danger": (P["Status/danger"], None, P["Status/on danger"]),
+    "disabled": (CARD, DIVIDER, P["Text/muted"]),
 }
 
 
@@ -225,7 +226,8 @@ def card(x: float, y: float, w: float, h: float, accent: str | None = None, fill
 
 def button(name: str, x: float, y: float, label: str, style: str = "primary", width: float | None = None,
            on_click: Click | None = None) -> Group:
-    """A 40 px button with an 8 px radius: `primary` (teal), `secondary` (raised, outlined) or `danger`."""
+    """A 40 px button with an 8 px radius: `primary` (teal), `secondary` (raised, outlined), `danger`, or `disabled`
+    (muted label on the card colour, for an action not available yet)."""
     fill, border, colour = BUTTON_STYLES[style]
     label_layer = text("Label", x, y + 25, label, 13, 700, colour)
     width = width or round(text_width(label_layer) + 40)

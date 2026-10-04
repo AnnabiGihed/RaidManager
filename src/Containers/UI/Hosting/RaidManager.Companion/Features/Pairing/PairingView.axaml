@@ -1,0 +1,91 @@
+<!-- The pairing states of the companion pairing mockup: 5 (waiting) and 19 (getting a code) share one layout, then 6
+     (paired), 7 (code expired), 8 (pairing revoked) and 20 (couldn't get a code). State 6 hides "Choose folders" and
+     its line until #384 (owner decision on #514). -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:pairing="using:RaidManager.Companion.Client.Features.Pairing"
+             xmlns:shared="using:RaidManager.Companion.Features.Shared"
+             x:Class="RaidManager.Companion.Features.Pairing.PairingView"
+             x:DataType="pairing:PairingViewModel">
+  <Panel>
+    <StackPanel x:Name="CodePanel" IsVisible="{Binding IsShowingCode}" Margin="32,32,32,0">
+      <TextBlock Classes="heading" Text="Pair with RaidManager" />
+      <TextBlock Classes="intro" Margin="0,10,0,0" Text="Open the website, sign in with Discord, and&#10;confirm this code." />
+      <Border Classes="card" Height="124" Margin="0,20,0,0">
+        <StackPanel Margin="24,20,24,0">
+          <TextBlock Classes="eyebrow" Text="PAIRING CODE" />
+          <TextBlock x:Name="CodeText" Classes="code" Margin="0,10,0,0" IsVisible="{Binding IsWaiting}"
+                     Text="{Binding PairingCode}" AutomationProperties.Name="Pairing code" />
+          <TextBlock Classes="status" HorizontalAlignment="Center" Margin="0,2,0,0" IsVisible="{Binding IsWaiting}"
+                     Text="{Binding ExpiryText}" />
+          <TextBlock x:Name="GettingCodeText" Classes="heading" HorizontalAlignment="Center" Margin="0,22,0,0"
+                     Foreground="{StaticResource TextSecondaryBrush}" IsVisible="{Binding IsGettingCode}"
+                     Text="Getting a code…" />
+        </StackPanel>
+      </Border>
+      <StackPanel Orientation="Horizontal" Spacing="8" Margin="0,36,0,0">
+        <Panel Width="10" Height="10" VerticalAlignment="Center">
+          <Ellipse Fill="{StaticResource AccentAmberBrush}" IsVisible="{Binding IsWaiting}" />
+          <Ellipse Fill="{StaticResource TextMutedBrush}" IsVisible="{Binding IsGettingCode}" />
+        </Panel>
+        <TextBlock Classes="status" IsVisible="{Binding IsWaiting}" Text="Waiting for confirmation on the website" />
+        <TextBlock Classes="status" IsVisible="{Binding IsGettingCode}" Text="Asking RaidManager for a code" />
+      </StackPanel>
+      <Button x:Name="OpenWebsiteButton" Classes="primary" Margin="0,30,0,0" Content="Open the website"
+              IsEnabled="{Binding IsWaiting}" Command="{Binding OpenWebsiteCommand}" />
+      <Button x:Name="NewCodeButton" Classes="secondary" Margin="0,12,0,0" Content="Get a new code"
+              IsEnabled="{Binding IsWaiting}" Command="{Binding RequestCodeCommand}" />
+    </StackPanel>
+
+    <StackPanel x:Name="PairedPanel" IsVisible="{Binding IsPaired}" Margin="32,72,32,0">
+      <Panel Width="72" Height="72" HorizontalAlignment="Center">
+        <Ellipse Fill="{StaticResource StatusSuccessBackgroundBrush}" />
+        <TextBlock Text="✓" FontSize="{StaticResource FontSizeMark}" FontWeight="ExtraBold"
+                   Foreground="{StaticResource BrandAccentBrush}" HorizontalAlignment="Center" VerticalAlignment="Center" />
+      </Panel>
+      <TextBlock x:Name="PairedHeading" Classes="heading" HorizontalAlignment="Center" Margin="0,34,0,0"
+                 Text="{Binding PairedHeading}" />
+      <TextBlock Classes="intro" HorizontalAlignment="Center" Margin="0,10,0,0"
+                 Text="This computer can now upload your character data." />
+      <TextBlock Classes="note" HorizontalAlignment="Center" Margin="0,117,0,0"
+                 Text="You can revoke it anytime on the website, under Companion &amp; sync." />
+    </StackPanel>
+
+    <StackPanel x:Name="ExpiredPanel" IsVisible="{Binding IsExpired}" Margin="32,32,32,0">
+      <TextBlock Classes="heading" Text="Pair with RaidManager" />
+      <TextBlock Classes="intro" Margin="0,10,0,0" Text="This code can't be confirmed anymore." />
+      <Border Classes="card" Height="124" Margin="0,20,0,0">
+        <StackPanel Margin="24,20,24,0">
+          <TextBlock Classes="eyebrow" Text="PAIRING CODE" />
+          <TextBlock Classes="code expired" Margin="0,10,0,0" Text="{Binding PairingCode}"
+                     AutomationProperties.Name="Expired pairing code" />
+          <TextBlock Classes="note" HorizontalAlignment="Center" Margin="0,2,0,0" FontSize="{StaticResource FontSizeLabel}"
+                     Text="Expired" />
+        </StackPanel>
+      </Border>
+      <shared:Notice x:Name="ExpiredNotice" Margin="0,24,0,0" Title="This code expired"
+                     Message="Codes last 10 minutes. Get a new one to try again." />
+      <Button x:Name="ExpiredNewCodeButton" Classes="primary" Margin="0,24,0,0" Content="Get a new code"
+              Command="{Binding RequestCodeCommand}" />
+    </StackPanel>
+
+    <StackPanel x:Name="RevokedPanel" IsVisible="{Binding IsRevoked}" Margin="32,32,32,0">
+      <TextBlock Classes="heading" Text="Uploads stopped" />
+      <TextBlock x:Name="RevokedMessage" Classes="intro" Margin="0,10,0,0" Text="{Binding RevokedMessage}" />
+      <shared:Notice Classes="danger" Margin="0,20,0,0" Title="This companion was revoked"
+                     Message="It was revoked on the website, so it can't upload." />
+      <Button x:Name="PairAgainButton" Classes="primary" Margin="0,24,0,0" Content="Pair again"
+              Command="{Binding RequestCodeCommand}" />
+      <TextBlock Classes="note" Margin="0,28,0,0" Text="Data it already uploaded stays in RaidManager." />
+    </StackPanel>
+
+    <StackPanel x:Name="CodeRequestFailedPanel" IsVisible="{Binding IsCodeRequestFailed}" Margin="32,32,32,0">
+      <TextBlock Classes="heading" Text="Pair with RaidManager" />
+      <TextBlock Classes="intro" Margin="0,10,0,0" Text="The companion needs a code from RaidManager first." />
+      <shared:Notice Classes="danger" Margin="0,20,0,0" Title="We couldn't reach RaidManager"
+                     Message="Check your connection, then try again." />
+      <Button x:Name="TryAgainButton" Classes="primary" Margin="0,24,0,0" Content="Try again"
+              Command="{Binding RequestCodeCommand}" />
+    </StackPanel>
+  </Panel>
+</UserControl>

@@ -23,6 +23,7 @@ Caddy
 Caddyfile
 changelog
 CLI
+ClickOnce
 codebase
 Codecov
 config
@@ -99,6 +100,7 @@ Mockup
 mockup
 Mockups
 mockups
+MSIX
 multi
 MVVM
 Noto
@@ -149,6 +151,7 @@ SHA
 SignalR
 signup
 signups
+SmartScreen
 SonarCloud
 SQL
 SQLite
@@ -171,6 +174,7 @@ UC
 UI
 UML
 unestimated
+Uno
 unpair
 URL
 UTC
@@ -188,7 +192,9 @@ Warcraft
 Warmane
 WCAG
 WebAssembly
+WinUI
 workflow
 WotLK
 WPF
+XAML
 xUnit

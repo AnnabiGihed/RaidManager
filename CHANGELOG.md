@@ -9,6 +9,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- The Windows desktop companion, in Avalonia (ADR-0032, now Accepted): it asks RaidManager for a pairing code, shows it
+  with a countdown, opens the website's pairing page with it, and polls for its device token every five seconds or more,
+  waiting five seconds longer when asked to slow down or when RaidManager doesn't answer. Once the player confirms the
+  code it keeps the token encrypted for the Windows user (DPAPI) in `%LOCALAPPDATA%\RaidManager\companion.dat`, and at
+  each start it checks the token, forgetting it only when RaidManager revokes or refuses it. Its window shows the six
+  states of the mockup, including two new boards for getting a code and for a code request that failed, and a tray icon
+  (new board 18) keeps it running when the window closes. CI builds the `Dev` executable as an artifact, and every build
+  opts out of Avalonia's telemetry (#514).
 - Two skills for the desktop companion in Avalonia (ADR-0032): `avalonia-desktop` says how to create, organize and write
   it (the two projects, feature folders, MVVM without a framework, compiled bindings, the theme and embedded Open Sans,
   the generic host, the tray and close-to-tray, the UI thread, DPAPI behind a seam, HTTP, the self-contained publish and

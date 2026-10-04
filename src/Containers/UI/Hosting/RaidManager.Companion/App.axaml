@@ -1,0 +1,33 @@
+<!-- The companion application: the dark Fluent theme with RaidManager's palette and styles, and the tray icon of board
+     18 (a click opens the window; the menu has Open and Quit). -->
+<Application xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:tray="using:RaidManager.Companion.Client.Features.Tray"
+             x:Class="RaidManager.Companion.App"
+             x:DataType="tray:TrayViewModel"
+             RequestedThemeVariant="Dark">
+  <Application.Resources>
+    <ResourceDictionary>
+      <ResourceDictionary.MergedDictionaries>
+        <ResourceInclude Source="/Theme/Palette.axaml" />
+      </ResourceDictionary.MergedDictionaries>
+    </ResourceDictionary>
+  </Application.Resources>
+  <Application.Styles>
+    <FluentTheme />
+    <StyleInclude Source="/Theme/Controls.axaml" />
+  </Application.Styles>
+  <TrayIcon.Icons>
+    <TrayIcons>
+      <TrayIcon Icon="/Assets/raidmanager.ico" ToolTipText="RaidManager Companion" Command="{Binding OpenCommand}">
+        <TrayIcon.Menu>
+          <NativeMenu>
+            <NativeMenuItem Header="Open" Command="{Binding OpenCommand}" />
+            <NativeMenuItemSeparator />
+            <NativeMenuItem Header="Quit" Command="{Binding QuitCommand}" />
+          </NativeMenu>
+        </TrayIcon.Menu>
+      </TrayIcon>
+    </TrayIcons>
+  </TrayIcon.Icons>
+</Application>

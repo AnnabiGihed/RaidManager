@@ -1,0 +1,15 @@
+<!-- The companion's only window, 480 x 600 with its title bar, as on the companion boards of the mockup. -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:pairing="using:RaidManager.Companion.Client.Features.Pairing"
+        xmlns:pairingViews="using:RaidManager.Companion.Features.Pairing"
+        x:Class="RaidManager.Companion.Features.Shell.MainWindow"
+        x:DataType="pairing:PairingViewModel"
+        Title="RaidManager Companion"
+        Icon="/Assets/raidmanager.ico"
+        Width="480"
+        Height="556"
+        CanResize="False"
+        WindowStartupLocation="CenterScreen">
+  <pairingViews:PairingView />
+</Window>

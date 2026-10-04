@@ -1,0 +1,41 @@
+<Project Sdk="Microsoft.NET.Sdk">
+  <PropertyGroup>
+    <OutputType>WinExe</OutputType>
+    <AssemblyName>RaidManager.Companion</AssemblyName>
+    <ApplicationManifest>app.manifest</ApplicationManifest>
+    <ApplicationIcon>Assets/raidmanager.ico</ApplicationIcon>
+    <IsPackable>false</IsPackable>
+    <GeneratePackageOnBuild>false</GeneratePackageOnBuild>
+    <PackageId>RaidManager.Companion</PackageId>
+    <Version>1.0.0</Version>
+    <PackageTags>companion;desktop;avalonia;raid-management</PackageTags>
+    <Description>The RaidManager desktop companion: pairs with the player's account and syncs character data.</Description>
+    <!-- The environment whose addresses the companion uses (ADR-0032); a publish sets it, local runs use Development. -->
+    <CompanionEnvironment Condition="'$(CompanionEnvironment)' == ''">Development</CompanionEnvironment>
+  </PropertyGroup>
+  <ItemGroup>
+    <AssemblyMetadata Include="CompanionEnvironment" Value="$(CompanionEnvironment)" />
+    <InternalsVisibleTo Include="RaidManager.Companion.Tests" />
+  </ItemGroup>
+  <ItemGroup>
+    <AvaloniaResource Include="Assets/**" Exclude="Assets/Fonts/OFL.txt" />
+    <None Include="Assets/Fonts/OFL.txt" CopyToOutputDirectory="PreserveNewest" />
+    <Content Include="appsettings*.json" CopyToOutputDirectory="PreserveNewest" ExcludeFromSingleFile="true" />
+  </ItemGroup>
+  <ItemGroup>
+    <PackageReference Include="Avalonia" />
+    <PackageReference Include="Avalonia.Desktop" />
+    <PackageReference Include="Avalonia.Themes.Fluent" />
+    <PackageReference Include="Microsoft.Extensions.Hosting" />
+    <PackageReference Include="System.Security.Cryptography.ProtectedData" />
+    <ProjectReference Include="../../Core/RaidManager.Companion.Client/RaidManager.Companion.Client.csproj" />
+  </ItemGroup>
+  <!-- Keeps the native SkiaSharp and HarfBuzz symbols and the XML documentation out of the published folder
+       (avalonia-desktop §2); DebugType=none alone doesn't. -->
+  <Target Name="PublishOnlyTheExecutable" AfterTargets="ComputeResolvedFilesToPublishList">
+    <ItemGroup>
+      <ResolvedFileToPublish Remove="@(ResolvedFileToPublish)"
+                             Condition="'%(Extension)' == '.pdb' Or '%(Extension)' == '.xml'" />
+    </ItemGroup>
+  </Target>
+</Project>
