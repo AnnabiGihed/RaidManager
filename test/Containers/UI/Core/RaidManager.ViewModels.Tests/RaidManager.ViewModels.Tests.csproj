@@ -11,6 +11,7 @@
   <ItemGroup>
     <ProjectReference Include="../../../../../src/Containers/UI/Core/RaidManager.ViewModels/RaidManager.ViewModels.csproj" />
     <PackageReference Include="Microsoft.NET.Test.Sdk" />
+    <PackageReference Include="Microsoft.Extensions.TimeProvider.Testing" />
     <PackageReference Include="xunit" />
     <PackageReference Include="Shouldly" />
     <PackageReference Include="xunit.runner.visualstudio"><PrivateAssets>all</PrivateAssets></PackageReference>
