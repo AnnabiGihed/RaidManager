@@ -13,7 +13,7 @@ describe("the snapshot writer", function()
     it("prepares an empty saved table with the schema and addon versions", function()
         local db = ns.InitializeDatabase(nil)
 
-        assert.are.same({ schemaVersion = 1, addonVersion = "0.2.0", characters = {} }, db)
+        assert.are.same({ schemaVersion = 1, addonVersion = "0.3.0", characters = {} }, db)
     end)
 
     it("keeps the characters already saved", function()

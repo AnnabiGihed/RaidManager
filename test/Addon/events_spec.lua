@@ -17,6 +17,8 @@ describe("the loaded addon", function()
             "Capture/Identity.lua",
             "Capture/Professions.lua",
             "Capture/Gear.lua",
+            "Capture/EquipmentSets.lua",
+            "Capture/Talents.lua",
             "Character.lua",
             "Events.lua",
         }, addon.TocFiles())
@@ -99,6 +101,47 @@ describe("the loaded addon", function()
 
         assert.is_true(before.empty)
         assert.are.equal(45, game.env.RaidManagerDB.characters["Icecrown|Arthasdk"].equipped.slots[4].itemId)
+    end)
+
+    it("captures the talents again when a glyph, the talents or the active group change", function()
+        local active = 1
+        local game = loaded({
+            GetActiveTalentGroup = function()
+                return active
+            end,
+        })
+        game.Fire("PLAYER_ENTERING_WORLD")
+        local character = game.env.RaidManagerDB.characters["Icecrown|Arthasdk"]
+
+        for _, event in ipairs({ "PLAYER_TALENT_UPDATE", "GLYPH_ADDED", "GLYPH_REMOVED", "GLYPH_UPDATED" }) do
+            active = active == 1 and 2 or 1
+            game.Fire(event)
+            assert.are.equal(active, character.talents.activeGroup, event)
+        end
+        active = 1
+        game.Fire("ACTIVE_TALENT_GROUP_CHANGED", 1, 2)
+
+        assert.are.equal(1, character.talents.activeGroup)
+    end)
+
+    it("captures the equipment sets again when they change or the player's gear changes", function()
+        local count = 0
+        local game = loaded({
+            GetNumEquipmentSets = function()
+                return count
+            end,
+        })
+        game.Fire("PLAYER_ENTERING_WORLD")
+        local character = game.env.RaidManagerDB.characters["Icecrown|Arthasdk"]
+        count = 1
+
+        game.Fire("EQUIPMENT_SETS_CHANGED")
+        local afterChange = #character.equipmentSets.items
+        count = 2
+        game.Fire("UNIT_INVENTORY_CHANGED", "player")
+
+        assert.are.equal(1, afterChange)
+        assert.are.equal(2, #character.equipmentSets.items)
     end)
 
     it("shows the snapshot's sections with /rm", function()

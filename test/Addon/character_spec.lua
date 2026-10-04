@@ -4,7 +4,7 @@ local addon = dofile("test/Addon/helpers/addon.lua")
 local contract = dofile("test/Addon/helpers/contract.lua")
 local world = dofile("test/Addon/helpers/world.lua")
 
-local NOT_YET = { "equipmentSets", "talents", "lockouts" }
+local NOT_YET = { "lockouts" }
 
 describe("capturing the character", function()
     local fixture = addon.FixtureCharacter()
@@ -22,6 +22,8 @@ describe("capturing the character", function()
 
         local fields = { "realm", "name", "capturedAt", "client", "serverTime", "identity", "guild", "professions" }
         fields[#fields + 1] = "equipped"
+        fields[#fields + 1] = "equipmentSets"
+        fields[#fields + 1] = "talents"
         for _, field in ipairs(fields) do
             assert.are.same(fixture[field], character[field], field)
         end
@@ -95,7 +97,7 @@ describe("capturing the character", function()
         local ns, api, db = load()
         ns.CaptureCharacter(api, db, world.NOW)
 
-        assert.is_nil(ns.CaptureAgain(api, db, world.NOW, "talents"))
+        assert.is_nil(ns.CaptureAgain(api, db, world.NOW, "lockouts"))
     end)
 
     it("describes each section's status for the slash command", function()
@@ -107,6 +109,7 @@ describe("capturing the character", function()
         assert.are.equal("Icecrown|Arthasdk", lines[1])
         assert.are.equal("identity: observed", lines[2])
         assert.are.equal("professions: observed", lines[4])
-        assert.are.equal("equipmentSets: unavailable (not-captured)", lines[6])
+        assert.are.equal("equipmentSets: observed", lines[6])
+        assert.are.equal("lockouts: unavailable (not-captured)", lines[8])
     end)
 end)

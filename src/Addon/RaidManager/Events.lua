@@ -19,18 +19,40 @@ end)
 
 ns.On("PLAYER_ENTERING_WORLD", capture)
 
-local function captureAgainFor(section)
+local function captureAgain(sections)
+    local now = ns.api.time()
+    for _, section in ipairs(sections) do
+        ns.CaptureAgain(ns.api, RaidManagerDB, now, section)
+    end
+end
+
+-- For events about a unit: only the player's own changes count.
+local function forPlayer(sections)
     return function(unit)
         if unit == nil or unit == "player" then
-            ns.CaptureAgain(ns.api, RaidManagerDB, ns.api.time(), section)
+            captureAgain(sections)
         end
     end
 end
 
+-- For events without a unit.
+local function always(sections)
+    return function()
+        captureAgain(sections)
+    end
+end
+
 -- Sections the game finishes loading, or that change, after the character entered the world.
-ns.On("PLAYER_GUILD_UPDATE", captureAgainFor("guild"))
-ns.On("SKILL_LINES_CHANGED", captureAgainFor("professions"))
-ns.On("UNIT_INVENTORY_CHANGED", captureAgainFor("equipped"))
+ns.On("PLAYER_GUILD_UPDATE", forPlayer({ "guild" }))
+ns.On("SKILL_LINES_CHANGED", always({ "professions" }))
+-- A set's items move between the character and the bags when the gear changes.
+ns.On("UNIT_INVENTORY_CHANGED", forPlayer({ "equipped", "equipmentSets" }))
+ns.On("EQUIPMENT_SETS_CHANGED", always({ "equipmentSets" }))
+ns.On("PLAYER_TALENT_UPDATE", always({ "talents" }))
+ns.On("ACTIVE_TALENT_GROUP_CHANGED", always({ "talents" }))
+ns.On("GLYPH_ADDED", always({ "talents" }))
+ns.On("GLYPH_REMOVED", always({ "talents" }))
+ns.On("GLYPH_UPDATED", always({ "talents" }))
 
 --- Handles /rm and /raidmanager: "sync" captures again, anything else shows what the snapshot holds.
 ---@param message string the text after the command, trimmed

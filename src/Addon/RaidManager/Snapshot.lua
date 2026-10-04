@@ -3,7 +3,7 @@
 local _, ns = ...
 
 ns.SCHEMA_VERSION = 1
-ns.ADDON_VERSION = "0.2.0"
+ns.ADDON_VERSION = "0.3.0"
 
 -- Every character snapshot has these sections; one is never left out to mean "none".
 ns.SECTIONS = { "identity", "guild", "professions", "equipped", "equipmentSets", "talents", "lockouts" }
