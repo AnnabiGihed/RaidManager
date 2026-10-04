@@ -72,6 +72,9 @@ anything with no business rule to express. If you can't write the scenario in th
   `[ExcludeFromCodeCoverage]` to pass the gate; the attribute is only for code that genuinely can't run under test,
   with a comment saying why.
 
+## Avalonia (desktop companion)
+- The companion's tests follow `avalonia-tests`: its client tests use this skill's stack (xUnit, Reqnroll for business rules, Shouldly, Moq); its host tests run views headless with `Avalonia.Headless.XUnit` on xUnit v3 (ADR-0032).
+
 ## bUnit (Blazor components)
 - Render with a bUnit `TestContext`; assert on markup via `Find`/`FindAll`, not component fields.
 - Trigger events through markup; assert the resulting render or the `EventCallback`.

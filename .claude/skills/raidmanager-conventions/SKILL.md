@@ -31,6 +31,9 @@ accepted ADRs and enforced configuration win where they differ. Precedence, high
   wraps it; use the non-auth helpers only.
 - **Character sync goes through the addon and a desktop companion** (ADR-0002). Addon work follows
   `wow-addon-335a-lua`; the companion uploads to the API and never stores secrets in addon files.
+- **The desktop companion is an Avalonia application** (ADR-0032, owner decision on #514), not WPF, MAUI or Blazor
+  Hybrid: `avalonia-desktop` and `avalonia-tests` apply to it, and the `blazor-components` and `pivot-auth-maui`
+  rules don't. Its host tests use xUnit v3, the rest of the repository xUnit v2.
 - **Messaging:** RaidManager has no broker today. RabbitMQ and the outbox transport are not part of the mandatory
   frame here; introducing a broker, an outbox drain mode or a second service needs its own ADR.
 
@@ -46,6 +49,7 @@ accepted ADRs and enforced configuration win where they differ. Precedence, high
 | Keep Mermaid to the Azure DevOps subset | Still keep to that subset: it renders everywhere | `docs-diagrams-as-code` |
 | Swashbuckle via Pivot's Keycloak Swagger setup | `Microsoft.AspNetCore.OpenApi` (`AddOpenApi`), one generator only | `RaidManager.ApiService/Program.cs` |
 | Test projects `{Project}.UnitTests`, mocks in `{Solution}.Shared.UnitTests.Mocks` | `{Project}.Tests` mirrored under `test/`; ask where shared mock factories live when the first one is needed | solution layout |
+| xUnit v2 for every test project (`dotnet-unit-tests`) | Desktop companion host tests use `xunit.v3` with `Avalonia.Headless.XUnit`; every other test project stays on `xunit` v2 | `avalonia-tests` §1, ADR-0032 |
 
 ## 3. Organization references that do not exist here
 
