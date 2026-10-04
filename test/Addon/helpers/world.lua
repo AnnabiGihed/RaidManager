@@ -114,6 +114,40 @@ function M.TalentFrame(talents)
     }
 end
 
+--- The saved-instance functions that answer with a lockouts section; an entry false stands for one not read.
+---@param lockouts table an observed lockouts section, or a list of entries and false
+---@return table
+function M.SavedInstances(lockouts)
+    local entries = lockouts.items or lockouts
+    local function flag(value)
+        return value and 1 or nil
+    end
+    local world = { requests = 0 }
+    world.RequestRaidInfo = function()
+        world.requests = world.requests + 1
+    end
+    world.GetNumSavedInstances = function()
+        return #entries
+    end
+    world.GetSavedInstanceInfo = function(index)
+        local entry = entries[index]
+        if not entry then
+            return nil
+        end
+        return entry.name,
+            entry.lockoutId,
+            entry.resetSeconds,
+            entry.difficulty,
+            flag(entry.locked),
+            flag(entry.extended),
+            entry.idMostSig,
+            flag(entry.isRaid),
+            entry.maxPlayers,
+            entry.difficultyName
+    end
+    return world
+end
+
 --- The skill list functions for a list of rows.
 ---@param lines table[]
 ---@return table
@@ -192,7 +226,11 @@ function M.Arthasdk(overrides)
         return entry and entry.itemString and "Interface\\Icons\\INV_Misc_QuestionMark" or nil
     end
     local character = addon.FixtureCharacter()
-    local managers = { M.EquipmentManager(character.equipmentSets.items), M.TalentFrame(character.talents) }
+    local managers = {
+        M.EquipmentManager(character.equipmentSets.items),
+        M.TalentFrame(character.talents),
+        M.SavedInstances(character.lockouts),
+    }
     for _, functions in ipairs(managers) do
         for name, value in pairs(functions) do
             world[name] = value

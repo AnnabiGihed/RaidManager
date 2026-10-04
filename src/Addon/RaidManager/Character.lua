@@ -2,7 +2,8 @@
 -- Purpose: Captures the logged-in character into its snapshot, from the sections this version knows.
 local _, ns = ...
 
--- The sections this version captures, each with its capture function; the others stay unavailable (not-captured).
+-- The sections this version captures, each with its capture function. A section read on the game's answer to a
+-- request (onAnswer) is captured only by CaptureAgain, when that answer arrives.
 ns.CAPTURES = {
     { section = "identity", capture = ns.CaptureIdentity },
     { section = "guild", capture = ns.CaptureGuild },
@@ -10,6 +11,7 @@ ns.CAPTURES = {
     { section = "equipped", capture = ns.CaptureEquipped },
     { section = "equipmentSets", capture = ns.CaptureEquipmentSets },
     { section = "talents", capture = ns.CaptureTalents },
+    { section = "lockouts", capture = ns.CaptureLockouts, onAnswer = true },
 }
 
 local function captureOf(section)
@@ -35,7 +37,12 @@ function ns.CaptureCharacter(api, db, now)
     character.client = ns.CaptureClient(api)
     character.serverTime = ns.CaptureServerTime(api, now)
     for _, entry in ipairs(ns.CAPTURES) do
-        ns.StoreSection(character, entry.section, entry.capture(api, now), now)
+        if not entry.onAnswer then
+            ns.StoreSection(character, entry.section, entry.capture(api, now), now)
+        elseif character[entry.section].reason == ns.NOT_CAPTURED then
+            -- Asked, not answered yet; an earlier answer stays until the new one arrives.
+            ns.StoreSection(character, entry.section, ns.Unavailable("not-answered", now), now)
+        end
     end
     return character
 end

@@ -175,8 +175,11 @@ The section is `"unavailable"` with `reason = "not-loaded"` while the game hasn'
 | `items[].locked` | boolean | `false` for an expired save the player can still extend. |
 | `items[].extended` | boolean | `true` when the player extended the save. |
 
-A character with no save has `complete = true` and `items = {}`. When `UPDATE_INSTANCE_INFO` never answered,
-the section is `"unavailable"` with `reason = "not-answered"`.
+A character with no save has `complete = true` and `items = {}`. The addon asks the game with `RequestRaidInfo` when
+the character enters the world, on a new zone and on `/rm sync`, at most once every five seconds, and reads the saves
+when `UPDATE_INSTANCE_INFO` answers. Until a first answer, the section is `"unavailable"` with
+`reason = "not-answered"`; after one, an earlier answer stays until the next arrives, and its `observedAt` tells its
+age.
 
 ## Not in schema 1
 

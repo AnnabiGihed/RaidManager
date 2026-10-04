@@ -9,6 +9,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- The addon captures the raid saves: it asks the game when the character enters the world, on a new zone and on
+  `/rm sync`, at most once every five seconds, and records each saved instance with its lockout id, seconds to
+  reset, difficulty, size and whether it is locked or extended, marking the scan incomplete when an instance can't
+  be read. Every section of the contract is now captured; the addon's version is 0.4.0 (#489).
 - The addon captures the loadouts: each saved equipment set with every slot's item and where it is (worn, in the
   bags, or unavailable in the bank or missing), and both talent groups with the points, the rank of each talent and
   the glyphs, the active group flagged. It captures them again when the sets, the gear, the talents, the active

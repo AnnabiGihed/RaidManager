@@ -2,7 +2,7 @@
 ## Title: RaidManager
 ## Notes: Captures raid-relevant character data for the RaidManager companion.
 ## Author: Gihed Annabi
-## Version: 0.3.1
+## Version: 0.4.0
 ## SavedVariables: RaidManagerDB
 
 Core.lua
@@ -12,5 +12,6 @@ Capture\Professions.lua
 Capture\Gear.lua
 Capture\EquipmentSets.lua
 Capture\Talents.lua
+Capture\Lockouts.lua
 Character.lua
 Events.lua
