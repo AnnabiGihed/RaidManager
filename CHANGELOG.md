@@ -9,6 +9,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- Two skills for the desktop companion in Avalonia (ADR-0032): `avalonia-desktop` says how to create, organize and write
+  it (the two projects, feature folders, MVVM without a framework, compiled bindings, the theme and embedded Open Sans,
+  the generic host, the tray and close-to-tray, the UI thread, DPAPI behind a seam, HTTP, the self-contained publish and
+  the telemetry opt-out), and `avalonia-tests` how to test it headless on Linux (xUnit v3 for the host, Reqnroll for the
+  client's rules, Windows-only tests, rendered frames for the mockup comparison). Every version-dependent fact was
+  checked against Avalonia 12.1 in a prototype; `AGENTS.md` and four skills point to them (#521).
 - The website's Companion & sync pages: the page a companion opens with its code shows the code, the computer and
   the expiry, and confirms the pairing, or says why the code can't be confirmed (expired, already confirmed, unknown,
   missing, or not checkable); the paired companions list shows each computer's pairing time and status and revokes

@@ -8,6 +8,7 @@ API
 APIs
 app
 AppHost
+Avalonia
 backend
 Baneveil
 binfile
@@ -99,6 +100,7 @@ mockup
 Mockups
 mockups
 multi
+MVVM
 Noto
 npm
 NuGet
@@ -131,6 +133,7 @@ Refactoring
 refactoring
 replan
 replanning
+Reqnroll
 RFC
 Roadmap
 Roboto
@@ -187,3 +190,5 @@ WCAG
 WebAssembly
 workflow
 WotLK
+WPF
+xUnit
