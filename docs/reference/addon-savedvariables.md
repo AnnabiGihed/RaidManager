@@ -168,7 +168,7 @@ The section is `"unavailable"` with `reason = "not-loaded"` while the game hasn'
 | `items[].lockoutId` | number | The lower part of the lockout id. |
 | `items[].idMostSig` | number | The upper part of the lockout id; RaidManager combines the two. |
 | `items[].resetSeconds` | number | Seconds until the reset, counted from the section's `observedAt`. |
-| `items[].difficulty` | number | The raw difficulty; for raids `1` 10 normal, `2` 25 normal, `3` 10 heroic, `4` 25 heroic. |
+| `items[].difficulty` | number | The game's raw difficulty, read with `maxPlayers`: for a raid with a 10-player and a 25-player size, `1` 10 normal, `2` 25 normal, `3` 10 heroic, `4` 25 heroic; a raid with one size reports `1` whatever its size, such as `Gruul's Lair` with 25 players or `Molten Core` with 40. |
 | `items[].difficultyName` | string | The localized difficulty name. |
 | `items[].maxPlayers` | number | The instance size. |
 | `items[].isRaid` | boolean | `true` for a raid. |
