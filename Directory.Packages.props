@@ -40,6 +40,11 @@
     <PackageVersion Include="Microsoft.Extensions.Options.ConfigurationExtensions" Version="10.*" />
     <PackageVersion Include="Microsoft.Extensions.Options.DataAnnotations" Version="10.*" />
     <PackageVersion Include="Microsoft.Extensions.Configuration" Version="10.*" />
+    <!-- The desktop companion (ADR-0032). All Avalonia packages stay on the same version line. -->
+    <PackageVersion Include="Avalonia" Version="12.*" />
+    <PackageVersion Include="Avalonia.Desktop" Version="12.*" />
+    <PackageVersion Include="Avalonia.Themes.Fluent" Version="12.*" />
+    <PackageVersion Include="System.Security.Cryptography.ProtectedData" Version="10.*" />
     <PackageVersion Include="OpenTelemetry.Exporter.OpenTelemetryProtocol" Version="1.*" />
     <PackageVersion Include="OpenTelemetry.Extensions.Hosting" Version="1.*" />
     <PackageVersion Include="OpenTelemetry.Instrumentation.AspNetCore" Version="1.*" />
@@ -52,6 +57,10 @@
     <PackageVersion Include="Microsoft.AspNetCore.Mvc.Testing" Version="10.*" />
     <PackageVersion Include="Microsoft.NET.Test.Sdk" Version="18.*" />
     <PackageVersion Include="xunit" Version="2.*" />
+    <!-- Avalonia.Headless.XUnit 12 is built on xUnit v3 3.x; the companion's host tests use it, every other project xunit 2. -->
+    <PackageVersion Include="xunit.v3" Version="3.*" />
+    <PackageVersion Include="Avalonia.Headless.XUnit" Version="12.*" />
+    <PackageVersion Include="Microsoft.Extensions.TimeProvider.Testing" Version="10.*" />
     <PackageVersion Include="xunit.runner.visualstudio" Version="3.*" />
     <PackageVersion Include="coverlet.collector" Version="6.*" />
     <PackageVersion Include="bunit" Version="2.*" />

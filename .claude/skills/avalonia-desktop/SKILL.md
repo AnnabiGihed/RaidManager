@@ -239,6 +239,13 @@ Good: the view binds, the view model decides.
   `AutomationProperties.Name` in tests.
 - Styles use selectors and classes defined in `Theme/Controls.axaml` (`Classes="primary"`), never inline setters
   repeated across views.
+- A selector list that mixes a control and a template part (`Button.primary, Button.primary:pointerover /template/
+  ContentPresenter#PART_ContentPresenter`) can't share setters: the compiler resolves them on `Control` and fails with
+  `AVLN2000`. Write one style per selector (#514).
+- A reusable look with its own parts (the mockups' `notice`) is a `TemplatedControl` with its `ControlTheme` in
+  `Theme/Controls.axaml`, and classes pick its variants (`Classes="danger"`).
+- When a board breaks a text over two lines, write the break (`&#10;`) rather than relying on wrapping, so the layout
+  below it stays where the board puts it.
 - Resource lookups: `{DynamicResource Key}` for anything in a `ThemeDictionaries` dictionary (a `StaticResource`
   can't find those and throws at run time); `{StaticResource Key}` for the rest.
 - `TextBox` uses `PlaceholderText` (Avalonia 12 renamed `Watermark`). Find a window's `TopLevel` with

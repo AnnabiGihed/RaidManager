@@ -56,7 +56,12 @@ Host test project file:
 </Project>
 ```
 
-xUnit v3 adds no global `using Xunit;`: write it in each file that uses `Assert` or `[Fact]`.
+xUnit v3 adds no global `using Xunit;`: write it in each file that uses `Assert` or `[Fact]`. Its analyzer
+(`xUnit1051`) fails the build on a call that takes a `CancellationToken` without one: pass
+`TestContext.Current.CancellationToken`.
+
+Name tests as sentences without underscores (`WaitingShowsTheCodeAndItsCountdown`): the analyzers forbid underscores in
+method names (CA1707), so `Method_Condition_Result` doesn't build here (#514).
 
 ## 2. The headless test application
 
@@ -90,7 +95,7 @@ would see.
 
 ```csharp
 [AvaloniaFact]
-public void PairingView_WhenTheCodeExpires_ShowsGetANewCode()
+public void ExpiredOffersANewCode()
 {
     var viewModel = PairingViewModels.Expired();
     var window = new Window { Content = new PairingView { DataContext = viewModel } };
@@ -102,6 +107,11 @@ public void PairingView_WhenTheCodeExpires_ShowsGetANewCode()
 }
 ```
 
+- **Finding controls:** `window.FindControl<T>(name)` searches only the window's own name scope, so it throws "Could
+  not find parent name scope" for a control named inside a `UserControl`. Search
+  `window.GetVisualDescendants()` by `Name` instead, and assert the visible texts in reading order.
+- **Input and frames** are extension methods in `Avalonia.Headless`: add `using Avalonia.Headless;` for
+  `KeyPressQwerty`, `MouseDown` or `CaptureRenderedFrame`.
 - **Bindings:** change the view model, then assert the control (`text.Text.ShouldBe("ABC-DEF")`); a compiled binding
   updates synchronously. Call `Dispatcher.UIThread.RunJobs()` before asserting anything that layout or a posted
   callback changes.
@@ -151,6 +161,10 @@ Keep such classes small, because their lines count as uncovered in the CI covera
   previous file intact and that a revoked or expired 401 deletes it.
 - **Composition root:** build the service collection with test configuration and resolve every root view model, so
   a missing registration fails a test rather than the player's first start.
+- **Deterministic async flows:** run a command off the test framework's synchronization context
+  (`await Task.Run(viewModel.StartCommand.ExecuteAsync)`) and advance `FakeTimeProvider` one second at a time; with
+  fakes that answer at once, each advance runs the flow to its next wait, so no test waits for real time (#514). In a
+  headless test, call `Dispatcher.UIThread.RunJobs()` after each advance instead.
 - **Polling:** assert the interval (the API's value, never under five seconds, plus five after a 429), that it stops
   on expiry, success and disposal, and that a network failure keeps polling.
 

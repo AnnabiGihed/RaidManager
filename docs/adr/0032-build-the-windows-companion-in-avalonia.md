@@ -1,8 +1,9 @@
 # ADR-0032: Build the Windows companion in Avalonia with a window and a tray icon
 
-- Status: Proposed
+- Status: Accepted
 - Date: 2026-10-04
 - Deciders: Gihed Annabi
+- Accepted: 2026-10-04, with its first implementation in #514 (owner approval recorded on #514)
 
 ## Context
 

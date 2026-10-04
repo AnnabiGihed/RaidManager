@@ -25,7 +25,11 @@ awaiting a player's decision. Queries read the write database through no-trackin
 ([ADR-0010](../adr/0010-read-queries-from-the-write-database.md)). The Entity Framework Core project persists the
 `User` and `Character` aggregates on PostgreSQL and records domain events in an outbox table; nothing delivers them
 yet. The API sends the sign-in command for the website.
-There is no addon or companion project yet.
+The WoW addon lives in `src/Addon` ([ADR-0031](../adr/0031-build-the-wow-addon-in-lua-under-src-addon.md)). The
+desktop companion ([ADR-0032](../adr/0032-build-the-windows-companion-in-avalonia.md)) is an Avalonia application for
+Windows in two projects: `RaidManager.Companion.Client` holds its view models, API client and token store, and
+`RaidManager.Companion` its window, tray icon and Windows-only code. It pairs with the player's account; reading the
+addon's files and uploading them come next.
 
 ## System context
 

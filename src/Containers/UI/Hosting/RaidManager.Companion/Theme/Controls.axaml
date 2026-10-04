@@ -1,0 +1,147 @@
+<!-- The companion's shared looks, from the mockups' shared components: window, text roles, card, buttons (primary,
+     secondary, disabled) and the notice. Colors and sizes come only from Palette.axaml. -->
+<Styles xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        xmlns:shared="using:RaidManager.Companion.Features.Shared">
+  <Styles.Resources>
+    <ControlTheme x:Key="{x:Type shared:Notice}" TargetType="shared:Notice">
+      <Setter Property="Height" Value="72" />
+      <Setter Property="Background" Value="{StaticResource StatusWarningBackgroundBrush}" />
+      <Setter Property="BorderBrush" Value="{StaticResource StatusWarningBorderBrush}" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border Background="{TemplateBinding Background}"
+                  BorderBrush="{TemplateBinding BorderBrush}"
+                  BorderThickness="1"
+                  CornerRadius="{StaticResource RadiusNotice}"
+                  Padding="20,0,16,0">
+            <Grid ColumnDefinitions="24,16,*" VerticalAlignment="Center">
+              <Ellipse Name="PART_Icon" Width="24" Height="24" Fill="{StaticResource AccentAmberBrush}" />
+              <TextBlock Name="PART_Mark" Text="!" FontSize="16" FontWeight="ExtraBold"
+                         HorizontalAlignment="Center" VerticalAlignment="Center"
+                         Foreground="{StaticResource BrandOnAccentBrush}" />
+              <StackPanel Grid.Column="2" Spacing="2" VerticalAlignment="Center">
+                <TextBlock Name="PART_Title" Text="{TemplateBinding Title}" FontSize="{StaticResource FontSizeBody}"
+                           FontWeight="SemiBold" Foreground="{StaticResource StatusWarningTitleBrush}" />
+                <TextBlock Name="PART_Message" Text="{TemplateBinding Message}" FontSize="{StaticResource FontSizeLabel}"
+                           Foreground="{StaticResource StatusWarningTextBrush}" />
+              </StackPanel>
+            </Grid>
+          </Border>
+        </ControlTemplate>
+      </Setter>
+      <Style Selector="^.danger">
+        <Setter Property="Background" Value="{StaticResource StatusDangerBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource StatusDangerBorderBrush}" />
+        <Style Selector="^ /template/ Ellipse#PART_Icon">
+          <Setter Property="Fill" Value="{StaticResource StatusDangerBrush}" />
+        </Style>
+        <Style Selector="^ /template/ TextBlock#PART_Mark">
+          <Setter Property="Foreground" Value="{StaticResource StatusOnDangerBrush}" />
+        </Style>
+        <Style Selector="^ /template/ TextBlock#PART_Title">
+          <Setter Property="Foreground" Value="{StaticResource StatusDangerTextBrush}" />
+        </Style>
+        <Style Selector="^ /template/ TextBlock#PART_Message">
+          <Setter Property="Foreground" Value="{StaticResource StatusDangerTextBrush}" />
+        </Style>
+      </Style>
+    </ControlTheme>
+  </Styles.Resources>
+
+  <Style Selector="Window">
+    <Setter Property="Background" Value="{StaticResource SurfacePageBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+    <Setter Property="FontFamily" Value="{StaticResource BodyFont}" />
+    <Setter Property="FontSize" Value="{StaticResource FontSizeBody}" />
+  </Style>
+
+  <Style Selector="TextBlock.heading">
+    <Setter Property="FontSize" Value="{StaticResource FontSizeHeading}" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+  </Style>
+  <Style Selector="TextBlock.intro">
+    <Setter Property="FontSize" Value="{StaticResource FontSizeBody}" />
+    <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+    <Setter Property="TextWrapping" Value="Wrap" />
+    <Setter Property="LineHeight" Value="20" />
+  </Style>
+  <Style Selector="TextBlock.status">
+    <Setter Property="FontSize" Value="{StaticResource FontSizeLabel}" />
+    <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+  </Style>
+  <Style Selector="TextBlock.note">
+    <Setter Property="FontSize" Value="{StaticResource FontSizeCaption}" />
+    <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
+  </Style>
+  <Style Selector="TextBlock.eyebrow">
+    <Setter Property="FontSize" Value="{StaticResource FontSizeEyebrow}" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
+    <Setter Property="LetterSpacing" Value="1.2" />
+  </Style>
+  <Style Selector="TextBlock.code">
+    <Setter Property="FontSize" Value="{StaticResource FontSizeCode}" />
+    <Setter Property="FontWeight" Value="Bold" />
+    <Setter Property="Foreground" Value="{StaticResource BrandAccentBrush}" />
+    <Setter Property="LetterSpacing" Value="4" />
+    <Setter Property="HorizontalAlignment" Value="Center" />
+  </Style>
+  <Style Selector="TextBlock.code.expired">
+    <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
+  </Style>
+
+  <Style Selector="Border.card">
+    <Setter Property="Background" Value="{StaticResource SurfaceCardBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource LineCardBorderBrush}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="CornerRadius" Value="{StaticResource RadiusCard}" />
+  </Style>
+
+  <Style Selector="Button">
+    <Setter Property="Height" Value="40" />
+    <Setter Property="HorizontalAlignment" Value="Stretch" />
+    <Setter Property="HorizontalContentAlignment" Value="Center" />
+    <Setter Property="VerticalContentAlignment" Value="Center" />
+    <Setter Property="CornerRadius" Value="{StaticResource RadiusControl}" />
+    <Setter Property="BorderThickness" Value="1" />
+    <Setter Property="FontSize" Value="{StaticResource FontSizeLabel}" />
+    <Setter Property="FontWeight" Value="Bold" />
+  </Style>
+  <Style Selector="Button.primary">
+    <Setter Property="Background" Value="{StaticResource BrandAccentBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource BrandAccentBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource BrandOnAccentBrush}" />
+  </Style>
+  <Style Selector="Button.primary:pressed /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource BrandAccentBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource BrandAccentBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource BrandOnAccentBrush}" />
+  </Style>
+  <Style Selector="Button.primary:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource BrandAccentBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource BrandAccentBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource BrandOnAccentBrush}" />
+  </Style>
+  <Style Selector="Button.secondary">
+    <Setter Property="Background" Value="{StaticResource SurfaceRaisedBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource LineDividerBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+  </Style>
+  <Style Selector="Button.secondary:pressed /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource SurfaceRaisedBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource LineDividerBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+  </Style>
+  <Style Selector="Button.secondary:pointerover /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource SurfaceSelectedBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource LineDividerBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+  </Style>
+  <Style Selector="Button:disabled /template/ ContentPresenter#PART_ContentPresenter">
+    <Setter Property="Background" Value="{StaticResource SurfaceCardBrush}" />
+    <Setter Property="BorderBrush" Value="{StaticResource LineDividerBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
+  </Style>
+</Styles>

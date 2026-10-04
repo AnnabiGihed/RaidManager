@@ -11,6 +11,10 @@ on:
 permissions:
   contents: read
 
+env:
+  # Avalonia's build package sends anonymous build telemetry unless this is set; RaidManager opts out (#520).
+  AVALONIA_TELEMETRY_OPTOUT: '1'
+
 jobs:
   build-test:
     runs-on: ubuntu-latest
@@ -79,6 +83,26 @@ jobs:
         run: |
           echo "::error::The coverage gate failed (ADR-0015). See the coverage summary for the uncovered changed lines."
           exit 1
+
+  # The desktop companion as players get it (ADR-0032): one self-contained Windows executable, cross-published from
+  # Linux for the dev environment, kept as a workflow artifact.
+  companion:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v7
+      - uses: actions/setup-dotnet@v6
+        with:
+          dotnet-version: '10.0.x'
+      - name: Publish the companion for dev
+        run: >-
+          dotnet publish src/Containers/UI/Hosting/RaidManager.Companion/RaidManager.Companion.csproj
+          -p:PublishProfile=win-x64 -p:CompanionEnvironment=Dev
+      - name: Upload the companion
+        uses: actions/upload-artifact@v7
+        with:
+          name: raidmanager-companion-win-x64-dev
+          path: src/Containers/UI/Hosting/RaidManager.Companion/bin/publish/win-x64/
+          retention-days: 14
 
   # SonarCloud's own check follows the quality gate, which passes new code smells and even some vulnerabilities; this
   # job fails the pull request on any open SonarCloud issue or security hotspot to review (ADR-0020).
