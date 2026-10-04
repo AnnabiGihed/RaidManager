@@ -73,6 +73,7 @@ date on the Project, both inclusive) follows the blocked-by order; the item's ow
 | #507 The snapshot contract misreads the difficulty of single-size raids | Bug | 1 | 4 Oct | #508 (Development) | None |
 | #510 Keep the session's lessons and a standing new-session routine | Improvement | 2 | 4 Oct | #511 (Business Analysis) | None |
 | #517 Keep the companion session's lessons in the skills | Improvement | 1 | 4 Oct | #518 (Business Analysis) | None |
+| #520 Write the Avalonia skills for the desktop companion | Improvement | 2 | 4 to 5 Oct | #521 (Development) | None |
 
 16 October is kept as a buffer.
 
@@ -126,6 +127,8 @@ and its task #388 wait for #409 and #411.
 | 2026-10-04 | #382 split on the owner's decision recorded on #15: #382 keeps the pairing API (ADR-0030 Accepted in its pull request), #513 takes the website's confirm and revoke pages (12 to 14 Oct) and #514 the Windows companion (14 to 16 Oct), both blocked by #382. |
 | 2026-10-04 | #513 widened on the owner's decisions recorded on it: mockup boards for the missing states first, "No upload yet" until #384, expired companions, and Companion & sync in the sidebar. |
 | 2026-10-04 | #517 with #518 added under the standing approval on #510: the companion session's lessons in the skills. |
+| 2026-10-04 | #514 started with ADR-0032 (Proposed, approved by the owner): an Avalonia companion instead of WPF, so its tests run on Linux CI; a tray-menu board, close to tray and a self-contained executable, recorded on #514. |
+| 2026-10-04 | #520 with #521 added under a reopened #259 on the owner's decision recorded on them: the Avalonia skills before #514 writes code, which now waits for #521; Avalonia build telemetry turned off everywhere. |
 
 ## Outcome
 
