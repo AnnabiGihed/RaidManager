@@ -454,9 +454,9 @@
 <rect x="3920" y="980" width="480" height="600" fill="#0b111c"/>
 <g clip-path="url(#clip12)">
 <text x="3952" y="1040" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#eff5fa" text-anchor="start">When the window first closes</text>
-<text x="3952" y="1070" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Windows shows this notification once; later closes</text>
-<text x="3952" y="1090" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">stay silent. Quit in the tray menu ends the companion.</text>
-<text x="3952" y="1120" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Windows draws the notification in the system theme.</text>
+<text x="3952" y="1070" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">The companion shows this notification once; later</text>
+<text x="3952" y="1090" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">closes stay silent. Quit in the tray menu ends it.</text>
+<text x="3952" y="1120" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">It closes after 6 seconds, or when clicked.</text>
 <rect x="4020.5" y="1400.5" width="363" height="115" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
 <rect x="4036" y="1416" width="16" height="16" rx="4" fill="#5de0c1"/>
 <text x="4060" y="1429" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#9eadc1" text-anchor="start">RaidManager Companion</text>

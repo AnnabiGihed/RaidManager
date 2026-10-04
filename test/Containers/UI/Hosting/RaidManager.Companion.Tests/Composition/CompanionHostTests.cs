@@ -10,6 +10,7 @@ using RaidManager.Companion.Client.Features.Tokens;
 using RaidManager.Companion.Client.Features.Tray;
 using RaidManager.Companion.Composition;
 using RaidManager.Companion.Features.Shared;
+using RaidManager.Companion.Features.Shell;
 using Shouldly;
 using Xunit;
 
@@ -71,6 +72,7 @@ public sealed class CompanionHostTests
         provider.GetRequiredService<IApplicationShell>().ShouldBeSameAs(shell);
         provider.GetRequiredService<IBrowserLauncher>().ShouldBeOfType<AvaloniaBrowserLauncher>();
         provider.GetRequiredService<ITokenProtector>().ShouldNotBeNull();
+        provider.GetRequiredService<KeepsRunningNoticePresenter>().ShouldNotBeNull();
     }
 
     /// <summary>An environment without a settings file fails when the host is built.</summary>

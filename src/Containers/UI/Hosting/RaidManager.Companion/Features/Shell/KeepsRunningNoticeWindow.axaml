@@ -1,0 +1,37 @@
+<!-- The keeps-running notification of board 21: the companion draws it in its own theme, at the bottom right above
+     the taskbar, for 6 seconds or until it is clicked (owner decision on #530). -->
+<Window xmlns="https://github.com/avaloniaui"
+        xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+        x:Class="RaidManager.Companion.Features.Shell.KeepsRunningNoticeWindow"
+        Title="RaidManager Companion"
+        Icon="/Assets/raidmanager.ico"
+        Width="364"
+        Height="116"
+        WindowDecorations="None"
+        Topmost="True"
+        ShowActivated="False"
+        ShowInTaskbar="False"
+        CanResize="False"
+        WindowStartupLocation="Manual"
+        Background="Transparent"
+        Cursor="Hand">
+  <Border x:Name="Card"
+          Background="{StaticResource SurfaceRaisedBrush}"
+          BorderBrush="{StaticResource LineDividerBrush}"
+          BorderThickness="1"
+          CornerRadius="{StaticResource RadiusControl}"
+          Padding="16"
+          AutomationProperties.Name="RaidManager Companion is still running">
+    <StackPanel Spacing="0">
+      <StackPanel Orientation="Horizontal" Spacing="8">
+        <Border Width="16" Height="16" CornerRadius="4" Background="{StaticResource BrandAccentBrush}" />
+        <TextBlock Classes="note" FontSize="{StaticResource FontSizeCaption}" Foreground="{StaticResource TextSecondaryBrush}"
+                   VerticalAlignment="Center" Text="RaidManager Companion" />
+      </StackPanel>
+      <TextBlock Margin="0,18,0,0" FontSize="{StaticResource FontSizeBody}" FontWeight="SemiBold"
+                 Foreground="{StaticResource TextPrimaryBrush}" Text="RaidManager Companion is still running" />
+      <TextBlock Margin="0,6,0,0" FontSize="{StaticResource FontSizeLabel}" Foreground="{StaticResource TextSecondaryBrush}"
+                 Text="Quit it from its icon in the notification area." />
+    </StackPanel>
+  </Border>
+</Window>

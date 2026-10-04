@@ -30,8 +30,8 @@ the window hides it here. Windows draws the menu in the system theme, so the boa
 20. Couldn't get a code: RaidManager didn't answer; Try again shows 19.
 
 Companion state added by #529 (owner decision on #528, 2026-10-04):
-21. The first time the window is closed, a Windows notification says the companion keeps running and where to quit it.
-Later closes stay silent. Windows draws the notification in the system theme.
+21. The first time the window is closed, a notification says the companion keeps running and where to quit it. Later
+closes stay silent. The companion draws it in its own theme for 6 seconds (owner decision on #530).
 
 Uploads come with #384, so "Last upload" says "No upload yet" until then (owner decision on #513). Times are in UTC,
 as on the character review page.
@@ -392,9 +392,9 @@ def tray() -> list[Item]:
 def keeps_running() -> list[Item]:
     x, y, w = 100, 420, 364
     return [
-        *desktop_notes("When the window first closes", ("Windows shows this notification once; later closes",
-                                                         "stay silent. Quit in the tray menu ends the companion."),
-                       "Windows draws the notification in the system theme."),
+        *desktop_notes("When the window first closes", ("The companion shows this notification once; later",
+                                                         "closes stay silent. Quit in the tray menu ends it."),
+                       "It closes after 6 seconds, or when clicked."),
         Group("Keeps running notification", [
             Rect(BACKGROUND_LAYER, x, y, w, 116, RAISED, 1, 8, DIVIDER),
             Rect("App mark", x + 16, y + 16, 16, 16, ACCENT, 1, 4),

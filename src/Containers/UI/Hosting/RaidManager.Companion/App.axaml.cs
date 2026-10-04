@@ -86,6 +86,8 @@ public sealed partial class App : Application
         DataContext = tray;
         var pairing = _host.Services.GetRequiredService<PairingViewModel>();
         var window = new MainWindow { DataContext = pairing };
+        var notice = _host.Services.GetRequiredService<KeepsRunningNoticePresenter>();
+        window.HiddenToTray += (_, _) => notice.ShowOnFirstClose();
         shell.Attach(window);
         desktop.MainWindow = window;
         desktop.Exit += (_, _) => _host.Dispose();
