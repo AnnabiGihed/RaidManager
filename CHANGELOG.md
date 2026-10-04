@@ -257,6 +257,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- "New session" from the owner starts a fixed routine in `AGENTS.md` and `raidmanager-conventions`: a checkpoint, the
+  session's lessons recorded through a work item and one pull request, and a handover message with fixed parts. The
+  addon skill holds what Warmane's client was seen to answer, the in-game check with the contract checker and the
+  version bump per capture change; the board skill holds how features with contract gaps and defects found after a
+  merge are handled (#511).
 - A merge deploys dev only when it changes a file that can affect the deployment: `src/`, `deploy/`, the build files
   or `deploy-dev.yml`, compared with the last successful dev deployment. Otherwise `deploy-dev` skips the build and
   the deployment and still marks the delivered items `deployed:dev`; a run started by hand always deploys. The
