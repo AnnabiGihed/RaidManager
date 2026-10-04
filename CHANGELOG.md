@@ -294,6 +294,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- The skills keep the Avalonia companion session's lessons: give the owner's check steps before the review texts when a
+  pull request needs a check, check every fact a description states, never race a fake clock, name a mockup script's
+  repeated texts before pushing, guard scratch scripts, and the Avalonia notification and Microsoft Store facts (#543).
 - The skills hold the companion session's lessons: run the Sonar gate only after the `sonar` check finished, compare a
   page with its mockup through headless Chrome when the browser pane is too small, never pass `class` to a shared
   component, keep a sidebar entry lit on the pages under it with `MatchesSubpaths`, give class value objects their equality

@@ -78,6 +78,7 @@ date on the Project, both inclusive) follows the blocked-by order; the item's ow
 | #526 The paired companions list misses a computer after Confirm | Bug | 1 | 6 Oct | #527 (Development) | None |
 | #528 Tell the player the companion keeps running when its window closes | Improvement | 3 | 6 to 8 Oct | #529 (Functional Analysis), #530 (Development) | None |
 | #532 Publish the companion through the Microsoft Store | Spike | 3 (2 days) | 9 to 10 Oct | #533 (Architecture Analysis) | None |
+| #542 Keep the Avalonia companion session's lessons in the skills | Improvement | 1 | 4 to 5 Oct | #543 (Business Analysis) | None |
 
 16 October is kept as a buffer.
 
@@ -137,6 +138,8 @@ and its task #388 wait for #409 and #411.
 | 2026-10-04 | #523 merged before the owner's check on dev, so #514 was reopened as Blocked. The check found four things; on the owner's decisions recorded on them, bugs #524 with #525 and #526 with #527 and improvement #528 with #529 and #530 were added before #385, and re-pairing the same computer stays as designed. #514 waits for #525. |
 | 2026-10-04 | #531 merged before the owner's check too, so #525 was reopened as Blocked; the owner's check on dev then passed both ways (on opening and after 5 minutes), which closed #525, #524, #514 and story #15. |
 | 2026-10-04 | Spike #532 with #533 added on the owner's decision recorded on it: Chrome and SmartScreen block the unsigned companion, so players will get it from the Microsoft Store, investigated first, after #526 and #528. |
+| 2026-10-04 | #527 merged and was checked on dev after the merge, as the owner chose; #529 and #530 delivered the keeps-running notification (#528), the owner checking #530 on Windows before its merge. Spike #532 answered with ADR-0033, approved; its follow-ups (story #538, improvement #539 with #540 and #541) wait in the Backlog by owner decision. |
+| 2026-10-04 | #542 with #543 added under the standing approval on #510: the session's lessons in the skills. |
 
 ## Outcome
 

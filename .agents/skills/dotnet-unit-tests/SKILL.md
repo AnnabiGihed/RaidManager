@@ -64,6 +64,11 @@ anything with no business rule to express. If you can't write the scenario in th
 - Structure by bounded context and feature; one feature file per capability; no catch-all classes.
 - Technical xUnit tests are named `Method_Condition_ExpectedResult` and documented with a `<summary>`.
 - Cover the highest-risk paths first.
+- **Never race a fake clock.** Advancing a `FakeTimeProvider` completes a delay, but the code after it may run on
+  another thread after `Advance` returns, and a test that asserts at once is flaky on CI (#514). Wait for the code
+  under test, not for time: count timers once they have a due time and wait until a new one is armed or the flow
+  ends. `FlowClock`, `DispatcherFlowClock` (`avalonia-tests` §5) and the website's `ArmedTimeProvider`
+  (`PairedCompanionsTests`, #527) do it. Prove a timing fix with a stress run, not one green run.
 - **Coverage is gated, and the gate is mandatory.** Every test project references `coverlet.collector`, and CI runs
   the tests with the repository's coverage settings (`coverage.runsettings`: tests, migrations and generated code
   excluded). A pull request must cover at least **80% of its changed coverable lines**, and total line coverage must

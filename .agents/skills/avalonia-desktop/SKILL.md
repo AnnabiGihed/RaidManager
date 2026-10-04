@@ -279,6 +279,13 @@ Good: the view binds, the view model decides.
   unless the application is quitting, it sets `e.Cancel = true` and calls `Hide()`. Quit in the tray menu calls
   `desktop.Shutdown()`. This is the one piece of behavior allowed in code-behind, because it is about the window
   itself.
+- **A notification the companion shows itself** (#530): Avalonia 12 has no operating-system notification API.
+  `TrayIcon` has no balloon, and `WindowNotificationManager` draws inside a window, which is useless while the window
+  is hidden. A Windows toast would need a `-windows` target framework, the Windows App SDK or Win32 calls. The
+  companion uses its own small window instead: `WindowDecorations="None"`, `Topmost`, `ShowActivated="False"`,
+  `ShowInTaskbar="False"`, placed in `OnOpened` at the bottom right of `Screens.Primary.WorkingArea`. Multiply by
+  `Scaling` there, because the work area is in device pixels. It closes after a delay on the injected `TimeProvider`
+  or on a click. A flag, not a `CancellationTokenSource`, stops the delayed close (CA1001).
 - **Unhandled exceptions:** `App` subscribes to `Dispatcher.UIThread.UnhandledException` and
   `TaskScheduler.UnobservedTaskException` to log them. It doesn't mark them handled: a command catches its own
   failures (section 4), so an exception that reaches the dispatcher is a bug, and the application must not run on in
@@ -361,8 +368,24 @@ AVALONIA_TELEMETRY_OPTOUT=1 dotnet publish src/Containers/UI/Hosting/RaidManager
 ```
 
 The result is one executable of about 100 MB plus the `appsettings*.json` files next to it. It isn't signed:
-Windows SmartScreen warns on first start until a code-signing ADR exists. Trimming and native AOT are not enabled;
-turning them on needs its own test of every view.
+Chrome flags its download and SmartScreen stops its first start. Trimming and native AOT are not enabled; turning them
+on needs its own test of every view.
+
+Players get the companion from the Microsoft Store ([ADR-0033](../../../docs/adr/0033-publish-the-companion-through-the-microsoft-store.md),
+improvement #539). Facts spike #532 verified on Windows 11:
+
+- **The package:** the self-contained publish output packed with `makeappx` (Windows SDK) and a full-trust manifest
+  (`Windows.FullTrustApplication`, `runFullTrust`) runs the companion unchanged. It has its window and tray icon,
+  opens the browser, keeps the DPAPI token across restarts, and shows the notification.
+- **No private copy:** a packaged full-trust app reads and writes the real `%LOCALAPPDATA%\RaidManager`, so the
+  Store and downloaded versions share the pairing and the notification marker.
+- **Signing:** Windows refuses an unsigned package that contains an application (`0x80073D2B`, even with
+  `-AllowUnsigned`). Test a package locally by registering its folder in Developer Mode
+  (`Add-AppxPackage -Register <folder>\AppxManifest.xml`, the owner's step); the Store signs released packages.
+
+**Owner checks of a companion build:** before starting a new executable, the owner quits the running companion from
+the tray menu. Closing the window only hides it, and the single instance would bring the old process forward.
+Clear `keeps-running-notice.shown` to see the notification again.
 
 ## 13. Review checklist
 
