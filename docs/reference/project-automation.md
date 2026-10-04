@@ -97,12 +97,13 @@ Every deployment marks what it delivered, so the Project shows what runs in each
 it succeeded or failed, with the built-in token.
 
 A merge deploys dev only when it changes a file that can affect the deployment (#491, A10): anything under `src/`
-and `deploy/`, the build files (`Directory.Build.props`, `Directory.Packages.props`, `nuget.config`, `global.json`,
-`dotnet-tools.json`, `RaidManager.sln`) or `deploy-dev.yml`. The `changes` job of `deploy-dev` runs
-`scripts/deploy_changes.py`, which compares `main` with the commit of the last successful dev deployment, so a change
-from a failed or skipped run is deployed by the next one. When nothing deployed changed, the build and deployment are
-skipped and `record` still runs as a success, since dev already runs the same images. A run started by hand from the
-Actions tab always deploys. The labels follow these rules:
+except the WoW addon in `src/Addon/`, which players install in the game, anything under `deploy/`, the build files
+(`Directory.Build.props`, `Directory.Packages.props`, `nuget.config`, `global.json`, `dotnet-tools.json`,
+`RaidManager.sln`) or `deploy-dev.yml`. The `changes` job of `deploy-dev` runs `scripts/deploy_changes.py`, which
+compares `main` with the commit of the last successful dev deployment, so a change from a failed or skipped run is
+deployed by the next one. When nothing deployed changed, the build and deployment are skipped and `record` still runs
+as a success, since dev already runs the same images. A run started by hand from the Actions tab always deploys. The
+labels follow these rules:
 
 | Label | Color | Meaning |
 | --- | --- | --- |

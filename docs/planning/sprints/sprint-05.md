@@ -115,6 +115,7 @@ and its task #388 wait for #409 and #411.
 | 2026-10-03 | #484 with #485 added on the owner's decision recorded on #484: the merge-order and branch-update lessons in the skills. |
 | 2026-10-03 | #383 split on the owner's decision recorded on #16: #383 keeps the addon, its tools and identity; #487 (professions and gear), #488 (loadouts) and #489 (raid saves) follow it. #38 started early, on 3 October. |
 | 2026-10-04 | #491 with #492 and bug #493 with #494 added on the owner's decisions recorded on them: deploy dev only when a merge changes what it runs, and dispatch the main workflows once per merge. |
+| 2026-10-04 | #383 started; on the owner's decision recorded on #491 and #383, an addon change doesn't deploy dev. |
 
 ## Outcome
 

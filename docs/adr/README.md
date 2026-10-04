@@ -32,3 +32,4 @@
 | 0028 | [Keep each environment's secrets in its GitHub environment](0028-keep-the-test-secrets-in-a-github-environment.md) | Proposed |
 | 0029 | [Store data in PostgreSQL, one instance per environment](0029-store-data-in-postgresql.md) | Proposed |
 | 0030 | [Pair the companion with a confirmed code and a revocable device token](0030-pair-the-companion-with-a-confirmed-code.md) | Proposed |
+| 0031 | [Build the WoW addon in Lua 5.1 in `src/Addon`, checked by busted, luacheck and StyLua](0031-build-the-wow-addon-in-lua-under-src-addon.md) | Proposed |

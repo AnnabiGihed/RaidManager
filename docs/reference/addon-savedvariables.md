@@ -18,7 +18,8 @@ The addon has no network access and never stores the website's authentication se
   - `"observed"`: the game answered. The section has `observedAt` and its data. An observed absence is explicit,
     such as an empty `items` list, `empty = true` on a gear slot or `inGuild = false`.
   - `"unavailable"`: the game didn't answer, or the data can't be read now. The section has no data, and may have
-    `reason` and `attemptedAt`.
+    `reason` and `attemptedAt`. The addon gives `reason = "not-captured"` for a section its version doesn't capture
+    yet.
 
   A section is never left out to mean "none", and an unavailable value is never written as an empty one.
 - **Times:** `observedAt` and `attemptedAt` are `time()` on the player's computer, in seconds since 1970 (UTC).

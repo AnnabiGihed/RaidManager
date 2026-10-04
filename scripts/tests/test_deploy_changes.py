@@ -28,7 +28,7 @@ class PathTests(unittest.TestCase):
                      "test/Containers/UI/Hosting/RaidManager.Web.Tests/Support/TestClock.cs", "scripts/work_gate.py",
                      "docs/mockups/sign-in.svg", ".github/workflows/review.yml", "mkdocs.yml",
                      "test/Fixtures/Addon/SavedVariables/one-character/WTF/Account/A/SavedVariables/RaidManager.lua",
-                     "srcs/readme.md", ""):
+                     "srcs/readme.md", "", "src/Addon/RaidManager/Core.lua", "src/Addon/RaidManager/RaidManager.toc"):
             with self.subTest(path=path):
                 self.assertFalse(affects_deployment(path))
 

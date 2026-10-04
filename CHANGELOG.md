@@ -9,6 +9,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- The RaidManager addon for WoW 3.3.5a, in `src/Addon/RaidManager/`: on entering the world it writes the
+  character's identity, guild, client and server time into `RaidManagerDB`, following the snapshot contract, with
+  the other sections unavailable until their capture comes; `/rm` shows the sections and `/rm sync` captures again.
+  busted specs compare the capture with the contract's fixtures, and the `addon` workflow runs them with luacheck
+  and StyLua. ADR-0031 proposes the language, place and tools, and an addon change no longer deploys dev (#383).
 - The addon snapshot contract, schema version 1: every section of a character's SavedVariables snapshot is observed
   or unavailable, with its observation time, so an unavailable value is never read as an empty one; raw game values
   only, and a complete-scan flag on raid saves. Fixtures cover one character, two account folders, an incomplete

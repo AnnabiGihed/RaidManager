@@ -16,6 +16,7 @@ nav:
   - Diagram maintenance: how-to/diagrams.md
   - Review a pull request: how-to/review-a-pull-request.md
   - Design a screen: how-to/design-a-screen.md
+  - Test the addon: how-to/test-the-addon.md
   - Set up Discord: how-to/set-up-discord.md
   - Provision the server: how-to/provision-the-server.md
   - Glossary: glossary.md
@@ -67,6 +68,7 @@ nav:
       - Environment secrets: adr/0028-keep-the-test-secrets-in-a-github-environment.md
       - PostgreSQL: adr/0029-store-data-in-postgresql.md
       - Companion pairing: adr/0030-pair-the-companion-with-a-confirmed-code.md
+      - WoW addon in Lua: adr/0031-build-the-wow-addon-in-lua-under-src-addon.md
 theme:
   name: material
 markdown_extensions:
