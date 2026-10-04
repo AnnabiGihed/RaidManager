@@ -16,6 +16,16 @@ Companion, in its desktop window:
 7. The code expired. Get a new code shows 5.
 8. The pairing was revoked on the website. Pair again shows 5.
 
+Website states added by #513 (owner decisions on #513, 2026-10-04):
+9. The code expired. 10. The code was already confirmed. 11. No pairing shows the code. 12. The page was opened
+without a code. 13. The code can't be checked; Try again shows 1. Each offers "See paired companions", which shows 14.
+14. Paired companions with one expired after 180 days unused, and a revocation that failed.
+15. No paired companions yet. 16. The companions can't be loaded; Try again shows 2.
+17. The confirmation failed, on the confirm page.
+
+Uploads come with #384, so "Last upload" says "No upload yet" until then (owner decision on #513). Times are in UTC,
+as on the character review page.
+
 Run from the repository root: python scripts/mockups/companion_pairing.py
 Once the owner edits the design in Penpot, the downloaded file replaces docs/mockups/companion-pairing.penpot and
 this script is no longer run.
@@ -50,6 +60,18 @@ WAITING = "5 · Companion: waiting"
 PAIRED = "6 · Companion: paired"
 EXPIRED = "7 · Companion: code expired"
 UNPAIRED = "8 · Companion: pairing revoked"
+CODE_EXPIRED = "9 · Website: code expired"
+CODE_USED = "10 · Website: code already confirmed"
+CODE_UNKNOWN = "11 · Website: unknown code"
+NO_CODE = "12 · Website: opened without a code"
+CODE_FAILED = "13 · Website: code can't be checked"
+EXPIRED_LIST = "14 · Website: expired companion, revoke failed"
+EMPTY_LIST = "15 · Website: no paired companions"
+LIST_FAILED = "16 · Website: companions can't be loaded"
+CONFIRM_FAILED = "17 · Website: confirmation failed"
+NO_UPLOAD = "No upload yet"
+CONFIRM_SUBTITLE = "Check that the code matches the one on your companion, then confirm. Only pair a computer you use."
+TRY_AGAIN = "Nothing changed. Try again in a moment."
 INNER_W = WINDOW_W - 2 * WINDOW_PADDING
 
 
@@ -61,8 +83,7 @@ def confirm() -> list[Item]:
     top, width = CONTENT_TOP + 120, 560
     x = CONTENT_X + 24
     return [
-        page_header("Companion", "Pair this companion",
-                    "Check that the code matches the one on your companion, then confirm. Only pair a computer you use."),
+        page_header("Companion", "Pair this companion", CONFIRM_SUBTITLE),
         Group("Code card", [
             *card(CONTENT_X, top, width, 300),
             label("Code label", x, top + 36, CODE_LABEL),
@@ -76,27 +97,32 @@ def confirm() -> list[Item]:
     ]
 
 
-def companions_table(revoked: bool, linked: bool) -> Group:
+def companions_table(revoked: bool, linked: bool, expired: bool = False) -> Group:
     top, head_h, row_h = CONTENT_TOP + 120, 44, 72
     columns = {"computer": 24, "paired": 300, "upload": 520, "status": 760, "action": 900}
-    rows = [(DESKTOP, "Today, 14:02", "Today, 14:05", False), (LAPTOP, "12 September", "28 September, 21:40", revoked)]
+    laptop_status = "Expired" if expired else "Revoked" if revoked else "Active"
+    laptop_paired = "12 Mar, 21:40 UTC" if expired else "12 Sep, 21:40 UTC"
+    rows = [(DESKTOP, "Today, 14:02 UTC", "Active"), (LAPTOP, laptop_paired, laptop_status)]
     items: list[Item] = card(CONTENT_X, top, CONTENT_W, head_h + row_h * len(rows) + 8)
     items.append(Group("Table header", [
         label(f"{heading.title()} heading", CONTENT_X + columns[key], top + 27, heading)
         for key, heading in (("computer", "COMPUTER"), ("paired", "PAIRED"), ("upload", "LAST UPLOAD"),
                              ("status", "STATUS"))]))
-    for index, (computer, paired, upload, is_revoked) in enumerate(rows):
+    for index, (computer, paired, status) in enumerate(rows):
         y = top + head_h + index * row_h
         row: list[Item] = [
             Rect("Divider", CONTENT_X, y, CONTENT_W, 1, DIVIDER),
             text("Computer", CONTENT_X + columns["computer"], y + 41, computer, 14, 600),
             text("Paired", CONTENT_X + columns["paired"], y + 41, paired, 13, 400, SECONDARY),
-            text("Last upload", CONTENT_X + columns["upload"], y + 41, upload, 13, 400, SECONDARY),
-            badge("Status badge", CONTENT_X + columns["status"], y + 24, "Revoked" if is_revoked else "Active",
-                  "neutral" if is_revoked else "success"),
+            text("Last upload", CONTENT_X + columns["upload"], y + 41, NO_UPLOAD, 13, 400, MUTED),
+            badge("Status badge", CONTENT_X + columns["status"], y + 24, status,
+                  "success" if status == "Active" else "neutral"),
         ]
-        if is_revoked:
-            row.append(text("Revoked at", CONTENT_X + columns["action"], y + 41, "Revoked today, 17:20", 13, 400, MUTED))
+        if status == "Revoked":
+            row.append(text("Revoked at", CONTENT_X + columns["action"], y + 41, "Revoked today, 17:20 UTC", 13, 400,
+                            MUTED))
+        elif status == "Expired":
+            row.append(text("Expired note", CONTENT_X + columns["action"], y + 41, "Unused for 180 days", 13, 400, MUTED))
         else:
             target = Click("navigate", REVOKE) if linked and computer == LAPTOP else None
             row.append(button("Revoke button", CONTENT_X + columns["action"], y + 16, "Revoke", "secondary", 96, target))
@@ -104,20 +130,62 @@ def companions_table(revoked: bool, linked: bool) -> Group:
     return Group("Companions table", items)
 
 
-def toast(title: str, message: str) -> Group:
+def toast(title: str, message: str, accent: str = ACCENT) -> Group:
     x = BOARD_W - 40 - 380
-    return Group("Notification", [*card(x, 80, 380, 72, ACCENT),
+    return Group("Notification", [*card(x, 80, 380, 72, accent),
                                   text("Title", x + 24, 111, title, 14, 600),
                                   text("Message", x + 24, 133, message, 13, 400, SECONDARY)])
 
 
-def companions(revoked: bool = False, linked: bool = True) -> list[Item]:
+def companions_header() -> Group:
+    return page_header("Companion", "Paired companions",
+                       "These computers can upload your character data. Revoke one you no longer use.")
+
+
+def companions(revoked: bool = False, linked: bool = True, expired: bool = False) -> list[Item]:
     return [
-        page_header("Companion", "Paired companions",
-                    "These computers can upload your character data. Revoke one you no longer use."),
-        companions_table(revoked, linked),
+        companions_header(),
+        companions_table(revoked, linked, expired),
         text("Pairing note", CONTENT_X, CONTENT_TOP + 120 + 44 + 2 * 72 + 44,
              "To pair another computer, start pairing in its companion.", 13, 400, MUTED),
+    ]
+
+
+def code_problem(title: str, message: str, tone: str, retry: bool = False) -> list[Item]:
+    """The confirm page when the code can't be confirmed: a notice, and where to go next."""
+    top, width = CONTENT_TOP + 120, 560
+    items: list[Item] = [page_header("Companion", "Pair this companion", CONFIRM_SUBTITLE),
+                         notice("Code notice", CONTENT_X, top, width, title, message, tone)]
+    x = CONTENT_X
+    if retry:
+        items.append(button("Try again button", x, top + 96, "Try again", "primary", 112, Click("navigate", CONFIRM)))
+        x += 120
+    items.append(button("Companions button", x, top + 96, "See paired companions", "secondary", None,
+                        Click("navigate", EXPIRED_LIST)))
+    return items
+
+
+def empty_companions() -> list[Item]:
+    top = CONTENT_TOP + 120
+    return [
+        companions_header(),
+        Group("Empty state", [
+            *card(CONTENT_X, top, CONTENT_W, 136),
+            text("Title", CONTENT_X, top + 56, "No paired computers yet", 18, 700, P["Text/primary"], CONTENT_W,
+                 "center"),
+            text("Message", CONTENT_X, top + 88, "To pair a computer, start pairing in its companion.", 14, 400,
+                 SECONDARY, CONTENT_W, "center"),
+        ]),
+    ]
+
+
+def companions_failed() -> list[Item]:
+    top = CONTENT_TOP + 120
+    return [
+        companions_header(),
+        notice("Error message", CONTENT_X, top, CONTENT_W, "We couldn't load your companions",
+               "Nothing was revoked. Try again in a moment.", "danger"),
+        button("Try again button", CONTENT_X, top + 96, "Try again", "primary", 112, Click("navigate", PAIRED_LIST)),
     ]
 
 
@@ -215,9 +283,10 @@ def unpaired() -> list[Item]:
 def boards() -> list[Board]:
     column, row = BOARD_W + BOARD_GAP, BOARD_H + BOARD_GAP
     window = WINDOW_W + BOARD_GAP
+    danger = P["Status/danger"]
 
-    def website(name: str, x: float, content: list[Item]) -> Board:
-        return app_screen(name, x, 0, PAGE, content, user=PLAYER)
+    def website(name: str, x: float, content: list[Item], y: float = 0) -> Board:
+        return app_screen(name, x, y, PAGE, content, user=PLAYER)
 
     return [
         website(CONFIRM, 0, confirm()),
@@ -229,13 +298,32 @@ def boards() -> list[Board]:
         companion_window(PAIRED, window, row, paired()),
         companion_window(EXPIRED, 2 * window, row, expired()),
         companion_window(UNPAIRED, 3 * window, row, unpaired()),
+        website(CODE_EXPIRED, 0, code_problem(
+            "This code expired", "Codes last 10 minutes. Get a new code in the companion.", "warning"), 2 * row),
+        website(CODE_USED, column, code_problem(
+            "This code was already confirmed", "If you confirmed it, the companion is paired. If not, get a new code.",
+            "info"), 2 * row),
+        website(CODE_UNKNOWN, 2 * column, code_problem(
+            "No companion is waiting for this code", "Check the code on your companion, or get a new one there.",
+            "warning"), 2 * row),
+        website(NO_CODE, 3 * column, code_problem(
+            "Start pairing in the companion", "It shows a code and opens this page with it.", "info"), 2 * row),
+        website(CODE_FAILED, 0, code_problem(
+            "We couldn't check this code", "Nothing was paired. Try again in a moment.", "danger", retry=True), 3 * row),
+        website(EXPIRED_LIST, column, [*companions(linked=False, expired=True),
+                                       toast(f"{DESKTOP} wasn't revoked", TRY_AGAIN, danger)], 3 * row),
+        website(EMPTY_LIST, 2 * column, empty_companions(), 3 * row),
+        website(LIST_FAILED, 3 * column, companions_failed(), 3 * row),
+        website(CONFIRM_FAILED, 0, [*confirm(), toast(f"{DESKTOP} wasn't paired", TRY_AGAIN, danger)], 4 * row),
     ]
 
 
 def main(repository: Path = REPOSITORY) -> Path:
     return write_mockup(repository, "companion-pairing", "Companion pairing", boards(),
                         flows={"Pair a companion": WAITING, "Revoke a companion": PAIRED_LIST,
-                               "Expired code": EXPIRED, "Revoked companion": UNPAIRED})
+                               "Expired code": EXPIRED, "Revoked companion": UNPAIRED,
+                               "Code problems on the website": CODE_EXPIRED,
+                               "Companions can't be loaded": LIST_FAILED})
 
 
 if __name__ == "__main__":
