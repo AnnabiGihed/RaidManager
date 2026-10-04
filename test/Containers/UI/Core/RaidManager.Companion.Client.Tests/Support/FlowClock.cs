@@ -20,6 +20,9 @@ internal sealed class FlowClock : FakeTimeProvider
 
     /// <summary>Stores the number of timers given a due time.</summary>
     private int _timersCreated;
+
+    /// <summary>Stores the number of times a timer fired.</summary>
+    private int _timersFired;
     #endregion Fields
 
     #region Constructors
@@ -35,12 +38,21 @@ internal sealed class FlowClock : FakeTimeProvider
     /// <inheritdoc />
     public override ITimer CreateTimer(TimerCallback callback, object? state, TimeSpan dueTime, TimeSpan period)
     {
-        var timer = base.CreateTimer(callback, state, dueTime, period);
+        ArgumentNullException.ThrowIfNull(callback);
+        var timer = base.CreateTimer(
+            timerState =>
+            {
+                Interlocked.Increment(ref _timersFired);
+                callback(timerState);
+            },
+            state,
+            dueTime,
+            period);
         CountIfArmed(dueTime);
         return new ArmedTimer(timer, this);
     }
 
-    /// <summary>Advances the clock one second at a time, each time waiting until the flow waits again or is done.</summary>
+    /// <summary>Advances the clock one second at a time; after a second that ended a wait, waits until the flow waits again or is done.</summary>
     /// <param name="seconds">The seconds.</param>
     /// <param name="isDone">Whether the flow has ended, so no new wait will come.</param>
     public void AdvanceSeconds(int seconds, Func<bool> isDone)
@@ -49,7 +61,14 @@ internal sealed class FlowClock : FakeTimeProvider
         for (var second = 0; second < seconds; second++)
         {
             var timers = Volatile.Read(ref _timersCreated);
+            var fired = Volatile.Read(ref _timersFired);
             Advance(TimeSpan.FromSeconds(1));
+            if (Volatile.Read(ref _timersFired) == fired)
+            {
+                // No wait of the flow ended during this second, so there is nothing to catch up with.
+                continue;
+            }
+
             SpinWait.SpinUntil(() => Volatile.Read(ref _timersCreated) > timers || isDone(), Patience)
                 .ShouldBeTrue("The pairing flow neither waited again nor ended after a second passed.");
         }

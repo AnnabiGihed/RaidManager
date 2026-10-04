@@ -14,13 +14,16 @@ internal sealed class FakeCompanionApi : ICompanionApi
     #region Fields
     /// <summary>Stores the answers to the next polls, in order; an empty queue answers pending.</summary>
     private readonly Queue<TokenPoll> _polls = new();
+
+    /// <summary>Stores the answers to the next token checks, in order; an empty queue answers <see cref="Check"/>.</summary>
+    private readonly Queue<TokenCheckStatus> _checks = new();
     #endregion Fields
 
     #region Public Properties
     /// <summary>Gets or sets the started pairing; <see langword="null"/> makes the start fail as unreachable.</summary>
     public StartedPairing? Started { get; set; }
 
-    /// <summary>Gets or sets the answer to a token check.</summary>
+    /// <summary>Gets or sets the answer to a token check once the scripted answers are used up.</summary>
     public TokenCheckStatus Check { get; set; } = TokenCheckStatus.Valid;
 
     /// <summary>Gets the computer labels pairings were started with.</summary>
@@ -37,6 +40,16 @@ internal sealed class FakeCompanionApi : ICompanionApi
     /// <summary>Queues the answer to a later poll.</summary>
     /// <param name="poll">The answer.</param>
     public void AnswerPoll(TokenPoll poll) => _polls.Enqueue(poll);
+
+    /// <summary>Queues the answers to the next token checks.</summary>
+    /// <param name="checks">The answers, in order.</param>
+    public void AnswerChecks(params TokenCheckStatus[] checks)
+    {
+        foreach (var check in checks)
+        {
+            _checks.Enqueue(check);
+        }
+    }
 
     /// <inheritdoc />
     public Task<StartedPairing> StartPairingAsync(string computerLabel, CancellationToken cancellationToken)
@@ -58,7 +71,7 @@ internal sealed class FakeCompanionApi : ICompanionApi
     public Task<TokenCheckStatus> CheckTokenAsync(string deviceToken, CancellationToken cancellationToken)
     {
         CheckedTokens.Add(deviceToken);
-        return Task.FromResult(Check);
+        return Task.FromResult(_checks.Count > 0 ? _checks.Dequeue() : Check);
     }
     #endregion Public Methods
 }

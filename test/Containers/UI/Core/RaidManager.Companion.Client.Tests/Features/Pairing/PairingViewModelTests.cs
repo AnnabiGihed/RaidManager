@@ -228,7 +228,7 @@ public sealed class PairingViewModelTests : IDisposable
     private void Advance(int seconds, PairingViewModel? viewModel = null)
     {
         var flowOwner = viewModel ?? _viewModel;
-        _time.AdvanceSeconds(seconds, () => flowOwner.State != PairingState.Waiting);
+        _time.AdvanceSeconds(seconds, () => flowOwner.State is PairingState.Expired or PairingState.Revoked or PairingState.CodeRequestFailed);
     }
     #endregion Private Helpers
 

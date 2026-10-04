@@ -13,7 +13,8 @@ namespace RaidManager.Companion.Client.Features.Pairing;
 /// Date: 2026-10-04<br/>
 /// Purpose: The companion side of ADR-0030 and the states of the companion pairing mockup (boards 5 to 8, 19 and 20):
 /// request a code, open the website with it, poll every five seconds or more until the player confirms it or it
-/// expires, store the token, and check a stored token at start, forgetting it only when RaidManager refuses it.
+/// expires, store the token, and check the token at start, every five minutes while paired and when the player opens
+/// the companion, forgetting it only when RaidManager refuses it (owner decision on #524).
 /// </remarks>
 public sealed partial class PairingViewModel : ViewModelBase, IDisposable
 {
@@ -26,6 +27,9 @@ public sealed partial class PairingViewModel : ViewModelBase, IDisposable
 
     /// <summary>Stores how often the countdown is updated.</summary>
     private static readonly TimeSpan Tick = TimeSpan.FromSeconds(1);
+
+    /// <summary>Stores how often a paired companion checks its token (owner decision on #524).</summary>
+    private static readonly TimeSpan PairingCheckInterval = TimeSpan.FromMinutes(5);
 
     /// <summary>Stores the API client.</summary>
     private readonly ICompanionApi _api;
@@ -62,6 +66,9 @@ public sealed partial class PairingViewModel : ViewModelBase, IDisposable
 
     /// <summary>Stores the name of the player this computer is paired with.</summary>
     private string _playerName = string.Empty;
+
+    /// <summary>Stores the device token while paired, to check it; never exposed or logged.</summary>
+    private string? _deviceToken;
     #endregion Fields
 
     #region Constructors
@@ -91,6 +98,7 @@ public sealed partial class PairingViewModel : ViewModelBase, IDisposable
         StartCommand = new AsyncRelayCommand(StartAsync, OnFlowFailed);
         RequestCodeCommand = new AsyncRelayCommand(RequestCodeAsync, OnFlowFailed);
         OpenWebsiteCommand = new AsyncRelayCommand(OpenWebsiteAsync, OnOpenWebsiteFailed);
+        CheckPairingCommand = new AsyncRelayCommand(CheckPairingAsync, OnPairingCheckFailed);
     }
     #endregion Constructors
 
@@ -103,6 +111,9 @@ public sealed partial class PairingViewModel : ViewModelBase, IDisposable
 
     /// <summary>Gets the command behind "Open the website".</summary>
     public AsyncRelayCommand OpenWebsiteCommand { get; }
+
+    /// <summary>Gets the command that checks the token at once, when the player opens the companion.</summary>
+    public AsyncRelayCommand CheckPairingCommand { get; }
 
     /// <summary>Gets this computer's name, as the website shows it.</summary>
     public string ComputerLabel { get; }
@@ -209,6 +220,12 @@ public sealed partial class PairingViewModel : ViewModelBase, IDisposable
     [LoggerMessage(Level = LogLevel.Warning, Message = "The companion couldn't open the website in the default browser.")]
     private static partial void LogBrowserFailed(ILogger logger, Exception? exception);
 
+    /// <summary>Writes that a check of the pairing failed.</summary>
+    /// <param name="logger">The logger.</param>
+    /// <param name="exception">The failure.</param>
+    [LoggerMessage(Level = LogLevel.Warning, Message = "The companion couldn't check its pairing.")]
+    private static partial void LogPairingCheckFailed(ILogger logger, Exception exception);
+
     /// <summary>Loads the stored pairing and checks it, or requests a code when there is none.</summary>
     /// <returns>A task that completes when the start is done.</returns>
     private async Task StartAsync()
@@ -221,12 +238,74 @@ public sealed partial class PairingViewModel : ViewModelBase, IDisposable
         }
 
         PlayerName = stored.PlayerName;
+        _deviceToken = stored.DeviceToken;
         State = PairingState.Paired;
-        if (await _api.CheckTokenAsync(stored.DeviceToken, _flow.Token) == TokenCheckStatus.Refused)
+        if (!await IsRevokedAsync(_flow.Token))
         {
-            _store.Delete();
-            State = PairingState.Revoked;
+            _ = WatchPairingAsync(_flow.Token);
         }
+    }
+
+    /// <summary>Checks the token at once, when the companion is paired.</summary>
+    /// <returns>A task that completes when the check is done.</returns>
+    private async Task CheckPairingAsync()
+    {
+        if (IsPaired)
+        {
+            await IsRevokedAsync(_flow.Token);
+        }
+    }
+
+    /// <summary>Checks the token every five minutes in the background, until it is refused or the flow stops.</summary>
+    /// <param name="cancellationToken">The flow's token.</param>
+    /// <returns>A task that completes when the watch ends.</returns>
+    private async Task WatchPairingAsync(CancellationToken cancellationToken)
+    {
+        try
+        {
+            await CheckUntilRevokedAsync(cancellationToken);
+        }
+        catch (OperationCanceledException) when (cancellationToken.IsCancellationRequested)
+        {
+            // A new code or the end of the companion stopped the watch.
+        }
+        catch (Exception exception)
+        {
+            // Nothing awaits this background watch; a failed check keeps the pairing, as a check that can't reach
+            // RaidManager does.
+            OnPairingCheckFailed(exception);
+        }
+    }
+
+    /// <summary>Checks the token every five minutes while the companion stays paired.</summary>
+    /// <param name="cancellationToken">The flow's token.</param>
+    /// <returns>A task that completes when the token is refused or no longer held.</returns>
+    private async Task CheckUntilRevokedAsync(CancellationToken cancellationToken)
+    {
+        while (_deviceToken is not null)
+        {
+            await Task.Delay(PairingCheckInterval, _time, cancellationToken);
+            if (await IsRevokedAsync(cancellationToken))
+            {
+                return;
+            }
+        }
+    }
+
+    /// <summary>Checks the token; a refusal forgets it and shows that the pairing was revoked (board 8).</summary>
+    /// <param name="cancellationToken">A token to cancel the check.</param>
+    /// <returns><see langword="true"/> when RaidManager refused the token.</returns>
+    private async Task<bool> IsRevokedAsync(CancellationToken cancellationToken)
+    {
+        if (_deviceToken is not { } token || await _api.CheckTokenAsync(token, cancellationToken) != TokenCheckStatus.Refused)
+        {
+            return false;
+        }
+
+        _store.Delete();
+        _deviceToken = null;
+        State = PairingState.Revoked;
+        return true;
     }
 
     /// <summary>Requests a new code, shows it, opens the website, and starts waiting for its confirmation.</summary>
@@ -310,7 +389,9 @@ public sealed partial class PairingViewModel : ViewModelBase, IDisposable
                 case TokenPollStatus.Collected:
                     await _store.SaveAsync(poll.Companion!, cancellationToken);
                     PlayerName = poll.Companion!.PlayerName;
+                    _deviceToken = poll.Companion!.DeviceToken;
                     State = PairingState.Paired;
+                    await CheckUntilRevokedAsync(cancellationToken);
                     return;
                 case TokenPollStatus.Expired or TokenPollStatus.Invalid:
                     State = PairingState.Expired;
@@ -348,6 +429,10 @@ public sealed partial class PairingViewModel : ViewModelBase, IDisposable
         State = PairingState.CodeRequestFailed;
     }
 
+    /// <summary>Records that a check of the pairing failed; the pairing stays, as ADR-0030 keeps it when unchecked.</summary>
+    /// <param name="exception">The failure.</param>
+    private void OnPairingCheckFailed(Exception exception) => LogPairingCheckFailed(_logger, exception);
+
     /// <summary>Records that the browser couldn't be opened; the player can still open the website.</summary>
     /// <param name="exception">The failure.</param>
     private void OnOpenWebsiteFailed(Exception exception) => LogBrowserFailed(_logger, exception);
@@ -356,6 +441,7 @@ public sealed partial class PairingViewModel : ViewModelBase, IDisposable
     /// <returns>The new flow's token.</returns>
     private CancellationToken RestartFlow()
     {
+        _deviceToken = null;
         _flow.Cancel();
         _flow.Dispose();
         _flow = new CancellationTokenSource();

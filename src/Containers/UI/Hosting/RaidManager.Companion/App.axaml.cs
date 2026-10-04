@@ -19,7 +19,8 @@ namespace RaidManager.Companion;
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-04<br/>
 /// Purpose: Builds the services once, shows the window, keeps running in the tray when the window closes, logs any
-/// exception that escapes a command, and shows the window again when the player starts the companion a second time.
+/// exception that escapes a command, and shows the window and checks the pairing when the player starts the companion
+/// a second time.
 /// </remarks>
 public sealed partial class App : Application
 {
@@ -81,13 +82,14 @@ public sealed partial class App : Application
         Dispatcher.UIThread.UnhandledException += (_, e) => LogEscapedException(logger, e.Exception);
         TaskScheduler.UnobservedTaskException += (_, e) => LogEscapedException(logger, e.Exception);
 
-        DataContext = _host.Services.GetRequiredService<TrayViewModel>();
+        var tray = _host.Services.GetRequiredService<TrayViewModel>();
+        DataContext = tray;
         var pairing = _host.Services.GetRequiredService<PairingViewModel>();
         var window = new MainWindow { DataContext = pairing };
         shell.Attach(window);
         desktop.MainWindow = window;
         desktop.Exit += (_, _) => _host.Dispose();
-        _activation?.Listen(() => Dispatcher.UIThread.Post(shell.ShowWindow));
+        _activation?.Listen(() => Dispatcher.UIThread.Post(() => tray.OpenCommand.Execute(null)));
         pairing.StartCommand.Execute(null);
     }
     #endregion Private Helpers
