@@ -1,0 +1,47 @@
+@page "/companion/pair"
+
+<PageTitle>Pair this companion</PageTitle>
+
+<div class="pair-page">
+    <PageHeading Eyebrow="Companion" Title="Pair this companion" Subtitle="Check that the code matches the one on your companion, then confirm. Only pair a computer you use." />
+
+    @if (_notice is { } notice)
+    {
+        <Toast Title="@notice.Title" Message="@notice.Detail" Tone="@CompanionTones.ToastOf(notice.Kind)" data-testid="pair-notice" />
+    }
+
+    @if (ViewModel.Status == CompanionPageStatus.Loading)
+    {
+        <TextNote Text="Checking the code…" />
+    }
+    else if (ViewModel.Problem is { } problem)
+    {
+        <div class="pair-column">
+            <Notice Tone="@CompanionTones.NoticeOf(problem.Kind)" Title="@problem.Title" Message="@problem.Detail" data-testid="pair-problem" />
+            <div class="pair-actions">
+                @if (ViewModel.Status == CompanionPageStatus.Failed)
+                {
+                    <ActionButton Text="Try again" Click="LoadAsync" data-testid="try-again" />
+                }
+                <ActionButton Text="See paired companions" Appearance="ActionButtonAppearance.Secondary" Click="ShowCompanions" data-testid="see-companions" />
+            </div>
+        </div>
+    }
+    else if (ViewModel.Pairing is { } pairing)
+    {
+        <div class="pair-card" data-testid="pair-card">
+            <SurfaceCard>
+                <ChildContent>
+                    <div class="pair-card-body">
+                        <CodeDisplay Label="Pairing code" Code="@pairing.PairingCode" Caption="@ViewModel.ExpiryLabel()" data-testid="pairing-code" />
+                        <LabeledValue Label="Computer" Value="@pairing.ComputerLabel" Plain="true" data-testid="computer" />
+                    </div>
+                </ChildContent>
+                <Actions>
+                    <ActionButton Text="Confirm pairing" Disabled="@ViewModel.IsConfirming" Click="ConfirmAsync" data-testid="confirm-pairing" />
+                    <ActionButton Text="Cancel" Appearance="ActionButtonAppearance.Secondary" Disabled="@ViewModel.IsConfirming" Click="ShowCompanions" data-testid="cancel-pairing" />
+                </Actions>
+            </SurfaceCard>
+        </div>
+    }
+</div>

@@ -1,0 +1,36 @@
+/* Placement only: the parts are shared components, and colors come from the project-wide theme. */
+.pair-page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    box-sizing: border-box;
+    max-width: 1168px;
+    /* With the content area's own 16 px, the page starts where the mockup's content does. */
+    padding: 24px;
+}
+
+/* The code card and the notices are 560 px wide, as in boards 1 and 9 to 13. */
+.pair-card,
+.pair-column {
+    width: 560px;
+    max-width: 100%;
+}
+
+/* Board 1: the computer sits 28 px under the code's expiry, and the buttons 28 px under the computer. */
+.pair-card-body {
+    display: flex;
+    flex-direction: column;
+    gap: 28px;
+    padding: 4px 0 12px;
+}
+
+.pair-column {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.pair-actions {
+    display: flex;
+    gap: 8px;
+}

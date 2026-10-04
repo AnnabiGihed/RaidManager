@@ -1,6 +1,7 @@
 using RaidManager.ViewModels.Features.Shared.Shell;
 using RaidManager.Web.Features.Characters;
 using RaidManager.Web.Features.Communities;
+using RaidManager.Web.Features.Companions;
 
 namespace RaidManager.Web.Features.Shared.Layout;
 
@@ -23,6 +24,10 @@ public static class ShellNavigation
         new(ShellSection.Player, "Add RaidManager", CommunityRoutes.AlreadyLinked, InSidebar: false),
         new(ShellSection.Player, "Community settings", CommunityRoutes.Settings, InSidebar: false),
         new(ShellSection.Player, "Members", CommunityRoutes.Members, InSidebar: false),
+
+        // The confirm page sits under Companion & sync, which stays highlighted there (owner decision on #513).
+        new(ShellSection.Player, "Companion & sync", CompanionRoutes.List, MatchesSubpaths: true),
+        new(ShellSection.Player, "Companion & sync", CompanionRoutes.Pair, InSidebar: false),
     ];
     #endregion Fields
 

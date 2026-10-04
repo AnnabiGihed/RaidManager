@@ -2,6 +2,7 @@ using Radzen;
 using RaidManager.ViewModels.Features.Authentication;
 using RaidManager.ViewModels.Features.Characters;
 using RaidManager.ViewModels.Features.Communities;
+using RaidManager.ViewModels.Features.Companions;
 using RaidManager.ViewModels.Features.Shared.Shell;
 using RaidManager.Web.Components;
 using RaidManager.Web.Features.Authentication;
@@ -23,6 +24,8 @@ builder.Services.AddTransient<CommunityViewModel>();
 builder.Services.AddTransient<CommunityRolesViewModel>();
 builder.Services.AddTransient<CommunityMembersViewModel>();
 builder.Services.AddScoped<ShellCommunityViewModel>();
+builder.Services.AddTransient<PairCompanionViewModel>();
+builder.Services.AddTransient<PairedCompanionsViewModel>();
 builder.Services.AddSingleton(TimeProvider.System);
 builder.Services.AddShellNavigation();
 

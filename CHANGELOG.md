@@ -9,6 +9,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- The website's Companion & sync pages: the page a companion opens with its code shows the code, the computer and
+  the expiry, and confirms the pairing, or says why the code can't be confirmed (expired, already confirmed, unknown,
+  missing, or not checkable); the paired companions list shows each computer's pairing time and status and revokes
+  one after a confirmation. Last upload says "No upload yet" until uploads come with #384, and a companion unused for
+  180 days shows as expired. "Companion & sync" joins the sidebar, and the mockup gains the boards for these states
+  (#513).
 - The API pairs a desktop companion as ADR-0030 decides, now Accepted: the companion starts a pairing on
   `POST /companion/pairings` and gets a code to show, the signed-in player checks and confirms the code through the
   website's internal routes within 10 minutes, and the companion collects its device token once on

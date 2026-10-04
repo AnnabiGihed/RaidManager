@@ -1,0 +1,9 @@
+@namespace RaidManager.Web.Features.Shared.Components
+<div class="@CssClass" @attributes="AdditionalAttributes">
+    <span class="code-display-label">@Label</span>
+    <span class="code-display-code">@Code</span>
+    @if (!string.IsNullOrWhiteSpace(Caption))
+    {
+        <span class="code-display-caption">@Caption</span>
+    }
+</div>

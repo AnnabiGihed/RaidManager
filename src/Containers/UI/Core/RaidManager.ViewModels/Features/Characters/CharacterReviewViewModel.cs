@@ -1,4 +1,4 @@
-using System.Globalization;
+using RaidManager.ViewModels.Features.Shared;
 
 namespace RaidManager.ViewModels.Features.Characters;
 
@@ -152,22 +152,7 @@ public sealed class CharacterReviewViewModel
     public string FoundLabel(CharacterClaim claim)
     {
         ArgumentNullException.ThrowIfNull(claim);
-        var found = claim.RequestedAtUtc.ToUniversalTime();
-        var today = _timeProvider.GetUtcNow().UtcDateTime.Date;
-        var time = found.ToString("HH:mm", CultureInfo.InvariantCulture);
-        var day = found.UtcDateTime.Date;
-        if (day == today)
-        {
-            return $"Today, {time} UTC";
-        }
-
-        if (day == today.AddDays(-1))
-        {
-            return $"Yesterday, {time} UTC";
-        }
-
-        var format = found.Year == today.Year ? "d MMM" : "d MMM yyyy";
-        return $"{found.ToString(format, CultureInfo.InvariantCulture)}, {time} UTC";
+        return UtcTimeLabel.Format(claim.RequestedAtUtc, _timeProvider.GetUtcNow());
     }
     #endregion Public Methods
 

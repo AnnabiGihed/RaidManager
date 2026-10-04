@@ -38,5 +38,16 @@ public sealed class NoticeTests : BunitContext
         notice.Find(".notice-mark").TextContent.ShouldBe("!");
         notice.FindAll(".notice-message").ShouldBeEmpty();
     }
+
+    /// <summary>Renders a warning notice.</summary>
+    [Fact]
+    public void WarningNoticeIsAStatusMarkedWithAnExclamation()
+    {
+        var notice = Render<Notice>(parameters => parameters.Add(component => component.Title, "This code expired").Add(component => component.Tone, NoticeTone.Warning));
+
+        notice.Find(".notice").ClassList.ShouldContain("notice-warning");
+        notice.Find(".notice").GetAttribute("role").ShouldBe("status");
+        notice.Find(".notice-mark").TextContent.ShouldBe("!");
+    }
     #endregion Tests
 }

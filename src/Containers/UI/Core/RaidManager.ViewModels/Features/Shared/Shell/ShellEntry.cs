@@ -11,4 +11,5 @@ namespace RaidManager.ViewModels.Features.Shared.Shell;
 /// <param name="Title">The title shown in the sidebar and the breadcrumb.</param>
 /// <param name="Route">The page's route, starting with <c>/</c>.</param>
 /// <param name="InSidebar">Whether the sidebar lists the page.</param>
-public sealed record ShellEntry(ShellSection Section, string Title, string Route, bool InSidebar = true);
+/// <param name="MatchesSubpaths">Whether the sidebar entry stays highlighted on the pages under its route.</param>
+public sealed record ShellEntry(ShellSection Section, string Title, string Route, bool InSidebar = true, bool MatchesSubpaths = false);

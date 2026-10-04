@@ -1,11 +1,11 @@
-.labeled-value {
+.code-display {
     display: flex;
     flex-direction: column;
     gap: 6px;
     font-family: var(--rm-font-family);
 }
 
-.labeled-value-label {
+.code-display-label {
     color: var(--rm-text-muted);
     font-size: 11px;
     font-weight: 700;
@@ -13,18 +13,20 @@
     text-transform: uppercase;
 }
 
-.labeled-value-value {
-    color: var(--rm-text-primary);
-    font-size: 15px;
-    font-weight: 600;
+.code-display-code {
+    color: var(--rm-brand-accent);
+    font-size: 32px;
+    font-weight: 700;
+    letter-spacing: 4px;
+    line-height: 44px;
+    margin-top: 6px;
 }
 
-.labeled-value-plain {
-    font-size: 14px;
-    font-weight: 400;
+.code-display-muted .code-display-code {
+    color: var(--rm-text-muted);
 }
 
-.labeled-value-note {
+.code-display-caption {
     color: var(--rm-text-secondary);
     font-size: 13px;
 }

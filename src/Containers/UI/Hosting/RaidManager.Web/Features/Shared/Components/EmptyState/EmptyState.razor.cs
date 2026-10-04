@@ -2,7 +2,7 @@ using Microsoft.AspNetCore.Components;
 
 namespace RaidManager.Web.Features.Shared.Components;
 
-/// <summary>Says, in a centered card with a check mark, that nothing is left to do, and offers the way on.</summary>
+/// <summary>Says, in a centered card with an optional check mark, that nothing is left to do or there is nothing yet.</summary>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-02<br/>
@@ -20,6 +20,10 @@ public sealed partial class EmptyState
     [Parameter]
     [EditorRequired]
     public string Message { get; set; } = string.Empty;
+
+    /// <summary>Gets or sets a value indicating whether the check mark shows; off for "nothing yet" rather than "all done".</summary>
+    [Parameter]
+    public bool ShowsMark { get; set; } = true;
 
     /// <summary>Gets or sets optional extra content under the message, such as reminders.</summary>
     [Parameter]
