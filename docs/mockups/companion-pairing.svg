@@ -449,10 +449,30 @@
 <rect x="3392" y="1228" width="416" height="40" rx="8" fill="#5de0c1"/>
 <text x="3600" y="1253" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#102830" text-anchor="middle">Try again</text>
 </g>
-<text x="0" y="1946" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">9 · Website: code expired</text>
-<clipPath id="clip12"><rect x="0" y="1960" width="1440" height="900"/></clipPath>
-<rect x="0" y="1960" width="1440" height="900" fill="#0b111c"/>
+<text x="3920" y="966" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">21 · Companion: keeps running notification</text>
+<clipPath id="clip12"><rect x="3920" y="980" width="480" height="600"/></clipPath>
+<rect x="3920" y="980" width="480" height="600" fill="#0b111c"/>
 <g clip-path="url(#clip12)">
+<text x="3952" y="1040" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#eff5fa" text-anchor="start">When the window first closes</text>
+<text x="3952" y="1070" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Windows shows this notification once; later closes</text>
+<text x="3952" y="1090" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">stay silent. Quit in the tray menu ends the companion.</text>
+<text x="3952" y="1120" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Windows draws the notification in the system theme.</text>
+<rect x="4020.5" y="1400.5" width="363" height="115" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<rect x="4036" y="1416" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="4060" y="1429" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#9eadc1" text-anchor="start">RaidManager Companion</text>
+<text x="4036" y="1462" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">RaidManager Companion is still running</text>
+<text x="4036" y="1486" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Quit it from its icon in the notification area.</text>
+<rect x="3920" y="1532" width="480" height="48" fill="#0f1825"/>
+<rect x="3920" y="1532" width="480" height="1" fill="#2b3b50"/>
+<ellipse cx="4216" cy="1556" rx="6" ry="6" fill="#8394aa"/>
+<ellipse cx="4240" cy="1556" rx="6" ry="6" fill="#8394aa"/>
+<rect x="4264" y="1548" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="4344" y="1561" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#eff5fa" text-anchor="middle">17:20</text>
+</g>
+<text x="0" y="1946" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">9 · Website: code expired</text>
+<clipPath id="clip13"><rect x="0" y="1960" width="1440" height="900"/></clipPath>
+<rect x="0" y="1960" width="1440" height="900" fill="#0b111c"/>
+<g clip-path="url(#clip13)">
 <rect x="0" y="1960" width="240" height="900" fill="#0f1825"/>
 <rect x="239" y="1960" width="1" height="900" fill="#2b3b50"/>
 <rect x="20" y="1976" width="32" height="32" rx="8" fill="#0c2931"/>
@@ -510,9 +530,9 @@
 <text x="373.5" y="2305" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">See paired companions</text>
 </g>
 <text x="1520" y="1946" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">10 · Website: code already confirmed</text>
-<clipPath id="clip13"><rect x="1520" y="1960" width="1440" height="900"/></clipPath>
+<clipPath id="clip14"><rect x="1520" y="1960" width="1440" height="900"/></clipPath>
 <rect x="1520" y="1960" width="1440" height="900" fill="#0b111c"/>
-<g clip-path="url(#clip13)">
+<g clip-path="url(#clip14)">
 <rect x="1520" y="1960" width="240" height="900" fill="#0f1825"/>
 <rect x="1759" y="1960" width="1" height="900" fill="#2b3b50"/>
 <rect x="1540" y="1976" width="32" height="32" rx="8" fill="#0c2931"/>
@@ -570,9 +590,9 @@
 <text x="1893.5" y="2305" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">See paired companions</text>
 </g>
 <text x="3040" y="1946" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">11 · Website: unknown code</text>
-<clipPath id="clip14"><rect x="3040" y="1960" width="1440" height="900"/></clipPath>
+<clipPath id="clip15"><rect x="3040" y="1960" width="1440" height="900"/></clipPath>
 <rect x="3040" y="1960" width="1440" height="900" fill="#0b111c"/>
-<g clip-path="url(#clip14)">
+<g clip-path="url(#clip15)">
 <rect x="3040" y="1960" width="240" height="900" fill="#0f1825"/>
 <rect x="3279" y="1960" width="1" height="900" fill="#2b3b50"/>
 <rect x="3060" y="1976" width="32" height="32" rx="8" fill="#0c2931"/>
@@ -630,9 +650,9 @@
 <text x="3413.5" y="2305" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">See paired companions</text>
 </g>
 <text x="4560" y="1946" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">12 · Website: opened without a code</text>
-<clipPath id="clip15"><rect x="4560" y="1960" width="1440" height="900"/></clipPath>
+<clipPath id="clip16"><rect x="4560" y="1960" width="1440" height="900"/></clipPath>
 <rect x="4560" y="1960" width="1440" height="900" fill="#0b111c"/>
-<g clip-path="url(#clip15)">
+<g clip-path="url(#clip16)">
 <rect x="4560" y="1960" width="240" height="900" fill="#0f1825"/>
 <rect x="4799" y="1960" width="1" height="900" fill="#2b3b50"/>
 <rect x="4580" y="1976" width="32" height="32" rx="8" fill="#0c2931"/>
@@ -690,9 +710,9 @@
 <text x="4933.5" y="2305" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">See paired companions</text>
 </g>
 <text x="0" y="2926" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">13 · Website: code can&#x27;t be checked</text>
-<clipPath id="clip16"><rect x="0" y="2940" width="1440" height="900"/></clipPath>
+<clipPath id="clip17"><rect x="0" y="2940" width="1440" height="900"/></clipPath>
 <rect x="0" y="2940" width="1440" height="900" fill="#0b111c"/>
-<g clip-path="url(#clip16)">
+<g clip-path="url(#clip17)">
 <rect x="0" y="2940" width="240" height="900" fill="#0f1825"/>
 <rect x="239" y="2940" width="1" height="900" fill="#2b3b50"/>
 <rect x="20" y="2956" width="32" height="32" rx="8" fill="#0c2931"/>
@@ -752,9 +772,9 @@
 <text x="493.5" y="3285" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">See paired companions</text>
 </g>
 <text x="1520" y="2926" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">14 · Website: expired companion, revoke failed</text>
-<clipPath id="clip17"><rect x="1520" y="2940" width="1440" height="900"/></clipPath>
+<clipPath id="clip18"><rect x="1520" y="2940" width="1440" height="900"/></clipPath>
 <rect x="1520" y="2940" width="1440" height="900" fill="#0b111c"/>
-<g clip-path="url(#clip17)">
+<g clip-path="url(#clip18)">
 <rect x="1520" y="2940" width="240" height="900" fill="#0f1825"/>
 <rect x="1759" y="2940" width="1" height="900" fill="#2b3b50"/>
 <rect x="1540" y="2956" width="32" height="32" rx="8" fill="#0c2931"/>
@@ -830,9 +850,9 @@
 <text x="2564" y="3073" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Nothing changed. Try again in a moment.</text>
 </g>
 <text x="3040" y="2926" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">15 · Website: no paired companions</text>
-<clipPath id="clip18"><rect x="3040" y="2940" width="1440" height="900"/></clipPath>
+<clipPath id="clip19"><rect x="3040" y="2940" width="1440" height="900"/></clipPath>
 <rect x="3040" y="2940" width="1440" height="900" fill="#0b111c"/>
-<g clip-path="url(#clip18)">
+<g clip-path="url(#clip19)">
 <rect x="3040" y="2940" width="240" height="900" fill="#0f1825"/>
 <rect x="3279" y="2940" width="1" height="900" fill="#2b3b50"/>
 <rect x="3060" y="2956" width="32" height="32" rx="8" fill="#0c2931"/>
@@ -886,9 +906,9 @@
 <text x="3880" y="3252" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="middle">To pair a computer, start pairing in its companion.</text>
 </g>
 <text x="4560" y="2926" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">16 · Website: companions can&#x27;t be loaded</text>
-<clipPath id="clip19"><rect x="4560" y="2940" width="1440" height="900"/></clipPath>
+<clipPath id="clip20"><rect x="4560" y="2940" width="1440" height="900"/></clipPath>
 <rect x="4560" y="2940" width="1440" height="900" fill="#0b111c"/>
-<g clip-path="url(#clip19)">
+<g clip-path="url(#clip20)">
 <rect x="4560" y="2940" width="240" height="900" fill="#0f1825"/>
 <rect x="4799" y="2940" width="1" height="900" fill="#2b3b50"/>
 <rect x="4580" y="2956" width="32" height="32" rx="8" fill="#0c2931"/>
@@ -946,9 +966,9 @@
 <text x="4896" y="3285" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#102830" text-anchor="middle">Try again</text>
 </g>
 <text x="0" y="3906" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">17 · Website: confirmation failed</text>
-<clipPath id="clip20"><rect x="0" y="3920" width="1440" height="900"/></clipPath>
+<clipPath id="clip21"><rect x="0" y="3920" width="1440" height="900"/></clipPath>
 <rect x="0" y="3920" width="1440" height="900" fill="#0b111c"/>
-<g clip-path="url(#clip20)">
+<g clip-path="url(#clip21)">
 <rect x="0" y="3920" width="240" height="900" fill="#0f1825"/>
 <rect x="239" y="3920" width="1" height="900" fill="#2b3b50"/>
 <rect x="20" y="3936" width="32" height="32" rx="8" fill="#0c2931"/>

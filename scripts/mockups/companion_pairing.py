@@ -29,6 +29,10 @@ the window hides it here. Windows draws the menu in the system theme, so the boa
 19. Getting a code: state 5's layout while the companion asks for a code, its buttons disabled.
 20. Couldn't get a code: RaidManager didn't answer; Try again shows 19.
 
+Companion state added by #529 (owner decision on #528, 2026-10-04):
+21. The first time the window is closed, a Windows notification says the companion keeps running and where to quit it.
+Later closes stay silent. Windows draws the notification in the system theme.
+
 Uploads come with #384, so "Last upload" says "No upload yet" until then (owner decision on #513). Times are in UTC,
 as on the character review page.
 
@@ -78,6 +82,7 @@ CONFIRM_FAILED = "17 · Website: confirmation failed"
 TRAY = "18 · Companion: tray menu"
 GETTING_CODE = "19 · Companion: getting a code"
 CODE_REQUEST_FAILED = "20 · Companion: couldn't get a code"
+KEEPS_RUNNING = "21 · Companion: keeps running notification"
 NO_UPLOAD = "No upload yet"
 CONFIRM_SUBTITLE = "Check that the code matches the one on your companion, then confirm. Only pair a computer you use."
 TRY_AGAIN = "Nothing changed. Try again in a moment."
@@ -87,6 +92,10 @@ CODE_CARD, CODE_LABEL_LAYER = "Code card", "Code label"
 TRY_AGAIN_BUTTON, TRY_AGAIN_LABEL = "Try again button", "Try again"
 NEW_CODE_BUTTON, NEW_CODE_LABEL = "New code button", "Get a new code"
 PAIR_HEADING = "Pair with RaidManager"
+APP_NAME = "RaidManager Companion"
+RAISED = P["Surface/raised"]
+TITLE_LAYER, MESSAGE_LAYER, BACKGROUND_LAYER = "Title", "Message", "Background"
+TASKBAR_TOP = 552
 
 
 def label(name: str, x: float, y: float, value: str) -> Item:
@@ -151,8 +160,8 @@ def companions_table(revoked: bool, linked: bool, expired: bool = False) -> Grou
 def toast(title: str, message: str, accent: str = ACCENT) -> Group:
     x = BOARD_W - 40 - 380
     return Group("Notification", [*card(x, 80, 380, 72, accent),
-                                  text("Title", x + 24, 111, title, 14, 600),
-                                  text("Message", x + 24, 133, message, 13, 400, SECONDARY)])
+                                  text(TITLE_LAYER, x + 24, 111, title, 14, 600),
+                                  text(MESSAGE_LAYER, x + 24, 133, message, 13, 400, SECONDARY)])
 
 
 def companions_header() -> Group:
@@ -189,9 +198,9 @@ def empty_companions() -> list[Item]:
         companions_header(),
         Group("Empty state", [
             *card(CONTENT_X, top, CONTENT_W, 136),
-            text("Title", CONTENT_X, top + 56, "No paired computers yet", 18, 700, TEXT, CONTENT_W,
+            text(TITLE_LAYER, CONTENT_X, top + 56, "No paired computers yet", 18, 700, TEXT, CONTENT_W,
                  "center"),
-            text("Message", CONTENT_X, top + 88, "To pair a computer, start pairing in its companion.", 14, 400,
+            text(MESSAGE_LAYER, CONTENT_X, top + 88, "To pair a computer, start pairing in its companion.", 14, 400,
                  SECONDARY, CONTENT_W, "center"),
         ]),
     ]
@@ -216,7 +225,7 @@ def revoke_dialog() -> list[Item]:
         Rect("Dim overlay", 0, 0, BOARD_W, BOARD_H, P["Neutral/black"], 0.6),
         Group("Revoke dialog", [
             *card(x, y, w, h),
-            text("Title", x + 24, y + 44, f"Revoke {LAPTOP}?", 18, 700),
+            text(TITLE_LAYER, x + 24, y + 44, f"Revoke {LAPTOP}?", 18, 700),
             *[text(f"Body line {index + 1}", x + 24, y + 80 + index * 20, line, 14, 400, SECONDARY)
               for index, line in enumerate(body)],
             button("Cancel button", x + w - 24 - 96 - 8 - 96, y + h - 64, "Cancel", "secondary", 96,
@@ -328,24 +337,45 @@ def unpaired() -> list[Item]:
     ]
 
 
-def tray() -> list[Item]:
-    taskbar_top = 552
+def desktop_notes(heading: str, lines: tuple[str, str], caption: str) -> list[Item]:
+    """The explanation at the top of a desktop board: a heading, two lines and a muted caption."""
+    return [
+        text("Heading", WINDOW_PADDING, 60, heading, 18, 700),
+        text("Note line 1", WINDOW_PADDING, 90, lines[0], 14, 400, SECONDARY),
+        text("Note line 2", WINDOW_PADDING, 110, lines[1], 14, 400, SECONDARY),
+        text("Note line 3", WINDOW_PADDING, 140, caption, 12, 400, MUTED),
+    ]
+
+
+def taskbar(hovered: bool) -> Group:
+    """The bottom of the Windows desktop: the notification area with RaidManager's tray icon and the clock."""
     icon_x = 344
+    icon: list[Item] = [Rect("Mark", icon_x, TASKBAR_TOP + 16, 16, 16, ACCENT, 1, 4)]
+    if hovered:
+        icon.insert(0, Rect("Hover", icon_x - 8, TASKBAR_TOP + 8, 32, 32, P["Surface/selected"], 1, 4))
+    return Group("Taskbar", [
+        Rect(BACKGROUND_LAYER, 0, TASKBAR_TOP, WINDOW_W, 48, P["Surface/sidebar"]),
+        Rect("Divider", 0, TASKBAR_TOP, WINDOW_W, 1, DIVIDER),
+        Circle("Other icon 1", 296, TASKBAR_TOP + 24, 6, MUTED),
+        Circle("Other icon 2", 320, TASKBAR_TOP + 24, 6, MUTED),
+        Group("RaidManager tray icon", icon, Click("navigate", WAITING)),
+        text("Clock", 392, TASKBAR_TOP + 29, "17:20", 12, 400, TEXT, 64, "center"),
+    ])
+
+
+def tray() -> list[Item]:
     menu_x, menu_y, menu_w = 236, 404, 200
     return [
-        text("Heading", WINDOW_PADDING, 60, "In the notification area", 18, 700),
-        text("Note line 1", WINDOW_PADDING, 90, "A click on the icon opens the window; a right click", 14, 400,
-             SECONDARY),
-        text("Note line 2", WINDOW_PADDING, 110, "shows this menu. Closing the window hides it here.", 14, 400,
-             SECONDARY),
-        text("Note line 3", WINDOW_PADDING, 140, "Windows draws the menu in the system theme.", 12, 400, MUTED),
+        *desktop_notes("In the notification area", ("A click on the icon opens the window; a right click",
+                                                     "shows this menu. Closing the window hides it here."),
+                       "Windows draws the menu in the system theme."),
         Group("Tooltip", [
-            Rect("Background", 236, 188, 200, 32, P["Surface/raised"], 1, 4, DIVIDER),
-            text("Label", 236, 209, "RaidManager Companion", 12, 400, TEXT, 200, "center"),
+            Rect(BACKGROUND_LAYER, 236, 188, 200, 32, RAISED, 1, 4, DIVIDER),
+            text("Label", 236, 209, APP_NAME, 12, 400, TEXT, 200, "center"),
         ]),
         text("Tooltip caption", 236, 240, "Tooltip, on hover", 12, 400, MUTED, 200, "center"),
         Group("Tray menu", [
-            Rect("Background", menu_x, menu_y, menu_w, 81, P["Surface/raised"], 1, 8, DIVIDER),
+            Rect(BACKGROUND_LAYER, menu_x, menu_y, menu_w, 81, RAISED, 1, 8, DIVIDER),
             Group("Open item", [
                 Rect("Highlight", menu_x + 4, menu_y + 4, menu_w - 8, 32, P["Surface/selected"], 1, 4),
                 text("Label", menu_x + 16, menu_y + 25, "Open", 14, 600),
@@ -355,17 +385,24 @@ def tray() -> list[Item]:
                 text("Label", menu_x + 16, menu_y + 66, "Quit", 14),
             ]),
         ]),
-        Group("Taskbar", [
-            Rect("Background", 0, taskbar_top, WINDOW_W, 48, P["Surface/sidebar"]),
-            Rect("Divider", 0, taskbar_top, WINDOW_W, 1, DIVIDER),
-            Circle("Other icon 1", 296, taskbar_top + 24, 6, MUTED),
-            Circle("Other icon 2", 320, taskbar_top + 24, 6, MUTED),
-            Group("RaidManager tray icon", [
-                Rect("Hover", icon_x - 8, taskbar_top + 8, 32, 32, P["Surface/selected"], 1, 4),
-                Rect("Mark", icon_x, taskbar_top + 16, 16, 16, ACCENT, 1, 4),
-            ], Click("navigate", WAITING)),
-            text("Clock", 392, taskbar_top + 29, "17:20", 12, 400, TEXT, 64, "center"),
+        taskbar(hovered=True),
+    ]
+
+
+def keeps_running() -> list[Item]:
+    x, y, w = 100, 420, 364
+    return [
+        *desktop_notes("When the window first closes", ("Windows shows this notification once; later closes",
+                                                         "stay silent. Quit in the tray menu ends the companion."),
+                       "Windows draws the notification in the system theme."),
+        Group("Keeps running notification", [
+            Rect(BACKGROUND_LAYER, x, y, w, 116, RAISED, 1, 8, DIVIDER),
+            Rect("App mark", x + 16, y + 16, 16, 16, ACCENT, 1, 4),
+            text("App name", x + 40, y + 29, APP_NAME, 12, 400, SECONDARY),
+            text(TITLE_LAYER, x + 16, y + 62, f"{APP_NAME} is still running", 14, 600, TEXT),
+            text(MESSAGE_LAYER, x + 16, y + 86, "Quit it from its icon in the notification area.", 13, 400, SECONDARY),
         ]),
+        taskbar(hovered=False),
     ]
 
 
@@ -390,6 +427,7 @@ def boards() -> list[Board]:
         Board(TRAY, 4 * window, row, WINDOW_W, 600, P["Surface/page"], tray()),
         companion_window(GETTING_CODE, 5 * window, row, getting_code()),
         companion_window(CODE_REQUEST_FAILED, 6 * window, row, code_request_failed()),
+        Board(KEEPS_RUNNING, 7 * window, row, WINDOW_W, 600, P["Surface/page"], keeps_running()),
         website(CODE_EXPIRED, 0, code_problem(
             "This code expired", "Codes last 10 minutes. Get a new code in the companion.", "warning"), 2 * row),
         website(CODE_USED, column, code_problem(
@@ -415,6 +453,7 @@ def main(repository: Path = REPOSITORY) -> Path:
                         flows={"Pair a companion": WAITING, "Revoke a companion": PAIRED_LIST,
                                "Expired code": EXPIRED, "Revoked companion": UNPAIRED, "Tray menu": TRAY,
                                "Code can't be requested": CODE_REQUEST_FAILED,
+                               "Keeps running": KEEPS_RUNNING,
                                "Code problems on the website": CODE_EXPIRED,
                                "Companions can't be loaded": LIST_FAILED})
 
