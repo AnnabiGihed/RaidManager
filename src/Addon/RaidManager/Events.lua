@@ -6,7 +6,11 @@ local addonName, ns = ...
 ns.api = ns.api or _G
 
 local function capture()
-    return ns.CaptureCharacter(ns.api, RaidManagerDB, ns.api.time())
+    local now = ns.api.time()
+    local character = ns.CaptureCharacter(ns.api, RaidManagerDB, now)
+    -- The saves come with the game's answer, UPDATE_INSTANCE_INFO.
+    ns.RequestRaidInfo(ns.api, now)
+    return character
 end
 
 ns.On("ADDON_LOADED", function(loadedName)
@@ -53,6 +57,11 @@ ns.On("ACTIVE_TALENT_GROUP_CHANGED", always({ "talents" }))
 ns.On("GLYPH_ADDED", always({ "talents" }))
 ns.On("GLYPH_REMOVED", always({ "talents" }))
 ns.On("GLYPH_UPDATED", always({ "talents" }))
+ns.On("UPDATE_INSTANCE_INFO", always({ "lockouts" }))
+-- Entering a new zone can be entering or leaving an instance, which changes the saves.
+ns.On("ZONE_CHANGED_NEW_AREA", function()
+    ns.RequestRaidInfo(ns.api, ns.api.time())
+end)
 
 --- Handles /rm and /raidmanager: "sync" captures again, anything else shows what the snapshot holds.
 ---@param message string the text after the command, trimmed

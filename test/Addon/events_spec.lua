@@ -19,6 +19,7 @@ describe("the loaded addon", function()
             "Capture/Gear.lua",
             "Capture/EquipmentSets.lua",
             "Capture/Talents.lua",
+            "Capture/Lockouts.lua",
             "Character.lua",
             "Events.lua",
         }, addon.TocFiles())
@@ -142,6 +143,37 @@ describe("the loaded addon", function()
 
         assert.are.equal(1, afterChange)
         assert.are.equal(2, #character.equipmentSets.items)
+    end)
+
+    it("asks for the saves on entering the world and reads them when the game answers", function()
+        local saves = world.SavedInstances(
+            addon.LoadSavedVariables(addon.FIXTURES .. addon.FIXTURE_FILES[5]).characters["Icecrown|Arthasdk"].lockouts
+        )
+        local game = loaded(saves)
+
+        game.Fire("PLAYER_ENTERING_WORLD")
+        local before = game.env.RaidManagerDB.characters["Icecrown|Arthasdk"].lockouts.reason
+        game.Fire("UPDATE_INSTANCE_INFO")
+
+        assert.are.equal(1, saves.requests)
+        assert.are.equal("not-answered", before)
+        assert.are.equal(4, #game.env.RaidManagerDB.characters["Icecrown|Arthasdk"].lockouts.items)
+    end)
+
+    it("asks again on a new zone, at most once every few seconds", function()
+        local saves = world.SavedInstances({})
+        local now = world.NOW
+        local game = loaded(saves)
+        game.env.time = function()
+            return now
+        end
+        game.Fire("PLAYER_ENTERING_WORLD")
+
+        game.Fire("ZONE_CHANGED_NEW_AREA")
+        now = now + 5
+        game.Fire("ZONE_CHANGED_NEW_AREA")
+
+        assert.are.equal(2, saves.requests)
     end)
 
     it("shows the snapshot's sections with /rm", function()

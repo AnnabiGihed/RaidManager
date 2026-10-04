@@ -30,14 +30,14 @@ describe("capturing the character", function()
         assert.are.equal(character, db.characters["Icecrown|Arthasdk"])
     end)
 
-    it("marks the sections this version doesn't capture as unavailable, never empty", function()
+    it("marks the saves unavailable until the game answers, never empty", function()
         local ns, api, db = load()
 
         local character = ns.CaptureCharacter(api, db, world.NOW)
 
         for _, section in ipairs(NOT_YET) do
             assert.are.same(
-                { status = "unavailable", reason = "not-captured", attemptedAt = world.NOW },
+                { status = "unavailable", reason = "not-answered", attemptedAt = world.NOW },
                 character[section]
             )
         end
@@ -97,7 +97,18 @@ describe("capturing the character", function()
         local ns, api, db = load()
         ns.CaptureCharacter(api, db, world.NOW)
 
-        assert.is_nil(ns.CaptureAgain(api, db, world.NOW, "lockouts"))
+        assert.is_nil(ns.CaptureAgain(api, db, world.NOW, "achievements"))
+    end)
+
+    it("keeps the saves already answered when the character is captured again", function()
+        local ns, api, db = load()
+        local character = ns.CaptureCharacter(api, db, world.NOW)
+        ns.CaptureAgain(api, db, world.NOW + 5, "lockouts")
+
+        ns.CaptureCharacter(api, db, world.NOW + 60)
+
+        assert.are.equal("observed", character.lockouts.status)
+        assert.are.equal(world.NOW + 5, character.lockouts.observedAt)
     end)
 
     it("describes each section's status for the slash command", function()
@@ -110,6 +121,6 @@ describe("capturing the character", function()
         assert.are.equal("identity: observed", lines[2])
         assert.are.equal("professions: observed", lines[4])
         assert.are.equal("equipmentSets: observed", lines[6])
-        assert.are.equal("lockouts: unavailable (not-captured)", lines[8])
+        assert.are.equal("lockouts: unavailable (not-answered)", lines[8])
     end)
 end)
