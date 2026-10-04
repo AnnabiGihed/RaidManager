@@ -60,7 +60,7 @@ class DecideTests(unittest.TestCase):
         environment = {"TRIGGER": trigger}
         with unittest.mock.patch.dict(os.environ, environment), \
                 unittest.mock.patch.object(deploy_changes, "git", git), \
-                unittest.mock.patch.object(deploy_changes, "gh_json", lambda path: deployments), \
+                unittest.mock.patch.object(deploy_changes, "gh_json", return_value=deployments), \
                 unittest.mock.patch.object(deploy_changes, "latest_state", states.get):
             return deploy_changes.decide()
 
@@ -83,7 +83,7 @@ class DecideTests(unittest.TestCase):
         self.assertTrue(deploy)
 
     def test_main_prints_the_output_line(self) -> None:
-        with unittest.mock.patch.object(deploy_changes, "decide", lambda: (False, ["why"])), \
+        with unittest.mock.patch.object(deploy_changes, "decide", return_value=(False, ["why"])), \
                 unittest.mock.patch("builtins.print") as printed:
             deploy_changes.main()
         self.assertEqual(unittest.mock.call("deploy=false"), printed.call_args_list[-1])
