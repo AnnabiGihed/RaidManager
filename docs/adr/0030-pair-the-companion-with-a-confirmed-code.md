@@ -1,8 +1,9 @@
 # ADR-0030: Pair the companion with a confirmed code and a revocable device token
 
-- Status: Proposed
+- Status: Accepted
 - Date: 2026-10-03
 - Deciders: Gihed Annabi
+- Accepted: 2026-10-04, with its first implementation in #382 (owner decision recorded on #382)
 
 ## Context
 

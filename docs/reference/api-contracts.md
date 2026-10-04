@@ -30,6 +30,13 @@ as `Parameters:website-service-key` in your own terminal.
 | `DELETE /internal/users/{userId}/communities/{communityId}/roles/{roleId}` | Website only | Delete a role; its mappings go with it. Only the Administrator deletes a role that grants `ManageCommunityRoles`. |
 | `PUT /internal/users/{userId}/communities/{communityId}/role-mappings/{roleId}/{discordRoleId}` | Website only | Make a Discord role give one of the community's roles; 404 for a role the community doesn't have. One Discord role can give several roles. The Administrator or a role manager may; only the Administrator maps a role that grants `ManageCommunityRoles`. |
 | `DELETE /internal/users/{userId}/communities/{communityId}/role-mappings/{roleId}/{discordRoleId}` | Website only | Stop a Discord role giving that role; any other role it gives stays. The same people may as for mapping. |
+| `POST /companion/pairings` | Companion, anonymous | Start pairing: returns a device code to poll with, a pairing code such as `K7M-4QX` to show, its expiry 10 minutes later and the polling interval of 5 seconds. Takes a `computerLabel` of at most 200 characters, kept to 64. |
+| `POST /companion/pairings/token` | Companion, anonymous | Poll with the `deviceCode`: 400 `CompanionPairing.Pending` until the player confirms, then 200 with the `companionId`, the `deviceToken` and the player's name, once. Afterwards, and for an unknown device code, 400 `CompanionPairing.Invalid`; after expiry, 400 `CompanionPairing.Expired`. |
+| `GET /companion/me` | Companion, device token | Check the pairing: the companion's id and computer label. |
+| `GET /internal/users/{userId}/companion-pairings/{pairingCode}` | Website only | Describe the pairing a code belongs to (code, computer label, request time, expiry) for the player to check before confirming. |
+| `POST /internal/users/{userId}/companion-pairings/{pairingCode}/confirm` | Website only | Confirm the code: binds the computer to the player, whose companion gets its token at its next poll. |
+| `GET /internal/users/{userId}/companions` | Website only | List the player's companions, revoked ones included, oldest first, with when each was paired and last used and its status: `Active`, `Revoked` or `Expired`. |
+| `POST /internal/users/{userId}/companions/{companionId}/revoke` | Website only | Revoke a companion: its next request gets 401. What it uploaded stays. |
 
 Operations under `/internal/` require the website key in the `X-RaidManager-Service-Key` header, as
 [ADR-0011](../adr/0011-website-session-and-api-trust.md) describes. A missing or wrong key returns 401. The website
@@ -48,10 +55,28 @@ Someone outside the Discord server, or anyone but the Administrator changing a m
 isn't one of the server's mappable roles returns 400: `@everyone` and roles of other bots can't be mapped. Discord not
 answering returns 503, and a server the bot was removed from returns 409.
 
+### Companion pairing
+
+The companion pairs as [ADR-0030](../adr/0030-pair-the-companion-with-a-confirmed-code.md) decides. The public API
+hostnames forward only `/companion/` (owner decision on #369).
+
+- **Device token.** Routes under `/companion/` other than the two pairing routes need the device token in
+  `Authorization: Bearer <token>`. The API keeps only its SHA-256 hash and checks it on every request. A missing or
+  unknown token gets 401 `Companion.TokenUnknown`, a revoked companion 401 `Companion.Revoked`, and one unused for
+  more than 180 days 401 `Companion.Expired`, each with `WWW-Authenticate: Bearer error="invalid_token"`. Last use is
+  recorded at most once an hour.
+- **Pairing codes** are six characters from `23456789ABCDEFGHJKMNPQRSTUVWXYZ`, shown as `XXX-XXX`; the routes accept
+  them with or without the dash and in any case. Looking a code up or confirming it answers 404 for an unknown code,
+  and 409 `CompanionPairing.Expired` or `CompanionPairing.AlreadyConfirmed`.
+- **Revocation** answers 404 for a companion the player doesn't have and 409 when it was already revoked.
+- **Rate limits** answer 429 `RateLimit.Exceeded` with `Retry-After`: 10 pairing starts per address per 10 minutes,
+  60 token polls per address per minute, and 10 code checks (looking a code up or confirming it) per player per 10
+  minutes. The `Companion:RateLimits` configuration section changes them.
+
 ## Planned contract areas
 
 - User-scoped website calls, session, and profile access.
-- Companion pairing, monitored-installation status, and authenticated, idempotent character snapshot ingestion.
+- Monitored-installation status, and authenticated, idempotent character snapshot ingestion by a paired companion.
 - Resolving an ownership conflict between two players.
 - Character profiles, loadouts, synchronization timestamps, and raid lockouts.
 - Community membership and officer permissions, raid templates, recurrence, scheduling, and publication.

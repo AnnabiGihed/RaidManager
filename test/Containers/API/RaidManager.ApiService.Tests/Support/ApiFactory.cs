@@ -37,6 +37,9 @@ public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
     /// <summary>Gets the fake Discord every Discord call goes to.</summary>
     public FakeDiscord Discord { get; } = new();
 
+    /// <summary>Gets the clock the API reads, which a test may move forward.</summary>
+    public ShiftableClock Clock { get; } = new();
+
     /// <summary>Gets the hosting environment the API runs in; Development applies the migrations at startup.</summary>
     protected virtual string EnvironmentName => "Development";
     #endregion Properties
@@ -67,6 +70,9 @@ public class ApiFactory : WebApplicationFactory<Program>, IAsyncLifetime
             services.AddSingleton<IDiscordServerMembers>(Discord);
             services.RemoveAll<IDiscordServers>();
             services.AddSingleton<IDiscordServers>(Discord);
+            services.RemoveAll<TimeProvider>();
+            services.AddSingleton<TimeProvider>(Clock);
+            services.AddSingleton<IStartupFilter, ClientAddressStartupFilter>();
         });
     }
     #endregion Overrides

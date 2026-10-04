@@ -4,6 +4,7 @@ using Pivot.Framework.Infrastructure.Persistence.EntityFrameworkCore.Persistence
 using Pivot.Framework.Infrastructure.Persistence.PostgreSQL.Configuration;
 using RaidManager.Domain.Features.Characters.Aggregates;
 using RaidManager.Domain.Features.Communities.Aggregates;
+using RaidManager.Domain.Features.Companions.Aggregates;
 using RaidManager.Domain.Features.Identity.Aggregates;
 using RaidManager.Domain.Features.Raids.Aggregates;
 using RaidManager.Persistence.EntityFrameworkCore.Features.Shared.Conversions;
@@ -39,6 +40,12 @@ public sealed class RaidManagerDbContext : PivotDbContextBase
 
     /// <summary>Gets the scheduled raids with their signups and rosters.</summary>
     public DbSet<Raid> Raids => Set<Raid>();
+
+    /// <summary>Gets the companion pairing requests.</summary>
+    public DbSet<CompanionPairing> CompanionPairings => Set<CompanionPairing>();
+
+    /// <summary>Gets the paired desktop companions.</summary>
+    public DbSet<Companion> Companions => Set<Companion>();
 
     /// <summary>Gets the domain events recorded for later delivery.</summary>
     public DbSet<OutboxMessage> OutboxMessages => Set<OutboxMessage>();

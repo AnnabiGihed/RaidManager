@@ -6,12 +6,14 @@ using RaidManager.Application.Features.Characters.Abstractions;
 using RaidManager.Application.Features.Communities.Abstractions;
 using RaidManager.Domain.Features.Characters.Repositories;
 using RaidManager.Domain.Features.Communities.Repositories;
+using RaidManager.Domain.Features.Companions.Repositories;
 using RaidManager.Domain.Features.Identity.Repositories;
 using RaidManager.Domain.Features.Raids.Repositories;
 using RaidManager.Persistence.EntityFrameworkCore.Features.Characters.Queries;
 using RaidManager.Persistence.EntityFrameworkCore.Features.Characters.Repositories;
 using RaidManager.Persistence.EntityFrameworkCore.Features.Communities.Queries;
 using RaidManager.Persistence.EntityFrameworkCore.Features.Communities.Repositories;
+using RaidManager.Persistence.EntityFrameworkCore.Features.Companions.Repositories;
 using RaidManager.Persistence.EntityFrameworkCore.Features.Identity.Repositories;
 using RaidManager.Persistence.EntityFrameworkCore.Features.Raids.Repositories;
 using DomainUnitOfWork = Pivot.Framework.Domain.Repositories.IUnitOfWork;
@@ -46,6 +48,8 @@ public static class PersistenceServiceCollectionExtensions
         services.AddScoped<ICommunityRepository, CommunityRepository>();
         services.AddScoped<ICommunityReader, CommunityReader>();
         services.AddScoped<IRaidRepository, RaidRepository>();
+        services.AddScoped<ICompanionPairingRepository, CompanionPairingRepository>();
+        services.AddScoped<ICompanionRepository, CompanionRepository>();
         return services;
     }
     #endregion Public Methods

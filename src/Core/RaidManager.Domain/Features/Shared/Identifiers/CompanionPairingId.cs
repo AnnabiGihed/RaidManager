@@ -1,0 +1,10 @@
+namespace RaidManager.Domain.Features.Shared.Identifiers;
+
+/// <summary>Represents the strongly typed identifier of a companion pairing request.</summary>
+/// <param name="Value">The underlying non-empty GUID value.</param>
+/// <remarks>
+/// Author: Gihed Annabi<br/>
+/// Date: 2026-10-04<br/>
+/// Purpose: Prevents identifiers from different aggregates and entities from being interchanged accidentally.
+/// </remarks>
+public sealed record CompanionPairingId(Guid Value) : StronglyTypedGuidId<CompanionPairingId>(Value);
