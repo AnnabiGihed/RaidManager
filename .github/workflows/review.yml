@@ -115,6 +115,12 @@ jobs:
         env:
           HEAD_SHA: ${{ steps.gate.outputs.head_sha }}
         run: |
+          # Review runs of one pull request queue up, and the gate still passes after the merge. Only the run that
+          # merged closes the tasks and dispatches the workflows on main, so a later one stops here (#493).
+          if [ "$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json state --jq .state)" = "MERGED" ]; then
+            echo "Already merged by an earlier review run; its tasks and the workflows on main were handled there."
+            exit 0
+          fi
           # Only standalone closing lines before the first heading are instructions. Examples in the PR body are not.
           # A body saved in the browser has CRLF line endings, so the carriage returns go first (#474).
           linked=$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json closingIssuesReferences \
