@@ -9,6 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- The companion pairing mockup gains board 21: the first time the companion's window is closed, a Windows notification
+  says "RaidManager Companion is still running" and to quit it from its icon in the notification area; later closes stay
+  silent (#529).
 - The Windows desktop companion, in Avalonia (ADR-0032, now Accepted): it asks RaidManager for a pairing code, shows it
   with a countdown, opens the website's pairing page with it, and polls for its device token every five seconds or more,
   waiting five seconds longer when asked to slow down or when RaidManager doesn't answer. Once the player confirms the
