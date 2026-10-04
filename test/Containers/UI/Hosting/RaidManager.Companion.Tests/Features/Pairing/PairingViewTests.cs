@@ -8,6 +8,7 @@ using Avalonia.VisualTree;
 using Moq;
 using RaidManager.Companion.Client.Features.Pairing;
 using RaidManager.Companion.Features.Pairing;
+using RaidManager.Companion.Features.Shared;
 using RaidManager.Companion.Tests.Support;
 using Shouldly;
 using Xunit;
@@ -84,6 +85,9 @@ public sealed class PairingViewTests : IDisposable
         VisibleTexts(window).ShouldBe(["Pair with RaidManager", "This code can't be confirmed anymore.", "PAIRING CODE", PairingStates.Code,
             "Expired", "!", "This code expired", "Codes last 10 minutes. Get a new one to try again.", "Get a new code"]);
         VisibleButtons(window).ShouldBe(["ExpiredNewCodeButton"]);
+        var notice = window.GetVisualDescendants().OfType<Notice>().Single(n => n.Name == "ExpiredNotice");
+        notice.Title.ShouldBe("This code expired");
+        notice.Message.ShouldBe("Codes last 10 minutes. Get a new one to try again.");
     }
 
     /// <summary>Board 8: the computer's name, the danger notice and Pair again.</summary>

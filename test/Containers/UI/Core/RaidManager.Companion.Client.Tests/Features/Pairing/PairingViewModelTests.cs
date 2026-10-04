@@ -110,6 +110,20 @@ public sealed class PairingViewModelTests : IDisposable
         _viewModel.ExpiryText.ShouldBe("Expires in 9:42");
     }
 
+    /// <summary>A code that arrives already expired counts down from zero, then shows as expired.</summary>
+    /// <returns>A task that completes when the test is done.</returns>
+    [Fact]
+    public async Task CodeThatArrivesExpiredShowsZeroThenExpires()
+    {
+        _api.Started = new StartedPairing("device-code", "K7M-4QX", PairingViewModels.Start.AddMinutes(-1), TimeSpan.FromSeconds(5));
+
+        await Task.Run(_viewModel.StartCommand.ExecuteAsync);
+        _viewModel.ExpiryText.ShouldBe("Expires in 0:00");
+        Advance(1);
+
+        _viewModel.State.ShouldBe(PairingState.Expired);
+    }
+
     /// <summary>A browser that refuses or fails leaves the code shown; the player can open the website again.</summary>
     /// <param name="fails">Whether the browser throws instead of refusing.</param>
     /// <returns>A task that completes when the test is done.</returns>
