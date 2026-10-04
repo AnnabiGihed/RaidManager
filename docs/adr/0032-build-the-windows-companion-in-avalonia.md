@@ -55,7 +55,7 @@ analyzer, and its round-trip test runs on Windows and is skipped elsewhere.
   `Microsoft.Extensions.Http.Resilience`.
 - **Tray:** closing the window hides it to the tray, and the tray menu (Open, Quit) brings it back or exits (owner
   decision on #514), so #384 can keep watching folders. Its look is a board of the `companion-pairing` mockup.
-- **One instance per Windows user:** a second start brings the running window forward through a named mutex and
+- **One instance per Windows user:** a second start brings the running window forward through a named `Mutex` and
   event.
 - **Theme:** theme resource dictionaries hold the palette and type scale of
   [ADR-0019](0019-dark-design-system-with-an-app-shell.md), named after the variables of `raidmanager-theme.css`;
@@ -118,7 +118,7 @@ The companion reads `ApiBaseUrl` and `WebsiteBaseUrl` from `appsettings.json` ne
 - New dependencies: the Avalonia packages, `System.Security.Cryptography.ProtectedData` and `xunit.v3`, added to
   `Directory.Packages.props`; the host's tests use xUnit v3 while the other test projects stay on v2.
 - Avalonia isn't WPF: some WPF habits (styles, triggers, some controls) differ.
-- Unsigned executables show a SmartScreen warning.
+- An unsigned executable shows a SmartScreen warning.
 
 ## Alternatives considered
 
