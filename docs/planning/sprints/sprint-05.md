@@ -52,7 +52,7 @@ date on the Project, both inclusive) follows the blocked-by order; the item's ow
 | #153 Store and deliver deployment secrets | Improvement | 5 | 6 to 8 Oct | #386 (Deployment) | #103 |
 | #19 Inspect and manage character profiles | User story | 5 | 7 to 10 Oct | #385, #545 (Development) | #38 |
 | #375 Configure the test environment | Improvement | 3 | 8 to 9 Oct | #388 (Deployment) | #103, #374 |
-| #17 Discover WoW accounts and upload snapshots reliably | User story | 8 | 10 to 13 Oct | #384 (Development) | #15, #16 |
+| #17 Discover WoW accounts and upload snapshots reliably | User story | 8 | 10 to 13 Oct | #384, #550, #551 (Development) | #15, #16 |
 | #376 Deploy main to the dev environment automatically | Improvement | 8 | 3 to 9 Oct | #444 (Development), #389 (Development), #445 (Deployment) | #374, #388 |
 | #392 Show deployment status on GitHub and the Project | Improvement | 3 | 3 Oct | #393 (Deployment) | #376 |
 | #415 Keep the server provisioning lessons in the skills | Improvement | 2 | 3 Oct | #416 (Business Analysis) | None |
@@ -80,6 +80,7 @@ date on the Project, both inclusive) follows the blocked-by order; the item's ow
 | #532 Publish the companion through the Microsoft Store | Spike | 3 (2 days) | 9 to 10 Oct | #533 (Architecture Analysis) | None |
 | #542 Keep the Avalonia companion session's lessons in the skills | Improvement | 1 | 4 to 5 Oct | #543 (Business Analysis) | None |
 | #547 Keep the character profiles session's lessons in the skills | Improvement | 1 | 5 Oct | #548 (Business Analysis) | None |
+| #554 Keep the snapshot upload session's lessons in the skills | Improvement | 1 | 5 Oct | #555 (Business Analysis) | None |
 
 16 October is kept as a buffer.
 
@@ -144,6 +145,9 @@ and its task #388 wait for #409 and #411.
 | 2026-10-05 | #385 split on the owner's decision recorded on #19: it shows the pages (boards 1 and 2), and the new task #545 under #19, blocked by #385, edits them (boards 3 and 4). On the owner's decisions recorded on #19 and #385, only the owner opens a profile until #545, a profile is visible to the community by default, and the Equipment card lists every slot. |
 | 2026-10-05 | #546 merged and closed #385, which was reopened as Blocked until the owner checks the pages on dev, as the owner chose on #385. The Microsoft Store work (#538, #539 to #541) stays in the Backlog: the owner confirmed the decision of 2026-10-04. |
 | 2026-10-05 | #547 with #548 added under the standing approval on #510: the session's lessons in the skills. |
+| 2026-10-05 | #384 split on the owner's decision recorded on it: #384 keeps the API that imports snapshots, and the new tasks #550 (the companion's background sync, blocked by #384) and #551 (its sync screens and the Choose folders button, blocked by #550) go under #17. Story #552 (GearScore and stats from an item catalog) was created under #130 and waits in the Backlog: on the owner's decisions recorded on #384, imports store what the addon reports, GearScore and stats show a dash until #552, and loadouts are the talent groups. |
+| 2026-10-05 | #553 merged and closed #384; #550 started on the owner's decision recorded on it (search the usual folders, then let the player add one) and stopped at a safe checkpoint with no code when the session ended. |
+| 2026-10-05 | #554 with #555 added under the standing approval on #510: the session's lessons in the skills. |
 
 ## Outcome
 

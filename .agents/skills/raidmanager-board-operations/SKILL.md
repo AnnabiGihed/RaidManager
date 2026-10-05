@@ -110,7 +110,9 @@ def item_id(number):
 2. Clean up the branches (`raidmanager-github-project-workflow`, step 7).
 3. **Comment first, then set Done.** The Project closes an issue as soon as its Status becomes Done, so post the
    evidence comment before changing the Status, or the issue closes without it. Then set the Target date to the
-   closing day and Status `Done`.
+   closing day and Status `Done`. A pull request's `Closes` line makes the `review` workflow close the task itself,
+   seconds after the merge (`github-actions[bot]` closed #384 four seconds after #553 merged): the evidence comment
+   then follows the close, which is expected. Say so when the owner asks who closed it.
 4. After a few seconds, check `gh issue view <n> --json state,stateReason`. If it is still open, close it with
    `gh issue close <n> -r completed`. `gh issue close` has no `-q` flag.
 5. Validate the parent independently (`work-task-execution-and-completion`, action 8) and close it the same way, with
@@ -194,6 +196,7 @@ For any change to many items (filling past values, field values, splits):
 | Two handed-over pull requests were open; #479 merged first, so #481 fell behind `main`, the `review` job failed fifteen merge attempts, and updating the branch made both reviews start again. | Hand over one pull request at a time or state the merge order (`raidmanager-github-project-workflow`, step 6). On a new head, give the operator and the peer new review texts for that commit. |
 | A feature met its exit criteria while its backfilled contract still had `Unknown` fields (#125, #206, #128). | The owner chose each time to fill the fields from what was delivered, record that on the feature, then close it: offer this as the recommended option. A bug found after the last story closes goes under the feature first, and the feature closes after it. |
 | Task #385 carried a whole story's screens (four boards, domain, migration, API and website) in one pull request. | Offer to split by intent: viewing in the task, editing in a new task under the same story, blocked by it. The owner chose it as the recommended option (#385, #545); record the split on the story and narrow the task's contract. |
+| Task #384 carried an API, a background service and their screens. | Offer to split by intent, one task per independently reviewable deliverable (spec §11): the API in the task, the background work and the screens in new tasks under the same story, each blocked by the one before. The owner chose it as the recommended option again (#384, #550, #551). |
 | An in-game or post-merge check found a defect in work already merged (#499, #503, #507). | Raise a bug under the feature with its own task, ask the owner whether it goes in the active sprint, and fix it before the next feature task. Never fold a correction into a feature task. |
 | A rewrapped Markdown paragraph broke a code span across two lines, and the spell check read its words as prose. | Wrap by hand, or with a script that never splits inside backticks. |
 | GitHub showed no closing link (`closingIssuesReferences` was empty) for Dependabot descriptions written with the workflow token; the link appeared once the owner saved the description. | Nothing to fix: the review workflow also closes the tasks named on the `Closes` line. Don't read the empty link as a missing task. |
