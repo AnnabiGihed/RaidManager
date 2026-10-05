@@ -1,0 +1,55 @@
+/* Placement only: the parts are shared components, and colors come from the project-wide theme. */
+.characters-page {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    box-sizing: border-box;
+    max-width: 1168px;
+    /* With the content area's own 16 px, the page starts where the mockup's content does. */
+    padding: 24px;
+}
+
+/* The note sits 24 px under the table, as in board 1. */
+.characters-column {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.character-name {
+    color: var(--rm-text-primary);
+    font-size: 14px;
+    font-weight: 600;
+    text-decoration: none;
+}
+
+.character-name:hover,
+.character-name:focus-visible {
+    color: var(--rm-brand-accent);
+    text-decoration: underline;
+}
+
+/* Aligned with the name, past the class dot and its gap. */
+.character-detail {
+    display: block;
+    margin-top: 2px;
+    padding-left: 18px;
+    color: var(--rm-text-muted);
+    font-size: 12px;
+}
+
+.character-level {
+    color: var(--rm-text-primary);
+    font-size: 14px;
+}
+
+.character-info {
+    color: var(--rm-text-secondary);
+    font-size: 13px;
+}
+
+.characters-note {
+    margin: 0;
+    color: var(--rm-text-muted);
+    font-size: 13px;
+}

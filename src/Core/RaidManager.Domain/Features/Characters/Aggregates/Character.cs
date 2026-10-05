@@ -25,6 +25,9 @@ public sealed class Character : AggregateRoot<CharacterId>
 
     /// <summary>Stores every ownership claim made on the character, one per requesting user.</summary>
     private readonly List<CharacterClaim> _claims = [];
+
+    /// <summary>Stores the professions from the latest complete skill-list read.</summary>
+    private readonly List<Profession> _professions = [];
     #endregion Fields
 
     #region Constructors
@@ -103,6 +106,15 @@ public sealed class Character : AggregateRoot<CharacterId>
 
     /// <summary>Gets the ownership claims made on the character.</summary>
     public IReadOnlyCollection<CharacterClaim> Claims => _claims.AsReadOnly();
+
+    /// <summary>Gets the professions from the latest complete skill-list read, in the game's order.</summary>
+    public IReadOnlyCollection<Profession> Professions => _professions.AsReadOnly();
+
+    /// <summary>Gets the UTC observation instant of the latest complete skill-list read.</summary>
+    public DateTimeOffset? LastProfessionsSynchronizedAtUtc { get; private set; }
+
+    /// <summary>Gets who in the community may see the profile: the community until the owner chooses otherwise.</summary>
+    public CharacterVisibility Visibility { get; } = CharacterVisibility.Community;
     #endregion Properties
 
     #region Factory Methods
@@ -306,6 +318,32 @@ public sealed class Character : AggregateRoot<CharacterId>
         LastIncompleteRaidSaveScanAtUtc = Latest(LastIncompleteRaidSaveScanAtUtc, observedAtUtc);
     }
 
+    /// <summary>Replaces the character's professions with a complete read of the addon's skill list.</summary>
+    /// <param name="professions">Every profession and secondary skill read; an empty set means the character has none.</param>
+    /// <param name="observedAtUtc">The UTC instant the game data was observed.</param>
+    /// <returns>
+    /// <see langword="true"/> when the read was recorded; <see langword="false"/> when a newer read was already
+    /// recorded, whose professions are then kept.
+    /// </returns>
+    /// <exception cref="DomainException">Thrown when a profession has no name or a skill outside its range.</exception>
+    public bool SynchronizeProfessions(IEnumerable<Profession> professions, DateTimeOffset observedAtUtc)
+    {
+        ArgumentNullException.ThrowIfNull(professions);
+        EnsureTimestamp(observedAtUtc);
+        var read = professions.ToList();
+        read.ForEach(EnsureProfession);
+        if (observedAtUtc < LastProfessionsSynchronizedAtUtc)
+        {
+            return false;
+        }
+
+        _professions.Clear();
+        _professions.AddRange(read);
+        LastProfessionsSynchronizedAtUtc = observedAtUtc;
+        LastAddonSynchronizedAtUtc = Latest(LastAddonSynchronizedAtUtc, observedAtUtc);
+        return true;
+    }
+
     /// <summary>Determines whether the character is currently saved to the requested raid and difficulty.</summary>
     /// <param name="instance">The raid instance.</param>
     /// <param name="difficulty">The raid difficulty.</param>
@@ -337,6 +375,22 @@ public sealed class Character : AggregateRoot<CharacterId>
         if (synchronizedAtUtc > maximumAcceptedTimestamp)
         {
             throw new UnknownDomainException("Synchronization timestamp cannot be in the future.");
+        }
+    }
+
+    /// <summary>Ensures a profession read from the game has a name and a skill within its training.</summary>
+    /// <param name="profession">The profession to validate.</param>
+    /// <exception cref="DomainException">Thrown when the name is blank or too long, or the skill is out of range.</exception>
+    private static void EnsureProfession(Profession profession)
+    {
+        if (string.IsNullOrWhiteSpace(profession.Name) || profession.Name.Length > Profession.MaximumNameLength)
+        {
+            throw new UnknownDomainException($"A profession needs a name of at most {Profession.MaximumNameLength} characters.");
+        }
+
+        if (profession.Rank < 0 || profession.MaxRank < profession.Rank)
+        {
+            throw new UnknownDomainException("A profession's skill must be between 0 and its maximum skill.");
         }
     }
     #endregion Invariants

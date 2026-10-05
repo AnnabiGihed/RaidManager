@@ -8,10 +8,15 @@ classDiagram
     Loadout "1" *-- "1" TalentConfiguration : talents and glyphs
     Loadout "1" *-- "1" CombatStats : observed stats
     Character "1" *-- "0..*" RaidLockout : saved instances
+    Character "1" *-- "0..*" Profession : skills
     Character "1" --> "0..*" CharacterClaim : ownership review
     CharacterSnapshot "1" --> "0..*" CharacterClaim : discovers
     CharacterSnapshot --> Loadout : refreshes observed fields
     CharacterSnapshot --> RaidLockout : refreshes complete save set
+    CharacterSnapshot --> Profession : refreshes complete skill list
+    class Character {
+        CharacterVisibility Visibility
+    }
     class CompanionPairing {
         UserId UserId
         PairingState State
@@ -41,4 +46,9 @@ classDiagram
         string LockoutId
         DateTimeOffset ResetsAtUtc
         bool IsExtended
+    }
+    class Profession {
+        string Name
+        int Rank
+        int MaxRank
     }

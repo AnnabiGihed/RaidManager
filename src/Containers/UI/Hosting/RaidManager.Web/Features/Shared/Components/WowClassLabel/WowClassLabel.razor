@@ -1,5 +1,12 @@
 @namespace RaidManager.Web.Features.Shared.Components
 <span class="@CssClass" @attributes="AdditionalAttributes">
     <span class="wow-class-dot" aria-hidden="true"></span>
-    @Label
+    @if (ChildContent is null)
+    {
+        @Label
+    }
+    else
+    {
+        @ChildContent
+    }
 </span>

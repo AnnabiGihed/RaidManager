@@ -107,6 +107,9 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                     b.Property<DateTimeOffset?>("LastIncompleteRaidSaveScanAtUtc")
                         .HasColumnType("timestamp with time zone");
 
+                    b.Property<DateTimeOffset?>("LastProfessionsSynchronizedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<int>("Level")
                         .HasColumnType("integer");
 
@@ -131,6 +134,11 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                     b.Property<int>("Version")
                         .IsConcurrencyToken()
                         .HasColumnType("integer");
+
+                    b.Property<string>("Visibility")
+                        .IsRequired()
+                        .HasMaxLength(32)
+                        .HasColumnType("character varying(32)");
 
                     b.HasKey("Id");
 
@@ -695,6 +703,38 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                                 .IsRequired();
                         });
 
+                    b.OwnsMany("RaidManager.Domain.Features.Characters.ValueObjects.Profession", "Professions", b1 =>
+                        {
+                            b1.Property<int>("Id")
+                                .ValueGeneratedOnAdd()
+                                .HasColumnType("integer");
+
+                            NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b1.Property<int>("Id"));
+
+                            b1.Property<Guid>("CharacterId")
+                                .HasColumnType("uuid");
+
+                            b1.Property<int>("MaxRank")
+                                .HasColumnType("integer");
+
+                            b1.Property<string>("Name")
+                                .IsRequired()
+                                .HasMaxLength(64)
+                                .HasColumnType("character varying(64)");
+
+                            b1.Property<int>("Rank")
+                                .HasColumnType("integer");
+
+                            b1.HasKey("Id");
+
+                            b1.HasIndex("CharacterId");
+
+                            b1.ToTable("CharacterProfessions", (string)null);
+
+                            b1.WithOwner()
+                                .HasForeignKey("CharacterId");
+                        });
+
                     b.OwnsMany("RaidManager.Domain.Features.Characters.ValueObjects.RaidLockout", "RaidLockouts", b1 =>
                         {
                             b1.Property<int>("Id")
@@ -741,6 +781,8 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                     b.Navigation("Claims");
 
                     b.Navigation("Loadouts");
+
+                    b.Navigation("Professions");
 
                     b.Navigation("RaidLockouts");
                 });

@@ -34,6 +34,10 @@ public sealed partial class WowClassLabel
     [EditorRequired]
     public string ClassName { get; set; } = string.Empty;
 
+    /// <summary>Gets or sets what the dot labels instead of the class name, such as a character's name.</summary>
+    [Parameter]
+    public RenderFragment? ChildContent { get; set; }
+
     /// <summary>Gets or sets attributes passed through to the label, such as a test id.</summary>
     [Parameter(CaptureUnmatchedValues = true)]
     public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }

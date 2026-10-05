@@ -34,6 +34,19 @@ public sealed class WowClassLabelTests : BunitContext
         tag.Find(".wow-class-dot").GetAttribute("aria-hidden").ShouldBe("true");
     }
 
+    /// <summary>Labels the class dot with the given content, such as a character's name, instead of the class name.</summary>
+    [Fact]
+    public void ChildContentReplacesTheClassName()
+    {
+        var tag = Render<WowClassLabel>(parameters => parameters
+            .Add(component => component.ClassName, "DeathKnight")
+            .AddChildContent("<a href=\"/characters/1\">Arthasdk</a>"));
+
+        tag.Find(".wow-class").ClassList.ShouldContain("wow-class-deathknight");
+        tag.Find(".wow-class a").TextContent.ShouldBe("Arthasdk");
+        tag.Find(".wow-class").TextContent.ShouldNotContain("Death Knight");
+    }
+
     /// <summary>Keeps an unknown class's name, without a class color.</summary>
     [Fact]
     public void UnknownClassKeepsItsName()

@@ -19,6 +19,9 @@ public static class ShellNavigation
     private static readonly ShellEntry[] Entries =
     [
         new(ShellSection.Player, "Overview", "/"),
+
+        // A profile sits under My characters, which stays highlighted there and names the breadcrumb (#385).
+        new(ShellSection.Player, "My characters", CharacterRoutes.Mine, MatchesSubpaths: true),
         new(ShellSection.Player, "Review new characters", CharacterRoutes.Review, InSidebar: false),
         new(ShellSection.Player, "Add RaidManager", CommunityRoutes.ChooseRealm, InSidebar: false),
         new(ShellSection.Player, "Add RaidManager", CommunityRoutes.AlreadyLinked, InSidebar: false),

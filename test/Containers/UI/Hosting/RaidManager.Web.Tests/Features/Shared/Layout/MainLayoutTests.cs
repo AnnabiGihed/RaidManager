@@ -109,10 +109,23 @@ public sealed class MainLayoutTests : BunitContext
         var layout = RenderLayout();
 
         layout.Find(".shell-navigation").TextContent.ShouldContain("PLAYER");
-        layout.FindAll(".shell-navigation a").Select(link => link.GetAttribute("href")).ShouldBe(["/", "/companion"]);
+        layout.FindAll(".shell-navigation a").Select(link => link.GetAttribute("href")).ShouldBe(["/", "/characters", "/companion"]);
         layout.Markup.ShouldNotContain("OFFICER");
         layout.Find(".rz-navigation-item-wrapper-active").TextContent.ShouldContain("Overview");
         layout.Find("[data-testid=breadcrumb-page]").TextContent.ShouldBe("Overview");
+    }
+
+    /// <summary>Highlights My characters on a profile under it and names it in the breadcrumb (#385).</summary>
+    [Fact]
+    public void ProfilePageHighlightsMyCharacters()
+    {
+        AddAuthorization().SetAuthorized("Arthas Menethil");
+        Services.GetRequiredService<NavigationManager>().NavigateTo($"/characters/{Guid.NewGuid()}");
+
+        var layout = RenderLayout();
+
+        layout.Find("[data-testid=breadcrumb-page]").TextContent.ShouldBe("My characters");
+        layout.Find(".rz-navigation-item-wrapper-active").TextContent.ShouldContain("My characters");
     }
 
     /// <summary>Highlights Companion &amp; sync on the confirm page under it (owner decision on #513).</summary>

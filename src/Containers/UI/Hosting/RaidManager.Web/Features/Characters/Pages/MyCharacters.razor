@@ -1,0 +1,45 @@
+@page "/characters"
+
+<PageTitle>My characters</PageTitle>
+
+<div class="characters-page">
+    <PageHeading Eyebrow="Characters" Title="My characters" Subtitle="Your approved characters. Open one to see its profile." />
+
+    @if (ViewModel.Status == CharacterPageStatus.Loading)
+    {
+        <TextNote Text="Loading your characters…" />
+    }
+    else if (ViewModel.Status == CharacterPageStatus.Failed)
+    {
+        <div class="characters-column">
+            <Notice Tone="NoticeTone.Danger" Title="We couldn't load your characters" Message="Try again in a moment." data-testid="load-failed" />
+            <div>
+                <ActionButton Text="Try again" Click="LoadAsync" />
+            </div>
+        </div>
+    }
+    else if (ViewModel.Characters.Count == 0)
+    {
+        <EmptyState Title="No characters yet" Message="Characters appear here once your companion finds them and you approve them." ShowsMark="false" data-testid="no-characters" />
+    }
+    else
+    {
+        <div class="characters-column">
+            <DataTable Items="@ViewModel.Characters" Headings="@Headings" Key="@(character => character.CharacterId)" ColumnWidths="@ColumnWidths" RowHeight="72" data-testid="characters">
+                <RowTemplate Context="character">
+                    <td>
+                        <WowClassLabel ClassName="@character.Class">
+                            <a class="character-name" href="@CharacterRoutes.Profile(character.CharacterId)" data-testid="@($"open-{character.Name}")">@character.Name</a>
+                        </WowClassLabel>
+                        <span class="character-detail">@MyCharactersViewModel.ClassAndRealm(character)</span>
+                    </td>
+                    <td class="character-level">@character.Level</td>
+                    <td class="character-info">@MyCharactersViewModel.LoadoutLabel(character)</td>
+                    <td class="character-info">@MyCharactersViewModel.RaidSavesLabel(character)</td>
+                    <td><TagChip Text="@ViewModel.SyncLabel(character)" Tone="@ToneOf(ViewModel.Freshness(character))" /></td>
+                </RowTemplate>
+            </DataTable>
+            <p class="characters-note">@MyCharactersViewModel.FreshnessNote</p>
+        </div>
+    }
+</div>

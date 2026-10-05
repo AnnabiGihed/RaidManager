@@ -70,6 +70,7 @@ if (app.Environment.IsDevelopment())
 app.MapGet("/", () => Results.Ok(new { service = "RaidManager.ApiService", status = "foundation" }));
 app.MapIdentityEndpoints();
 app.MapCharacterClaimEndpoints();
+app.MapCharacterProfileEndpoints();
 app.MapCommunityEndpoints();
 app.MapCompanionEndpoints();
 app.MapCompanionManagementEndpoints();

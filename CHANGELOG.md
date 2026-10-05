@@ -9,6 +9,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- My characters and the character profile on the website (boards 1 and 2 of the character profile mockup): a player
+  sees each approved character with its primary loadout, current raid saves and how fresh its data is, and opens its
+  profile with data sources, professions, visibility, loadouts, raid saves and every equipped slot. Only the owner sees
+  a profile for now, and a profile is visible to the community until its owner chooses otherwise; editing comes with
+  #545. The mockup's Equipment card now lists all 17 slots (#385).
 - ADR-0033 (Proposed): players will install the companion from the Microsoft Store as an MSIX the Store signs, built on
   a Windows runner only when the companion changes and published to the Store by GitHub Actions on every merge; the
   listing stays private on dev until the release that ships the companion. The spike's prototype package ran on Windows

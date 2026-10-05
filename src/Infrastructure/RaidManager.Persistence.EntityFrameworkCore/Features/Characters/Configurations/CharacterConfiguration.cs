@@ -7,7 +7,7 @@ using RaidManager.Domain.Features.Shared.Identifiers;
 
 namespace RaidManager.Persistence.EntityFrameworkCore.Features.Characters.Configurations;
 
-/// <summary>Maps the <see cref="Character"/> aggregate, its claims, loadouts and raid saves to PostgreSQL tables.</summary>
+/// <summary>Maps the <see cref="Character"/> aggregate, its claims, loadouts, raid saves and professions to PostgreSQL tables.</summary>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-09-30<br/>
@@ -34,12 +34,14 @@ internal sealed class CharacterConfiguration : IEntityTypeConfiguration<Characte
         builder.Property(character => character.Race).HasConversion<string>().HasMaxLength(EnumLength);
         builder.Property(character => character.Faction).HasConversion<string>().HasMaxLength(EnumLength);
         builder.Property(character => character.GuildName).HasMaxLength(64);
+        builder.Property(character => character.Visibility).HasConversion<string>().HasMaxLength(EnumLength);
         builder.Property(character => character.Version).IsConcurrencyToken();
         builder.HasIndex(character => new { character.Realm, character.Name }).IsUnique();
 
         ConfigureClaims(builder);
         ConfigureLoadouts(builder);
         ConfigureRaidLockouts(builder);
+        ConfigureProfessions(builder);
     }
     #endregion Public Methods
 
@@ -122,6 +124,23 @@ internal sealed class CharacterConfiguration : IEntityTypeConfiguration<Characte
             lockouts.Property(lockout => lockout.LockoutId).HasMaxLength(64);
         });
         builder.Navigation(character => character.RaidLockouts).HasField("_raidLockouts");
+    }
+
+    /// <summary>Maps the professions from the latest complete skill-list read, kept in the game's order.</summary>
+    /// <param name="builder">The character builder.</param>
+    private static void ConfigureProfessions(EntityTypeBuilder<Character> builder)
+    {
+        builder.OwnsMany(character => character.Professions, professions =>
+        {
+            professions.ToTable("CharacterProfessions");
+            professions.WithOwner().HasForeignKey("CharacterId");
+
+            // The generated key also keeps the read's order, which the profile shows.
+            professions.Property<int>("Id").ValueGeneratedOnAdd();
+            professions.HasKey("Id");
+            professions.Property(profession => profession.Name).HasMaxLength(Profession.MaximumNameLength);
+        });
+        builder.Navigation(character => character.Professions).HasField("_professions");
     }
 
     /// <summary>Stores a glyph list as comma-separated identifiers.</summary>

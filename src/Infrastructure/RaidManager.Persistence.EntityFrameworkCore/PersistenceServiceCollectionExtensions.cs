@@ -44,6 +44,7 @@ public static class PersistenceServiceCollectionExtensions
         services.AddScoped<DomainUnitOfWork>(provider => (RaidManagerUnitOfWork)provider.GetRequiredService<IUnitOfWork<RaidManagerDbContext>>());
         services.AddScoped<ICharacterRepository, CharacterRepository>();
         services.AddScoped<ICharacterClaimReader, CharacterClaimReader>();
+        services.AddScoped<ICharacterProfileReader, CharacterProfileReader>();
         services.AddScoped<IUserRepository, UserRepository>();
         services.AddScoped<ICommunityRepository, CommunityRepository>();
         services.AddScoped<ICommunityReader, CommunityReader>();
