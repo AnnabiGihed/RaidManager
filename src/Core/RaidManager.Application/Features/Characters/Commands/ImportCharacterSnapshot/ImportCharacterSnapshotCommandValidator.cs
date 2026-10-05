@@ -39,6 +39,9 @@ public sealed class ImportCharacterSnapshotCommandValidator : AbstractValidator<
     /// <summary>Defines the longest guild name.</summary>
     private const int MaximumGuildNameLength = 64;
 
+    /// <summary>Defines the message of a section without a valid status or, when observed, its observation time.</summary>
+    private const string SectionMessage = "A section is observed with its observation time, or unavailable.";
+
     /// <summary>Defines the highest WotLK level.</summary>
     private const int MaximumLevel = 80;
 
@@ -69,12 +72,18 @@ public sealed class ImportCharacterSnapshotCommandValidator : AbstractValidator<
                 .WithMessage("A character name has 2 to 12 letters.");
             RuleFor(command => command.Character!.CapturedAt).Must(IsPastTime)
                 .WithMessage("The capture time is after 1970 and not in the future.");
-            RuleFor(command => command.Character!.Identity).Must(BeASection).SetValidator(new IdentityValidator()!);
-            RuleFor(command => command.Character!.Guild).Must(BeASection).SetValidator(new GuildValidator()!);
-            RuleFor(command => command.Character!.Professions).Must(BeASection).SetValidator(new ProfessionsValidator()!);
-            RuleFor(command => command.Character!.Equipped).Must(BeASection).SetValidator(new EquippedValidator()!);
-            RuleFor(command => command.Character!.Talents).Must(BeASection).SetValidator(new TalentsValidator()!);
-            RuleFor(command => command.Character!.Lockouts).Must(BeASection).SetValidator(new LockoutsValidator()!);
+            RuleFor(command => command.Character!.Identity).Must(identity => identity is null || IsStatus(identity.Status))
+                .WithMessage(SectionMessage).SetValidator(new IdentityValidator()!);
+            RuleFor(command => command.Character!.Guild).Must(guild => guild is null || IsEnvelope(guild.Status, guild.ObservedAt))
+                .WithMessage(SectionMessage).SetValidator(new GuildValidator()!);
+            RuleFor(command => command.Character!.Professions).Must(professions => professions is null || IsEnvelope(professions.Status, professions.ObservedAt))
+                .WithMessage(SectionMessage).SetValidator(new ProfessionsValidator()!);
+            RuleFor(command => command.Character!.Equipped).Must(equipped => equipped is null || IsEnvelope(equipped.Status, equipped.ObservedAt))
+                .WithMessage(SectionMessage).SetValidator(new EquippedValidator()!);
+            RuleFor(command => command.Character!.Talents).Must(talents => talents is null || IsEnvelope(talents.Status, talents.ObservedAt))
+                .WithMessage(SectionMessage).SetValidator(new TalentsValidator()!);
+            RuleFor(command => command.Character!.Lockouts).Must(lockouts => lockouts is null || IsEnvelope(lockouts.Status, lockouts.ObservedAt))
+                .WithMessage(SectionMessage).SetValidator(new LockoutsValidator()!);
         });
     }
     #endregion Constructors
@@ -102,22 +111,7 @@ public sealed class ImportCharacterSnapshotCommandValidator : AbstractValidator<
     private static bool IsStatus(string? status) =>
         AddonSnapshotMapper.IsObserved(status) || string.Equals(status, AddonSnapshotMapper.Unavailable, StringComparison.Ordinal);
 
-    /// <summary>Gets whether a section, when present, has a valid status and, when observed, an observation time.</summary>
-    /// <param name="section">The section.</param>
-    /// <returns>Whether the section's envelope is valid; a missing section counts as unavailable.</returns>
-    private bool BeASection(object? section) => section switch
-    {
-        null => true,
-        SnapshotIdentity identity => IsStatus(identity.Status),
-        SnapshotGuild guild => IsEnvelope(guild.Status, guild.ObservedAt),
-        SnapshotProfessions professions => IsEnvelope(professions.Status, professions.ObservedAt),
-        SnapshotEquipped equipped => IsEnvelope(equipped.Status, equipped.ObservedAt),
-        SnapshotTalents talents => IsEnvelope(talents.Status, talents.ObservedAt),
-        SnapshotLockouts lockouts => IsEnvelope(lockouts.Status, lockouts.ObservedAt),
-        _ => false,
-    };
-
-    /// <summary>Gets whether a section's status is valid and an observed section has an observation time.</summary>
+    /// <summary>Gets whether a present section's status is valid and an observed section has an observation time; a missing section counts as unavailable.</summary>
     /// <param name="status">The status.</param>
     /// <param name="observedAt">The observation time.</param>
     /// <returns>Whether the envelope is valid.</returns>
