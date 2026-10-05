@@ -106,8 +106,8 @@ generate the mockup with the `penpot-mockups` skill (ADR-0018), then have the ow
      merge closes the task. When the task's completion needs an owner check that can run before the merge (a
      companion build from the PR's artifact, a run on the server), give the check steps one at a time first, and the
      review texts only after the check passed. When the check can only run after the merge (a website change seen on
-     dev), ask the owner first; their choice on #527 was to merge, reopen the task as Blocked with the unblock
-     condition, and close it with the check's evidence.
+     dev), ask the owner first; their choice on #527, and again on #385, was to merge, reopen the task as Blocked with
+     the unblock condition, and close it with the check's evidence. Offer it as the recommended option.
    - **Check every fact the description states** in the code or the run before opening the PR. #531's first draft
      said `/companion/me` was rate-limited; it isn't.
    - **Draft both review comments, every PR (mandatory).** With the summary of the PR, give the operator two texts

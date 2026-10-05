@@ -51,6 +51,9 @@ imports as-is, so no Penpot API, MCP server, plugin or access token is needed.
   `needs-mockup` label (ADR-0017).
 - **Never decide the product in the design.** Show only fields the API or domain provides, with realistic values.
   When a screen depends on an open question (what happens next, who acts), ask it on the task first.
+- **Don't shorten a list the page must show whole.** A board that lists part of the data and a "7 more" line with no
+  way to open the rest hides facts from the player. Ask before building it; the owner's choice on #385, the
+  recommended option, was to list every item and update the board in the UI task's pull request.
 - **States missing from an approved mockup get boards first.** When a UI task needs states the mockup doesn't show
   (errors, empty lists, expired items), ask the owner; their choice on #513, the recommended option, was to add the
   boards to the same file in the UI task's pull request, built from the existing components, and to have them confirm

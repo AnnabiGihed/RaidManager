@@ -299,6 +299,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- The skills keep the character profiles session's lessons: check each pull request of a handover before acting on
+  it, set the domain's default in a generated migration, give each owner its own owned instance, keep test
+  names unique on the shared PostgreSQL fixture, avoid parentheses in cucumber expressions, leave regenerated
+  `.feature.cs` files of untouched features out, use the compact card title on boards with many cards, quote
+  the coverage numbers of CI, and offer the owner's repeated choices (split a whole-story task by viewing and editing,
+  list every item, check a website change on dev after the merge) as the recommended options (#548).
 - The skills keep the Avalonia companion session's lessons: give the owner's check steps before the review texts when a
   pull request needs a check, check every fact a description states, never race a fake clock, name a mockup script's
   repeated texts before pushing, guard scratch scripts, and the Avalonia notification and Microsoft Store facts (#543).

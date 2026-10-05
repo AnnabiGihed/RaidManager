@@ -106,7 +106,7 @@ adopt before a dedicated alignment PR.
   configuration keys requires one local run, recorded in the PR:
   1. `dotnet run --project src/Containers/Aspire/Hosting/RaidManager.AppHost --launch-profile https` in the background.
   2. Wait until `https://localhost:55365/` returns 200, check `https://localhost:55366/` answers and
-     `https://localhost:55366/scalar` returns 200, and that `/sign-in` redirects to `https://discord.com/api/oauth2/authorize` with a `client_id` and the
+     `https://localhost:55366/scalar/` returns 200 (`/scalar` answers 302 to it), and that `/sign-in` redirects to `https://discord.com/api/oauth2/authorize` with a `client_id` and the
      `https://localhost:55365/signin-discord` redirect URI (redact the id and state in the PR).
   3. Stop the AppHost and every `RaidManager.*` process it started, then remove any leftover `postgres-*` container
      (keep the data volume). Never leave processes or containers running for the owner to collide with.
@@ -206,7 +206,8 @@ Coverage is measured and enforced on every pull request
 - **Run the gate after committing.** `coverage_gate.py` compares committed changes with `--base`, so uncommitted work
   shows as "0 / 0 changed lines". Commit first, then run it on the fresh `TestResults`.
 - **Evidence:** quote the changed-lines and total percentages from the coverage comment in the PR's "How it was
-  tested" section.
+  tested" section. They differ from the local run, which also runs the Windows-only companion tests that CI on Linux
+  skips (#385): quote CI's numbers and give the local ones beside them if useful.
 - **Never** lower the thresholds, widen `coverage.runsettings`, or add `[ExcludeFromCodeCoverage]` to get past the
   gate. Changing a threshold needs a new ADR and owner approval.
 - **New projects:** a new `src/` project gets its mirrored test project with real tests in the same PR. The summary
@@ -274,6 +275,12 @@ A mockup comes before the screen, for every user interface: website, companion, 
   `rm-theme-dark` frame 240 px from the left and 64 px from the top. Then run
   `chrome.exe --headless=new --hide-scrollbars --allow-file-access-from-files --window-size=1440,900
   --screenshot=<png> <file URL>` for each.
+- **A board with many cards uses `SurfaceCard Compact="true"`**: its title is 16 px semibold, as the mockups'
+  `card_title` draws it; the default 18 px bold title is for pages with one or two cards. The comparison of #385 found
+  the difference, and long text cut off with an ellipsis where the board shows it whole.
+- **Name a page apart from its view-model records.** A page `CharacterProfile` and the record
+  `ViewModels.Features.Characters.CharacterProfile` made the tests' references ambiguous (#385); the page became
+  `CharacterProfilePage`.
 - **Never pass `class` to a shared component** such as `SurfaceCard`: its `@attributes` come after its own `class`
   and replace it, so the card lost its look on the confirm page of #513. Wrap the component in an element of the
   page that carries the size or placement.
@@ -327,7 +334,7 @@ Git stores LF.
   fails the build on documentation and ordering rules; start it with `#pragma warning disable`, since it is deleted
   before committing.
 - **Long or quoted text in a shell:** a heredoc containing apostrophes can fail in the agent's shell, even with a
-  quoted delimiter (`<<'EOF'`), which happened three times in #382 and #513 and three more in #514 to #530. A `\n`
+  quoted delimiter (`<<'EOF'`), which happened three times in #382 and #513, three more in #514 to #530 and again in #385. A `\n`
   inside a Python string in a heredoc also became a real line break twice, breaking the file it wrote. Write any
   script with an apostrophe or an escape to a file with the editor tool first, then run it. Make code and text
   edits with the editor tool or a Python script, not `sed` with escaped patterns, which mangle `\n`, `\s` and
@@ -419,3 +426,21 @@ ask the owner to repeat what it contains.
    - **Working with the owner:** owner steps one at a time (what, where, why, what to expect); no sign-in to the
      server, no credentials; questions on any conflict or product choice.
    - **Next:** the first action of the new session.
+
+At the start of the next session, check each pull request the handover names with `gh pr view` before acting on it:
+the handover of 2026-10-05 called #544 a draft, but it had merged and been closed out in the meantime. Report what
+changed instead of redoing it.
+
+## 15. EF Core and PostgreSQL (mandatory)
+
+- **Check every generated migration.** `dotnet ef migrations add` gives a new non-nullable column the type's empty
+  default for existing rows (`""` for an enum stored as text). Set the domain's default in the migration
+  (`defaultValue: "Community"` in `AddCharacterProfiles`, #385) and say so in the pull request.
+- **One owned instance per owner.** Owned types (`CombatStats`, `TalentConfiguration`) can't be shared: giving one
+  instance to two loadouts failed the save with a null in `Stats_Strength` (#385). Build a new instance for each.
+- **The PostgreSQL fixture is shared across tests and runs.** `Characters` has a unique index on realm and name, so a
+  fixed character name fails the second test that saves it. Add a random suffix per test class, as
+  `CharacterProfileQueriesTests` does.
+- **A failed save hides its cause** behind "An error occurred while saving the entity changes". To read it, call
+  `RaidManagerDbContext.SaveChangesAsync` in a temporary `try`/`catch` that rethrows with the inner message (with
+  `#pragma warning disable`), then remove it.

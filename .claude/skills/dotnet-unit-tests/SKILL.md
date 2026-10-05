@@ -69,6 +69,12 @@ anything with no business rule to express. If you can't write the scenario in th
   under test, not for time: count timers once they have a due time and wait until a new one is armed or the flow
   ends. `FlowClock`, `DispatcherFlowClock` (`avalonia-tests` §5) and the website's `ArmedTimeProvider`
   (`PairedCompanionsTests`, #527) do it. Prove a timing fix with a stress run, not one green run.
+- **Parentheses in a cucumber expression mean optional text.** `[When("validated without a (user id|character id)")]`
+  never matched, and Reqnroll reported the step as pending (#385). Pass the choice as `{string}` from the feature file
+  instead of reaching for a regular expression.
+- **Don't commit regenerated `.feature.cs` files of features you didn't touch.** A build renumbers Reqnroll's table
+  variables (`table3` to `table11`) in every generated file; restore those with `git checkout --` before staging
+  (#385), and commit only the files of features you changed.
 - **Coverage is gated, and the gate is mandatory.** Every test project references `coverlet.collector`, and CI runs
   the tests with the repository's coverage settings (`coverage.runsettings`: tests, migrations and generated code
   excluded). A pull request must cover at least **80% of its changed coverable lines**, and total line coverage must
