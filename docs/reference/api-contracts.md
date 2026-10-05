@@ -18,6 +18,8 @@ as `Parameters:website-service-key` in your own terminal.
 | `GET /internal/users/{userId}/character-claims/pending` | Website only | List the player's pending and conflicted character claims, oldest first. |
 | `POST /internal/users/{userId}/character-claims/{characterId}/approve` | Website only | Approve a pending claim. Returns 409 and keeps the claim in conflict review when another player owns the character. |
 | `POST /internal/users/{userId}/character-claims/{characterId}/reject` | Website only | Reject a pending claim, so the character never becomes the player's signup option. |
+| `GET /internal/users/{userId}/characters` | Website only | List the characters the player owns through an approved claim, by realm and name, with the primary loadout, the raid saves that haven't reset and the latest sync. |
+| `GET /internal/users/{userId}/characters/{characterId}` | Website only | Get the profile of one of the player's characters: data sources, professions, loadouts with their equipment, current raid saves and the visibility. Returns 404 for a character the player doesn't own. |
 | `POST /internal/communities` | Website only | Link a Discord server as a community, with the user who added the bot as its Administrator. Returns 201 with the community id, or 409 when the server is already linked. |
 | `GET /internal/communities/{communityId}` | Website only | Get a community's Discord server, realm and Administrator. |
 | `GET /internal/communities/by-discord-server/{discordGuildId}` | Website only | Get the community a Discord server links to, or 404 when it isn't linked. |

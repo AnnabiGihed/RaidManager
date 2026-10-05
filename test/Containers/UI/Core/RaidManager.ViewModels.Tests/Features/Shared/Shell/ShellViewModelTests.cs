@@ -64,6 +64,26 @@ public sealed class ShellViewModelTests
     [InlineData("schedule#next", "Schedule")]
     public void PageTitleNamesKnownPages(string relativeUri, string expected) => _shell.PageTitle(relativeUri).ShouldBe(expected);
 
+    /// <summary>Names a page under an entry that matches subpaths after that entry, unless the page has its own entry.</summary>
+    /// <param name="relativeUri">The URL relative to the base.</param>
+    /// <param name="expected">The expected title, or <see langword="null"/> for none.</param>
+    [Theory]
+    [InlineData("characters/0f8fad5b-d9cb-469f-a165-70867728950e", "My characters")]
+    [InlineData("characters/review", "Review new characters")]
+    [InlineData("characterset", null)]
+    [InlineData("schedule/next", null)]
+    public void PageTitleNamesSubpagesAfterTheirEntry(string relativeUri, string? expected)
+    {
+        var shell = new ShellViewModel([
+            new ShellEntry(ShellSection.Player, "Overview", "/", MatchesSubpaths: true),
+            new ShellEntry(ShellSection.Player, "My characters", "/characters", MatchesSubpaths: true),
+            new ShellEntry(ShellSection.Player, "Review new characters", "/characters/review", InSidebar: false),
+            new ShellEntry(ShellSection.Officer, "Schedule", "/schedule"),
+        ]);
+
+        shell.PageTitle(relativeUri).ShouldBe(expected);
+    }
+
     /// <summary>Leaves the breadcrumb page empty for an unknown URL.</summary>
     [Fact]
     public void UnknownPageHasNoTitle() => _shell.PageTitle("sign-in/failed").ShouldBeNull();

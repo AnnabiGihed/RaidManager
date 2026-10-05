@@ -1,0 +1,111 @@
+/* Placement only: the parts are shared components, and colors come from the project-wide theme. */
+.profile-page {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    box-sizing: border-box;
+    max-width: 1168px;
+    /* With the content area's own 16 px, the page starts where the mockup's content does. */
+    padding: 24px;
+}
+
+/* Three 360 px columns 20 px apart, as in board 2. */
+.profile-columns {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 360px));
+    gap: 20px;
+    align-items: start;
+}
+
+.profile-column {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+@media (max-width: 1100px) {
+    .profile-columns {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+.profile-row,
+.profile-divided {
+    display: flex;
+    flex-direction: column;
+    gap: 4px;
+}
+
+.profile-row + .profile-row {
+    margin-top: 12px;
+}
+
+/* Rows separated by a divider across the card, as the loadouts and raid saves of board 2. */
+.profile-divided {
+    padding: 14px 0;
+    border-top: 1px solid var(--rm-line-divider);
+}
+
+.profile-line {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    min-height: 32px;
+}
+
+.profile-row-title {
+    color: var(--rm-text-primary);
+    font-size: 13px;
+    font-weight: 600;
+}
+
+.profile-loadout-name {
+    color: var(--rm-text-primary);
+    font-size: 14px;
+    font-weight: 600;
+}
+
+.profile-row-detail {
+    color: var(--rm-text-secondary);
+    font-size: 12px;
+}
+
+.profile-source,
+.profile-empty {
+    color: var(--rm-text-muted);
+    font-size: 12px;
+}
+
+.profile-empty {
+    display: block;
+    margin-bottom: 16px;
+    font-size: 13px;
+}
+
+/* Slot, item and item level, as the Equipment card of board 2. */
+.profile-gear {
+    display: grid;
+    grid-template-columns: 64px minmax(0, 1fr) 32px;
+    gap: 4px;
+    align-items: baseline;
+    min-height: 30px;
+}
+
+.profile-gear-slot {
+    color: var(--rm-text-muted);
+    font-size: 12px;
+}
+
+/* A long item name wraps rather than hides, so every item reads in full. */
+.profile-gear-item {
+    color: var(--rm-text-primary);
+    font-size: 13px;
+}
+
+.profile-gear-level {
+    color: var(--rm-text-secondary);
+    font-size: 13px;
+    font-weight: 600;
+    text-align: right;
+}

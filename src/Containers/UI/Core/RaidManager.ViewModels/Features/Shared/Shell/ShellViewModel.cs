@@ -66,15 +66,26 @@ public sealed class ShellViewModel
 
     /// <summary>Gets the title of the page at a URL, for the breadcrumb.</summary>
     /// <param name="relativeUri">The URL relative to the website's base, with or without a leading slash or a query.</param>
-    /// <returns>The page title, or <see langword="null"/> when the shell doesn't know the page.</returns>
+    /// <returns>
+    /// The title of the page registered at the path, else of the entry the path sits under (such as a character's
+    /// profile under My characters), or <see langword="null"/> when the shell doesn't know the page.
+    /// </returns>
     public string? PageTitle(string relativeUri)
     {
         var path = Normalize(relativeUri);
-        return _entries.FirstOrDefault(entry => string.Equals(Normalize(entry.Route), path, StringComparison.OrdinalIgnoreCase))?.Title;
+        return (_entries.FirstOrDefault(entry => string.Equals(Normalize(entry.Route), path, StringComparison.OrdinalIgnoreCase))
+                ?? _entries.FirstOrDefault(entry => entry.MatchesSubpaths && IsUnder(path, Normalize(entry.Route))))?.Title;
     }
     #endregion Public Methods
 
     #region Private Helpers
+    /// <summary>Determines whether a path sits below another, the home page excepted.</summary>
+    /// <param name="path">The normalized path.</param>
+    /// <param name="parent">The normalized parent path.</param>
+    /// <returns><see langword="true"/> when the path starts with the parent and a slash.</returns>
+    private static bool IsUnder(string path, string parent) =>
+        parent.Length > 0 && path.StartsWith(parent + "/", StringComparison.OrdinalIgnoreCase);
+
     /// <summary>Reduces a URL to its path without the query, the fragment, or leading and trailing slashes.</summary>
     /// <param name="uri">The URL.</param>
     /// <returns>The path, empty for the home page.</returns>

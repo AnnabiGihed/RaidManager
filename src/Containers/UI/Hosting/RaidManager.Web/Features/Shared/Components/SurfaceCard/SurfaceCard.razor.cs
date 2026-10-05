@@ -27,6 +27,10 @@ public sealed partial class SurfaceCard
     [Parameter]
     public CardAccent Accent { get; set; } = CardAccent.None;
 
+    /// <summary>Gets or sets a value indicating whether the card uses the smaller title of boards with many cards, such as a profile.</summary>
+    [Parameter]
+    public bool Compact { get; set; }
+
     /// <summary>Gets or sets the card's body.</summary>
     [Parameter]
     public RenderFragment? ChildContent { get; set; }
@@ -44,6 +48,9 @@ public sealed partial class SurfaceCard
     public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }
 
     /// <summary>Gets the classes of the accent bar.</summary>
+    private string CssClass => Compact ? "surface-card surface-card-compact" : "surface-card";
+
+    /// <summary>Gets the accent bar's classes.</summary>
     private string AccentClass => $"surface-card-accent surface-card-accent-{Accent.ToString().ToLowerInvariant()}";
     #endregion Properties
 }

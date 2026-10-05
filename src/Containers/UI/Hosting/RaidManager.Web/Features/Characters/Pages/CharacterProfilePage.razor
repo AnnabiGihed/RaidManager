@@ -1,0 +1,119 @@
+@page "/characters/{CharacterId:guid}"
+
+<PageTitle>@PageTitleText</PageTitle>
+
+<div class="profile-page">
+    @if (ViewModel.Status == CharacterPageStatus.Loading)
+    {
+        <TextNote Text="Loading the profile…" />
+    }
+    else if (ViewModel.Status == CharacterPageStatus.NotFound)
+    {
+        <div class="profile-column">
+            <Notice Tone="NoticeTone.Danger" Title="This character isn't one of yours" Message="Only characters you approved have a profile here." data-testid="not-found" />
+            <div>
+                <ActionButton Text="Back to My characters" Click="BackToList" />
+            </div>
+        </div>
+    }
+    else if (ViewModel.Status == CharacterPageStatus.Failed || ViewModel.Profile is null)
+    {
+        <div class="profile-column">
+            <Notice Tone="NoticeTone.Danger" Title="We couldn't load this profile" Message="Try again in a moment." data-testid="load-failed" />
+            <div>
+                <ActionButton Text="Try again" Click="LoadAsync" />
+            </div>
+        </div>
+    }
+    else
+    {
+        var profile = ViewModel.Profile;
+        <PageHeading Eyebrow="@ViewModel.Eyebrow" Title="@profile.Name" Subtitle="@ViewModel.Subtitle" />
+
+        <div class="profile-columns" data-testid="profile">
+            <div class="profile-column">
+                <SurfaceCard Compact="true" Title="Data sources" data-testid="data-sources">
+                    @foreach (var (source, detail) in ViewModel.DataSources())
+                    {
+                        <div @key="source" class="profile-row">
+                            <span class="profile-row-title">@source</span>
+                            <span class="profile-row-detail">@detail</span>
+                        </div>
+                    }
+                </SurfaceCard>
+
+                <SurfaceCard Compact="true" Title="Professions" data-testid="professions">
+                    @if (profile.Professions.Count == 0)
+                    {
+                        <span class="profile-empty">No professions synced yet.</span>
+                    }
+                    @foreach (var profession in profile.Professions)
+                    {
+                        <div @key="profession.Name" class="profile-line">
+                            <span class="profile-row-title">@CharacterProfileViewModel.ProfessionLabel(profession)</span>
+                            <span class="profile-source">From the addon</span>
+                        </div>
+                    }
+                </SurfaceCard>
+
+                <SurfaceCard Compact="true" Title="Note and visibility" data-testid="note-and-visibility">
+                    <span class="profile-empty">@CharacterProfileViewModel.NoNote</span>
+                    <LabeledValue Label="Visible to" Value="@ViewModel.VisibilityLabel" Plain="false" data-testid="visibility" />
+                </SurfaceCard>
+            </div>
+
+            <div class="profile-column">
+                <SurfaceCard Compact="true" Title="Loadouts" data-testid="loadouts">
+                    @if (profile.Loadouts.Count == 0)
+                    {
+                        <span class="profile-empty">No loadout synced yet.</span>
+                    }
+                    @foreach (var loadout in profile.Loadouts)
+                    {
+                        <div @key="loadout.Name" class="profile-divided">
+                            <div class="profile-line">
+                                <span class="profile-loadout-name">@loadout.Name</span>
+                                @if (loadout.IsPrimary)
+                                {
+                                    <TagChip Text="Primary" Tone="TagChipTone.Success" />
+                                }
+                            </div>
+                            <span class="profile-row-detail">@CharacterProfileViewModel.RoleLabel(loadout)</span>
+                            <span class="profile-source">@CharacterProfileViewModel.TalentsLabel(loadout)</span>
+                        </div>
+                    }
+                </SurfaceCard>
+
+                <SurfaceCard Compact="true" Title="Raid saves" Subtitle="@ViewModel.RaidSavesSubtitle()" data-testid="raid-saves">
+                    @if (profile.RaidSaves.Count == 0)
+                    {
+                        <span class="profile-empty">No current raid saves.</span>
+                    }
+                    @foreach (var save in profile.RaidSaves)
+                    {
+                        <div @key="@($"{save.Instance}-{save.Difficulty}-{save.LockoutId}")" class="profile-divided">
+                            <span class="profile-row-title">@CharacterProfileViewModel.RaidSaveTitle(save)</span>
+                            <span class="profile-row-detail">@CharacterProfileViewModel.RaidSaveDetail(save)</span>
+                        </div>
+                    }
+                </SurfaceCard>
+            </div>
+
+            <div class="profile-column">
+                <SurfaceCard Compact="true" Title="Equipment" Subtitle="@ViewModel.EquipmentSubtitle" data-testid="equipment">
+                    @if (ViewModel.PrimaryLoadout is { } primary)
+                    {
+                        @foreach (var item in primary.Gear)
+                        {
+                            <div @key="item.Slot" class="profile-gear">
+                                <span class="profile-gear-slot">@CharacterLabels.Slot(item.Slot)</span>
+                                <span class="profile-gear-item">@CharacterLabels.ItemName(item)</span>
+                                <span class="profile-gear-level">@item.ItemLevel</span>
+                            </div>
+                        }
+                    }
+                </SurfaceCard>
+            </div>
+        </div>
+    }
+</div>

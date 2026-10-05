@@ -180,15 +180,19 @@ def raid_saves(x: float, y: float, edited: bool) -> Group:
 
 
 EQUIPMENT = [("Head", "Sanctified Scourgelord Helmet"), ("Neck", "Bone Sentinel's Amulet"),
-             ("Shoulder", "Sanctified Scourgelord Pauldrons"), ("Chest", "Sanctified Scourgelord Battleplate"),
-             ("Hands", "Sanctified Scourgelord Gauntlets"), ("Legs", "Sanctified Scourgelord Legplates"),
-             ("Main hand", "Havoc's Call"), ("Off hand", "Frozen Bonespike"), ("Trinket", "Deathbringer's Will"),
-             ("Trinket 2", "Whispering Fanged Skull")]
+             ("Shoulders", "Sanctified Scourgelord Pauldrons"), ("Back", "Shadowvault Slayer's Cloak"),
+             ("Chest", "Sanctified Scourgelord Battleplate"), ("Wrists", "Toskk's Maximized Wristguards"),
+             ("Hands", "Sanctified Scourgelord Gauntlets"), ("Waist", "Belt of the Lonely Noble"),
+             ("Legs", "Sanctified Scourgelord Legplates"), ("Feet", "Apocalypse's Advance"),
+             ("Finger", "Ashen Band of Endless Vengeance"), ("Finger 2", "Signet of Twilight"),
+             ("Trinket", "Deathbringer's Will"), ("Trinket 2", "Whispering Fanged Skull"),
+             ("Main hand", "Havoc's Call"), ("Off hand", "Frozen Bonespike"), ("Ranged", "Sigil of the Hanged Man")]
 
 
 def equipment(x: float, y: float) -> Group:
-    row_h = 34
-    items: list[Item] = [*card(x, y, COLUMN_W, 76 + row_h * len(EQUIPMENT) + 44),
+    """Every equipped slot in the game's order (owner decision on #385), not a shortened list."""
+    row_h = 30
+    items: list[Item] = [*card(x, y, COLUMN_W, 76 + row_h * len(EQUIPMENT) + 16),
                          *card_title(x, y, "Equipment", "Primary loadout, Frost DPS")]
     for index, (slot, item) in enumerate(EQUIPMENT):
         ry = y + 76 + index * row_h
@@ -197,7 +201,6 @@ def equipment(x: float, y: float) -> Group:
             text("Item", x + 96, ry + 20, item, 13),
             text("Item level", x + COLUMN_W - 60, ry + 20, "264", 13, 600, SECONDARY, 40, "right"),
         ]))
-    items.append(text("More slots", x + 20, y + 76 + row_h * len(EQUIPMENT) + 24, "7 more slots", 12, 400, MUTED))
     return Group("Equipment", items)
 
 

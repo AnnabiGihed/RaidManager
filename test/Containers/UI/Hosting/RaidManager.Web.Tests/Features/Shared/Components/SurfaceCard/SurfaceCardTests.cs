@@ -81,5 +81,16 @@ public sealed class SurfaceCardTests : BunitContext
         card.Find(".surface-card-header-actions").TextContent.ShouldBe("Create role");
         plain.FindAll(".surface-card-header-actions").ShouldBeEmpty();
     }
+
+    /// <summary>Marks a compact card for the smaller title, and leaves an ordinary card unmarked.</summary>
+    [Fact]
+    public void CompactCardIsMarkedForTheSmallerTitle()
+    {
+        var compact = Render<SurfaceCard>(parameters => parameters.Add(component => component.Title, "Loadouts").Add(component => component.Compact, true));
+        var ordinary = Render<SurfaceCard>(parameters => parameters.Add(component => component.Title, "Loadouts"));
+
+        compact.Find("section").ClassName.ShouldBe("surface-card surface-card-compact");
+        ordinary.Find("section").ClassName.ShouldBe("surface-card");
+    }
     #endregion Tests
 }

@@ -102,6 +102,7 @@ public static class RaidManagerAuthenticationExtensions
 
         services.AddHttpClient<IIdentityApiClient, IdentityApiClient>(AddressApi);
         services.AddHttpClient<ICharacterClaimsApiClient, CharacterClaimsApiClient>(AddressApi);
+        services.AddHttpClient<ICharacterProfilesApiClient, CharacterProfilesApiClient>(AddressApi);
         services.AddHttpClient<ICommunitiesApiClient, CommunitiesApiClient>(AddressApi);
         services.AddHttpClient<ICompanionsApiClient, CompanionsApiClient>(AddressApi);
 

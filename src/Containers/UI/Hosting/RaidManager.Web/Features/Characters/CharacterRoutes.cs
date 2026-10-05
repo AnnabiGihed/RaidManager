@@ -6,16 +6,24 @@ namespace RaidManager.Web.Features.Characters;
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-01<br/>
-/// Purpose: Keeps the sign-in redirect, the review page and the tests on the same paths.
+/// Purpose: Keeps the sign-in redirect, the character pages and the tests on the same paths.
 /// </remarks>
 public static class CharacterRoutes
 {
     #region Constants
+    /// <summary>Defines the page listing the player's characters.</summary>
+    public const string Mine = "/characters";
+
     /// <summary>Defines the page where a player approves or rejects newly found characters.</summary>
     public const string Review = "/characters/review";
     #endregion Constants
 
     #region Public Methods
+    /// <summary>Builds the URL of a character's profile.</summary>
+    /// <param name="characterId">The character.</param>
+    /// <returns>The relative profile URL.</returns>
+    public static string Profile(Guid characterId) => $"{Mine}/{characterId}";
+
     /// <summary>Builds the review page URL that returns to a page once the player continues.</summary>
     /// <param name="returnUrl">The page the player asked for.</param>
     /// <returns>The relative review page URL.</returns>
