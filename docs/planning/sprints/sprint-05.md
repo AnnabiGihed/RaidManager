@@ -50,7 +50,7 @@ date on the Project, both inclusive) follows the blocked-by order; the item's ow
 | #374 Provision the OVH test server | Improvement | 5 | 5 to 7 Oct | #387 (Deployment) | #373 |
 | #15 Pair and revoke a desktop companion | User story | 8 | 4 to 16 Oct | #382, #513, #514 (Development) | #37 |
 | #153 Store and deliver deployment secrets | Improvement | 5 | 6 to 8 Oct | #386 (Deployment) | #103 |
-| #19 Inspect and manage character profiles | User story | 5 | 7 to 10 Oct | #385 (Development) | #38 |
+| #19 Inspect and manage character profiles | User story | 5 | 7 to 10 Oct | #385, #545 (Development) | #38 |
 | #375 Configure the test environment | Improvement | 3 | 8 to 9 Oct | #388 (Deployment) | #103, #374 |
 | #17 Discover WoW accounts and upload snapshots reliably | User story | 8 | 10 to 13 Oct | #384 (Development) | #15, #16 |
 | #376 Deploy main to the dev environment automatically | Improvement | 8 | 3 to 9 Oct | #444 (Development), #389 (Development), #445 (Deployment) | #374, #388 |
@@ -79,6 +79,7 @@ date on the Project, both inclusive) follows the blocked-by order; the item's ow
 | #528 Tell the player the companion keeps running when its window closes | Improvement | 3 | 6 to 8 Oct | #529 (Functional Analysis), #530 (Development) | None |
 | #532 Publish the companion through the Microsoft Store | Spike | 3 (2 days) | 9 to 10 Oct | #533 (Architecture Analysis) | None |
 | #542 Keep the Avalonia companion session's lessons in the skills | Improvement | 1 | 4 to 5 Oct | #543 (Business Analysis) | None |
+| #547 Keep the character profiles session's lessons in the skills | Improvement | 1 | 5 Oct | #548 (Business Analysis) | None |
 
 16 October is kept as a buffer.
 
@@ -140,6 +141,9 @@ and its task #388 wait for #409 and #411.
 | 2026-10-04 | Spike #532 with #533 added on the owner's decision recorded on it: Chrome and SmartScreen block the unsigned companion, so players will get it from the Microsoft Store, investigated first, after #526 and #528. |
 | 2026-10-04 | #527 merged and was checked on dev after the merge, as the owner chose; #529 and #530 delivered the keeps-running notification (#528), the owner checking #530 on Windows before its merge. Spike #532 answered with ADR-0033, approved; its follow-ups (story #538, improvement #539 with #540 and #541) wait in the Backlog by owner decision. |
 | 2026-10-04 | #542 with #543 added under the standing approval on #510: the session's lessons in the skills. |
+| 2026-10-05 | #385 split on the owner's decision recorded on #19: it shows the pages (boards 1 and 2), and the new task #545 under #19, blocked by #385, edits them (boards 3 and 4). On the owner's decisions recorded on #19 and #385, only the owner opens a profile until #545, a profile is visible to the community by default, and the Equipment card lists every slot. |
+| 2026-10-05 | #546 merged and closed #385, which was reopened as Blocked until the owner checks the pages on dev, as the owner chose on #385. The Microsoft Store work (#538, #539 to #541) stays in the Backlog: the owner confirmed the decision of 2026-10-04. |
+| 2026-10-05 | #547 with #548 added under the standing approval on #510: the session's lessons in the skills. |
 
 ## Outcome
 
