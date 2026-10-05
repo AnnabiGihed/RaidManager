@@ -3,6 +3,7 @@ using RaidManager.Domain.Features.Characters.Enums;
 using RaidManager.Domain.Features.Characters.Errors;
 using RaidManager.Domain.Features.Shared.Enums;
 using RaidManager.Domain.Features.Characters.Events;
+using RaidManager.Domain.Features.Characters.Services;
 using RaidManager.Domain.Features.Characters.ValueObjects;
 using RaidManager.Domain.Features.Shared.Identifiers;
 
@@ -91,6 +92,9 @@ public sealed class Character : AggregateRoot<CharacterId>
 
     /// <summary>Gets the UTC timestamp of the latest successful WoW addon synchronization.</summary>
     public DateTimeOffset? LastAddonSynchronizedAtUtc { get; private set; }
+
+    /// <summary>Gets the UTC capture instant of the latest addon snapshot applied, which makes a repeated or older upload a no-op.</summary>
+    public DateTimeOffset? LastAddonSnapshotCapturedAtUtc { get; private set; }
 
     /// <summary>Gets the UTC observation instant of the latest accepted complete saved-instance scan, the only evidence for raid saves.</summary>
     public DateTimeOffset? LastCompleteRaidSaveScanAtUtc { get; private set; }
@@ -230,9 +234,9 @@ public sealed class Character : AggregateRoot<CharacterId>
     /// <param name="name">The equipment-set or loadout name.</param>
     /// <param name="role">The raid role.</param>
     /// <param name="isPrimary">Whether the loadout is the preferred primary loadout.</param>
-    /// <param name="gearScore">The calculated GearScore.</param>
+    /// <param name="gearScore">The calculated GearScore, or <see langword="null"/> when the source gives none.</param>
     /// <param name="talentConfiguration">The exact talents and glyphs.</param>
-    /// <param name="stats">The observed combat statistics.</param>
+    /// <param name="stats">The observed combat statistics, or <see langword="null"/> when the source gives none.</param>
     /// <param name="gearItems">The exact equipment set.</param>
     /// <param name="source">The source of synchronized data.</param>
     /// <param name="synchronizedAtUtc">The synchronization timestamp.</param>
@@ -242,9 +246,9 @@ public sealed class Character : AggregateRoot<CharacterId>
         string name,
         CharacterRole role,
         bool isPrimary,
-        GearScore gearScore,
+        GearScore? gearScore,
         TalentConfiguration talentConfiguration,
-        CombatStats stats,
+        CombatStats? stats,
         IEnumerable<GearItem> gearItems,
         CharacterDataSource source,
         DateTimeOffset synchronizedAtUtc)
@@ -282,7 +286,7 @@ public sealed class Character : AggregateRoot<CharacterId>
         loadout.Refresh(name, role, isPrimary, gearScore, talentConfiguration, stats, gearItems, source, synchronizedAtUtc);
         LastAddonSynchronizedAtUtc = source == CharacterDataSource.WowAddon ? synchronizedAtUtc : LastAddonSynchronizedAtUtc;
         LastArmorySynchronizedAtUtc = source == CharacterDataSource.WarmaneArmory ? synchronizedAtUtc : LastArmorySynchronizedAtUtc;
-        RaiseDomainEvent(new LoadoutSynchronized(Id, loadout.Id, gearScore.Value, synchronizedAtUtc));
+        RaiseDomainEvent(new LoadoutSynchronized(Id, loadout.Id, gearScore?.Value, synchronizedAtUtc));
         return loadout.Id;
     }
 
@@ -344,6 +348,57 @@ public sealed class Character : AggregateRoot<CharacterId>
         return true;
     }
 
+    /// <summary>Applies a snapshot the WoW addon captured, section by section.</summary>
+    /// <param name="snapshot">The snapshot; a section the game didn't answer is <see langword="null"/> and changes nothing.</param>
+    /// <returns>
+    /// <see langword="true"/> when the snapshot was applied; <see langword="false"/> when a snapshot captured at the same
+    /// instant or later was already applied, so a repeated or older upload never regresses the character's facts.
+    /// </returns>
+    /// <exception cref="DomainException">Thrown when the capture is in the future or a section breaks an invariant.</exception>
+    /// <remarks>
+    /// Each talent group becomes a loadout (owner decision on #384): the active group gets the gear worn at the capture, the
+    /// other keeps the gear it had. The first addon loadout of a character without a primary loadout becomes primary when
+    /// it is the active group, and later snapshots never change which loadout is primary.
+    /// </remarks>
+    public bool SynchronizeAddonSnapshot(AddonSnapshot snapshot)
+    {
+        ArgumentNullException.ThrowIfNull(snapshot);
+        EnsureTimestamp(snapshot.CapturedAtUtc);
+        if (snapshot.CapturedAtUtc <= LastAddonSnapshotCapturedAtUtc)
+        {
+            return false;
+        }
+
+        if (snapshot.Identity is { } identity)
+        {
+            RefreshAddonIdentity(identity);
+        }
+
+        if (snapshot.Guild is { } guild)
+        {
+            GuildName = string.IsNullOrWhiteSpace(guild.Name) ? null : guild.Name.Trim();
+        }
+
+        if (snapshot.Professions is { } professions)
+        {
+            SynchronizeProfessions(professions.Items, professions.ObservedAtUtc);
+        }
+
+        if (snapshot.RaidSaves is { } raidSaves)
+        {
+            RecordRaidSaveScan(raidSaves);
+        }
+
+        if (snapshot.Talents is { } talents)
+        {
+            SynchronizeTalentGroups(talents, snapshot.Gear, snapshot.CapturedAtUtc);
+        }
+
+        LastAddonSnapshotCapturedAtUtc = snapshot.CapturedAtUtc;
+        LastAddonSynchronizedAtUtc = Latest(LastAddonSynchronizedAtUtc, snapshot.CapturedAtUtc);
+        return true;
+    }
+
     /// <summary>Determines whether the character is currently saved to the requested raid and difficulty.</summary>
     /// <param name="instance">The raid instance.</param>
     /// <param name="difficulty">The raid difficulty.</param>
@@ -402,6 +457,67 @@ public sealed class Character : AggregateRoot<CharacterId>
     /// <returns>The later instant.</returns>
     private static DateTimeOffset Latest(DateTimeOffset? recordedAtUtc, DateTimeOffset observedAtUtc) =>
         recordedAtUtc > observedAtUtc ? recordedAtUtc.Value : observedAtUtc;
+
+    /// <summary>Gets the gear worn at the capture, keeping the loadout's known item in each slot the game didn't describe.</summary>
+    /// <param name="loadout">The active group's loadout.</param>
+    /// <param name="gear">The gear read at the capture.</param>
+    /// <returns>The loadout's new items.</returns>
+    private static List<GearItem> WornGear(Loadout loadout, AddonGear gear)
+    {
+        var items = gear.Items.ToList();
+        items.AddRange(loadout.GearItems.Where(item => gear.UnreadSlots.Contains(item.Slot)));
+        return items;
+    }
+
+    /// <summary>Refreshes class, race, faction and level from the addon's identity section.</summary>
+    /// <param name="identity">The observed identity.</param>
+    private void RefreshAddonIdentity(AddonIdentity identity)
+    {
+        EnsureLevel(identity.Level);
+        Class = identity.Class;
+        Race = identity.Race;
+        Faction = identity.Faction;
+        Level = identity.Level;
+    }
+
+    /// <summary>Records a saved-instance scan: a complete one replaces the raid saves unless a newer one was kept.</summary>
+    /// <param name="raidSaves">The scan.</param>
+    private void RecordRaidSaveScan(AddonRaidSaves raidSaves)
+    {
+        if (raidSaves.IsComplete)
+        {
+            // An outdated complete scan keeps the newer raid saves; the rest of the snapshot still applies.
+            _ = RecordCompleteRaidSaveScan(raidSaves.Lockouts, raidSaves.ObservedAtUtc);
+            return;
+        }
+
+        RecordIncompleteRaidSaveScan(raidSaves.ObservedAtUtc);
+    }
+
+    /// <summary>Creates or refreshes one loadout per talent group.</summary>
+    /// <param name="talents">The observed talent groups.</param>
+    /// <param name="gear">The gear worn at the capture, or <see langword="null"/> when it couldn't be read.</param>
+    /// <param name="capturedAtUtc">The capture instant.</param>
+    private void SynchronizeTalentGroups(AddonTalents talents, AddonGear? gear, DateTimeOffset capturedAtUtc)
+    {
+        var hasPrimary = _loadouts.Any(loadout => loadout.IsPrimary);
+        foreach (var group in talents.Groups)
+        {
+            var isActive = group.Group == talents.ActiveGroup;
+            var name = group.Talents.SpecializationName;
+            var role = TalentRoles.RoleOf(Class, group.Talents);
+            var loadout = _loadouts.SingleOrDefault(candidate => candidate.TalentGroup == group.Group);
+            if (loadout is null)
+            {
+                loadout = Loadout.CreateForTalentGroup(group.Group, name, role, !hasPrimary && isActive);
+                _loadouts.Add(loadout);
+            }
+
+            var items = isActive && gear is not null ? WornGear(loadout, gear) : loadout.GearItems.ToList();
+            loadout.Refresh(name, role, loadout.IsPrimary, null, group.Talents, null, items, CharacterDataSource.WowAddon, capturedAtUtc);
+            RaiseDomainEvent(new LoadoutSynchronized(Id, loadout.Id, null, capturedAtUtc));
+        }
+    }
 
     /// <summary>Finds the claim made by a user.</summary>
     /// <param name="userId">The requesting user.</param>

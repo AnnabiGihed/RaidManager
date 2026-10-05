@@ -3,6 +3,7 @@ using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
 using RaidManager.ApiService.Features.Shared.Authentication;
 using RaidManager.ApiService.Features.Shared.Http;
+using RaidManager.Application.Features.Characters.Commands.ImportCharacterSnapshot;
 using RaidManager.Application.Features.Companions.Commands.CollectCompanionToken;
 using RaidManager.Application.Features.Companions.Commands.StartCompanionPairing;
 
@@ -61,6 +62,19 @@ public static class CompanionEndpoints
             .Produces<CurrentCompanion>()
             .ProducesProblem(StatusCodes.Status401Unauthorized);
 
+        companion.MapPost("/snapshots", UploadSnapshotAsync)
+            .RequireAuthorization(CompanionTokenDefaults.Policy)
+            .RequireRateLimiting(CompanionRateLimits.SnapshotUploadPolicy)
+            .WithName("UploadCharacterSnapshot")
+            .WithSummary("Upload one character snapshot")
+            .WithDescription("Imports one character of the addon's `RaidManager.lua` (schema 1, `docs/reference/addon-savedvariables.md`) as JSON. A new character gets a pending claim for the companion's player; a character another player owns keeps its owner. Answers 202 `Imported` when the snapshot was applied, 200 `AlreadyCurrent` when one captured at the same time or later was already applied: the same snapshot can be retried safely. A snapshot that breaks the contract gets 400, and a new character without its identity 400 `Character.Snapshot.IdentityUnavailable`. Rate-limited per companion.")
+            .Produces<UploadedCharacterSnapshot>()
+            .Produces<UploadedCharacterSnapshot>(StatusCodes.Status202Accepted)
+            .ProducesValidationProblem()
+            .ProducesProblem(StatusCodes.Status400BadRequest)
+            .ProducesProblem(StatusCodes.Status401Unauthorized)
+            .ProducesProblem(StatusCodes.Status429TooManyRequests);
+
         return endpoints;
     }
     #endregion Public Methods
@@ -86,6 +100,25 @@ public static class CompanionEndpoints
     {
         var result = await sender.Send(new CollectCompanionTokenCommand(request.DeviceCode), cancellationToken);
         return result.ToHttpResult(token => TypedResults.Ok(CompanionToken.From(token)));
+    }
+
+    /// <summary>Sends the import command for the authenticated companion.</summary>
+    /// <param name="request">The request body.</param>
+    /// <param name="user">The authenticated companion.</param>
+    /// <param name="sender">The MediatR sender.</param>
+    /// <param name="cancellationToken">A token to cancel the request.</param>
+    /// <returns>202 when the snapshot was applied, 200 when it was already current, or ProblemDetails.</returns>
+    private static async Task<IResult> UploadSnapshotAsync(
+        UploadCharacterSnapshotRequest request,
+        ClaimsPrincipal user,
+        ISender sender,
+        CancellationToken cancellationToken)
+    {
+        var companionId = Guid.Parse(user.FindFirstValue(CompanionTokenDefaults.CompanionClaim)!);
+        var result = await sender.Send(new ImportCharacterSnapshotCommand(companionId, request.SchemaVersion, request.Character), cancellationToken);
+        return result.ToHttpResult(outcome => outcome == SnapshotImportOutcome.Imported
+            ? TypedResults.Accepted((string?)null, UploadedCharacterSnapshot.From(outcome))
+            : TypedResults.Ok(UploadedCharacterSnapshot.From(outcome)));
     }
 
     /// <summary>Describes the authenticated companion from its claims.</summary>

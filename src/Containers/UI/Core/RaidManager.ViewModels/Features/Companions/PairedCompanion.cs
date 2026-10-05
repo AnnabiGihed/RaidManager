@@ -6,12 +6,13 @@ namespace RaidManager.ViewModels.Features.Companions;
 /// <param name="PairedAtUtc">When it was paired.</param>
 /// <param name="Status">Its status: <see cref="ActiveStatus"/>, <see cref="RevokedStatus"/> or <see cref="ExpiredStatus"/>.</param>
 /// <param name="RevokedAtUtc">When it was revoked, if it was.</param>
+/// <param name="LastUploadAtUtc">When it last uploaded a character snapshot, or <see langword="null"/> before its first upload.</param>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-04<br/>
 /// Purpose: Mirrors the API's transport record, so the website never depends on domain types.
 /// </remarks>
-public sealed record PairedCompanion(Guid CompanionId, string Label, DateTimeOffset PairedAtUtc, string Status, DateTimeOffset? RevokedAtUtc)
+public sealed record PairedCompanion(Guid CompanionId, string Label, DateTimeOffset PairedAtUtc, string Status, DateTimeOffset? RevokedAtUtc, DateTimeOffset? LastUploadAtUtc = null)
 {
     #region Constants
     /// <summary>Defines the status of a companion that may upload.</summary>

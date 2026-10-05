@@ -35,9 +35,10 @@ as `Parameters:website-service-key` in your own terminal.
 | `POST /companion/pairings` | Companion, anonymous | Start pairing: returns a device code to poll with, a pairing code such as `K7M-4QX` to show, its expiry 10 minutes later and the polling interval of 5 seconds. Takes a `computerLabel` of at most 200 characters, kept to 64. |
 | `POST /companion/pairings/token` | Companion, anonymous | Poll with the `deviceCode`: 400 `CompanionPairing.Pending` until the player confirms, then 200 with the `companionId`, the `deviceToken` and the player's name, once. Afterwards, and for an unknown device code, 400 `CompanionPairing.Invalid`; after expiry, 400 `CompanionPairing.Expired`. |
 | `GET /companion/me` | Companion, device token | Check the pairing: the companion's id and computer label. |
+| `POST /companion/snapshots` | Companion, device token | Upload one character snapshot of the addon file: 202 `Imported` when it was applied, 200 `AlreadyCurrent` when a snapshot captured at the same time or later was already applied (see [Character snapshots](#character-snapshots)). |
 | `GET /internal/users/{userId}/companion-pairings/{pairingCode}` | Website only | Describe the pairing a code belongs to (code, computer label, request time, expiry) for the player to check before confirming. |
 | `POST /internal/users/{userId}/companion-pairings/{pairingCode}/confirm` | Website only | Confirm the code: binds the computer to the player, whose companion gets its token at its next poll. |
-| `GET /internal/users/{userId}/companions` | Website only | List the player's companions, revoked ones included, oldest first, with when each was paired and last used and its status: `Active`, `Revoked` or `Expired`. |
+| `GET /internal/users/{userId}/companions` | Website only | List the player's companions, revoked ones included, oldest first, with when each was paired, last used and last uploaded a snapshot, and its status: `Active`, `Revoked` or `Expired`. |
 | `POST /internal/users/{userId}/companions/{companionId}/revoke` | Website only | Revoke a companion: its next request gets 401. What it uploaded stays. |
 
 Operations under `/internal/` require the website key in the `X-RaidManager-Service-Key` header, as
@@ -72,13 +73,42 @@ hostnames forward only `/companion/` (owner decision on #369).
   and 409 `CompanionPairing.Expired` or `CompanionPairing.AlreadyConfirmed`.
 - **Revocation** answers 404 for a companion the player doesn't have and 409 when it was already revoked.
 - **Rate limits** answer 429 `RateLimit.Exceeded` with `Retry-After`: 10 pairing starts per address per 10 minutes,
-  60 token polls per address per minute, and 10 code checks (looking a code up or confirming it) per player per 10
-  minutes. The `Companion:RateLimits` configuration section changes them.
+  60 token polls per address per minute, 10 code checks (looking a code up or confirming it) per player per 10
+  minutes, and 120 snapshot uploads per companion per minute. The `Companion:RateLimits` configuration section
+  changes them.
+
+### Character snapshots
+
+A paired companion uploads each character of the addon's `RaidManager.lua` with `POST /companion/snapshots`, one
+character per request, as JSON in the shape of the [addon snapshot contract](addon-savedvariables.md):
+`{ "schemaVersion": 1, "addonVersion": "0.1.0", "character": { "realm": "Icecrown", "name": "Arthasdk", ... } }`, where
+`character` is one entry of the file's `characters` table with the same field names.
+
+- **Identity of a snapshot.** A snapshot is identified by its character and its `capturedAt`. The API applies a
+  snapshot only when it is newer than the last one applied to the character, so retrying the same snapshot is safe: it
+  answers 202 `Imported` when it applied the snapshot and 200 `AlreadyCurrent` otherwise. The companion drops the
+  snapshot from its queue on either answer.
+- **New characters** are imported with a pending claim for the companion's player, who reviews it on the website
+  ([ADR-0002](../adr/0002-use-desktop-companion-for-character-sync.md)). A character another player owns keeps its
+  owner, and the uploading player's claim goes to conflict review. A new character needs its `identity` section:
+  without it the API answers 400 `Character.Snapshot.IdentityUnavailable`.
+- **Sections.** Only an `observed` section changes the character; an `unavailable` one keeps what was known. Only a
+  complete saved-instance scan from an English client (`enUS` or `enGB`) replaces the raid saves, because instance
+  names are localized; RaidManager keeps the current saves of the WotLK raids it plans and ignores dungeons, older raids
+  and expired saves.
+- **Loadouts** are the character's talent groups (owner decision on #384): each has its group's talents and glyphs, a
+  name and a role from its tree with the most points spent. The active group gets the gear worn at the capture, keeping
+  its known item in a slot the game didn't describe; the other group keeps its gear. The first addon loadout of a
+  character without a primary loadout becomes primary when it is the active group. Equipment sets aren't imported.
+  GearScore, combat statistics and item levels stay empty until an item catalog exists (#552).
+- **Validation.** A snapshot that breaks the contract (another schema version, an unknown realm, class, race or
+  faction, a capture time in the future, a section without its status or observation time) answers 400 with the
+  failing fields under `errors`.
 
 ## Planned contract areas
 
 - User-scoped website calls, session, and profile access.
-- Monitored-installation status, and authenticated, idempotent character snapshot ingestion by a paired companion.
+- Monitored-installation status.
 - Resolving an ownership conflict between two players.
 - Character profiles, loadouts, synchronization timestamps, and raid lockouts.
 - Community membership and officer permissions, raid templates, recurrence, scheduling, and publication.

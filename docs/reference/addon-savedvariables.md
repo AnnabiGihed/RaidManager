@@ -181,6 +181,12 @@ when `UPDATE_INSTANCE_INFO` answers. Until a first answer, the section is `"unav
 `reason = "not-answered"`; after one, an earlier answer stays until the next arrives, and its `observedAt` tells its
 age.
 
+## Upload
+
+The companion uploads each character snapshot of the file to the API as JSON with the same field names, one character
+per request; [Character snapshots](api-contracts.md#character-snapshots) says what RaidManager keeps from it. The API
+reads `equipmentSets` but doesn't import it, and keeps no `guid`.
+
 ## Not in schema 1
 
 Combat statistics (`UnitStat` and the like), per-encounter progress and the bank's contents aren't captured: the

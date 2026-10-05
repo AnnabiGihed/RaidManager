@@ -48,7 +48,7 @@ public sealed class PairedCompanionsTests : BunitContext
         _api.Companions =
         [
             FakeCompanionsApiClient.Companion("BRYN-DESKTOP"),
-            FakeCompanionsApiClient.Companion("BRYN-LAPTOP", PairedCompanion.RevokedStatus, DateTimeOffset.UtcNow),
+            FakeCompanionsApiClient.Companion("BRYN-LAPTOP", PairedCompanion.RevokedStatus, DateTimeOffset.UtcNow) with { LastUploadAtUtc = DateTimeOffset.UtcNow },
             FakeCompanionsApiClient.Companion("OLD-PC", PairedCompanion.ExpiredStatus),
         ];
 
@@ -62,6 +62,7 @@ public sealed class PairedCompanionsTests : BunitContext
         rows[0].QuerySelector(".tag-chip")!.ClassList.ShouldContain("tag-chip-success");
         page.Find("[data-testid=revoke-BRYN-DESKTOP]").ShouldNotBeNull();
         rows[1].QuerySelector(".companion-note")!.TextContent.ShouldStartWith("Revoked today, ");
+        rows[1].QuerySelector(".companion-upload")!.TextContent.ShouldStartWith("Today, ");
         rows[1].QuerySelector(".tag-chip")!.TextContent.Trim().ShouldBe("Revoked");
         rows[2].QuerySelector(".companion-note")!.TextContent.ShouldBe("Unused for 180 days");
         rows[2].QuerySelector(".tag-chip")!.ClassList.ShouldContain("tag-chip-neutral");

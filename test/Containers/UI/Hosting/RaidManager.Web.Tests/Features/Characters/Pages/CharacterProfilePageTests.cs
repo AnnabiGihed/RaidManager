@@ -67,6 +67,7 @@ public sealed class CharacterProfilePageTests : BunitContext
         equipment.TextContent.ShouldContain("Primary loadout, Frost DPS");
         equipment.QuerySelectorAll(".profile-gear-item").Select(item => item.TextContent).ShouldBe(["Sanctified Scourgelord Helmet", "Whispering Fanged Skull"]);
         equipment.QuerySelectorAll(".profile-gear-slot").Select(slot => slot.TextContent).ShouldBe(["Head", "Trinket"]);
+        equipment.QuerySelectorAll(".profile-gear-level").Select(level => level.TextContent).ShouldBe(["264", "—"]);
     }
 
     /// <summary>Shows each card's empty text before anything was synchronized.</summary>

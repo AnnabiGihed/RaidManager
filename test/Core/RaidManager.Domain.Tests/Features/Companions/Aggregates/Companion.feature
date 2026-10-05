@@ -50,3 +50,19 @@ Feature: Companion token
       Given "Bryn" revoked the companion
       When "Bryn" revokes the companion
       Then the revocation fails with "Companion.AlreadyRevoked" as Conflict
+
+  Rule: A companion's last upload is the latest upload it made
+
+    Scenario: A companion that never uploaded has no last upload
+      When the companion calls 1 minutes after its last use
+      Then the companion has no last upload
+
+    Scenario Outline: An upload moves the last upload forward only
+      Given the companion uploaded 2 hours after its pairing
+      When the companion uploads <hours> hours after its pairing
+      Then its last upload is <latest> hours after its pairing
+
+      Examples:
+        | hours | latest |
+        | 3     | 3      |
+        | 1     | 2      |

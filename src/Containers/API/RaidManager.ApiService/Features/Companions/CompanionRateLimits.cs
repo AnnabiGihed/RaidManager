@@ -2,6 +2,7 @@ using System.Threading.RateLimiting;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.AspNetCore.RateLimiting;
 using Microsoft.Extensions.Options;
+using RaidManager.ApiService.Features.Shared.Authentication;
 
 namespace RaidManager.ApiService.Features.Companions;
 
@@ -22,6 +23,9 @@ public static class CompanionRateLimits
 
     /// <summary>Defines the policy on looking up and confirming codes, per player.</summary>
     public const string CodeCheckPolicy = "companion-code-check";
+
+    /// <summary>Defines the policy of snapshot uploads, partitioned by companion.</summary>
+    public const string SnapshotUploadPolicy = "companion-snapshot-upload";
 
     /// <summary>Defines the ProblemDetails title of a refused request.</summary>
     public const string RateLimitedTitle = "RateLimit.Exceeded";
@@ -50,6 +54,8 @@ public static class CompanionRateLimits
                 AddressOf(context), Options(context).TokenPollsPerWindow, Options(context).TokenPollWindow));
             limiter.AddPolicy(CodeCheckPolicy, context => FixedWindow(
                 PlayerOf(context), Options(context).CodeChecksPerWindow, Options(context).CodeCheckWindow));
+            limiter.AddPolicy(SnapshotUploadPolicy, context => FixedWindow(
+                CompanionOf(context), Options(context).SnapshotUploadsPerWindow, Options(context).SnapshotUploadWindow));
         });
         return services;
     }
@@ -79,6 +85,12 @@ public static class CompanionRateLimits
     /// <param name="context">The request.</param>
     /// <returns>The player's identifier, or a shared partition when missing.</returns>
     private static string PlayerOf(HttpContext context) => context.GetRouteValue("userId")?.ToString() ?? UnknownPartition;
+
+    /// <summary>Partitions by the authenticated companion, so each companion has its own upload budget.</summary>
+    /// <param name="context">The request.</param>
+    /// <returns>The companion identifier, or a shared partition for an unauthenticated request.</returns>
+    private static string CompanionOf(HttpContext context) =>
+        context.User.FindFirst(CompanionTokenDefaults.CompanionClaim)?.Value ?? UnknownPartition;
 
     /// <summary>Answers a refused request with 429, ProblemDetails and, when known, how long to wait.</summary>
     /// <param name="context">The refusal.</param>

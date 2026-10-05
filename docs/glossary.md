@@ -56,7 +56,8 @@ A character can therefore have multiple GearScores.
 ## Loadout
 
 A raid-capable character configuration containing a specialization, role, equipment set, GearScore, talents, glyphs,
-combat statistics and synchronization timestamp.
+combat statistics and synchronization timestamp. From the addon, each of a character's talent groups (dual
+specialization) is a loadout.
 
 ## Raid lockout
 

@@ -81,7 +81,7 @@ public sealed class CharacterStepDefinitions
     /// <param name="expectedGearScore">The expected GearScore.</param>
     [Then("the synchronized loadout GearScore should be (.*)")]
     public void ThenTheSynchronizedLoadoutGearScoreShouldBe(int expectedGearScore) =>
-        _character.Loadouts.Single().GearScore.Value.ShouldBe(expectedGearScore);
+        _character.Loadouts.Single().GearScore.ShouldBe(new GearScore(expectedGearScore));
 
     /// <summary>Asserts that a loadout synchronization event was raised.</summary>
     [Then("a loadout synchronized domain event should exist")]

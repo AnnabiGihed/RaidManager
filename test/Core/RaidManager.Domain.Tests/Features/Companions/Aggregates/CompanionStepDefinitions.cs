@@ -64,6 +64,11 @@ public sealed class CompanionStepDefinitions
     [Given("{string} revoked the companion")]
     public void GivenRevokedTheCompanion(string player) =>
         _companion.Revoke(PlayerId(player), PairedAt).IsSuccess.ShouldBeTrue();
+
+    /// <summary>Records an upload some hours after pairing as an arrangement step.</summary>
+    /// <param name="hours">The hours after pairing.</param>
+    [Given("the companion uploaded {int} hours after its pairing")]
+    public void GivenTheCompanionUploadedHoursAfterItsPairing(int hours) => _companion.RecordUpload(PairedAt.AddHours(hours));
     #endregion Given Steps
 
     #region When Steps
@@ -81,6 +86,11 @@ public sealed class CompanionStepDefinitions
     /// <param name="player">The player name.</param>
     [When("{string} revokes the companion")]
     public void WhenRevokesTheCompanion(string player) => _revocation = _companion.Revoke(PlayerId(player), PairedAt.AddHours(1));
+
+    /// <summary>Records an upload some hours after pairing.</summary>
+    /// <param name="hours">The hours after pairing.</param>
+    [When("the companion uploads {int} hours after its pairing")]
+    public void WhenTheCompanionUploadsHoursAfterItsPairing(int hours) => _companion.RecordUpload(PairedAt.AddHours(hours));
     #endregion When Steps
 
     #region Then Steps
@@ -139,6 +149,15 @@ public sealed class CompanionStepDefinitions
         Revocation.Error.Code.ShouldBe(code);
         Revocation.ResultExceptionType.ShouldBe(Enum.Parse<ResultExceptionType>(type));
     }
+
+    /// <summary>Asserts that the companion never uploaded.</summary>
+    [Then("the companion has no last upload")]
+    public void ThenTheCompanionHasNoLastUpload() => _companion.LastUploadAtUtc.ShouldBeNull();
+
+    /// <summary>Asserts the companion's last upload.</summary>
+    /// <param name="hours">The expected hours after pairing.</param>
+    [Then("its last upload is {int} hours after its pairing")]
+    public void ThenItsLastUploadIsHoursAfterItsPairing(int hours) => _companion.LastUploadAtUtc.ShouldBe(PairedAt.AddHours(hours));
     #endregion Then Steps
 
     #region Private Helpers

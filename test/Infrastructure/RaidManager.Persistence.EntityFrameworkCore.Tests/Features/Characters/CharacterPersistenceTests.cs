@@ -74,11 +74,11 @@ public sealed class CharacterPersistenceTests
         reloaded.Claims.ShouldHaveSingleItem().State.ShouldBe(CharacterClaimState.Approved);
         var loadout = reloaded.Loadouts.ShouldHaveSingleItem();
         loadout.Id.ShouldBe(loadoutId);
-        loadout.GearScore.Value.ShouldBe(5812);
+        loadout.GearScore.ShouldBe(new GearScore(5812));
         loadout.TalentConfiguration.MajorGlyphIds.ShouldBe([43533, 43547]);
         loadout.TalentConfiguration.MinorGlyphIds.ShouldBe([43544]);
-        loadout.Stats.HitPercent.ShouldBe(1.2345m);
-        loadout.Stats.ParryPercent.ShouldBe(18.75m);
+        loadout.Stats.ShouldNotBeNull().HitPercent.ShouldBe(1.2345m);
+        loadout.Stats!.ParryPercent.ShouldBe(18.75m);
         loadout.GearItems.ShouldHaveSingleItem().ItemId.ShouldBe(51133);
         var lockout = reloaded.RaidLockouts.ShouldHaveSingleItem();
         lockout.Instance.ShouldBe(RaidInstance.IcecrownCitadel);
@@ -109,6 +109,41 @@ public sealed class CharacterPersistenceTests
         eventTypes.ShouldContain(type => type != null && type.Contains(".CharacterClaimed,", StringComparison.Ordinal));
     }
 
+    /// <summary>Saves a character from two addon snapshots, the second applied to the reloaded character, and finds it by realm and name.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task AddonSnapshotsRoundTripWithoutGearScoreAndAreFoundByRealmAndName()
+    {
+        // Whole seconds: PostgreSQL keeps timestamps to the microsecond, not to .NET's 100 nanoseconds.
+        var capturedAtUtc = DateTimeOffset.FromUnixTimeSeconds(DateTimeOffset.UtcNow.ToUnixTimeSeconds()).AddHours(-2);
+        var name = CharacterName.Create("Snap" + new string([.. Enumerable.Range(0, 6).Select(_ => (char)('a' + Random.Shared.Next(26)))]));
+        var character = Character.Import(WarmaneRealm.Onyxia, name, WowClass.DeathKnight, WowRace.Undead, Faction.Horde, 80);
+        character.SynchronizeAddonSnapshot(Snapshot(capturedAtUtc, activeGroup: 1, unreadHead: false)).ShouldBeTrue();
+        await SaveNewAsync(character);
+
+        await using (var scope = _database.Services.CreateAsyncScope())
+        {
+            var repository = scope.ServiceProvider.GetRequiredService<ICharacterRepository>();
+            var found = (await repository.FindByRealmAndNameAsync(WarmaneRealm.Onyxia, name, CancellationToken.None)).ShouldNotBeNull();
+            found.SynchronizeAddonSnapshot(Snapshot(capturedAtUtc.AddHours(1), activeGroup: 2, unreadHead: true)).ShouldBeTrue();
+            await repository.UpdateAsync(found);
+            var saved = await scope.ServiceProvider.GetRequiredService<DomainUnitOfWork>().SaveChangesAsync();
+            saved.IsSuccess.ShouldBeTrue(saved.IsFailure ? saved.Error.Message : null);
+        }
+
+        await using var readScope = _database.Services.CreateAsyncScope();
+        var reloaded = (await readScope.ServiceProvider.GetRequiredService<ICharacterRepository>()
+            .FindByRealmAndNameAsync(WarmaneRealm.Onyxia, name, CancellationToken.None)).ShouldNotBeNull();
+        reloaded.LastAddonSnapshotCapturedAtUtc.ShouldBe(capturedAtUtc.AddHours(1));
+        var loadouts = reloaded.Loadouts.OrderBy(loadout => loadout.TalentGroup).ToList();
+        loadouts.Select(loadout => (loadout.TalentGroup, loadout.Name, loadout.IsPrimary, loadout.GearItems.Count))
+            .ShouldBe([(1, "Frost", true, 2), (2, "Blood", false, 1)]);
+        loadouts.ShouldAllBe(loadout => loadout.GearScore == null && loadout.Stats == null);
+        loadouts[1].GearItems.ShouldHaveSingleItem().ItemLevel.ShouldBeNull();
+        (await readScope.ServiceProvider.GetRequiredService<ICharacterRepository>()
+            .FindByRealmAndNameAsync(WarmaneRealm.Icecrown, name, CancellationToken.None)).ShouldBeNull();
+    }
+
     /// <summary>Confirms that the committed migrations describe the current model.</summary>
     /// <returns>A task that completes when the test has run.</returns>
     [Fact]
@@ -122,6 +157,30 @@ public sealed class CharacterPersistenceTests
     #endregion Tests
 
     #region Private Helpers
+    /// <summary>Builds an addon snapshot with two talent groups, the active one wearing a head and a neck item.</summary>
+    /// <param name="capturedAtUtc">The capture instant.</param>
+    /// <param name="activeGroup">The active talent group.</param>
+    /// <param name="unreadHead">Whether the head slot holds an item the game didn't describe.</param>
+    /// <returns>The snapshot.</returns>
+    private static AddonSnapshot Snapshot(DateTimeOffset capturedAtUtc, int activeGroup, bool unreadHead)
+    {
+        GearItem[] items =
+        [
+            new(EquipmentSlot.Head, 51312, null, "item:51312:3817:3628:3519:0:0:0:0:80", null),
+            new(EquipmentSlot.Neck, 50728, null, "item:50728:0:3628:0:0:0:0:0:80", null),
+        ];
+        var talents = new AddonTalents(
+            activeGroup,
+            [
+                new AddonTalentGroup(1, new TalentConfiguration("Frost", 0, 53, 18, "0-3050-3333", [58631], [58640])),
+                new AddonTalentGroup(2, new TalentConfiguration("Blood", 51, 10, 10, "3333-30-3", [], [])),
+            ]);
+        var gear = unreadHead
+            ? new AddonGear([items[1]], [EquipmentSlot.Head])
+            : new AddonGear(items, []);
+        return new AddonSnapshot(capturedAtUtc, null, new AddonGuild("Dark Templars"), null, talents, gear, null);
+    }
+
     /// <summary>Adds a new character and commits it through the unit of work in its own scope.</summary>
     /// <param name="character">The character to save.</param>
     /// <returns>A task that completes when the character is committed.</returns>

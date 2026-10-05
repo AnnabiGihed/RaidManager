@@ -36,5 +36,12 @@ public sealed class CompanionRateLimitOptions
 
     /// <summary>Gets or sets the window of <see cref="CodeChecksPerWindow"/>.</summary>
     public TimeSpan CodeCheckWindow { get; set; } = TimeSpan.FromMinutes(10);
+
+    /// <summary>Gets or sets how many snapshots one companion may upload per window: a player with many characters uploads them all after a session.</summary>
+    [Range(1, 10_000)]
+    public int SnapshotUploadsPerWindow { get; set; } = 120;
+
+    /// <summary>Gets or sets the window of the snapshot upload limit.</summary>
+    public TimeSpan SnapshotUploadWindow { get; set; } = TimeSpan.FromMinutes(1);
     #endregion Properties
 }

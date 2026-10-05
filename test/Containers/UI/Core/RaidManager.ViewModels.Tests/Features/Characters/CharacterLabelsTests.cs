@@ -28,6 +28,9 @@ public sealed class CharacterLabelsTests
         CharacterLabels.Source("WarmaneArmory").ShouldBe("from the Warmane Armory");
         CharacterLabels.Role("Unknown").ShouldBe("Unknown");
         CharacterLabels.GearScore(5712).ShouldBe("GearScore 5,712");
+        CharacterLabels.GearScore(null).ShouldBe("GearScore —");
+        CharacterLabels.ItemLevel(264).ShouldBe("264");
+        CharacterLabels.ItemLevel(null).ShouldBe("—");
     }
 
     /// <summary>Reads the item name from an in-game link, or falls back to the item identifier.</summary>

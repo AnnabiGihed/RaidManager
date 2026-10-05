@@ -1,6 +1,9 @@
+using Microsoft.EntityFrameworkCore;
 using Pivot.Framework.Infrastructure.Persistence.EntityFrameworkCore.Repositories;
 using RaidManager.Domain.Features.Characters.Aggregates;
 using RaidManager.Domain.Features.Characters.Repositories;
+using RaidManager.Domain.Features.Characters.ValueObjects;
+using RaidManager.Domain.Features.Shared.Enums;
 using RaidManager.Domain.Features.Shared.Identifiers;
 
 namespace RaidManager.Persistence.EntityFrameworkCore.Features.Characters.Repositories;
@@ -13,12 +16,24 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Features.Characters.Reposi
 /// </remarks>
 internal sealed class CharacterRepository : BaseAsyncCommandRepository<Character, CharacterId>, ICharacterRepository
 {
+    #region Fields
+    /// <summary>Stores the RaidManager database context.</summary>
+    private readonly RaidManagerDbContext _dbContext;
+    #endregion Fields
+
     #region Constructors
     /// <summary>Initializes a new instance of the <see cref="CharacterRepository"/> class.</summary>
     /// <param name="dbContext">The RaidManager database context.</param>
     public CharacterRepository(RaidManagerDbContext dbContext)
         : base(dbContext)
     {
+        _dbContext = dbContext;
     }
     #endregion Constructors
+
+    #region Public Methods
+    /// <inheritdoc/>
+    public Task<Character?> FindByRealmAndNameAsync(WarmaneRealm realm, CharacterName name, CancellationToken cancellationToken) =>
+        _dbContext.Characters.FirstOrDefaultAsync(character => character.Realm == realm && character.Name == name, cancellationToken);
+    #endregion Public Methods
 }

@@ -34,7 +34,7 @@
                 <RowTemplate Context="companion">
                     <td class="companion-name">@companion.Label</td>
                     <td class="companion-time">@ViewModel.PairedLabel(companion)</td>
-                    <td class="companion-upload">@PairedCompanionsViewModel.NoUploadLabel</td>
+                    <td class="companion-upload">@ViewModel.LastUploadLabel(companion)</td>
                     <td><TagChip Text="@companion.Status" Tone="@(companion.IsActive ? TagChipTone.Success : TagChipTone.Neutral)" /></td>
                     <td>
                         @if (companion.IsActive)
