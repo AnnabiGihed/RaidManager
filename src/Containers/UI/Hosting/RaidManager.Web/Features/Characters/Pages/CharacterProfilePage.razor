@@ -32,7 +32,7 @@
 
         <div class="profile-columns" data-testid="profile">
             <div class="profile-column">
-                <SurfaceCard Title="Data sources" data-testid="data-sources">
+                <SurfaceCard Compact="true" Title="Data sources" data-testid="data-sources">
                     @foreach (var (source, detail) in ViewModel.DataSources())
                     {
                         <div @key="source" class="profile-row">
@@ -42,7 +42,7 @@
                     }
                 </SurfaceCard>
 
-                <SurfaceCard Title="Professions" data-testid="professions">
+                <SurfaceCard Compact="true" Title="Professions" data-testid="professions">
                     @if (profile.Professions.Count == 0)
                     {
                         <span class="profile-empty">No professions synced yet.</span>
@@ -56,14 +56,14 @@
                     }
                 </SurfaceCard>
 
-                <SurfaceCard Title="Note and visibility" data-testid="note-and-visibility">
+                <SurfaceCard Compact="true" Title="Note and visibility" data-testid="note-and-visibility">
                     <span class="profile-empty">@CharacterProfileViewModel.NoNote</span>
                     <LabeledValue Label="Visible to" Value="@ViewModel.VisibilityLabel" Plain="false" data-testid="visibility" />
                 </SurfaceCard>
             </div>
 
             <div class="profile-column">
-                <SurfaceCard Title="Loadouts" data-testid="loadouts">
+                <SurfaceCard Compact="true" Title="Loadouts" data-testid="loadouts">
                     @if (profile.Loadouts.Count == 0)
                     {
                         <span class="profile-empty">No loadout synced yet.</span>
@@ -84,7 +84,7 @@
                     }
                 </SurfaceCard>
 
-                <SurfaceCard Title="Raid saves" Subtitle="@ViewModel.RaidSavesSubtitle()" data-testid="raid-saves">
+                <SurfaceCard Compact="true" Title="Raid saves" Subtitle="@ViewModel.RaidSavesSubtitle()" data-testid="raid-saves">
                     @if (profile.RaidSaves.Count == 0)
                     {
                         <span class="profile-empty">No current raid saves.</span>
@@ -100,7 +100,7 @@
             </div>
 
             <div class="profile-column">
-                <SurfaceCard Title="Equipment" Subtitle="@ViewModel.EquipmentSubtitle" data-testid="equipment">
+                <SurfaceCard Compact="true" Title="Equipment" Subtitle="@ViewModel.EquipmentSubtitle" data-testid="equipment">
                     @if (ViewModel.PrimaryLoadout is { } primary)
                     {
                         @foreach (var item in primary.Gear)

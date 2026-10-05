@@ -86,7 +86,8 @@
 /* Slot, item and item level, as the Equipment card of board 2. */
 .profile-gear {
     display: grid;
-    grid-template-columns: 76px minmax(0, 1fr) 40px;
+    grid-template-columns: 64px minmax(0, 1fr) 32px;
+    gap: 4px;
     align-items: baseline;
     min-height: 30px;
 }
@@ -96,12 +97,10 @@
     font-size: 12px;
 }
 
+/* A long item name wraps rather than hides, so every item reads in full. */
 .profile-gear-item {
-    overflow: hidden;
     color: var(--rm-text-primary);
     font-size: 13px;
-    text-overflow: ellipsis;
-    white-space: nowrap;
 }
 
 .profile-gear-level {
