@@ -8,6 +8,11 @@ using Xunit;
 using RaidManager.ApiService.Features.Companions;
 using RaidManager.ApiService.Features.Shared.Authentication;
 using RaidManager.ApiService.Tests.Support;
+using RaidManager.Application.Features.Characters.Commands.ImportCharacterSnapshot;
+using RaidManager.Domain.Features.Characters.Enums;
+using RaidManager.Domain.Features.Characters.Repositories;
+using RaidManager.Domain.Features.Characters.ValueObjects;
+using RaidManager.Domain.Features.Shared.Enums;
 using RaidManager.Domain.Features.Identity.Aggregates;
 using RaidManager.Domain.Features.Identity.Repositories;
 using RaidManager.Domain.Features.Identity.ValueObjects;
@@ -21,7 +26,8 @@ namespace RaidManager.ApiService.Tests.Features.Companions;
 /// Date: 2026-10-04<br/>
 /// Purpose: Proves each criterion of #15 on the API side: pairing binds one companion to the player who confirmed its
 /// code, within ten minutes and once; the website lists and revokes companions; and a missing, unknown, revoked or
-/// expired token is refused on companion routes, with the reason the companion shows. Also proves the rate limits.
+/// expired token is refused on companion routes, with the reason the companion shows. Also proves the rate limits,
+/// and the snapshot upload of #384: a paired companion imports its player's character once, with a pending claim.
 /// </remarks>
 [Collection(ApiTestGroup.Name)]
 public sealed class CompanionEndpointTests : IDisposable
@@ -280,6 +286,55 @@ public sealed class CompanionEndpointTests : IDisposable
         confirm.StatusCode.ShouldBe(HttpStatusCode.Unauthorized);
     }
 
+    /// <summary>Uploads a snapshot twice through a paired companion, then reads the character and the companions list.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task PairedCompanionUploadImportsTheCharacterOnceWithAPendingClaim()
+    {
+        var bryn = await RegisterAsync("Bryn Valewood");
+        var token = await PairAsync(bryn);
+        var name = UniqueCharacterName();
+        var snapshot = Snapshot(name, includeIdentity: true);
+
+        var first = await UploadAsync(token.DeviceToken, new UploadCharacterSnapshotRequest(1, "0.1.0", snapshot));
+        var second = await UploadAsync(token.DeviceToken, new UploadCharacterSnapshotRequest(1, "0.1.0", snapshot));
+
+        first.StatusCode.ShouldBe(HttpStatusCode.Accepted);
+        (await first.Content.ReadFromJsonAsync<UploadedCharacterSnapshot>()).ShouldBe(new UploadedCharacterSnapshot("Imported"));
+        second.StatusCode.ShouldBe(HttpStatusCode.OK);
+        (await second.Content.ReadFromJsonAsync<UploadedCharacterSnapshot>()).ShouldBe(new UploadedCharacterSnapshot("AlreadyCurrent"));
+        using var website = WebsiteClient();
+        (await ListAsync(website, bryn)).ShouldHaveSingleItem().LastUploadAtUtc.ShouldNotBeNull();
+        await using var scope = _api.Services.CreateAsyncScope();
+        var character = (await scope.ServiceProvider.GetRequiredService<ICharacterRepository>()
+            .FindByRealmAndNameAsync(WarmaneRealm.Icecrown, CharacterName.Create(name), CancellationToken.None)).ShouldNotBeNull();
+        var claim = character.Claims.ShouldHaveSingleItem();
+        (claim.RequestedByUserId.Value, claim.State).ShouldBe((bryn, CharacterClaimState.Pending));
+        (character.Class, character.Race, character.GuildName).ShouldBe((WowClass.DeathKnight, WowRace.Undead, "Dark Templars"));
+        var loadout = character.Loadouts.ShouldHaveSingleItem();
+        (loadout.Name, loadout.Role, loadout.IsPrimary, loadout.GearScore).ShouldBe(("Unholy", CharacterRole.MeleeDamage, true, (GearScore?)null));
+        loadout.GearItems.ShouldHaveSingleItem().ItemId.ShouldBe(51312);
+        character.RaidLockouts.ShouldHaveSingleItem().Instance.ShouldBe(RaidInstance.IcecrownCitadel);
+    }
+
+    /// <summary>Uploads without a token, with another schema and without the identity of a new character.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task SnapshotUploadNeedsAPairedCompanionAndTheAddonContract()
+    {
+        var token = await PairAsync(await RegisterAsync("Bryn Valewood"));
+        var name = UniqueCharacterName();
+
+        var anonymous = await UploadAsync(string.Empty, new UploadCharacterSnapshotRequest(1, "0.1.0", Snapshot(name, includeIdentity: true)));
+        var otherSchema = await UploadAsync(token.DeviceToken, new UploadCharacterSnapshotRequest(2, "0.2.0", Snapshot(name, includeIdentity: true)));
+        var withoutIdentity = await UploadAsync(token.DeviceToken, new UploadCharacterSnapshotRequest(1, "0.1.0", Snapshot(name, includeIdentity: false)));
+
+        (await ProblemAsync(anonymous, HttpStatusCode.Unauthorized)).Title.ShouldBe("Companion.TokenUnknown");
+        otherSchema.StatusCode.ShouldBe(HttpStatusCode.BadRequest);
+        (await otherSchema.Content.ReadFromJsonAsync<ValidationProblemDetails>()).ShouldNotBeNull().Errors.ShouldNotBeEmpty();
+        (await ProblemAsync(withoutIdentity, HttpStatusCode.BadRequest)).Title.ShouldBe("Character.Snapshot.IdentityUnavailable");
+    }
+
     /// <summary>Reads the OpenAPI document.</summary>
     /// <returns>A task that completes when the test has run.</returns>
     [Fact]
@@ -292,6 +347,7 @@ public sealed class CompanionEndpointTests : IDisposable
         document.ShouldContain("/companion/pairings");
         document.ShouldContain("/companion/pairings/token");
         document.ShouldContain("/companion/me");
+        document.ShouldContain("/companion/snapshots");
         document.ShouldContain("/internal/users/{userId}/companion-pairings/{pairingCode}/confirm");
         document.ShouldContain("/internal/users/{userId}/companions/{companionId}/revoke");
         document.ShouldContain(CompanionTokenDefaults.Scheme);
@@ -299,6 +355,36 @@ public sealed class CompanionEndpointTests : IDisposable
     #endregion Tests
 
     #region Private Helpers
+    /// <summary>Builds a character name no other test or run uses: the database is shared.</summary>
+    /// <returns>A name of 10 letters.</returns>
+    private static string UniqueCharacterName() =>
+        "Up" + new string([.. Enumerable.Range(0, 8).Select(_ => (char)('a' + Random.Shared.Next(26)))]);
+
+    /// <summary>Builds a snapshot in the shape of the addon contract: a Death Knight with one talent group, a head item and an ICC save.</summary>
+    /// <param name="name">The character name.</param>
+    /// <param name="includeIdentity">Whether the game answered the identity section.</param>
+    /// <returns>The snapshot.</returns>
+    private static SnapshotCharacter Snapshot(string name, bool includeIdentity)
+    {
+        const string Observed = "observed";
+        var at = DateTimeOffset.UtcNow.AddHours(-1).ToUnixTimeSeconds();
+        return new SnapshotCharacter(
+            "Icecrown",
+            name,
+            at,
+            new SnapshotClient("enUS", "12340"),
+            includeIdentity ? new SnapshotIdentity(Observed, at, 80, "DEATHKNIGHT", "Scourge", "Horde") : new SnapshotIdentity("unavailable", null, null, null, null, null),
+            new SnapshotGuild(Observed, at, true, "Dark Templars"),
+            new SnapshotProfessions(Observed, at, [new SnapshotProfession("Mining", 450, 450)]),
+            new SnapshotEquipped(Observed, at, [new SnapshotGearSlot(1, null, null, "item:51312:3817:3628:3519:0:0:0:0:80", 51312), new SnapshotGearSlot(4, true, null, null, null)]),
+            new SnapshotTalents(
+                Observed,
+                at,
+                1,
+                [new SnapshotTalentGroup(1, [new SnapshotTalentTab("Blood", 0, "0000"), new SnapshotTalentTab("Frost", 17, "3050"), new SnapshotTalentTab("Unholy", 54, "3333")], [])]),
+            new SnapshotLockouts(Observed, at, true, [new SnapshotLockout("Icecrown Citadel", 31415926, 0, 345600, 2, 25, true, true, false)]));
+    }
+
     /// <summary>Builds a website route about a pairing code.</summary>
     /// <param name="userId">The player.</param>
     /// <param name="code">The code.</param>
@@ -370,6 +456,21 @@ public sealed class CompanionEndpointTests : IDisposable
         using var client = CompanionClient();
         client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
         return await client.GetAsync("/companion/me");
+    }
+
+    /// <summary>Uploads a snapshot with a device token.</summary>
+    /// <param name="token">The device token, or an empty value for none.</param>
+    /// <param name="request">The request body.</param>
+    /// <returns>The response.</returns>
+    private async Task<HttpResponseMessage> UploadAsync(string token, UploadCharacterSnapshotRequest request)
+    {
+        using var client = CompanionClient();
+        if (token.Length > 0)
+        {
+            client.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Bearer", token);
+        }
+
+        return await client.PostAsJsonAsync("/companion/snapshots", request);
     }
 
     /// <summary>Registers a player.</summary>

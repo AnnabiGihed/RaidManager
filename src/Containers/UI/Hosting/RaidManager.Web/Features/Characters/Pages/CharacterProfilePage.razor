@@ -108,7 +108,7 @@
                             <div @key="item.Slot" class="profile-gear">
                                 <span class="profile-gear-slot">@CharacterLabels.Slot(item.Slot)</span>
                                 <span class="profile-gear-item">@CharacterLabels.ItemName(item)</span>
-                                <span class="profile-gear-level">@item.ItemLevel</span>
+                                <span class="profile-gear-level">@CharacterLabels.ItemLevel(item.ItemLevel)</span>
                             </div>
                         }
                     }

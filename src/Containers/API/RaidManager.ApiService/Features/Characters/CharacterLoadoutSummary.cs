@@ -8,5 +8,5 @@ namespace RaidManager.ApiService.Features.Characters;
 /// </remarks>
 /// <param name="Name">The loadout name.</param>
 /// <param name="Role">The role name, for example <c>MeleeDamage</c>.</param>
-/// <param name="GearScore">The calculated GearScore.</param>
-public sealed record CharacterLoadoutSummary(string Name, string Role, int GearScore);
+/// <param name="GearScore">The calculated GearScore, or <see langword="null"/> before an item catalog gives one (#552).</param>
+public sealed record CharacterLoadoutSummary(string Name, string Role, int? GearScore);

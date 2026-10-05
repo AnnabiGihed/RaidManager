@@ -76,7 +76,8 @@ internal sealed class CharacterConfiguration : IEntityTypeConfiguration<Characte
             loadouts.Property(loadout => loadout.Name).HasMaxLength(64);
             loadouts.Property(loadout => loadout.Role).HasConversion<string>().HasMaxLength(EnumLength);
             loadouts.Property(loadout => loadout.Source).HasConversion<string>().HasMaxLength(EnumLength);
-            loadouts.Property(loadout => loadout.GearScore).HasConversion(score => score.Value, value => new GearScore(value));
+            loadouts.Property(loadout => loadout.GearScore)
+                .HasConversion(score => score.HasValue ? score.Value.Value : (int?)null, value => value.HasValue ? new GearScore(value.Value) : null);
 
             loadouts.OwnsOne(loadout => loadout.TalentConfiguration, talents =>
             {

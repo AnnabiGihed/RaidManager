@@ -62,7 +62,7 @@ internal sealed class CharacterProfileReader : ICharacterProfileReader
             row.Name.Value,
             row.Class,
             row.Level,
-            row.Primary is null ? null : new LoadoutSummaryResponse(row.Primary.Name, row.Primary.Role, row.Primary.GearScore.Value),
+            row.Primary is null ? null : new LoadoutSummaryResponse(row.Primary.Name, row.Primary.Role, row.Primary.GearScore?.Value),
             row.CurrentRaidSaves,
             Latest(row.LastAddonSynchronizedAtUtc, row.LastArmorySynchronizedAtUtc)));
     }
@@ -106,7 +106,7 @@ internal sealed class CharacterProfileReader : ICharacterProfileReader
                     loadout.Name,
                     loadout.Role,
                     loadout.IsPrimary,
-                    loadout.GearScore.Value,
+                    loadout.GearScore?.Value,
                     string.Create(
                         CultureInfo.InvariantCulture,
                         $"{loadout.TalentConfiguration.FirstTreePoints}/{loadout.TalentConfiguration.SecondTreePoints}/{loadout.TalentConfiguration.ThirdTreePoints}"),

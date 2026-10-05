@@ -12,6 +12,11 @@ namespace RaidManager.Domain.Features.Characters.Aggregates;
 /// </remarks>
 public sealed class Loadout : Entity<LoadoutId>
 {
+    #region Constants
+    /// <summary>Defines the number of talent groups a WotLK character has with dual specialization.</summary>
+    public const int MaximumTalentGroups = 2;
+    #endregion Constants
+
     #region Fields
     /// <summary>Stores the exact equipment captured for this loadout.</summary>
     private readonly List<GearItem> _gearItems = [];
@@ -24,7 +29,6 @@ public sealed class Loadout : Entity<LoadoutId>
     {
         Name = string.Empty;
         TalentConfiguration = new TalentConfiguration(string.Empty, 0, 0, 0, string.Empty, [], []);
-        Stats = new CombatStats(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
 
     /// <summary>Initializes a new instance of the <see cref="Loadout"/> class.</summary>
@@ -32,14 +36,15 @@ public sealed class Loadout : Entity<LoadoutId>
     /// <param name="name">The player-visible equipment-set name.</param>
     /// <param name="role">The raid role supplied by the loadout.</param>
     /// <param name="isPrimary">Whether the loadout is the character's preferred primary raid loadout.</param>
-    private Loadout(LoadoutId id, string name, CharacterRole role, bool isPrimary)
+    /// <param name="talentGroup">The game's talent group the loadout follows, or <see langword="null"/> for none.</param>
+    private Loadout(LoadoutId id, string name, CharacterRole role, bool isPrimary, int? talentGroup)
         : base(id)
     {
         Name = name;
         Role = role;
         IsPrimary = isPrimary;
+        TalentGroup = talentGroup;
         TalentConfiguration = new TalentConfiguration(string.Empty, 0, 0, 0, string.Empty, [], []);
-        Stats = new CombatStats(0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0);
     }
     #endregion Constructors
 
@@ -53,14 +58,20 @@ public sealed class Loadout : Entity<LoadoutId>
     /// <summary>Gets a value indicating whether this is the character's preferred primary raid loadout.</summary>
     public bool IsPrimary { get; private set; }
 
-    /// <summary>Gets the latest calculated GearScore.</summary>
-    public GearScore GearScore { get; private set; }
+    /// <summary>Gets the latest calculated GearScore, or <see langword="null"/> when the source gave none.</summary>
+    public GearScore? GearScore { get; private set; }
 
     /// <summary>Gets the talent and glyph configuration associated with the loadout.</summary>
     public TalentConfiguration TalentConfiguration { get; private set; }
 
-    /// <summary>Gets the latest combat statistics observed while this loadout was equipped.</summary>
-    public CombatStats Stats { get; private set; }
+    /// <summary>Gets the latest combat statistics observed while this loadout was equipped, or <see langword="null"/> when none were.</summary>
+    public CombatStats? Stats { get; private set; }
+
+    /// <summary>
+    /// Gets the game's talent group (1 or 2, dual specialization) an addon loadout follows, or <see langword="null"/> for a
+    /// loadout from another source.
+    /// </summary>
+    public int? TalentGroup { get; private set; }
 
     /// <summary>Gets the source that most recently synchronized this loadout.</summary>
     public CharacterDataSource Source { get; private set; }
@@ -81,7 +92,25 @@ public sealed class Loadout : Entity<LoadoutId>
     public static Loadout Create(string name, CharacterRole role, bool isPrimary)
     {
         EnsureName(name);
-        return new Loadout(new LoadoutId(Guid.NewGuid()), name.Trim(), role, isPrimary);
+        return new Loadout(new LoadoutId(Guid.NewGuid()), name.Trim(), role, isPrimary, null);
+    }
+
+    /// <summary>Creates a loadout that follows one of the game's talent groups (owner decision on #384).</summary>
+    /// <param name="talentGroup">The talent group, 1 or 2.</param>
+    /// <param name="name">The name, from the group's tree with the most points spent.</param>
+    /// <param name="role">The raid role of that tree.</param>
+    /// <param name="isPrimary">Whether this is the preferred primary raid loadout.</param>
+    /// <returns>The new loadout.</returns>
+    /// <exception cref="DomainException">Thrown when the name is missing or the talent group is not 1 or 2.</exception>
+    public static Loadout CreateForTalentGroup(int talentGroup, string name, CharacterRole role, bool isPrimary)
+    {
+        EnsureName(name);
+        if (talentGroup is < 1 or > MaximumTalentGroups)
+        {
+            throw new UnknownDomainException($"A talent group is between 1 and {MaximumTalentGroups}.");
+        }
+
+        return new Loadout(new LoadoutId(Guid.NewGuid()), name.Trim(), role, isPrimary, talentGroup);
     }
     #endregion Factory Methods
 
@@ -90,9 +119,9 @@ public sealed class Loadout : Entity<LoadoutId>
     /// <param name="name">The player-visible equipment-set name.</param>
     /// <param name="role">The raid role supplied by the loadout.</param>
     /// <param name="isPrimary">Whether the loadout is currently the preferred primary loadout.</param>
-    /// <param name="gearScore">The calculated GearScore.</param>
+    /// <param name="gearScore">The calculated GearScore, or <see langword="null"/> when the source gives none.</param>
     /// <param name="talentConfiguration">The exact talent and glyph configuration.</param>
-    /// <param name="stats">The game-calculated stat snapshot.</param>
+    /// <param name="stats">The game-calculated stat snapshot, or <see langword="null"/> when the source gives none.</param>
     /// <param name="gearItems">The exact item set.</param>
     /// <param name="source">The source of the synchronized data.</param>
     /// <param name="synchronizedAtUtc">The synchronization timestamp.</param>
@@ -100,9 +129,9 @@ public sealed class Loadout : Entity<LoadoutId>
         string name,
         CharacterRole role,
         bool isPrimary,
-        GearScore gearScore,
+        GearScore? gearScore,
         TalentConfiguration talentConfiguration,
-        CombatStats stats,
+        CombatStats? stats,
         IEnumerable<GearItem> gearItems,
         CharacterDataSource source,
         DateTimeOffset synchronizedAtUtc)

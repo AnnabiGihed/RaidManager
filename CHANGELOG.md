@@ -9,6 +9,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- The API imports the character snapshots a paired companion uploads (`POST /companion/snapshots`, schema 1 of the
+  addon contract): a new character arrives with a pending claim for the companion's player, a character another player
+  owns keeps its owner, and only a snapshot newer than the last one applied changes anything, so a retried upload is
+  safe. Each talent group becomes a loadout whose active group gets the gear worn at the capture; GearScore, stats and
+  item levels show "—" until an item catalog exists (#552). The website's paired companions list shows each
+  companion's last upload (#384).
 - My characters and the character profile on the website (boards 1 and 2 of the character profile mockup): a player
   sees each approved character with its primary loadout, current raid saves and how fresh its data is, and opens its
   profile with data sources, professions, visibility, loadouts, raid saves and every equipped slot. Only the owner sees

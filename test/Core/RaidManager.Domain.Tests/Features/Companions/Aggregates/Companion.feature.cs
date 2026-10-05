@@ -115,7 +115,7 @@ namespace RaidManager.Domain.Tests.Features.Companions.Aggregates
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Companions/Aggregates/Companion.feature.ndjson", 10);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Companions/Aggregates/Companion.feature.ndjson", 13);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -431,6 +431,81 @@ namespace RaidManager.Domain.Tests.Features.Companions.Aggregates
 #line hidden
 #line 52
       await testRunner.ThenAsync("the revocation fails with \"Companion.AlreadyRevoked\" as Conflict", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="A companion that never uploaded has no last upload")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Companion token")]
+        [global::Xunit.TraitAttribute("Description", "A companion that never uploaded has no last upload")]
+        public async global::System.Threading.Tasks.Task ACompanionThatNeverUploadedHasNoLastUpload()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "8";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A companion that never uploaded has no last upload", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A companion\'s last upload is the latest upload it made", null, tagsOfRule);
+#line 56
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 57
+      await testRunner.WhenAsync("the companion calls 1 minutes after its last use", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 58
+      await testRunner.ThenAsync("the companion has no last upload", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableTheoryAttribute(DisplayName="An upload moves the last upload forward only")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Companion token")]
+        [global::Xunit.TraitAttribute("Description", "An upload moves the last upload forward only")]
+        [global::Xunit.InlineDataAttribute("3", "3", "9", new string[0])]
+        [global::Xunit.InlineDataAttribute("1", "2", "10", new string[0])]
+        public async global::System.Threading.Tasks.Task AnUploadMovesTheLastUploadForwardOnly(string hours, string latest, string @__pickleIndex, string[] exampleTags)
+        {
+            string[] tagsOfScenario = exampleTags;
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("hours", hours);
+            argumentsOfScenario.Add("latest", latest);
+            string pickleIndex = @__pickleIndex;
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("An upload moves the last upload forward only", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A companion\'s last upload is the latest upload it made", null, tagsOfRule);
+#line 60
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 61
+      await testRunner.GivenAsync("the companion uploaded 2 hours after its pairing", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 62
+      await testRunner.WhenAsync(string.Format("the companion uploads {0} hours after its pairing", hours), ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 63
+      await testRunner.ThenAsync(string.Format("its last upload is {0} hours after its pairing", latest), ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

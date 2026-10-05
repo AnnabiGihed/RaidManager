@@ -64,7 +64,7 @@ public sealed class PairedCompanionsViewModelTests
         _viewModel.Status.ShouldBe(CompanionPageStatus.Failed);
     }
 
-    /// <summary>Labels when companions were paired and revoked.</summary>
+    /// <summary>Labels when companions were paired, revoked and last uploaded.</summary>
     [Fact]
     public void TimesAreLabelledInUtc()
     {
@@ -75,6 +75,8 @@ public sealed class PairedCompanionsViewModelTests
         _viewModel.RevokedLabel(paired with { RevokedAtUtc = Now.AddDays(-1) }).ShouldBe("Revoked yesterday, 18:00 UTC");
         _viewModel.RevokedLabel(paired with { RevokedAtUtc = new DateTimeOffset(2026, 9, 28, 9, 5, 0, TimeSpan.Zero) }).ShouldBe("Revoked 28 Sep, 09:05 UTC");
         _viewModel.RevokedLabel(paired).ShouldBe("Revoked");
+        _viewModel.LastUploadLabel(paired).ShouldBe(PairedCompanionsViewModel.NoUploadLabel);
+        _viewModel.LastUploadLabel(paired with { LastUploadAtUtc = Now.AddMinutes(-40) }).ShouldBe("Today, 17:20 UTC");
     }
 
     /// <summary>Revokes a companion.</summary>

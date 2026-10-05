@@ -6,7 +6,7 @@ namespace RaidManager.Application.Features.Characters.Queries.GetCharacterProfil
 /// <param name="Name">The loadout name, from the equipment set.</param>
 /// <param name="Role">The raid role.</param>
 /// <param name="IsPrimary">Whether it is the primary loadout.</param>
-/// <param name="GearScore">The calculated GearScore.</param>
+/// <param name="GearScore">The calculated GearScore, or <see langword="null"/> before an item catalog gives one (#552).</param>
 /// <param name="Talents">The talent points per tree, for example <c>0/53/18</c>.</param>
 /// <param name="Source">Where the loadout's data came from.</param>
 /// <param name="Gear">The equipped items, in slot order.</param>
@@ -19,7 +19,7 @@ public sealed record ProfileLoadoutResponse(
     string Name,
     CharacterRole Role,
     bool IsPrimary,
-    int GearScore,
+    int? GearScore,
     string Talents,
     CharacterDataSource Source,
     IReadOnlyList<ProfileGearItemResponse> Gear);

@@ -23,6 +23,9 @@ public static class CharacterErrors
     /// <summary>Gets the error returned when another identity already owns the character.</summary>
     public static readonly Error OwnedByAnotherUser = new("Character.Claim.OwnedByAnotherUser", "The character is already owned by another user.");
 
+    /// <summary>Gets the error returned for a snapshot of an unknown character whose identity the game didn't report.</summary>
+    public static readonly Error IdentityUnavailable = new("Character.Snapshot.IdentityUnavailable", "A new character can't be imported without its class, race, faction and level.");
+
     /// <summary>Gets the error returned when a complete raid-save scan is older than the one already accepted.</summary>
     public static readonly Error RaidSaveScanOutdated = new("Character.RaidSaveScan.Outdated", "A newer complete raid-save scan was already recorded.");
     #endregion Static Instances

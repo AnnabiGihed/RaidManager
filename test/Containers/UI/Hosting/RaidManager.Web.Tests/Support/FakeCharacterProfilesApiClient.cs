@@ -53,7 +53,7 @@ internal sealed class FakeCharacterProfilesApiClient : ICharacterProfilesApiClie
                     "WowAddon",
                     [
                         new CharacterGearItem("Head", 51127, "|Hitem:51127|h[Sanctified Scourgelord Helmet]|h", 264),
-                        new CharacterGearItem("TrinketTwo", 50343, "|Hitem:50343|h[Whispering Fanged Skull]|h", 264),
+                        new CharacterGearItem("TrinketTwo", 50343, "|Hitem:50343|h[Whispering Fanged Skull]|h", null),
                     ]),
                 new CharacterLoadout("Blood Tank", "Tank", false, 5480, "51/10/10", "WowAddon", []),
             ],

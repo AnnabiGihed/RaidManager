@@ -6,12 +6,12 @@ namespace RaidManager.ViewModels.Features.Companions;
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-04<br/>
-/// Purpose: Holds the state and wording of the paired companions list (companion pairing boards 2 to 4 and 14 to 16, owner decisions on #513). Uploads come with #384, so the list says No upload yet. After a confirmation the list waits for the companion to collect its token, which creates its row (owner decision on #526).
+/// Purpose: Holds the state and wording of the paired companions list (companion pairing boards 2 to 4 and 14 to 16, owner decisions on #513). Before a companion's first upload, its last upload says No upload yet (#384). After a confirmation the list waits for the companion to collect its token, which creates its row (owner decision on #526).
 /// </remarks>
 public sealed class PairedCompanionsViewModel
 {
     #region Constants
-    /// <summary>Defines what the last upload column shows until uploads are recorded (owner decision on #513).</summary>
+    /// <summary>Defines what the last upload column shows before a companion's first upload (owner decision on #513).</summary>
     public const string NoUploadLabel = "No upload yet";
 
     /// <summary>Defines the note shown instead of Revoke for a companion unused for 180 days.</summary>
@@ -159,6 +159,15 @@ public sealed class PairedCompanionsViewModel
     {
         ArgumentNullException.ThrowIfNull(companion);
         return UtcTimeLabel.Format(companion.PairedAtUtc, _timeProvider.GetUtcNow());
+    }
+
+    /// <summary>Labels when a companion last uploaded a character snapshot.</summary>
+    /// <param name="companion">The companion.</param>
+    /// <returns>For example <c>Today, 14:05 UTC</c>, or <see cref="NoUploadLabel"/> before its first upload.</returns>
+    public string LastUploadLabel(PairedCompanion companion)
+    {
+        ArgumentNullException.ThrowIfNull(companion);
+        return companion.LastUploadAtUtc is { } uploadedAtUtc ? UtcTimeLabel.Format(uploadedAtUtc, _timeProvider.GetUtcNow()) : NoUploadLabel;
     }
 
     /// <summary>Labels when a companion was revoked.</summary>

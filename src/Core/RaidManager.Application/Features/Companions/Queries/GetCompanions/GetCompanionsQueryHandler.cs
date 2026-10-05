@@ -42,7 +42,7 @@ internal sealed class GetCompanionsQueryHandler : IQueryHandler<GetCompanionsQue
         var now = _timeProvider.GetUtcNow();
         var companions = await _companions.ListByUserAsync(new UserId(request.UserId), cancellationToken);
         IReadOnlyList<CompanionResponse> rows = [.. companions.Select(companion => new CompanionResponse(
-            companion.Id.Value, companion.Label, companion.PairedAtUtc, companion.LastUsedAtUtc, companion.StatusAt(now), companion.RevokedAtUtc))];
+            companion.Id.Value, companion.Label, companion.PairedAtUtc, companion.LastUsedAtUtc, companion.StatusAt(now), companion.RevokedAtUtc, companion.LastUploadAtUtc))];
         return Result.Success(rows);
     }
     #endregion Public Methods

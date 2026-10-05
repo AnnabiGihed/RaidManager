@@ -11,6 +11,11 @@ namespace RaidManager.ViewModels.Features.Characters;
 /// </remarks>
 public static partial class CharacterLabels
 {
+    #region Constants
+    /// <summary>Defines what a value RaidManager doesn't have shows: a dash (owner decision on #384).</summary>
+    private const string MissingValue = "—";
+    #endregion Constants
+
     #region Fields
     /// <summary>Stores the role names as the profile writes them.</summary>
     private static readonly Dictionary<string, string> Roles = new(StringComparer.Ordinal)
@@ -97,9 +102,14 @@ public static partial class CharacterLabels
     public static string Source(string source) => Sources.GetValueOrDefault(source, source);
 
     /// <summary>Gets a GearScore with a thousands separator.</summary>
-    /// <param name="gearScore">The GearScore.</param>
-    /// <returns>For example <c>GearScore 5,712</c>.</returns>
-    public static string GearScore(int gearScore) => $"GearScore {gearScore.ToString("N0", CultureInfo.InvariantCulture)}";
+    /// <param name="gearScore">The GearScore, or <see langword="null"/> before an item catalog gives one (#552).</param>
+    /// <returns>For example <c>GearScore 5,712</c>, or <c>GearScore —</c> without one.</returns>
+    public static string GearScore(int? gearScore) => $"GearScore {Number(gearScore)}";
+
+    /// <summary>Gets an item level.</summary>
+    /// <param name="itemLevel">The item level, or <see langword="null"/> before an item catalog gives one (#552).</param>
+    /// <returns>For example <c>264</c>, or <c>—</c> without one.</returns>
+    public static string ItemLevel(int? itemLevel) => Number(itemLevel);
 
     /// <summary>Gets the item name an in-game item link carries.</summary>
     /// <param name="item">The equipped item.</param>
@@ -113,6 +123,11 @@ public static partial class CharacterLabels
     #endregion Public Methods
 
     #region Private Helpers
+    /// <summary>Formats a number with a thousands separator, or a dash for a value RaidManager doesn't have.</summary>
+    /// <param name="value">The number.</param>
+    /// <returns>For example <c>5,712</c>, or <c>—</c>.</returns>
+    private static string Number(int? value) => value?.ToString("N0", CultureInfo.InvariantCulture) ?? MissingValue;
+
     /// <summary>Matches each capital letter that starts a word inside a name.</summary>
     /// <returns>The expression.</returns>
     [GeneratedRegex("(?<!^)([A-Z])", RegexOptions.CultureInvariant, matchTimeoutMilliseconds: 100)]

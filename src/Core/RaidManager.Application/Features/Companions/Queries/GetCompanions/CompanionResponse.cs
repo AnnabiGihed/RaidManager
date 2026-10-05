@@ -9,9 +9,10 @@ namespace RaidManager.Application.Features.Companions.Queries.GetCompanions;
 /// <param name="LastUsedAtUtc">When it last called the API, to within an hour.</param>
 /// <param name="Status">Whether it is active, revoked or expired.</param>
 /// <param name="RevokedAtUtc">When it was revoked, if it was.</param>
+/// <param name="LastUploadAtUtc">When it last uploaded a character snapshot, or <see langword="null"/> before its first upload.</param>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-04<br/>
 /// Purpose: Gives the website each row of the paired companions list; never the token or its hash.
 /// </remarks>
-public sealed record CompanionResponse(Guid CompanionId, string Label, DateTimeOffset PairedAtUtc, DateTimeOffset LastUsedAtUtc, CompanionStatus Status, DateTimeOffset? RevokedAtUtc);
+public sealed record CompanionResponse(Guid CompanionId, string Label, DateTimeOffset PairedAtUtc, DateTimeOffset LastUsedAtUtc, CompanionStatus Status, DateTimeOffset? RevokedAtUtc, DateTimeOffset? LastUploadAtUtc);

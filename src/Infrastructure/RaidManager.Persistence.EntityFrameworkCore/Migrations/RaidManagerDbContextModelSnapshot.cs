@@ -95,6 +95,9 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                     b.Property<bool>("IsOwnershipVerified")
                         .HasColumnType("boolean");
 
+                    b.Property<DateTimeOffset?>("LastAddonSnapshotCapturedAtUtc")
+                        .HasColumnType("timestamp with time zone");
+
                     b.Property<DateTimeOffset?>("LastAddonSynchronizedAtUtc")
                         .HasColumnType("timestamp with time zone");
 
@@ -211,6 +214,9 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                         .IsRequired()
                         .HasMaxLength(64)
                         .HasColumnType("character varying(64)");
+
+                    b.Property<DateTimeOffset?>("LastUploadAtUtc")
+                        .HasColumnType("timestamp with time zone");
 
                     b.Property<DateTimeOffset>("LastUsedAtUtc")
                         .HasColumnType("timestamp with time zone");
@@ -491,7 +497,7 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                             b1.Property<Guid>("CharacterId")
                                 .HasColumnType("uuid");
 
-                            b1.Property<int>("GearScore")
+                            b1.Property<int?>("GearScore")
                                 .HasColumnType("integer");
 
                             b1.Property<bool>("IsPrimary")
@@ -514,6 +520,9 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                                 .IsRequired()
                                 .HasMaxLength(32)
                                 .HasColumnType("character varying(32)");
+
+                            b1.Property<int?>("TalentGroup")
+                                .HasColumnType("integer");
 
                             b1.HasKey("Id");
 
@@ -636,7 +645,7 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
                                     b2.Property<int>("ItemId")
                                         .HasColumnType("integer");
 
-                                    b2.Property<int>("ItemLevel")
+                                    b2.Property<int?>("ItemLevel")
                                         .HasColumnType("integer");
 
                                     b2.Property<string>("ItemLink")
@@ -696,8 +705,7 @@ namespace RaidManager.Persistence.EntityFrameworkCore.Migrations
 
                             b1.Navigation("GearItems");
 
-                            b1.Navigation("Stats")
-                                .IsRequired();
+                            b1.Navigation("Stats");
 
                             b1.Navigation("TalentConfiguration")
                                 .IsRequired();
