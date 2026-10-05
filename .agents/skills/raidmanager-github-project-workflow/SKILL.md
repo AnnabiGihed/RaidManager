@@ -101,7 +101,8 @@ generate the mockup with the `penpot-mockups` skill (ADR-0018), then have the ow
      (`raidmanager-conventions` §11). Run it only once the PR's `sonar` check has finished on the head commit
      (`gh pr checks <number>` no longer shows it pending): right after a push, the gate reported "no open issue" for
      #516 while SonarCloud was still analyzing, and the `sonar` check then failed on a code smell the owner had to
-     point out.
+     point out. Wait for the `sonar` check by name, never for every check: `review-gate` stays pending until the
+     reviews are posted, so a loop waiting for nothing pending never ends (the owner stopped one on #553).
    - **Check first, review texts after** (#523, #531). Posting both reviews lets the `review` workflow merge, and the
      merge closes the task. When the task's completion needs an owner check that can run before the merge (a
      companion build from the PR's artifact, a run on the server), give the check steps one at a time first, and the

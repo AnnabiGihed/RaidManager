@@ -305,6 +305,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- The skills keep the snapshot upload session's lessons: give the scripts their Python packages from the scratchpad,
+  restore the Pivot packages from the local cache when the feed credentials are missing, list changed files without
+  `git add -N`, take the Radzen version from the package versions in the mockup comparison, start a fake clock at the
+  real time when the domain checks the real clock, wait for the `sonar` check rather than every check, say the merge
+  closes the task before its evidence comment, and offer the owner's repeated choices (split a task by intent, store
+  what a source reports and ask about the values it lacks) as the recommended options (#555).
 - The skills keep the character profiles session's lessons: check each pull request of a handover before acting on
   it, set the domain's default in a generated migration, give each owner its own owned instance, keep test
   names unique on the shared PostgreSQL fixture, avoid parentheses in cucumber expressions, leave regenerated

@@ -101,7 +101,11 @@ adopt before a dedicated alignment PR.
   Check which parameters exist by reading the keys of the AppHost's `secrets.json`, never by printing values.
 - **Feed credentials in the agent shell:** `PIVOT_PACKAGES_USER`/`PIVOT_PACKAGES_TOKEN` are Windows user variables; an
   agent session started earlier may not inherit them. Read them from the user profile for the one restore command
-  that needs them, without echoing them.
+  that needs them, without echoing them. On 2026-10-05 they were in no process, user or machine variable and a
+  restore failed with 401 (#384). The Pivot packages were in the NuGet cache, so restore with a NuGet config in the
+  scratchpad that maps `Pivot.Framework.*` to the cache folder (`%USERPROFILE%\.nuget\packages`) and the rest to
+  nuget.org: `dotnet restore RaidManager.sln --configfile <scratchpad config>`. Never change `nuget.config` for it,
+  and never ask the owner for the token.
 - **Smoke test after touching startup:** any change to the AppHost, a host's `Program.cs`, launch settings, or
   configuration keys requires one local run, recorded in the PR:
   1. `dotnet run --project src/Containers/Aspire/Hosting/RaidManager.AppHost --launch-profile https` in the background.
@@ -274,7 +278,10 @@ A mockup comes before the screen, for every user interface: website, companion, 
   `obj/Debug/net10.0/scopedcss/bundle/RaidManager.Web.styles.css` by `file:///` URL, with the markup in a
   `rm-theme-dark` frame 240 px from the left and 64 px from the top. Then run
   `chrome.exe --headless=new --hide-scrollbars --allow-file-access-from-files --window-size=1440,900
-  --screenshot=<png> <file URL>` for each.
+  --screenshot=<png> <file URL>` for each. Take the Radzen version from `Directory.Packages.props`
+  (`radzen.blazor/<version>/staticwebassets/css/material-base.css`): the cache holds several, and `ls | tail -1`
+  picks 9.1.0 before 11.5.1 (#384). A throwaway bUnit test that writes `page.Markup` to the scratchpad gives the
+  markup; restore its test file with `git checkout --` afterwards.
 - **A board with many cards uses `SurfaceCard Compact="true"`**: its title is 16 px semibold, as the mockups'
   `card_title` draws it; the default 18 px bold title is for pages with one or two cards. The comparison of #385 found
   the difference, and long text cut off with an ellipsis where the board shows it whole.
@@ -342,6 +349,15 @@ Git stores LF.
 - **Issue and pull request bodies** are written with `newline="\n"` too; a body with CRLF breaks the guard's heading
   parsing (`raidmanager-board-operations`).
 
+- **Python packages the scripts need.** On 2026-10-05 neither installed Python (3.12 or 3.14) had `tzdata`, so
+  `scripts/work_gate.py` failed on `ZoneInfo("Europe/Brussels")`; `pyspellchecker` and `mypy==1.11.2` were missing
+  too (#384). Install them into the scratchpad, never into the owner's Python:
+  `python -m pip install --target <scratchpad>/pylib tzdata pyspellchecker mypy==1.11.2`, then run each script with
+  `PYTHONPATH=<scratchpad>/pylib`. Say so in the report.
+- **List changed files without touching the index.** `git add -N .` marks every untracked file of the shared checkout,
+  other sessions' files included (#384). For `dotnet format --include` and staging, combine `git diff --name-only`
+  with `git ls-files --others --exclude-standard`, check the list, and stage it with
+  `git add --pathspec-from-file=<list>`.
 - **Mermaid diagrams** are rendered with the pinned `minlag/mermaid-cli:11.12.0` in Docker (no Node locally), from
   `docs/diagrams`:
 
@@ -428,8 +444,8 @@ ask the owner to repeat what it contains.
    - **Next:** the first action of the new session.
 
 At the start of the next session, check each pull request the handover names with `gh pr view` before acting on it:
-the handover of 2026-10-05 called #544 a draft, but it had merged and been closed out in the meantime. Report what
-changed instead of redoing it.
+the handover of 2026-10-05 called #544 a draft, but it had merged and been closed out in the meantime, and the next
+handover said the same of #549. Report what changed instead of redoing it.
 
 ## 15. EF Core and PostgreSQL (mandatory)
 
@@ -441,6 +457,12 @@ changed instead of redoing it.
 - **The PostgreSQL fixture is shared across tests and runs.** `Characters` has a unique index on realm and name, so a
   fixed character name fails the second test that saves it. Add a random suffix per test class, as
   `CharacterProfileQueriesTests` does.
+- **Ask when a source lacks a value the domain requires.** The addon reports item ids but no item level, quality or
+  GearScore, and links no equipment set to a talent group, while `Loadout` required a GearScore, stats and a role
+  (#384). The owner chose, as the recommended options: store what the source reports and make the missing values
+  optional, shown as `—` on the website, with a Backlog story for the source that fills them (#552); and model what
+  the mockup shows (loadouts are the talent groups). Ask with the question tool before mapping, and record the answer
+  on the task.
 - **A failed save hides its cause** behind "An error occurred while saving the entity changes". To read it, call
   `RaidManagerDbContext.SaveChangesAsync` in a temporary `try`/`catch` that rethrows with the inner message (with
   `#pragma warning disable`), then remove it.
