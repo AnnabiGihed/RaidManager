@@ -327,9 +327,11 @@ Git stores LF.
   fails the build on documentation and ordering rules; start it with `#pragma warning disable`, since it is deleted
   before committing.
 - **Long or quoted text in a shell:** a heredoc containing apostrophes can fail in the agent's shell, even with a
-  quoted delimiter (`<<'EOF'`), which happened three times in #382 and #513. Write long files
-  with the editor tool or from a script file in the scratchpad instead. Make code and text edits with the editor tool
-  or a Python script, not `sed` with escaped patterns, which mangle `\n`, `\s` and quotes.
+  quoted delimiter (`<<'EOF'`), which happened three times in #382 and #513 and three more in #514 to #530. A `\n`
+  inside a Python string in a heredoc also became a real line break twice, breaking the file it wrote. Write any
+  script with an apostrophe or an escape to a file with the editor tool first, then run it. Make code and text
+  edits with the editor tool or a Python script, not `sed` with escaped patterns, which mangle `\n`, `\s` and
+  quotes.
 - **Issue and pull request bodies** are written with `newline="\n"` too; a body with CRLF breaks the guard's heading
   parsing (`raidmanager-board-operations`).
 

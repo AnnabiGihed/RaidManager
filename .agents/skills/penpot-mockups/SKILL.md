@@ -16,6 +16,24 @@ imports as-is, so no Penpot API, MCP server, plugin or access token is needed.
 
 ## Rules
 
+- **Name repeated texts before pushing a script.** SonarCloud flags any string literal used three times or more in a
+  script (`python:S1192`), and its count grows with every board added: #523 failed on nine, layer names such as
+  `"Code card"` included. Before pushing, compare the literals used three times or more with `main`, and name every
+  new or grown one as a module constant (`APP_NAME`, `TITLE_LAYER`). Regenerate and check that the `.penpot` is
+  byte-identical, so the refactor changed nothing:
+
+  ```python
+  import ast, collections, subprocess
+  def counts(src):
+      c = collections.Counter(n.value for n in ast.walk(ast.parse(src))
+                              if isinstance(n, ast.Constant) and isinstance(n.value, str) and len(n.value) > 1)
+      return {k: v for k, v in c.items() if v >= 3}
+  path = "scripts/mockups/<screen_name>.py"
+  now = counts(open(path, encoding="utf-8").read())
+  main = counts(subprocess.run(["git", "show", f"origin/main:{path}"], capture_output=True, text=True).stdout)
+  print({k: v for k, v in now.items() if main.get(k, 0) < v})
+  ```
+
 - **Only in `docs/mockups/`.** A `.penpot` file and its SVG live in `docs/mockups/`, named `<screen>.penpot` and
   `<screen>.svg` with the same lowercase, hyphenated name. Never write one to the repository root, `src/`, or any other
   folder you might commit; work files stay in your scratchpad. `validate_docs.py` fails on any `.penpot` outside

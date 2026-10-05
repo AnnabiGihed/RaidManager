@@ -102,6 +102,14 @@ generate the mockup with the `penpot-mockups` skill (ADR-0018), then have the ow
      (`gh pr checks <number>` no longer shows it pending): right after a push, the gate reported "no open issue" for
      #516 while SonarCloud was still analyzing, and the `sonar` check then failed on a code smell the owner had to
      point out.
+   - **Check first, review texts after** (#523, #531). Posting both reviews lets the `review` workflow merge, and the
+     merge closes the task. When the task's completion needs an owner check that can run before the merge (a
+     companion build from the PR's artifact, a run on the server), give the check steps one at a time first, and the
+     review texts only after the check passed. When the check can only run after the merge (a website change seen on
+     dev), ask the owner first; their choice on #527 was to merge, reopen the task as Blocked with the unblock
+     condition, and close it with the check's evidence.
+   - **Check every fact the description states** in the code or the run before opening the PR. #531's first draft
+     said `/companion/me` was rate-limited; it isn't.
    - **Draft both review comments, every PR (mandatory).** With the summary of the PR, give the operator two texts
      to post, never posting them yourself, approving, or marking ready:
      1. the **operator's review comment**, about product and design intent: what the operator checked and why it is

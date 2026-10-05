@@ -47,7 +47,9 @@ These hold in every agent session; the skills named give the details.
   zero-finding `sonar_gate.py` (`raidmanager-conventions` §7, §8, §11). For UI changes, compare each state with its
   mockup board using the real styles (`raidmanager-conventions` §10).
 - **With every PR, draft both review comments**, the operator's and the peer's, checked with
-  `scripts/verify_review.py`. Never post them, approve, mark ready or merge (workflow skill, step 6).
+  `scripts/verify_review.py`. Never post them, approve, mark ready or merge (workflow skill, step 6). When the PR
+  needs an owner check before merging (a companion build, a server run), give the check steps first and the review
+  texts only after the check: posting both reviews merges the PR (#523 and #531 merged before their checks).
 - **When told a PR is merged**, confirm it, make sure the remote branch is deleted, and delete the local branch
   before anything else (workflow skill, step 7).
 - **Owner decisions** are recorded on the issue they settle; product questions are asked, never assumed.
