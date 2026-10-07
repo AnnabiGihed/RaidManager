@@ -45,7 +45,7 @@ public sealed class CompanionHostTests
         options.WebsiteBaseUrl.ShouldBe(new Uri(website));
     }
 
-    /// <summary>Every root view model resolves, over the host's shell and launcher.</summary>
+    /// <summary>Every root view model resolves, over the host's shell and launcher; the sync loop runs on Windows only.</summary>
     [Fact]
     public void BuildResolvesTheViewModels()
     {
@@ -73,6 +73,7 @@ public sealed class CompanionHostTests
         provider.GetRequiredService<IBrowserLauncher>().ShouldBeOfType<AvaloniaBrowserLauncher>();
         provider.GetRequiredService<ITokenProtector>().ShouldNotBeNull();
         provider.GetRequiredService<KeepsRunningNoticePresenter>().ShouldNotBeNull();
+        services.Count(service => service.ServiceType == typeof(IHostedService)).ShouldBe(OperatingSystem.IsWindows() ? 1 : 0);
     }
 
     /// <summary>An environment without a settings file fails when the host is built.</summary>

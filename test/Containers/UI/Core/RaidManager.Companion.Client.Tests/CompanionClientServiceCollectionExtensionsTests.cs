@@ -49,18 +49,23 @@ public sealed class CompanionClientServiceCollectionExtensionsTests
         provider.GetRequiredService<ICompanionApi>().ShouldBeOfType<CompanionApi>();
     }
 
-    /// <summary>The background sync resolves once, as the service the screens use and as the hosted loop.</summary>
-    [Fact]
-    public void AddCompanionClientRegistersTheSyncAsOneHostedService()
+    /// <summary>The background sync resolves once, and runs as a hosted service only when the host asks for its loop.</summary>
+    /// <param name="withLoop">Whether the host adds the loop, as it does on Windows.</param>
+    [Theory]
+    [InlineData(false)]
+    [InlineData(true)]
+    public void TheSyncRunsAsAHostedServiceOnlyWithItsLoop(bool withLoop)
     {
-        using var provider = Build(new Dictionary<string, string?>
-        {
-            ["Companion:ApiBaseUrl"] = "https://api.raidmanager.test/",
-            ["Companion:WebsiteBaseUrl"] = "https://raidmanager.test/",
-        });
+        using var provider = Build(
+            new Dictionary<string, string?>
+            {
+                ["Companion:ApiBaseUrl"] = "https://api.raidmanager.test/",
+                ["Companion:WebsiteBaseUrl"] = "https://raidmanager.test/",
+            },
+            withLoop);
 
         var sync = provider.GetRequiredService<ISnapshotSync>();
-        provider.GetServices<IHostedService>().ShouldHaveSingleItem().ShouldBeSameAs(sync);
+        provider.GetServices<IHostedService>().ShouldBe(withLoop ? [(IHostedService)sync] : []);
         provider.GetRequiredService<ISnapshotApi>().ShouldBeOfType<SnapshotApi>();
         provider.GetRequiredService<IDriveRoots>().ShouldBeOfType<FixedDriveRoots>();
     }
@@ -78,8 +83,9 @@ public sealed class CompanionClientServiceCollectionExtensionsTests
     #region Private Helpers
     /// <summary>Builds the services with the platform doubles the host would add.</summary>
     /// <param name="settings">The configuration values.</param>
+    /// <param name="withLoop">Whether to add the sync loop, as the host does on Windows.</param>
     /// <returns>The service provider.</returns>
-    private static ServiceProvider Build(Dictionary<string, string?> settings)
+    private static ServiceProvider Build(Dictionary<string, string?> settings, bool withLoop = false)
     {
         var configuration = new ConfigurationBuilder().AddInMemoryCollection(settings).Build();
         var services = new ServiceCollection();
@@ -90,6 +96,11 @@ public sealed class CompanionClientServiceCollectionExtensionsTests
         services.AddSingleton(Mock.Of<IApplicationShell>());
         services.AddSingleton(new SyncFileLocation(Path.Combine(Path.GetTempPath(), $"companion-sync-tests-{Guid.NewGuid():N}")));
         services.AddCompanionClient(configuration);
+        if (withLoop)
+        {
+            services.AddSnapshotSyncLoop();
+        }
+
         return services.BuildServiceProvider(validateScopes: true);
     }
     #endregion Private Helpers

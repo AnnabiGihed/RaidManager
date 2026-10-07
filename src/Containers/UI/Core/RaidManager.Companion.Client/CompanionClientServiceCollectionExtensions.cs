@@ -55,10 +55,21 @@ public static class CompanionClientServiceCollectionExtensions
         services.AddSnapshotSync();
         return services;
     }
+
+    /// <summary>Runs the background sync as a hosted service, so it starts and stops with the host.</summary>
+    /// <param name="services">The service collection, after <see cref="AddCompanionClient"/>.</param>
+    /// <returns>The same collection, for chaining.</returns>
+    /// <remarks>The host calls it only where it registers a token protector: the loop reads the device token at its
+    /// first upload, and the protector exists on Windows only (#550).</remarks>
+    public static IServiceCollection AddSnapshotSyncLoop(this IServiceCollection services)
+    {
+        services.AddHostedService(provider => provider.GetRequiredService<SnapshotSync>());
+        return services;
+    }
     #endregion Public Methods
 
     #region Private Helpers
-    /// <summary>Registers the background sync of #550: folder search, settings, queue, upload client and the hosted loop.</summary>
+    /// <summary>Registers the background sync of #550: folder search, settings, queue, upload client and the sync itself.</summary>
     /// <param name="services">The service collection.</param>
     private static void AddSnapshotSync(this IServiceCollection services)
     {
@@ -75,7 +86,6 @@ public static class CompanionClientServiceCollectionExtensions
         });
         services.AddSingleton<SnapshotSync>();
         services.AddSingleton<ISnapshotSync>(provider => provider.GetRequiredService<SnapshotSync>());
-        services.AddHostedService(provider => provider.GetRequiredService<SnapshotSync>());
     }
     #endregion Private Helpers
 }

@@ -16,7 +16,8 @@ namespace RaidManager.Companion.Composition;
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-04<br/>
 /// Purpose: The companion's single composition root (avalonia-desktop §7). It reads only the settings files next to
-/// the executable, logs to the debugger only, and registers the Windows-only token protector only on Windows.
+/// the executable, logs to the debugger only, and registers the Windows-only token protector, and the sync loop that
+/// needs it, only on Windows.
 /// </remarks>
 internal static class CompanionHost
 {
@@ -56,6 +57,7 @@ internal static class CompanionHost
         if (OperatingSystem.IsWindows())
         {
             services.AddSingleton<ITokenProtector, DpapiTokenProtector>();
+            services.AddSnapshotSyncLoop();
         }
 
         return services;
