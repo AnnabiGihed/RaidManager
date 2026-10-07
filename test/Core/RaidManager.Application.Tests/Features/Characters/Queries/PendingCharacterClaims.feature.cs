@@ -155,32 +155,32 @@ namespace RaidManager.Application.Tests.Features.Characters.Queries
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "state"});
-                table1.AddRow(new string[] {
+                table4.AddRow(new string[] {
                             "Conflicted",
                             "Conflict"});
-                table1.AddRow(new string[] {
+                table4.AddRow(new string[] {
                             "Pendingone",
                             "Pending"});
 #line 9
-      await testRunner.GivenAsync("the claim reader has these claims for \"Alice\"", ((string)(null)), table1, "Given ");
+      await testRunner.GivenAsync("the claim reader has these claims for \"Alice\"", ((string)(null)), table4, "Given ");
 #line hidden
 #line 13
       await testRunner.WhenAsync("\"Alice\" asks for her pending character claims", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table5 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "state"});
-                table2.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "Conflicted",
                             "Conflict"});
-                table2.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "Pendingone",
                             "Pending"});
 #line 14
-      await testRunner.ThenAsync("the query succeeds with these claims", ((string)(null)), table2, "Then ");
+      await testRunner.ThenAsync("the query succeeds with these claims", ((string)(null)), table5, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

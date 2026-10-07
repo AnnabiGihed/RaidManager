@@ -155,26 +155,26 @@ namespace RaidManager.Application.Tests.Features.Characters.Queries
             else
             {
                 await this.ScenarioStartAsync();
-                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
-                            "name"});
-                table1.AddRow(new string[] {
-                            "Arthasdk"});
-                table1.AddRow(new string[] {
-                            "Jainaice"});
-#line 9
-      await testRunner.GivenAsync("the profile reader has these characters for \"Alice\"", ((string)(null)), table1, "Given ");
-#line hidden
-#line 13
-      await testRunner.WhenAsync("\"Alice\" asks for her characters", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
-#line hidden
                 global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
                             "name"});
                 table2.AddRow(new string[] {
                             "Arthasdk"});
                 table2.AddRow(new string[] {
                             "Jainaice"});
+#line 9
+      await testRunner.GivenAsync("the profile reader has these characters for \"Alice\"", ((string)(null)), table2, "Given ");
+#line hidden
+#line 13
+      await testRunner.WhenAsync("\"Alice\" asks for her characters", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+                global::Reqnroll.Table table3 = new global::Reqnroll.Table(new string[] {
+                            "name"});
+                table3.AddRow(new string[] {
+                            "Arthasdk"});
+                table3.AddRow(new string[] {
+                            "Jainaice"});
 #line 14
-      await testRunner.ThenAsync("the list succeeds with these characters", ((string)(null)), table2, "Then ");
+      await testRunner.ThenAsync("the list succeeds with these characters", ((string)(null)), table3, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

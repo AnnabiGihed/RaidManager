@@ -119,23 +119,23 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
 #line 9
     await testRunner.AndAsync("the Discord role \"Officier\" gives Officer", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-            global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
+            global::Reqnroll.Table table6 = new global::Reqnroll.Table(new string[] {
                         "name",
                         "roles"});
-            table1.AddRow(new string[] {
+            table6.AddRow(new string[] {
                         "Gihed",
                         "Guild Master"});
-            table1.AddRow(new string[] {
+            table6.AddRow(new string[] {
                         "Malarya",
                         "Officier"});
-            table1.AddRow(new string[] {
+            table6.AddRow(new string[] {
                         "Daymox",
                         "Veteran"});
-            table1.AddRow(new string[] {
+            table6.AddRow(new string[] {
                         "Orlk",
                         ""});
 #line 10
-    await testRunner.AndAsync("these people are in the Discord server", ((string)(null)), table1, "And ");
+    await testRunner.AndAsync("these people are in the Discord server", ((string)(null)), table6, "And ");
 #line hidden
         }
         
@@ -202,28 +202,28 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
 #line 22
       await testRunner.AndAsync("the mappable roles are \"Guild Master,Officier,Veteran\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-                global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table7 = new global::Reqnroll.Table(new string[] {
                             "role",
                             "discord roles",
                             "members"});
-                table2.AddRow(new string[] {
+                table7.AddRow(new string[] {
                             "Administrator",
                             "",
                             "1"});
-                table2.AddRow(new string[] {
+                table7.AddRow(new string[] {
                             "Officer",
                             "Officier",
                             "1"});
-                table2.AddRow(new string[] {
+                table7.AddRow(new string[] {
                             "Raid leader",
                             "",
                             "0"});
-                table2.AddRow(new string[] {
+                table7.AddRow(new string[] {
                             "Member",
                             "",
                             "2"});
 #line 23
-      await testRunner.AndAsync("these roles have these members", ((string)(null)), table2, "And ");
+      await testRunner.AndAsync("these roles have these members", ((string)(null)), table7, "And ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -259,28 +259,28 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
 #line 32
       await testRunner.WhenAsync("\"Gihed\" reads the community\'s roles", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table3 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table8 = new global::Reqnroll.Table(new string[] {
                             "role",
                             "discord roles",
                             "members"});
-                table3.AddRow(new string[] {
+                table8.AddRow(new string[] {
                             "Administrator",
                             "",
                             "1"});
-                table3.AddRow(new string[] {
+                table8.AddRow(new string[] {
                             "Officer",
                             "Officier",
                             "1"});
-                table3.AddRow(new string[] {
+                table8.AddRow(new string[] {
                             "Raid leader",
                             "Officier",
                             "1"});
-                table3.AddRow(new string[] {
+                table8.AddRow(new string[] {
                             "Member",
                             "",
                             "2"});
 #line 33
-      await testRunner.ThenAsync("these roles have these members", ((string)(null)), table3, "Then ");
+      await testRunner.ThenAsync("these roles have these members", ((string)(null)), table8, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -788,28 +788,28 @@ namespace RaidManager.Application.Tests.Features.Communities.Queries
 #line 110
       await testRunner.WhenAsync("\"Daymox\" lists the community\'s members", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-                global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table9 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "discord roles",
                             "roles"});
-                table4.AddRow(new string[] {
+                table9.AddRow(new string[] {
                             "Gihed",
                             "Guild Master",
                             "Administrator"});
-                table4.AddRow(new string[] {
+                table9.AddRow(new string[] {
                             "Malarya",
                             "Officier",
                             "Officer, Raid leader"});
-                table4.AddRow(new string[] {
+                table9.AddRow(new string[] {
                             "Daymox",
                             "Veteran",
                             "Member"});
-                table4.AddRow(new string[] {
+                table9.AddRow(new string[] {
                             "Orlk",
                             "",
                             "Member"});
 #line 111
-      await testRunner.ThenAsync("the members are listed as", ((string)(null)), table4, "Then ");
+      await testRunner.ThenAsync("the members are listed as", ((string)(null)), table9, "Then ");
 #line hidden
 #line 117
       await testRunner.AndAsync("the list says when Discord was asked", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
