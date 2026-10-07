@@ -422,6 +422,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- A test of the paired companions list failed on every run since 2026-10-05, failing the build of every pull request:
+  its test double stamped companions with the real clock while the test's clock is fixed. The doubles now pair their
+  companions at a fixed date (#558).
 - After the player confirms a code, the paired companions list now shows the computer without a refresh: the companion
   creates its row when it collects its token at its next poll, a few seconds after the confirmation, so the list reloads
   every 2 seconds, for up to 30 seconds, until the computer is listed (#527).
