@@ -108,17 +108,17 @@ namespace RaidManager.Domain.Tests.Features.Raids.Services
         {
 #line 6
   #line hidden
-            global::Reqnroll.Table table15 = new global::Reqnroll.Table(new string[] {
+            global::Reqnroll.Table table5 = new global::Reqnroll.Table(new string[] {
                         "instance",
                         "difficulty"});
-            table15.AddRow(new string[] {
+            table5.AddRow(new string[] {
                         "IcecrownCitadel",
                         "TwentyFivePlayer"});
-            table15.AddRow(new string[] {
+            table5.AddRow(new string[] {
                         "RubySanctum",
                         "TwentyFivePlayer"});
 #line 7
-    await testRunner.GivenAsync("a raid starting in 48 hours requiring these targets", ((string)(null)), table15, "Given ");
+    await testRunner.GivenAsync("a raid starting in 48 hours requiring these targets", ((string)(null)), table5, "Given ");
 #line hidden
 #line 11
     await testRunner.AndAsync("the raid accepts lockout evidence up to 24 hours old", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
@@ -222,18 +222,18 @@ namespace RaidManager.Domain.Tests.Features.Raids.Services
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table16 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table6 = new global::Reqnroll.Table(new string[] {
                             "instance",
                             "difficulty",
                             "resetsHoursFromRaidStart",
                             "extended"});
-                table16.AddRow(new string[] {
+                table6.AddRow(new string[] {
                             "IcecrownCitadel",
                             "TwentyFivePlayer",
                             "-12",
                             "false"});
 #line 23
-      await testRunner.GivenAsync("the character \"Frostmourne\" synchronized 1 hours ago with these saves", ((string)(null)), table16, "Given ");
+      await testRunner.GivenAsync("the character \"Frostmourne\" synchronized 1 hours ago with these saves", ((string)(null)), table6, "Given ");
 #line hidden
 #line 26
       await testRunner.WhenAsync("the character \"Frostmourne\" is assessed", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
@@ -276,18 +276,18 @@ namespace RaidManager.Domain.Tests.Features.Raids.Services
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table17 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table7 = new global::Reqnroll.Table(new string[] {
                             "instance",
                             "difficulty",
                             "resetsHoursFromRaidStart",
                             "extended"});
-                table17.AddRow(new string[] {
+                table7.AddRow(new string[] {
                             "RubySanctum",
                             "TwentyFivePlayer",
                             "24",
                             "false"});
 #line 32
-      await testRunner.GivenAsync("the character \"Frostmourne\" synchronized 1 hours ago with these saves", ((string)(null)), table17, "Given ");
+      await testRunner.GivenAsync("the character \"Frostmourne\" synchronized 1 hours ago with these saves", ((string)(null)), table7, "Given ");
 #line hidden
 #line 35
       await testRunner.WhenAsync("the character \"Frostmourne\" is assessed", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
@@ -329,18 +329,18 @@ namespace RaidManager.Domain.Tests.Features.Raids.Services
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table18 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table8 = new global::Reqnroll.Table(new string[] {
                             "instance",
                             "difficulty",
                             "resetsHoursFromRaidStart",
                             "extended"});
-                table18.AddRow(new string[] {
+                table8.AddRow(new string[] {
                             "IcecrownCitadel",
                             "TwentyFivePlayer",
                             "-12",
                             "true"});
 #line 41
-      await testRunner.GivenAsync("the character \"Frostmourne\" synchronized 1 hours ago with these saves", ((string)(null)), table18, "Given ");
+      await testRunner.GivenAsync("the character \"Frostmourne\" synchronized 1 hours ago with these saves", ((string)(null)), table8, "Given ");
 #line hidden
 #line 44
       await testRunner.WhenAsync("the character \"Frostmourne\" is assessed", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
@@ -539,18 +539,18 @@ namespace RaidManager.Domain.Tests.Features.Raids.Services
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table19 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table9 = new global::Reqnroll.Table(new string[] {
                             "instance",
                             "difficulty",
                             "resetsHoursFromRaidStart",
                             "extended"});
-                table19.AddRow(new string[] {
+                table9.AddRow(new string[] {
                             "RubySanctum",
                             "TwentyFivePlayer",
                             "24",
                             "false"});
 #line 75
-      await testRunner.GivenAsync("the character \"Frostmourne\" synchronized 2 hours ago with these saves", ((string)(null)), table19, "Given ");
+      await testRunner.GivenAsync("the character \"Frostmourne\" synchronized 2 hours ago with these saves", ((string)(null)), table9, "Given ");
 #line hidden
 #line 78
       await testRunner.AndAsync("the character \"Frostmourne\" recorded an incomplete raid-save scan 1 hours ago", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
@@ -592,23 +592,23 @@ namespace RaidManager.Domain.Tests.Features.Raids.Services
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table20 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table10 = new global::Reqnroll.Table(new string[] {
                             "instance",
                             "difficulty",
                             "resetsHoursFromRaidStart",
                             "extended"});
-                table20.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             "IcecrownCitadel",
                             "TwentyFivePlayer",
                             "-12",
                             "true"});
-                table20.AddRow(new string[] {
+                table10.AddRow(new string[] {
                             "RubySanctum",
                             "TwentyFivePlayer",
                             "24",
                             "false"});
 #line 86
-      await testRunner.GivenAsync("the character \"Frostmourne\" synchronized 1 hours ago with these saves", ((string)(null)), table20, "Given ");
+      await testRunner.GivenAsync("the character \"Frostmourne\" synchronized 1 hours ago with these saves", ((string)(null)), table10, "Given ");
 #line hidden
 #line 90
       await testRunner.WhenAsync("the character \"Frostmourne\" is assessed", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
@@ -644,23 +644,23 @@ namespace RaidManager.Domain.Tests.Features.Raids.Services
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table21 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table11 = new global::Reqnroll.Table(new string[] {
                             "instance",
                             "difficulty",
                             "resetsHoursFromRaidStart",
                             "extended"});
-                table21.AddRow(new string[] {
+                table11.AddRow(new string[] {
                             "IcecrownCitadel",
                             "TwentyFivePlayer",
                             "-12",
                             "false"});
-                table21.AddRow(new string[] {
+                table11.AddRow(new string[] {
                             "RubySanctum",
                             "TwentyFivePlayer",
                             "-12",
                             "true"});
 #line 94
-      await testRunner.GivenAsync("the character \"Frostmourne\" synchronized 1 hours ago with these saves", ((string)(null)), table21, "Given ");
+      await testRunner.GivenAsync("the character \"Frostmourne\" synchronized 1 hours ago with these saves", ((string)(null)), table11, "Given ");
 #line hidden
 #line 98
       await testRunner.WhenAsync("the character \"Frostmourne\" is assessed", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
@@ -696,18 +696,18 @@ namespace RaidManager.Domain.Tests.Features.Raids.Services
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table22 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table12 = new global::Reqnroll.Table(new string[] {
                             "instance",
                             "difficulty",
                             "resetsHoursFromRaidStart",
                             "extended"});
-                table22.AddRow(new string[] {
+                table12.AddRow(new string[] {
                             "RubySanctum",
                             "TwentyFivePlayer",
                             "24",
                             "false"});
 #line 104
-      await testRunner.GivenAsync("the character \"Frostmourne\" synchronized 1 hours ago with these saves", ((string)(null)), table22, "Given ");
+      await testRunner.GivenAsync("the character \"Frostmourne\" synchronized 1 hours ago with these saves", ((string)(null)), table12, "Given ");
 #line hidden
 #line 107
       await testRunner.WhenAsync("\"Arthas\" signs up offering \"Frostmourne\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
@@ -743,18 +743,18 @@ namespace RaidManager.Domain.Tests.Features.Raids.Services
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table23 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table13 = new global::Reqnroll.Table(new string[] {
                             "instance",
                             "difficulty",
                             "resetsHoursFromRaidStart",
                             "extended"});
-                table23.AddRow(new string[] {
+                table13.AddRow(new string[] {
                             "RubySanctum",
                             "TwentyFivePlayer",
                             "24",
                             "false"});
 #line 111
-      await testRunner.GivenAsync("the character \"Frostmourne\" synchronized 1 hours ago with these saves", ((string)(null)), table23, "Given ");
+      await testRunner.GivenAsync("the character \"Frostmourne\" synchronized 1 hours ago with these saves", ((string)(null)), table13, "Given ");
 #line hidden
 #line 114
       await testRunner.AndAsync("the character \"Shadowmourne\" synchronized 1 hours ago without saves", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
@@ -836,18 +836,18 @@ namespace RaidManager.Domain.Tests.Features.Raids.Services
 #line 125
       await testRunner.AndAsync("\"Arthas\" signed up offering \"Shadowmourne\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-                global::Reqnroll.Table table24 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table14 = new global::Reqnroll.Table(new string[] {
                             "instance",
                             "difficulty",
                             "resetsHoursFromRaidStart",
                             "extended"});
-                table24.AddRow(new string[] {
+                table14.AddRow(new string[] {
                             "IcecrownCitadel",
                             "TwentyFivePlayer",
                             "24",
                             "false"});
 #line 126
-      await testRunner.AndAsync("the character \"Shadowmourne\" synchronized 0 hours ago with these saves", ((string)(null)), table24, "And ");
+      await testRunner.AndAsync("the character \"Shadowmourne\" synchronized 0 hours ago with these saves", ((string)(null)), table14, "And ");
 #line hidden
 #line 129
       await testRunner.WhenAsync("the officer selects \"Shadowmourne\" of \"Arthas\" for group 1 position 1", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");

@@ -108,20 +108,20 @@ namespace RaidManager.Domain.Tests.Features.Characters.Aggregates
         {
 #line 6
   #line hidden
-            global::Reqnroll.Table table3 = new global::Reqnroll.Table(new string[] {
+            global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
                         "name",
                         "rank",
                         "maxRank"});
-            table3.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "Blacksmithing",
                         "450",
                         "450"});
-            table3.AddRow(new string[] {
+            table1.AddRow(new string[] {
                         "Mining",
                         "450",
                         "450"});
 #line 7
-    await testRunner.GivenAsync("a character whose professions were read 2 hours ago", ((string)(null)), table3, "Given ");
+    await testRunner.GivenAsync("a character whose professions were read 2 hours ago", ((string)(null)), table1, "Given ");
 #line hidden
         }
         
@@ -179,38 +179,38 @@ namespace RaidManager.Domain.Tests.Features.Characters.Aggregates
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "rank",
                             "maxRank"});
-                table4.AddRow(new string[] {
+                table2.AddRow(new string[] {
                             "Jewelcrafting",
                             "440",
                             "450"});
-                table4.AddRow(new string[] {
+                table2.AddRow(new string[] {
                             "Mining",
                             "450",
                             "450"});
 #line 15
-      await testRunner.WhenAsync("the professions are read 1 hours ago", ((string)(null)), table4, "When ");
+      await testRunner.WhenAsync("the professions are read 1 hours ago", ((string)(null)), table2, "When ");
 #line hidden
 #line 19
       await testRunner.ThenAsync("the read is recorded", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
-                global::Reqnroll.Table table5 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table3 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "rank",
                             "maxRank"});
-                table5.AddRow(new string[] {
+                table3.AddRow(new string[] {
                             "Jewelcrafting",
                             "440",
                             "450"});
-                table5.AddRow(new string[] {
+                table3.AddRow(new string[] {
                             "Mining",
                             "450",
                             "450"});
 #line 20
-      await testRunner.AndAsync("the character has these professions", ((string)(null)), table5, "And ");
+      await testRunner.AndAsync("the character has these professions", ((string)(null)), table3, "And ");
 #line hidden
 #line 24
       await testRunner.AndAsync("the professions were last read 1 hours ago", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
@@ -246,12 +246,12 @@ namespace RaidManager.Domain.Tests.Features.Characters.Aggregates
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table6 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table4 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "rank",
                             "maxRank"});
 #line 28
-      await testRunner.WhenAsync("the professions are read 1 hours ago", ((string)(null)), table6, "When ");
+      await testRunner.WhenAsync("the professions are read 1 hours ago", ((string)(null)), table4, "When ");
 #line hidden
 #line 30
       await testRunner.ThenAsync("the read is recorded", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
@@ -287,34 +287,34 @@ namespace RaidManager.Domain.Tests.Features.Characters.Aggregates
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-                global::Reqnroll.Table table7 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table5 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "rank",
                             "maxRank"});
-                table7.AddRow(new string[] {
+                table5.AddRow(new string[] {
                             "Fishing",
                             "75",
                             "150"});
 #line 36
-      await testRunner.WhenAsync("the professions are read 3 hours ago", ((string)(null)), table7, "When ");
+      await testRunner.WhenAsync("the professions are read 3 hours ago", ((string)(null)), table5, "When ");
 #line hidden
 #line 39
       await testRunner.ThenAsync("the read is ignored", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
-                global::Reqnroll.Table table8 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table6 = new global::Reqnroll.Table(new string[] {
                             "name",
                             "rank",
                             "maxRank"});
-                table8.AddRow(new string[] {
+                table6.AddRow(new string[] {
                             "Blacksmithing",
                             "450",
                             "450"});
-                table8.AddRow(new string[] {
+                table6.AddRow(new string[] {
                             "Mining",
                             "450",
                             "450"});
 #line 40
-      await testRunner.AndAsync("the character has these professions", ((string)(null)), table8, "And ");
+      await testRunner.AndAsync("the character has these professions", ((string)(null)), table6, "And ");
 #line hidden
 #line 44
       await testRunner.AndAsync("the professions were last read 2 hours ago", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");

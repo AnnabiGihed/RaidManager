@@ -287,17 +287,17 @@ namespace RaidManager.Domain.Tests.Features.Communities.Aggregates
 #line 28
       await testRunner.GivenAsync("a linked community", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-                global::Reqnroll.Table table9 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
                             "role",
                             "permissions"});
-                table9.AddRow(new string[] {
+                table1.AddRow(new string[] {
                             "Officer",
                             "ManageRaids, BuildRosters, RunRaidNight, ReviewConflicts"});
-                table9.AddRow(new string[] {
+                table1.AddRow(new string[] {
                             "Raid leader",
                             "ManageRaids, BuildRosters, RunRaidNight"});
 #line 29
-      await testRunner.ThenAsync("the community\'s roles are", ((string)(null)), table9, "Then ");
+      await testRunner.ThenAsync("the community\'s roles are", ((string)(null)), table1, "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
@@ -690,20 +690,20 @@ namespace RaidManager.Domain.Tests.Features.Communities.Aggregates
 #line 110
       await testRunner.ThenAsync("the role change succeeds", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
-                global::Reqnroll.Table table10 = new global::Reqnroll.Table(new string[] {
+                global::Reqnroll.Table table2 = new global::Reqnroll.Table(new string[] {
                             "role",
                             "permissions"});
-                table10.AddRow(new string[] {
+                table2.AddRow(new string[] {
                             "Officer",
                             "ManageRaids, BuildRosters, RunRaidNight, ReviewConflicts"});
-                table10.AddRow(new string[] {
+                table2.AddRow(new string[] {
                             "Raid leader",
                             "ManageRaids, BuildRosters, RunRaidNight"});
-                table10.AddRow(new string[] {
+                table2.AddRow(new string[] {
                             "Veteran",
                             "RunRaidNight"});
 #line 111
-      await testRunner.AndAsync("the community\'s roles are", ((string)(null)), table10, "And ");
+      await testRunner.AndAsync("the community\'s roles are", ((string)(null)), table2, "And ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();
