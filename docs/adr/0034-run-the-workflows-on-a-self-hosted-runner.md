@@ -32,9 +32,13 @@ PostgreSQL tests start containers through `Testcontainers`, the dev deployment b
   General, so a fork's workflows wait for approval even if a guard is missed.
 - **The docs check enforces both rules.** `scripts/workflow_runners.py`, run by `validate_docs.py`, fails on a job
   without these labels and on a job reachable from a fork pull request without the guard.
-- **Each runner provides** Git, the GitHub CLI, `jq`, curl, an SSH client, `gzip`, Docker usable by the runner's user,
-  and a C compiler with `make` and `unzip`. Python, .NET and Node come from the `setup-*` actions into the runner's tool
-  cache.
+- **Jobs install what they can themselves** (owner decision on #561): the local action `.github/actions/setup-tools`
+  puts the GitHub CLI and `jq`, pinned and checked against their SHA-256, in the job's temporary folder when the image
+  lacks them, and every job that calls them runs it after checkout. Python, .NET and Node come from the `setup-*`
+  actions.
+- **The runner image provides** what can't be installed without `sudo`: Git, curl, `gzip` and `unzip`; a C compiler
+  with `make` for the `lua` job; Docker usable by the job for the PostgreSQL tests and the deployment; and an SSH
+  client for the deployment.
 
 - **No job uses `sudo`:** the runners refuse it ("no new privileges"). The `lua` job therefore builds Lua 5.1.5
   itself, checked against its SHA-256, instead of with `leafo/gh-actions-lua`, which installs the `readline` headers
@@ -49,7 +53,7 @@ PostgreSQL tests start containers through `Testcontainers`, the dev deployment b
   whose pull request runs every check.
 - The runners are ephemeral (the owner, 2026-10-08): each job gets a new runner that registers itself and is removed
   after the job, so no workspace, tool cache or package cache carries over. The `setup-*` actions and the restores
-  download again in every job, and the runner's image must provide the tools listed above.
+  download again in every job, and the image must provide the tools listed above.
 - The deploy SSH keys and the environment secrets ([ADR-0028](0028-keep-the-test-secrets-in-a-github-environment.md))
   are now handled on the owner's computer during the deploy job instead of on a disposable GitHub machine.
 - The Windows packaging job [ADR-0033](0033-publish-the-companion-through-the-microsoft-store.md) proposes needs a

@@ -28,7 +28,7 @@ jobs:
         env:
           LUA_SHA256: 2640fc56a795f29d28ef15e13c34a47e223960b0240e8cb0a82d9b0738695333
         run: |
-          curl -sSfL -o "$RUNNER_TEMP/lua.tar.gz" https://www.lua.org/ftp/lua-5.1.5.tar.gz
+          curl --proto '=https' --tlsv1.2 -sSfL -o "$RUNNER_TEMP/lua.tar.gz" https://www.lua.org/ftp/lua-5.1.5.tar.gz
           echo "$LUA_SHA256  $RUNNER_TEMP/lua.tar.gz" | sha256sum --check --quiet
           tar -xzf "$RUNNER_TEMP/lua.tar.gz" -C "$RUNNER_TEMP"
           make -C "$RUNNER_TEMP/lua-5.1.5/src" all MYCFLAGS="-DLUA_USE_POSIX -DLUA_USE_DLOPEN" MYLIBS="-Wl,-E -ldl"
