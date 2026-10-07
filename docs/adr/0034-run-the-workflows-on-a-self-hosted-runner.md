@@ -11,8 +11,8 @@ owner decided to switch every workflow to a self-hosted runner on their own Linu
 `linux` and `pc-personal` (owner request on #561).
 
 The repository is public. GitHub advises using self-hosted runners only with private repositories, because a pull
-request from a fork can run its own code on the runner: here, the owner's computer. On 2026-10-08 the repository asked for
-approval only before a first-time contributor's workflows ran, so anyone with one merged pull request could start a
+request from a fork can run its own code on the runner: here, the owner's computer. On 2026-10-08 the repository asked
+for approval only before a first-time contributor's workflows ran, so anyone with one merged pull request could start a
 job on that machine without approval.
 
 The workflows rely on tools GitHub's images come with: Git, the GitHub CLI, `jq`, curl, SSH, `gzip` and Docker. The
@@ -32,20 +32,20 @@ PostgreSQL tests start containers through `Testcontainers`, the dev deployment b
   General, so a fork's workflows wait for approval even if a guard is missed.
 - **The docs check enforces both rules.** `scripts/workflow_runners.py`, run by `validate_docs.py`, fails on a job
   without these labels and on a job reachable from a fork pull request without the guard.
-- **The runner provides** Git, the GitHub CLI, `jq`, curl, an SSH client, `gzip`, Docker usable by the runner's user, and
-  a C compiler with `make` and `unzip`. Python, .NET and Node come from the `setup-*` actions into the runner's tool
+- **Each runner provides** Git, the GitHub CLI, `jq`, curl, an SSH client, `gzip`, Docker usable by the runner's user,
+  and a C compiler with `make` and `unzip`. Python, .NET and Node come from the `setup-*` actions into the runner's tool
   cache.
 
 ## Consequences
 
-- Jobs run only while the owner's computer is on and the runner service runs. A pull request's checks, the review
-  merge, the dev deployment and the docs publication wait for it. With one runner, jobs run one after another instead
-  of in parallel.
+- Jobs run only while the owner's computer is on and can start runners. A pull request's checks, the review merge,
+  the dev deployment and the docs publication wait for it.
 - A pull request from a fork gets no checks: its guarded jobs are skipped, and GitHub counts a skipped required check
   as passed. Such a pull request is never merged as it is. The owner pushes the change to a branch of this repository,
   whose pull request runs every check.
-- The runner keeps state between jobs: the tool cache, Docker images and the NuGet cache stay on the computer. Checkout
-  cleans the workspace; old Docker images are the owner's to prune.
+- The runners are ephemeral (the owner, 2026-10-08): each job gets a new runner that registers itself and is removed
+  after the job, so no workspace, tool cache or package cache carries over. The `setup-*` actions and the restores
+  download again in every job, and the runner's image must provide the tools listed above.
 - The deploy SSH keys and the environment secrets ([ADR-0028](0028-keep-the-test-secrets-in-a-github-environment.md))
   are now handled on the owner's computer during the deploy job instead of on a disposable GitHub machine.
 - The Windows packaging job [ADR-0033](0033-publish-the-companion-through-the-microsoft-store.md) proposes needs a
@@ -55,7 +55,7 @@ PostgreSQL tests start containers through `Testcontainers`, the dev deployment b
 ## Alternatives considered
 
 - **Keep GitHub-hosted runners:** no change on the owner's machine and no exposure, but not what the owner chose.
-- **Self-hosted runner with the approval setting only:** fewer workflow changes, but a fork's code runs on the computer as
-  soon as a run is approved, and one wrong approval is enough.
+- **Self-hosted runner with the approval setting only:** fewer workflow changes, but a fork's code runs on the computer
+  as soon as a run is approved, and one wrong approval is enough.
 - **Make the repository private:** removes the fork risk, but GitHub Pages and SonarCloud's free plan need a public
   repository; the documentation site and the `sonar` gate would need replacing.
