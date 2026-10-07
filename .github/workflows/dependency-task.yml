@@ -16,7 +16,7 @@ jobs:
     if: >-
       github.event.pull_request.user.login == 'dependabot[bot]' &&
       github.event.pull_request.head.repo.full_name == github.repository
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, pc-personal]
     concurrency:
       group: dependency-task-${{ github.event.pull_request.number }}
       cancel-in-progress: false

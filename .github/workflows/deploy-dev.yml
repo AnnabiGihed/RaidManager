@@ -21,7 +21,7 @@ jobs:
   # A merge that changes nothing dev runs skips the build and the deployment (owner decisions on #491).
   changes:
     if: github.ref == 'refs/heads/main'
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, pc-personal]
     timeout-minutes: 5
     permissions:
       contents: read
@@ -43,7 +43,7 @@ jobs:
   deploy:
     needs: changes
     if: github.ref == 'refs/heads/main' && needs.changes.outputs.deploy == 'true'
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, pc-personal]
     timeout-minutes: 30
     # Only main may use the dev environment's secrets (its deployment rule).
     environment:
@@ -169,7 +169,7 @@ jobs:
       always() && needs.changes.result == 'success' &&
       (needs.deploy.result == 'success' || needs.deploy.result == 'failure' ||
         (needs.deploy.result == 'skipped' && needs.changes.outputs.deploy == 'false'))
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, pc-personal]
     timeout-minutes: 15
     permissions:
       contents: read

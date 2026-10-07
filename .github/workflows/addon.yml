@@ -13,7 +13,9 @@ permissions:
 
 jobs:
   lua:
-    runs-on: ubuntu-latest
+    # A fork's pull request never runs on the owner's self-hosted runner (ADR-0034).
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: [self-hosted, linux, pc-personal]
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7

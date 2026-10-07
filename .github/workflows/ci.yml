@@ -17,7 +17,9 @@ env:
 
 jobs:
   build-test:
-    runs-on: ubuntu-latest
+    # A fork's pull request never runs on the owner's self-hosted runner (ADR-0034).
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: [self-hosted, linux, pc-personal]
     permissions:
       contents: read
       # Only for the coverage comment on the pull request.
@@ -87,7 +89,9 @@ jobs:
   # The desktop companion as players get it (ADR-0032): one self-contained Windows executable, cross-published from
   # Linux for the dev environment, kept as a workflow artifact.
   companion:
-    runs-on: ubuntu-latest
+    # A fork's pull request never runs on the owner's self-hosted runner (ADR-0034).
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: [self-hosted, linux, pc-personal]
     steps:
       - uses: actions/checkout@v7
       - uses: actions/setup-dotnet@v6
@@ -107,8 +111,9 @@ jobs:
   # SonarCloud's own check follows the quality gate, which passes new code smells and even some vulnerabilities; this
   # job fails the pull request on any open SonarCloud issue or security hotspot to review (ADR-0020).
   sonar:
-    if: github.event_name == 'pull_request'
-    runs-on: ubuntu-latest
+    # A fork's pull request never runs on the owner's self-hosted runner (ADR-0034).
+    if: github.event_name == 'pull_request' && github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: [self-hosted, linux, pc-personal]
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
