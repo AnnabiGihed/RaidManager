@@ -105,6 +105,7 @@ public sealed class LuaTableParserTests
     [Theory]
     [InlineData("DB")]
     [InlineData("DB =")]
+    [InlineData("DB = { [\"a")]
     [InlineData("DB = { [\"a\"")]
     [InlineData("DB = { [\"a\"]")]
     [InlineData("DB = { [\"a\"] = 12")]

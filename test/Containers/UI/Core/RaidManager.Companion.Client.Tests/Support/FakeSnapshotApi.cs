@@ -24,6 +24,9 @@ internal sealed class FakeSnapshotApi : ISnapshotApi
     /// <summary>Gets or sets the device token RaidManager refuses with 401, if any.</summary>
     public string? RefusedToken { get; set; }
 
+    /// <summary>Gets or sets what runs while an upload is in progress, before it is answered.</summary>
+    public Action? OnUpload { get; set; }
+
     /// <summary>Gets the uploads received, as the character's name and the device token used.</summary>
     public List<(string Name, string DeviceToken)> Uploads { get; } = [];
     #endregion Public Properties
@@ -39,6 +42,7 @@ internal sealed class FakeSnapshotApi : ISnapshotApi
     {
         ArgumentNullException.ThrowIfNull(snapshot);
         Uploads.Add((snapshot.Name, deviceToken));
+        OnUpload?.Invoke();
         return Task.FromResult(deviceToken == RefusedToken
             ? new SnapshotUploadResult(SnapshotUploadOutcome.Unauthorized)
             : _answersByCharacter.GetValueOrDefault(snapshot.Name, Answer));

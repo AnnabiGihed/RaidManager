@@ -73,6 +73,13 @@ Feature: Companion background sync
       Then the problems are "UnsupportedSchema"
       And RaidManager received "none"
 
+    Scenario: A file the addon didn't write needs the player
+      Given World of Warcraft is installed in "World of Warcraft" with the account "ARTHASACCOUNT"
+      And the addon file of "ARTHASACCOUNT" holds "OtherAddonDB = { }"
+      And the companion has started syncing
+      When the companion syncs for 5 seconds
+      Then the problems are "UnreadableFile"
+
   Rule: A cut file waits for WoW then asks the player for help
 
     Scenario: The characters before the cut upload while the cut one waits for WoW

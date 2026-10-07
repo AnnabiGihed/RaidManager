@@ -116,7 +116,7 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Sync/CompanionBackgroundSync.feature.ndjson", 21);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Sync/CompanionBackgroundSync.feature.ndjson", 22);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -506,18 +506,18 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="The characters before the cut upload while the cut one waits for WoW")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="A file the addon didn\'t write needs the player")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Companion background sync")]
-        [global::Xunit.TraitAttribute("Description", "The characters before the cut upload while the cut one waits for WoW")]
-        public async global::System.Threading.Tasks.Task TheCharactersBeforeTheCutUploadWhileTheCutOneWaitsForWoW()
+        [global::Xunit.TraitAttribute("Description", "A file the addon didn\'t write needs the player")]
+        public async global::System.Threading.Tasks.Task AFileTheAddonDidntWriteNeedsThePlayer()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "9";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("The characters before the cut upload while the cut one waits for WoW", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A file the addon didn\'t write needs the player", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A cut file waits for WoW then asks the player for help", null, tagsOfRule);
-#line 78
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A snapshot uploads once WoW has finished writing it", null, tagsOfRule);
+#line 76
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -530,23 +530,67 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
+#line 77
+      await testRunner.GivenAsync("World of Warcraft is installed in \"World of Warcraft\" with the account \"ARTHASACC" +
+                        "OUNT\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 78
+      await testRunner.AndAsync("the addon file of \"ARTHASACCOUNT\" holds \"OtherAddonDB = { }\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
 #line 79
+      await testRunner.AndAsync("the companion has started syncing", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 80
+      await testRunner.WhenAsync("the companion syncs for 5 seconds", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 81
+      await testRunner.ThenAsync("the problems are \"UnreadableFile\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="The characters before the cut upload while the cut one waits for WoW")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Companion background sync")]
+        [global::Xunit.TraitAttribute("Description", "The characters before the cut upload while the cut one waits for WoW")]
+        public async global::System.Threading.Tasks.Task TheCharactersBeforeTheCutUploadWhileTheCutOneWaitsForWoW()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "10";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("The characters before the cut upload while the cut one waits for WoW", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A cut file waits for WoW then asks the player for help", null, tagsOfRule);
+#line 85
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 86
       await testRunner.GivenAsync("World of Warcraft is installed in \"World of Warcraft\" with the account \"MAINACCOU" +
                         "NT\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 80
+#line 87
       await testRunner.AndAsync("the addon file of \"MAINACCOUNT\" is cut inside \"Jaína\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 81
+#line 88
       await testRunner.AndAsync("the companion has started syncing", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 82
+#line 89
       await testRunner.WhenAsync("the companion syncs for 5 seconds", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 83
+#line 90
       await testRunner.ThenAsync("RaidManager received \"Arthasdk\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
-#line 84
+#line 91
       await testRunner.AndAsync("the activity shows \"Jaína\" as \"WaitingForWow\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
@@ -560,52 +604,8 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "10";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A file still cut after 30 seconds is an incomplete snapshot", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A cut file waits for WoW then asks the player for help", null, tagsOfRule);
-#line 86
-    this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 6
-  await this.FeatureBackgroundAsync();
-#line hidden
-#line 87
-      await testRunner.GivenAsync("World of Warcraft is installed in \"World of Warcraft\" with the account \"MAINACCOU" +
-                        "NT\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
-#line hidden
-#line 88
-      await testRunner.AndAsync("the addon file of \"MAINACCOUNT\" is cut inside \"Jaína\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
-#line hidden
-#line 89
-      await testRunner.AndAsync("the companion has started syncing", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
-#line hidden
-#line 90
-      await testRunner.WhenAsync("the companion syncs for 35 seconds", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 91
-      await testRunner.ThenAsync("the problems are \"IncompleteSnapshot: Jaína\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Xunit.SkippableFactAttribute(DisplayName="Writing the file in full clears the problem")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Companion background sync")]
-        [global::Xunit.TraitAttribute("Description", "Writing the file in full clears the problem")]
-        public async global::System.Threading.Tasks.Task WritingTheFileInFullClearsTheProblem()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "11";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Writing the file in full clears the problem", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A file still cut after 30 seconds is an incomplete snapshot", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A cut file waits for WoW then asks the player for help", null, tagsOfRule);
 #line 93
@@ -629,18 +629,62 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
       await testRunner.AndAsync("the addon file of \"MAINACCOUNT\" is cut inside \"Jaína\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
 #line 96
-      await testRunner.AndAsync("the companion has synced for 35 seconds", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+      await testRunner.AndAsync("the companion has started syncing", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
 #line 97
-      await testRunner.AndAsync("the addon file of \"MAINACCOUNT\" is the \"multiple-accounts\" fixture", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+      await testRunner.WhenAsync("the companion syncs for 35 seconds", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 98
+      await testRunner.ThenAsync("the problems are \"IncompleteSnapshot: Jaína\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="Writing the file in full clears the problem")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Companion background sync")]
+        [global::Xunit.TraitAttribute("Description", "Writing the file in full clears the problem")]
+        public async global::System.Threading.Tasks.Task WritingTheFileInFullClearsTheProblem()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "12";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Writing the file in full clears the problem", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A cut file waits for WoW then asks the player for help", null, tagsOfRule);
+#line 100
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 101
+      await testRunner.GivenAsync("World of Warcraft is installed in \"World of Warcraft\" with the account \"MAINACCOU" +
+                        "NT\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 102
+      await testRunner.AndAsync("the addon file of \"MAINACCOUNT\" is cut inside \"Jaína\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 103
+      await testRunner.AndAsync("the companion has synced for 35 seconds", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 104
+      await testRunner.AndAsync("the addon file of \"MAINACCOUNT\" is the \"multiple-accounts\" fixture", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 105
       await testRunner.WhenAsync("the companion syncs for 10 seconds", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 99
+#line 106
       await testRunner.ThenAsync("the problems are \"none\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
-#line 100
+#line 107
       await testRunner.AndAsync("RaidManager received \"Arthasdk, Jaína\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
@@ -654,11 +698,11 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "12";
+            string pickleIndex = "13";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Reading again retries a cut file", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A cut file waits for WoW then asks the player for help", null, tagsOfRule);
-#line 102
+#line 109
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -671,23 +715,23 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-#line 103
+#line 110
       await testRunner.GivenAsync("World of Warcraft is installed in \"World of Warcraft\" with the account \"MAINACCOU" +
                         "NT\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 104
+#line 111
       await testRunner.AndAsync("the addon file of \"MAINACCOUNT\" is cut inside \"Jaína\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 105
+#line 112
       await testRunner.AndAsync("the companion has synced for 35 seconds", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 106
+#line 113
       await testRunner.WhenAsync("the player reads the files again", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 107
+#line 114
       await testRunner.ThenAsync("the problems are \"none\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
-#line 108
+#line 115
       await testRunner.AndAsync("the activity shows \"Jaína\" as \"WaitingForWow\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
@@ -701,11 +745,11 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "13";
+            string pickleIndex = "14";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A paused sync queues without uploading", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A pause stops uploads but not reading", null, tagsOfRule);
-#line 112
+#line 119
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -718,23 +762,23 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-#line 113
+#line 120
       await testRunner.GivenAsync("World of Warcraft is installed in \"World of Warcraft\" with the account \"ARTHASACC" +
                         "OUNT\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 114
+#line 121
       await testRunner.AndAsync("the addon file of \"ARTHASACCOUNT\" is the \"one-character\" fixture", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 115
+#line 122
       await testRunner.AndAsync("the player has paused sync", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 116
+#line 123
       await testRunner.WhenAsync("the companion syncs for 5 seconds", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 117
+#line 124
       await testRunner.ThenAsync("RaidManager received \"none\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
-#line 118
+#line 125
       await testRunner.AndAsync("the status shows 1 snapshots queued", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
@@ -748,11 +792,11 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "14";
+            string pickleIndex = "15";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Resuming uploads the waiting snapshots at once", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A pause stops uploads but not reading", null, tagsOfRule);
-#line 120
+#line 127
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -765,23 +809,23 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-#line 121
+#line 128
       await testRunner.GivenAsync("World of Warcraft is installed in \"World of Warcraft\" with the account \"ARTHASACC" +
                         "OUNT\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 122
+#line 129
       await testRunner.AndAsync("the addon file of \"ARTHASACCOUNT\" is the \"one-character\" fixture", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 123
+#line 130
       await testRunner.AndAsync("the player has paused sync", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 124
+#line 131
       await testRunner.AndAsync("the companion has synced for 5 seconds", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 125
+#line 132
       await testRunner.WhenAsync("the player resumes sync", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 126
+#line 133
       await testRunner.ThenAsync("RaidManager received \"Arthasdk\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
@@ -795,47 +839,10 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "15";
+            string pickleIndex = "16";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A pause outlasts a restart", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A pause stops uploads but not reading", null, tagsOfRule);
-#line 128
-    this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 6
-  await this.FeatureBackgroundAsync();
-#line hidden
-#line 129
-      await testRunner.GivenAsync("the player has paused sync", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
-#line hidden
-#line 130
-      await testRunner.WhenAsync("the companion restarts", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 131
-      await testRunner.ThenAsync("the sync is \"paused\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Xunit.SkippableFactAttribute(DisplayName="An excluded account isn\'t read")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Companion background sync")]
-        [global::Xunit.TraitAttribute("Description", "An excluded account isn\'t read")]
-        public async global::System.Threading.Tasks.Task AnExcludedAccountIsntRead()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "16";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("An excluded account isn\'t read", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("An excluded account is neither read nor uploaded", null, tagsOfRule);
 #line 135
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
@@ -850,22 +857,59 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
   await this.FeatureBackgroundAsync();
 #line hidden
 #line 136
+      await testRunner.GivenAsync("the player has paused sync", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 137
+      await testRunner.WhenAsync("the companion restarts", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 138
+      await testRunner.ThenAsync("the sync is \"paused\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="An excluded account isn\'t read")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Companion background sync")]
+        [global::Xunit.TraitAttribute("Description", "An excluded account isn\'t read")]
+        public async global::System.Threading.Tasks.Task AnExcludedAccountIsntRead()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "17";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("An excluded account isn\'t read", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("An excluded account is neither read nor uploaded", null, tagsOfRule);
+#line 142
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 143
       await testRunner.GivenAsync("World of Warcraft is installed in \"World of Warcraft\" with the account \"ARTHASACC" +
                         "OUNT\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 137
+#line 144
       await testRunner.AndAsync("the addon file of \"ARTHASACCOUNT\" is the \"one-character\" fixture", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 138
+#line 145
       await testRunner.AndAsync("the player has excluded the account \"ARTHASACCOUNT\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 139
+#line 146
       await testRunner.WhenAsync("the companion syncs for 5 seconds", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 140
+#line 147
       await testRunner.ThenAsync("RaidManager received \"none\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
-#line 141
+#line 148
       await testRunner.AndAsync("the status shows 0 of 1 accounts watched", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
@@ -879,11 +923,11 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "17";
+            string pickleIndex = "18";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Excluding an account drops its waiting snapshots", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("An excluded account is neither read nor uploaded", null, tagsOfRule);
-#line 143
+#line 150
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -896,23 +940,23 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-#line 144
+#line 151
       await testRunner.GivenAsync("World of Warcraft is installed in \"World of Warcraft\" with the account \"ARTHASACC" +
                         "OUNT\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 145
+#line 152
       await testRunner.AndAsync("the addon file of \"ARTHASACCOUNT\" is the \"one-character\" fixture", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 146
+#line 153
       await testRunner.AndAsync("the player has paused sync", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 147
+#line 154
       await testRunner.AndAsync("the companion has synced for 5 seconds", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 148
+#line 155
       await testRunner.WhenAsync("the player excludes the account \"ARTHASACCOUNT\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 149
+#line 156
       await testRunner.ThenAsync("the status shows 0 snapshots queued", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
@@ -926,11 +970,11 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "18";
+            string pickleIndex = "19";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Watching an account again reads it", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("An excluded account is neither read nor uploaded", null, tagsOfRule);
-#line 151
+#line 158
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -943,23 +987,23 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-#line 152
+#line 159
       await testRunner.GivenAsync("World of Warcraft is installed in \"World of Warcraft\" with the account \"ARTHASACC" +
                         "OUNT\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 153
+#line 160
       await testRunner.AndAsync("the addon file of \"ARTHASACCOUNT\" is the \"one-character\" fixture", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 154
+#line 161
       await testRunner.AndAsync("the player has excluded the account \"ARTHASACCOUNT\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 155
+#line 162
       await testRunner.AndAsync("the player watches the account \"ARTHASACCOUNT\" again", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 156
+#line 163
       await testRunner.WhenAsync("the companion syncs for 5 seconds", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 157
+#line 164
       await testRunner.ThenAsync("RaidManager received \"Arthasdk\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }

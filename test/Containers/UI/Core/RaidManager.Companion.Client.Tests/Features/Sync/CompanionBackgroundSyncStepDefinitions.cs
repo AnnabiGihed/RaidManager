@@ -102,6 +102,12 @@ public sealed class CompanionBackgroundSyncStepDefinitions : IDisposable
         _drive.WriteAddonFile(_installations[account], account, AddonFixtures.Read("one-character", account)
             .Replace("[\"schemaVersion\"] = 1,", $"[\"schemaVersion\"] = {version},", StringComparison.Ordinal));
 
+    /// <summary>Writes any text as an account's addon file.</summary>
+    /// <param name="account">The account folder's name.</param>
+    /// <param name="text">The text.</param>
+    [Given("the addon file of {string} holds {string}")]
+    public void GivenTheAddonFileOfHolds(string account, string text) => _drive.WriteAddonFile(_installations[account], account, text);
+
     /// <summary>Writes the <c>multiple-accounts</c> fixture cut inside a character, as a crash during the write would.</summary>
     /// <param name="account">The account folder's name.</param>
     /// <param name="name">The character the cut falls in.</param>
