@@ -1,3 +1,4 @@
+using RaidManager.Companion.Client.Features.Sync;
 using RaidManager.Companion.Client.Features.Sync.Queue;
 using RaidManager.Companion.Client.Tests.Support;
 using Shouldly;

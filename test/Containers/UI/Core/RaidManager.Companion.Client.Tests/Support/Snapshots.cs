@@ -1,5 +1,6 @@
 using System.Text.Json.Nodes;
 using Microsoft.Extensions.Logging.Abstractions;
+using RaidManager.Companion.Client.Features.Sync;
 using RaidManager.Companion.Client.Features.Sync.Queue;
 
 namespace RaidManager.Companion.Client.Tests.Support;

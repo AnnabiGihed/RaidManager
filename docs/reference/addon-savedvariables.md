@@ -187,6 +187,25 @@ The companion uploads each character snapshot of the file to the API as JSON wit
 per request; [Character snapshots](api-contracts.md#character-snapshots) says what RaidManager keeps from it. The API
 reads `equipmentSets` but doesn't import it, and keeps no `guid`.
 
+How the companion reads and uploads the file (#550):
+
+- **Folders:** at its first start it searches each fixed drive's root and its folders down to three levels for an
+  installation, a folder with `Wow.exe` beside `WTF\Account`, skipping system folders such as `Windows` and `Users`.
+  Each folder under `WTF\Account` is an account; the player can exclude one, which also drops its waiting snapshots,
+  and can add a folder holding `WTF\Account` with Choose folders.
+- **Reading:** the companion parses the file as data and never runs it. It checks every watched file each five
+  seconds and reads a change only when the next check finds the same size and time and the file can be opened, so it
+  never reads a file WoW is still writing. Only `schemaVersion` 1 is read.
+- **A cut file:** the characters written before the cut upload. The cut character shows as waiting for WoW, and once
+  the file has stayed the same for 30 seconds, as an incomplete snapshot the player fixes with `/reload` or a logout.
+- **Queue:** waiting snapshots are kept in `%LOCALAPPDATA%\RaidManager\sync-queue.json`, keyed by realm, name and
+  `capturedAt`; a newer snapshot of a character replaces the waiting one, and one as old as the last accepted isn't
+  queued again. The file keeps a hash of the account folder, never its name.
+- **Answers:** 202 and 200 remove the snapshot; 400 drops it and shows the refusal. A network failure, a timeout or a
+  server error retries after 5 seconds, doubling to at most 5 minutes, each wait up to a fifth longer at random; 429
+  waits for `Retry-After` (a minute without it); 401 stops uploads until the companion is paired again.
+- **Pause:** the companion keeps reading and queuing but uploads nothing; resuming uploads the queue at once.
+
 ## Not in schema 1
 
 Combat statistics (`UnitStat` and the like), per-encounter progress and the bank's contents aren't captured: the

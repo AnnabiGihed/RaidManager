@@ -73,6 +73,12 @@ internal sealed class FlowClock : FakeTimeProvider
                 .ShouldBeTrue("The pairing flow neither waited again nor ended after a second passed.");
         }
     }
+
+    /// <summary>Waits until the flow has started a number of waits, such as a hosted loop's first delay.</summary>
+    /// <param name="count">The number of waits.</param>
+    public void WaitForTimers(int count) =>
+        SpinWait.SpinUntil(() => Volatile.Read(ref _timersCreated) >= count, Patience)
+            .ShouldBeTrue("The flow didn't start its wait.");
     #endregion Public Methods
 
     #region Private Helpers

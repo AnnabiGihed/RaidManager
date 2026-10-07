@@ -1,5 +1,6 @@
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using Microsoft.Extensions.Logging.Abstractions;
 using Microsoft.Extensions.Options;
@@ -7,6 +8,9 @@ using Moq;
 using RaidManager.Companion.Client.Configuration;
 using RaidManager.Companion.Client.Features.Pairing;
 using RaidManager.Companion.Client.Features.Shared;
+using RaidManager.Companion.Client.Features.Sync;
+using RaidManager.Companion.Client.Features.Sync.Discovery;
+using RaidManager.Companion.Client.Features.Sync.Upload;
 using RaidManager.Companion.Client.Features.Tokens;
 using RaidManager.Companion.Client.Features.Tray;
 using Shouldly;
@@ -45,6 +49,22 @@ public sealed class CompanionClientServiceCollectionExtensionsTests
         provider.GetRequiredService<ICompanionApi>().ShouldBeOfType<CompanionApi>();
     }
 
+    /// <summary>The background sync resolves once, as the service the screens use and as the hosted loop.</summary>
+    [Fact]
+    public void AddCompanionClientRegistersTheSyncAsOneHostedService()
+    {
+        using var provider = Build(new Dictionary<string, string?>
+        {
+            ["Companion:ApiBaseUrl"] = "https://api.raidmanager.test/",
+            ["Companion:WebsiteBaseUrl"] = "https://raidmanager.test/",
+        });
+
+        var sync = provider.GetRequiredService<ISnapshotSync>();
+        provider.GetServices<IHostedService>().ShouldHaveSingleItem().ShouldBeSameAs(sync);
+        provider.GetRequiredService<ISnapshotApi>().ShouldBeOfType<SnapshotApi>();
+        provider.GetRequiredService<IDriveRoots>().ShouldBeOfType<FixedDriveRoots>();
+    }
+
     /// <summary>Missing addresses fail validation.</summary>
     [Fact]
     public void AddCompanionClientWithoutAddressesFailsValidation()
@@ -68,6 +88,7 @@ public sealed class CompanionClientServiceCollectionExtensionsTests
         services.AddSingleton(Mock.Of<ITokenProtector>());
         services.AddSingleton(Mock.Of<IBrowserLauncher>());
         services.AddSingleton(Mock.Of<IApplicationShell>());
+        services.AddSingleton(new SyncFileLocation(Path.Combine(Path.GetTempPath(), $"companion-sync-tests-{Guid.NewGuid():N}")));
         services.AddCompanionClient(configuration);
         return services.BuildServiceProvider(validateScopes: true);
     }

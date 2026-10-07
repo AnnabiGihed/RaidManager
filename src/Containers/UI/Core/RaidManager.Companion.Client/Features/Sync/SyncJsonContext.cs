@@ -1,7 +1,9 @@
 using System.Text.Json;
 using System.Text.Json.Serialization;
+using RaidManager.Companion.Client.Features.Sync.Queue;
+using RaidManager.Companion.Client.Features.Sync.Settings;
 
-namespace RaidManager.Companion.Client.Features.Sync.Queue;
+namespace RaidManager.Companion.Client.Features.Sync;
 
 /// <summary>Serializes the sync's files without reflection.</summary>
 /// <remarks>
@@ -11,4 +13,5 @@ namespace RaidManager.Companion.Client.Features.Sync.Queue;
 /// </remarks>
 [JsonSourceGenerationOptions(JsonSerializerDefaults.Web)]
 [JsonSerializable(typeof(SnapshotQueueFile))]
+[JsonSerializable(typeof(SyncSettings))]
 internal sealed partial class SyncJsonContext : JsonSerializerContext;

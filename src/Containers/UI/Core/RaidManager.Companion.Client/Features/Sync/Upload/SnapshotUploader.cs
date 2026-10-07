@@ -17,6 +17,11 @@ namespace RaidManager.Companion.Client.Features.Sync.Upload;
 /// </remarks>
 internal sealed partial class SnapshotUploader
 {
+    #region Constants
+    /// <summary>Defines how many recent uploads the activity list keeps.</summary>
+    private const int RecentUploadsKept = 10;
+    #endregion Constants
+
     #region Fields
     /// <summary>Stores the first wait after a failure.</summary>
     private static readonly TimeSpan FirstRetry = TimeSpan.FromSeconds(5);
@@ -50,6 +55,9 @@ internal sealed partial class SnapshotUploader
 
     /// <summary>Stores the latest refusal of each character.</summary>
     private readonly Dictionary<CharacterKey, RefusedSnapshot> _refusals = [];
+
+    /// <summary>Stores the latest accepted uploads, newest first.</summary>
+    private readonly List<UploadedCharacter> _recentUploads = [];
 
     /// <summary>Stores the device token RaidManager refused, so uploads wait for a new one.</summary>
     private string? _refusedToken;
@@ -154,6 +162,18 @@ internal sealed partial class SnapshotUploader
         }
     }
 
+    /// <summary>Gets the latest accepted uploads, newest first, at most ten.</summary>
+    public IReadOnlyList<UploadedCharacter> RecentUploads
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return [.. _recentUploads];
+            }
+        }
+    }
+
     /// <summary>Gets the time before which no upload is attempted.</summary>
     public DateTimeOffset NotBefore
     {
@@ -196,22 +216,6 @@ internal sealed partial class SnapshotUploader
         lock (_gate)
         {
             _notBefore = DateTimeOffset.MinValue;
-        }
-    }
-
-    /// <summary>Forgets the refusals of a character, once the player has dealt with them.</summary>
-    /// <param name="character">The character.</param>
-    public void ForgetRefusal(CharacterKey character)
-    {
-        bool removed;
-        lock (_gate)
-        {
-            removed = _refusals.Remove(character);
-        }
-
-        if (removed)
-        {
-            OnChanged();
         }
     }
     #endregion Public Methods
@@ -263,6 +267,12 @@ internal sealed partial class SnapshotUploader
                     _connection = UploadConnection.Online;
                     _lastSuccess = now;
                     _refusals.Remove(snapshot.Key);
+                    _recentUploads.RemoveAll(uploaded => uploaded.Character == snapshot.Key);
+                    _recentUploads.Insert(0, new UploadedCharacter(snapshot.Key, now));
+                    if (_recentUploads.Count > RecentUploadsKept)
+                    {
+                        _recentUploads.RemoveAt(RecentUploadsKept);
+                    }
                 });
                 return true;
             case SnapshotUploadOutcome.Refused:

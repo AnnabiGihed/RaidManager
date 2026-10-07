@@ -1,4 +1,4 @@
-namespace RaidManager.Companion.Client.Features.Sync.Queue;
+namespace RaidManager.Companion.Client.Features.Sync;
 
 /// <summary>Locates the files the sync keeps in the user's profile.</summary>
 /// <param name="Folder">The folder, <c>%LOCALAPPDATA%\RaidManager</c> for players.</param>
