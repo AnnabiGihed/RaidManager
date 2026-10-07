@@ -19,6 +19,9 @@ internal sealed class StubHttpMessageHandler : HttpMessageHandler
     #region Public Properties
     /// <summary>Gets the requests received, with their bodies read.</summary>
     public List<(HttpRequestMessage Request, string? Body)> Requests { get; } = [];
+
+    /// <summary>Gets or sets a change made to every answer, such as a header.</summary>
+    public Action<HttpResponseMessage>? OnResponse { get; set; }
     #endregion Public Properties
 
     #region Public Methods
@@ -47,7 +50,9 @@ internal sealed class StubHttpMessageHandler : HttpMessageHandler
     {
         var body = request.Content is null ? null : await request.Content.ReadAsStringAsync(cancellationToken);
         Requests.Add((request, body));
-        return _answer(request);
+        var response = _answer(request);
+        OnResponse?.Invoke(response);
+        return response;
     }
     #endregion Protected Methods
 }

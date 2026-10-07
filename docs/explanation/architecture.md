@@ -28,8 +28,9 @@ yet. The API sends the sign-in command for the website.
 The WoW addon lives in `src/Addon` ([ADR-0031](../adr/0031-build-the-wow-addon-in-lua-under-src-addon.md)). The
 desktop companion ([ADR-0032](../adr/0032-build-the-windows-companion-in-avalonia.md)) is an Avalonia application for
 Windows in two projects: `RaidManager.Companion.Client` holds its view models, API client and token store, and
-`RaidManager.Companion` its window, tray icon and Windows-only code. It pairs with the player's account; reading the
-addon's files and uploading them come next.
+`RaidManager.Companion` its window, tray icon and Windows-only code. It pairs with the player's account, finds the
+WoW folders, reads the addon's files and uploads complete snapshots in the background (#550); its sync screens come
+next (#551).
 
 ## System context
 

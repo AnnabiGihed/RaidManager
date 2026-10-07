@@ -9,6 +9,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- The companion syncs characters in the background: at its first start it finds the WoW installations on the
+  computer's fixed drives, then reads each account's `RaidManager.lua` without running it, once WoW has finished
+  writing it, and uploads each character's snapshot to RaidManager. Waiting snapshots survive restarts and retry with
+  growing waits while RaidManager can't be reached; a cut file uploads the characters before the cut and reports the
+  cut one. Pausing stops uploads but not reading, and excluding an account drops its waiting snapshots. The screens
+  that show and control this come with #551 (#550).
 - The API imports the character snapshots a paired companion uploads (`POST /companion/snapshots`, schema 1 of the
   addon contract): a new character arrives with a pending claim for the companion's player, a character another player
   owns keeps its owner, and only a snapshot newer than the last one applied changes anything, so a retried upload is
