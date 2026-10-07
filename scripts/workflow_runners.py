@@ -15,9 +15,9 @@ RUNS_ON = "runs-on: [self-hosted, linux, pc-personal]"
 FORK_GUARD = "github.event.pull_request.head.repo.full_name == github.repository"
 WORKFLOWS = Path(".github") / "workflows"
 
-TRIGGER = re.compile(r"^  ([a-z_]+):")
-JOB = re.compile(r"^  ([A-Za-z0-9_-]+):\s*$")
-JOB_KEY = re.compile(r"^    ([a-z-]+):")
+TRIGGER = re.compile(r"^ {2}([a-z_]+):")
+JOB = re.compile(r"^ {2}([A-Za-z0-9_-]+):\s*$")
+JOB_KEY = re.compile(r"^ {4}([a-z-]+):")
 
 
 def triggers(lines: list[str]) -> set[str]:

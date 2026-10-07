@@ -36,6 +36,10 @@ PostgreSQL tests start containers through `Testcontainers`, the dev deployment b
   and a C compiler with `make` and `unzip`. Python, .NET and Node come from the `setup-*` actions into the runner's tool
   cache.
 
+- **No job uses `sudo`:** the runners refuse it ("no new privileges"). The `lua` job therefore builds Lua 5.1.5
+  itself, checked against its SHA-256, instead of with `leafo/gh-actions-lua`, which installs the `readline` headers
+  with `sudo apt-get`.
+
 ## Consequences
 
 - Jobs run only while the owner's computer is on and can start runners. A pull request's checks, the review merge,
