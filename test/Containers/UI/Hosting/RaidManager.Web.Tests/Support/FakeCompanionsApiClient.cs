@@ -10,6 +10,12 @@ namespace RaidManager.Web.Tests.Support;
 /// </remarks>
 public sealed class FakeCompanionsApiClient : ICompanionsApiClient
 {
+    #region Fields
+    /// <summary>Stores when the companions this double builds were paired: a fixed date before every test clock, so no
+    /// test depends on today's date (#557: a stamp from the real clock broke a test from 2026-10-05).</summary>
+    public static readonly DateTimeOffset PairedAtUtc = new(2026, 9, 12, 21, 40, 0, TimeSpan.Zero);
+    #endregion Fields
+
     #region Properties
     /// <summary>Gets or sets the answer to a code lookup.</summary>
     public PairingLookup Lookup { get; set; } = new(PairingCodeStatus.Waiting, Pending());
@@ -43,13 +49,13 @@ public sealed class FakeCompanionsApiClient : ICompanionsApiClient
         return new PendingPairing("K7M-4QX", "BRYN-DESKTOP", at.AddMinutes(-1), at.AddMinutes(9));
     }
 
-    /// <summary>Builds a companion.</summary>
+    /// <summary>Builds a companion paired at <see cref="PairedAtUtc"/>.</summary>
     /// <param name="label">The computer label.</param>
     /// <param name="status">The status.</param>
     /// <param name="revokedAtUtc">When it was revoked.</param>
     /// <returns>The companion.</returns>
     public static PairedCompanion Companion(string label, string status = PairedCompanion.ActiveStatus, DateTimeOffset? revokedAtUtc = null) =>
-        new(Guid.NewGuid(), label, DateTimeOffset.UtcNow.AddDays(-1), status, revokedAtUtc);
+        new(Guid.NewGuid(), label, PairedAtUtc, status, revokedAtUtc);
 
     /// <inheritdoc />
     public Task<PairingLookup> GetPairingAsync(Guid userId, string pairingCode, CancellationToken cancellationToken)
