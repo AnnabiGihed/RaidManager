@@ -12,6 +12,8 @@ linked as a clickable prototype:
 5. An incomplete SavedVariables write, with how to fix it and a retry. Retry shows 2.
 6. A snapshot RaidManager refused, 7. a file written by an addon version the companion doesn't read, and 8. a file
    that isn't the addon's: variants of 5, each with what to do and a retry (owner decision on #551). Retry shows 2.
+9. Not a WoW folder: board 1 after "Add a folder" was given a folder without WTF/Account, with a warning notice
+   (owner decision on #551).
 
 Board 1 has an "Add a folder" button that opens Windows' folder picker (owner decision on #551).
 
@@ -50,6 +52,7 @@ INCOMPLETE = "5 · Incomplete snapshot"
 REFUSED = "6 · Refused snapshot"
 UNSUPPORTED = "7 · Unsupported addon"
 UNREADABLE = "8 · Unreadable file"
+NOT_WOW = "9 · Not a WoW folder"
 NEEDS_ATTENTION = ("Needs attention", "warning")
 NEEDS_HELP = "One snapshot needs your help."
 RETRY_BUTTON = "Retry button"
@@ -103,11 +106,18 @@ def installation(index: int, y: float, path: str, accounts: list[tuple[str, int,
     return Group(f"Installation {index}", items)
 
 
-def folders() -> list[Item]:
+def folders(rejected: bool = False) -> list[Item]:
+    """Board 1, or board 9 when the folder the player added isn't a WoW installation: a warning above the one found."""
     items = heading("Watched folders", ["RaidManager found these World of Warcraft folders. Clear",
                                         "an account to keep its characters out of RaidManager."])
     y = TITLE_BAR_H + 112
-    for index, (path, accounts) in enumerate(INSTALLATIONS):
+    installations = INSTALLATIONS
+    if rejected:
+        items.append(notice("Not a WoW folder notice", X, y, INNER_W, "This isn't a WoW folder",
+                            "Choose the folder that holds Wow.exe and the WTF folder.", "warning"))
+        y += 72 + 16
+        installations = INSTALLATIONS[:1]
+    for index, (path, accounts) in enumerate(installations):
         items.append(installation(index + 1, y, path, accounts))
         y += 64 + 44 * len(accounts) + 8 + 16
     items += [button("Save button", X, y + 8, "Save and sync", "primary", 168, Click("navigate", SYNCING)),
@@ -228,14 +238,16 @@ def boards() -> list[Board]:
 
     return [window(FOLDERS, 0, folders()), window(SYNCING, 1, syncing()), window(PAUSED, 2, paused()),
             window(OFFLINE, 3, offline()), window(INCOMPLETE, 4, incomplete()), window(REFUSED, 5, refused()),
-            window(UNSUPPORTED, 6, unsupported()), window(UNREADABLE, 7, unreadable())]
+            window(UNSUPPORTED, 6, unsupported()), window(UNREADABLE, 7, unreadable()),
+            window(NOT_WOW, 8, folders(rejected=True))]
 
 
 def main(repository: Path = REPOSITORY) -> Path:
     return write_mockup(repository, "companion-sync", "Companion sync", boards(),
                         flows={"Choose folders": FOLDERS, "Pause and resume": SYNCING, "Offline": OFFLINE,
                                "Incomplete snapshot": INCOMPLETE, "Refused snapshot": REFUSED,
-                               "Unsupported addon": UNSUPPORTED, "Unreadable file": UNREADABLE})
+                               "Unsupported addon": UNSUPPORTED, "Unreadable file": UNREADABLE,
+                               "Not a WoW folder": NOT_WOW})
 
 
 if __name__ == "__main__":
