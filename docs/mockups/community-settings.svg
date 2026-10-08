@@ -307,6 +307,7 @@
 <rect x="1020" y="1072" width="4" height="48" rx="2" fill="#5de0c1"/>
 <text x="1044" y="1091" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Citadel Vanguard is linked</text>
 <text x="1044" y="1113" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Members see it at their next sign-in.</text>
+<text x="1374" y="1091" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="18" font-weight="600" fill="#8394aa" text-anchor="middle">×</text>
 </g>
 <text x="1520" y="966" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">5 · Members and roles</text>
 <clipPath id="clip5"><rect x="1520" y="980" width="1440" height="900"/></clipPath>
@@ -661,6 +662,7 @@
 <rect x="2540" y="2052" width="4" height="48" rx="2" fill="#5de0c1"/>
 <text x="2564" y="2071" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Officer roles saved</text>
 <text x="2564" y="2093" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Members get them at their next check.</text>
+<text x="2894" y="2071" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="18" font-weight="600" fill="#8394aa" text-anchor="middle">×</text>
 </g>
 <text x="3040" y="1946" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">9 · Roles with created roles</text>
 <clipPath id="clip9"><rect x="3040" y="1960" width="1440" height="900"/></clipPath>
