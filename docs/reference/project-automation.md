@@ -137,12 +137,12 @@ once a week. Every pull request closes a task, so the
   comment. A rerun creates nothing twice.
 
 The rest follows the usual rules, with two differences recorded on #460. The owner is the operator of a Dependabot
-pull request: they tick its checklist while reviewing, which re-runs `validate`, post their review comment and mark
+pull request: they tick its checklist while reviewing, which re-runs `description`, post their review comment and mark
 it ready, and a peer approves (`verify_review.py`, `review`). The built-in token can't write Project fields, so the
 board report lists the open pull request until the agent selects #461 and the task into the active sprint, with the
 owner's standing approval. Dependabot's branches, `dependabot/github_actions/...`, are the one exception to the
-branch names in `CONTRIBUTING.md`. Its runs see only Dependabot secrets, so the package feed credentials the `ci`
-build needs are also stored there.
+branch names in `CONTRIBUTING.md`. Its runs see only Dependabot secrets, so the package feed credentials the
+`build-test` job needs are also stored there.
 
 ## User-interface mockups
 
@@ -160,12 +160,13 @@ user-interface files must show its mockup, or state `No visual change:` with a r
 The [hierarchy workflow](https://github.com/AnnabiGihed/RaidManager/blob/main/.github/workflows/project-hierarchy.yml)
 runs with the built-in `GITHUB_TOKEN`:
 
-- When an issue is closed or reopened, or its labels change, it checks that issue and its three ancestors. A task
-  reopened under a completed story therefore reopens the story, its feature and its epic. Checks run one at a time,
-  and GitHub keeps only one waiting run, so an event for another issue can replace it; each issue run therefore also
-  checks the issues updated in the last 30 minutes (#579).
-- Every 15 minutes it audits every issue, as a safety net for events it missed and for sub-issue changes, which
-  start no workflow.
+- When an issue is opened, closed or reopened, it checks that issue and its three ancestors, and every issue changed
+  in the last 30 minutes. A task reopened under a completed story therefore reopens the story, its feature and its
+  epic. One action starts one run: label, milestone and text changes start none, because GitHub sends one event for
+  each and creating an issue started up to four runs (#582). Issue runs go one at a time, so two never reopen the same
+  parent twice.
+- Every 15 minutes it audits every issue, in its own queue so an issue run never replaces it: the safety net for a
+  later label, milestone or text change, and for sub-issue changes, which start no workflow.
 - It reopens an invalid parent with a comment that names the missing or open children.
 - It labels a misplaced item, or one without a type label, `needs-parent` with one comment that says where it
   belongs; an item missing part of its contract `needs-contract`; an item in a dependency cycle or waiting on a
@@ -184,18 +185,20 @@ computer. Each trigger below is there for a reason; a run whose result nothing r
 
 | Workflow | Triggers | Why |
 | --- | --- | --- |
-| `ci` | Pull request (opened, new commit, reopened); dispatch by `review` after a merge; push to `main` | `build-test` and `sonar` are required checks on the pull request's head; the run on `main` measures the merged code. A newer commit cancels the run of the older commit. |
+| `pull-request` | Pull request (opened, new commit, reopened, description edited) | Job `description`, a required check: the description, the work items it closes and the mockup rule, which read the description, so an edit runs them again; seconds. A newer commit or description cancels the older run. Marking a draft ready changes nothing it reads, so it starts no run. |
+| `checks` | Pull request (opened, new commit, reopened); dispatch by `review` after a merge; push to `main` | Job `changes` lists the pull request's files once (`scripts/check_scope.py`); then `docs` (documentation, skills, scripts, wiki and site), `build-test` (format, build, tests, coverage) and `companion` (the Windows executable) each run only when their files changed, and `sonar` on every pull request. `docs`, `build-test` and `sonar` are required; a skipped check counts as passed, so one is skipped only when nothing it reads can have changed. Runs on `main` run every check. A newer commit cancels the run of the older commit. |
 | `addon` | Pull request or push to `main` that changes `src/Addon`, `test/Addon`, `test/Fixtures/Addon`, `.luacheckrc`, `.stylua.toml` or the workflow; dispatch | The addon's Lua checks, only where they can change; `lua` isn't required, so a pull request without those files doesn't wait for it. GitHub compares the whole pull request with `main`, so one that changes the addon runs it on each push. A newer commit cancels the run of the older commit. |
-| `docs` | Pull request (opened, new commit, reopened, description edited); dispatch by `review` after a merge; push to `main` | `validate` is a required check, run on each commit so a failure shows before the reviews. An edited description runs only the description checks when the full ones already passed on that commit, in the same job, because GitHub counts a skipped required check as passed. A newer commit or description cancels the older run. Marking a draft ready changes nothing it reads, so it starts no run. |
-| `review` | `pull_request_target` (opened, new commit, reopened, ready); a review or review comment; `ci` or `docs` completed on a pull request's branch | Sets `review-gate`, hands new commits back to the operator, acts on the sign-off, and merges once every required check passed, so it runs again when one finishes. The runs on `main` start none, and the completion of a canceled check is skipped. |
+| `review` | `pull_request_target` (opened, new commit, reopened, ready); a review or review comment; `checks` or `pull-request` completed on a pull request's branch | Sets `review-gate`, hands new commits back to the operator, acts on the sign-off, and merges once every required check passed, so it runs again when one finishes. The runs on `main` start none, and the completion of a canceled check is skipped. |
 | `deploy-dev` | Dispatch by `review` after a merge, or by hand | Deploys `main` to dev when a deployed file changed, and labels the items (#491). |
 | `docs-publish` | Dispatch by `review` after a merge; push to `main` | Publishes GitHub Pages and the Wiki from `main`. |
-| `project-hierarchy` | Issue events that change what it checks; a closed milestone; every 15 minutes; dispatch | The hierarchy, contract, mockup and completion rules; the audit catches sub-issue changes, which start no workflow. |
+| `project-hierarchy` | An issue opened, closed or reopened; a closed milestone; every 15 minutes; dispatch | The hierarchy, contract, mockup and completion rules; one run per action; the audit, in its own queue, catches later label, milestone and text changes and sub-issue changes, which start no run. |
 | `dependency-task` | `pull_request_target` opened, reopened or closed | Gives Dependabot's pull request its task; its job is skipped for every other pull request, as GitHub can't filter the trigger by author. |
 | `docs-links` | Weekly, and dispatch | External links change without any commit, so they are checked weekly rather than on every pull request. |
 
-A merge through `review` uses the workflow token, which starts no push workflow; `review` dispatches `ci`, `docs`,
-`docs-publish` and `deploy-dev` on `main` itself, once per merge.
+A merge through `review` uses the workflow token, which starts no push workflow; `review` dispatches `checks`,
+`docs-publish` and `deploy-dev` on `main` itself, once per merge. The required checks are `description`, `docs`,
+`build-test`, `sonar` and `review-gate`; `review` follows the two workflows that run them, so a commit starts two
+`review` runs and a description edit one.
 
 ## Agent preflight and board report
 
@@ -222,7 +225,7 @@ scheduled check the workflow token can't do (specification §18, §22):
   It exits 1 when any category other than the last has findings. With `--apply-labels`, it keeps the
   `scheduling-violation` label on exactly the items it flags, which the Scheduling violations view shows.
 
-The docs `validate` check runs the pull-request rules on every pull request, so a task without a full chain, or a
+The `description` check runs the pull-request rules on every pull request, so a task without a full chain, or a
 user-interface change without its mockup, can't merge. After you fix a parent link, re-run that check from the pull
 request's Checks tab. The review workflow closes only tasks when it merges.
 
@@ -255,11 +258,11 @@ automated** means one of them does it. Each gap the owner wants automated has a 
 
 | Area | Behavior | Done by |
 | --- | --- | --- |
-| Pull requests | Check formatting, build, run every test | `ci` |
-| Pull requests | Measure coverage, comment it, fail under 80% of changed lines or 60% in total | `ci` |
-| Pull requests | Fail on any SonarCloud finding | `ci` (`sonar` job), SonarCloud |
-| Pull requests | Check the description, the linked task's hierarchy and the mockup of user-interface changes | `docs` |
-| Pull requests | Check spelling, prose, Markdown, links, the OpenAPI contract, the site and wiki build, and identical skill trees | `docs` |
+| Pull requests | Check formatting, build, run every test | `checks` (`build-test` job) |
+| Pull requests | Measure coverage, comment it, fail under 80% of changed lines or 60% in total | `checks` (`build-test` job) |
+| Pull requests | Fail on any SonarCloud finding | `checks` (`sonar` job), SonarCloud |
+| Pull requests | Check the description, the linked task's hierarchy and the mockup of user-interface changes | `pull-request` (`description` job) |
+| Pull requests | Check spelling, prose, Markdown, links, the OpenAPI contract, the site and wiki build, and identical skill trees | `checks` (`docs` job) |
 | Review | Return a ready pull request to draft on new commits | `review` |
 | Review | Check the operator's comment when the pull request is marked ready, then request the peer | `review` |
 | Review | Keep the `review-gate` status current | `review` |

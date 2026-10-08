@@ -2,10 +2,10 @@ name: project-hierarchy
 
 on:
   issues:
-    # A reopened or relabeled child can invalidate a completed parent, so every change re-checks the ancestors.
-    # Opening or editing an issue can add its mockup link or its form answer, so those events re-check it too.
-    # A milestone change can split an item from its parent's milestone.
-    types: [opened, edited, closed, reopened, labeled, unlabeled, milestoned, demilestoned]
+    # Creating, closing or reopening an issue starts one run each; GitHub sends one event per label, milestone and edit,
+    # so listening to those started up to four runs for one new issue (owner decision on #582). Each run also checks
+    # every issue changed in the last 30 minutes, and the audit below catches a later edit, relabel or milestone change.
+    types: [opened, closed, reopened]
   milestone:
     # Closing a release milestone is checked against its release record at once.
     types: [closed]
@@ -13,9 +13,10 @@ on:
     - cron: '7,22,37,52 * * * *'
   workflow_dispatch:
 
-# Runs one at a time, so two events never reopen the same parent twice.
+# Issue runs go one at a time, so two events never reopen the same parent twice. The audit has its own queue, so a
+# waiting audit is never replaced by an issue run (owner decision on #582).
 concurrency:
-  group: project-hierarchy
+  group: project-hierarchy-${{ (github.event_name == 'schedule' || github.event_name == 'workflow_dispatch') && 'audit' || 'events' }}
   cancel-in-progress: false
 
 permissions:

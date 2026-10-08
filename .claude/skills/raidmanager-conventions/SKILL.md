@@ -42,7 +42,7 @@ accepted ADRs and enforced configuration win where they differ. Precedence, high
 | Imported skill says | RaidManager uses | Source of truth |
 | --- | --- | --- |
 | Indent C# and Gherkin with tabs (`csharp-regions`, `clean-code-static-analysis` R4, `gherkin-scenarios` §10) | 4 spaces for every file | `.editorconfig` + `dotnet format --verify-no-changes` in CI |
-| `PACKAGES_READ_USER` / `PACKAGES_READ_TOKEN` | `PIVOT_PACKAGES_USER` / `PIVOT_PACKAGES_TOKEN` | `nuget.config`, `ci.yml`, README |
+| `PACKAGES_READ_USER` / `PACKAGES_READ_TOKEN` | `PIVOT_PACKAGES_USER` / `PIVOT_PACKAGES_TOKEN` | `nuget.config`, `checks.yml`, README |
 | Skills kit under `.claude/skills/` or `.github/skills/` | `.agents/skills/` and an identical `.claude/skills/`; apply every change to both in one commit | `AGENTS.md` |
 | SonarAnalyzer.CSharp + Meziantou.Analyzer + SonarCloud gate | .NET analyzers + StyleCop in the build; SonarCloud automatic analysis, gated by the required `sonar` check (§11) | `Directory.Build.props` (adding analyzers needs an ADR, `clean-code-static-analysis` R1); ADR-0020 |
 | Azure DevOps pipelines and wiki, `::: mermaid` fences | GitHub Actions, MkDocs Material, a GitHub Wiki generated from `docs/`, fenced `mermaid` blocks | `.github/workflows/`, `mkdocs.yml`, `scripts/build_wiki.py` |
@@ -187,7 +187,7 @@ Rules for every documentation change:
   When rewrapping a paragraph, no line may start with an issue number: `#376, which ...` at the start of a line is
   read as a heading without a space (MD018). Reword so the number falls inside the line.
 - **Run the repository's script tests before pushing** any change to `scripts/`, the word list or the docs, as the
-  docs `validate` check does: `python -m unittest` from `scripts/tests`, and read its `Ran ... OK` line. Its output
+  `docs` check does: `python -m unittest` from `scripts/tests`, and read its `Ran ... OK` line. Its output
   includes lines such as "Flagged #170 needs-mockup" from fake data; they don't touch real issues.
 - **Type-check the scripts too:** the same check runs `python -m mypy` from the repository root (install
   `mypy==1.11.2`); run it before pushing any change to `scripts/`, because `unittest` passes code mypy rejects (#454).
@@ -261,7 +261,7 @@ A mockup comes before the screen, for every user interface: website, companion, 
 - **Work items:** every UI item carries `ui` and links or shows its mockup; `needs-mockup` marks those that don't.
   Epics and features list their stories' mockups.
 - **Pull requests:** a change to `src/Containers/UI/`, `addon/`, `.razor`, `.css`, `.html`, `.lua` or `.toc` files
-  shows its mockup or states `No visual change: <reason>`; the docs `validate` check (`scripts/ui_mockups.py`)
+  shows its mockup or states `No visual change: <reason>`; the `description` check (`scripts/ui_mockups.py`)
   enforces it.
 - **Check the screen against its mockup before handover (mandatory).** Tests prove behavior, not looks: the owner
   rejected a sign-in page whose tests passed but whose card and button didn't follow the mockup. For every UI change,
@@ -509,9 +509,16 @@ Every workflow job runs on the owner's ephemeral runners, labeled `self-hosted`,
 - **Checks wait while the owner's computer is off**, and a fork's pull request gets no checks: never merge one as it
   is.
 - **Every trigger has a reason.** The "Workflow triggers" table of `docs/reference/project-automation.md` says why
-  each workflow runs on each event; a new trigger adds its row in the same pull request. A pull request's `ci`, `addon`
-  and `docs` runs cancel the run of an older commit or description, `addon` runs only for the addon's files, an edited
-  description runs only `docs`' description checks once the full ones passed on that commit (never a separate job: a
-  skipped required check counts as passed), `review` starts no run for the checks on `main`,
-  and an issue run of `project-hierarchy` also checks the issues updated in the last 30 minutes, because an event for
-  another issue can replace its waiting run (#579).
+  each workflow runs on each event; a new trigger adds its row in the same pull request (#579, #582):
+  - `pull-request` (job `description`) checks the description, the work items it closes and the mockup rule, on each
+    commit and description edit. `checks` runs `changes` once (`scripts/check_scope.py`), then `docs`, `build-test`
+    and `companion` only when their files changed, and `sonar` on every pull request. Required: `description`,
+    `docs`, `build-test`, `sonar` and `review-gate`.
+  - Skip a check inside the workflow (a job `if` on `changes`), never with a trigger `paths` filter: a required check
+    that never starts blocks the merge, while a skipped one counts as passed. So skip only when nothing the check
+    reads can have changed; when unsure, run it. `addon` uses `paths` because `lua` isn't required.
+  - A pull request's newer commit or description cancels the older run; runs on `main` are never canceled. `review`
+    follows `checks` and `pull-request`, starts no run for the runs on `main`, and skips a canceled run's completion.
+  - `project-hierarchy` starts on an issue opened, closed or reopened only, one run per action, each also checking
+    the issues changed in the last 30 minutes; its audit has its own queue. Adding a trigger that GitHub sends once
+    per label or field (labeled, milestoned, edited) starts several runs for one action.

@@ -53,7 +53,7 @@ A screen's first version is generated in the repository, so it arrives in Penpot
 ## Implement and review
 
 - Show the mockup in the pull request that changes the screen, as an image or a link to `docs/mockups/<screen>.svg`.
-  The docs `validate` check fails if a pull request changes user-interface files without one.
+  The `description` check fails if a pull request changes user-interface files without one.
 - A pull request that changes UI code without changing what users see, such as a refactor or a renamed field, states
   it on its own line: `No visual change: <reason>`.
 - If the implementation must differ from the design, update the Penpot file and render its SVG again in the same

@@ -76,7 +76,7 @@ on:
 - **Credentials:** the four credentials (Entra tenant id, client id, client secret, seller id) are secrets of a `store`
   GitHub environment, as [ADR-0028](0028-keep-the-test-secrets-in-a-github-environment.md) does for the test server. The
   product id is a variable.
-- **The current `companion` job:** it moves out of `ci.yml` into this workflow, behind the same path filter. The
+- **The current `companion` job:** it moves out of `checks.yml` into this workflow, behind the same path filter. The
   unsigned executable stays available to developers as a pull request artifact.
 
 ### What the owner sets up once

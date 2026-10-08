@@ -319,6 +319,12 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- The pull-request checks are split so each runs only when needed (#582): `pull-request` checks the description, the
+  work items and the mockup rule in seconds, also on a description edit; `checks` lists the changed files once and runs
+  `docs`, `build-test` and `companion` only when their files changed, and `sonar` on every pull request, replacing `ci`
+  and `docs`. The required checks are now `description`, `docs`, `build-test`, `sonar` and `review-gate`.
+  `project-hierarchy` starts once per issue opened, closed or reopened instead of once per label, milestone and edit,
+  and its audit has its own queue.
 - The skills keep the background sync and self-hosted runner session's lessons: a section on the self-hosted runners
   (labels, fork guard, Python, no `sudo`, `setup-tools`, the review job's checkout, `actionlint`), Linux runs in
   Docker, when to list changed files, two more SonarCloud findings, test doubles that take their time from the test's

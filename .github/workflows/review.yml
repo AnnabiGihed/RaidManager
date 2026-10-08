@@ -12,7 +12,8 @@ on:
   pull_request_review_comment:
     types: [created, edited, deleted]
   workflow_run:
-    workflows: [ci, docs]
+    # The workflows of the required checks: `checks` (docs, build-test, sonar) and `pull-request` (description).
+    workflows: [checks, pull-request]
     types: [completed]
     # The runs on main after a merge have no pull request to review, so they start no run at all (#579).
     branches-ignore: [main]
@@ -162,7 +163,7 @@ jobs:
               fi
             done
             # deploy-dev.yml deploys the merged main to the dev environment (#389), when a deployed file changed (#491).
-            for workflow in ci.yml docs.yml docs-publish.yml; do
+            for workflow in checks.yml docs-publish.yml; do
               gh workflow run "$workflow" --repo "$GITHUB_REPOSITORY" --ref main
             done
             gh workflow run deploy-dev.yml --repo "$GITHUB_REPOSITORY" --ref main -f trigger=merge
