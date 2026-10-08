@@ -34,6 +34,9 @@ jobs:
           fetch-depth: 0
           persist-credentials: false
       - uses: ./.github/actions/setup-tools
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
       - name: Compare with the last successful dev deployment
         id: decide
         env:
@@ -182,6 +185,9 @@ jobs:
         with:
           fetch-depth: 0
       - uses: ./.github/actions/setup-tools
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
       - name: Record the deployment on the items
         env:
           GH_TOKEN: ${{ github.token }}
