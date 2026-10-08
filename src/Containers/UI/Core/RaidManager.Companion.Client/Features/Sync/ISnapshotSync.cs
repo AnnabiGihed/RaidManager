@@ -34,7 +34,7 @@ public interface ISnapshotSync
     /// <summary>Uploads at once, whatever the wait after a failure (board 4's "Retry now").</summary>
     void RetryNow();
 
-    /// <summary>Reads every watched file again at once (board 5's retry).</summary>
+    /// <summary>Reads every watched file again at once and forgets the refused snapshots (the retry of boards 5 to 8).</summary>
     /// <param name="cancellationToken">A token to cancel the change.</param>
     /// <returns>A task that completes when the next read is scheduled.</returns>
     Task ReadAgainAsync(CancellationToken cancellationToken);

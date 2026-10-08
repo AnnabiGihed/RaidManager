@@ -4,9 +4,11 @@ using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RaidManager.Companion.Client;
 using RaidManager.Companion.Client.Features.Shared;
+using RaidManager.Companion.Client.Features.Sync;
 using RaidManager.Companion.Client.Features.Tokens;
 using RaidManager.Companion.Features.Shared;
 using RaidManager.Companion.Features.Shell;
+using RaidManager.Companion.Features.Sync;
 using RaidManager.Companion.Features.Tokens;
 
 namespace RaidManager.Companion.Composition;
@@ -53,6 +55,8 @@ internal static class CompanionHost
         services.AddSingleton(shell);
         services.AddSingleton<IApplicationShell>(shell);
         services.AddSingleton<IBrowserLauncher, AvaloniaBrowserLauncher>();
+        services.AddSingleton<IFolderPicker, AvaloniaFolderPicker>();
+        services.AddSingleton<IUiThread, AvaloniaUiThread>();
         services.AddSingleton<KeepsRunningNoticePresenter>();
         if (OperatingSystem.IsWindows())
         {

@@ -127,6 +127,41 @@ public sealed class SyncStateTests : IDisposable
         sync.Status.Queued.ShouldBe(0);
         sync.Status.Connection.ShouldBe(UploadConnection.Online);
     }
+
+    /// <summary>The retry of boards 5 to 8 forgets the refused snapshots, so the screens show syncing again (#551).</summary>
+    /// <returns>A task that completes when the test is done.</returns>
+    [Fact]
+    public async Task ReadingAgainForgetsTheRefusals()
+    {
+        using var sync = NewSync(out var queue);
+        queue.Offer(Snapshots.Queued("Jainaice"));
+        _api.Answer = new SnapshotUploadResult(SnapshotUploadOutcome.Refused, "Character.Snapshot.IdentityUnavailable");
+        await sync.TickAsync(CancellationToken.None);
+        sync.Status.Refusals.ShouldHaveSingleItem();
+        var changes = 0;
+        sync.StatusChanged += (_, _) => changes++;
+
+        await sync.ReadAgainAsync(CancellationToken.None);
+
+        sync.Status.Refusals.ShouldBeEmpty();
+        changes.ShouldBeGreaterThan(0);
+    }
+
+    /// <summary>A later start lists the watched folders before its first step, so the window opens on the right board (#551).</summary>
+    /// <returns>A task that completes when the test is done.</returns>
+    [Fact]
+    public async Task ALaterStartListsTheWatchedFoldersAtOnce()
+    {
+        WowDrive.AddCharacter(_drive.AddInstallation("Games/WoW"), "ARTHASACC", Snapshots.Realm, "Arthasdk");
+        using (var first = NewSync(out _))
+        {
+            await first.TickAsync(CancellationToken.None);
+        }
+
+        using var later = NewSync(out _);
+
+        later.Status.WatchedAccountCount.ShouldBe(1);
+    }
     #endregion Tests
 
     #region Private Helpers

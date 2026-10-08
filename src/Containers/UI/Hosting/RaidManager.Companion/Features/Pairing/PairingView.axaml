@@ -1,6 +1,6 @@
 <!-- The pairing states of the companion pairing mockup: 5 (waiting) and 19 (getting a code) share one layout, then 6
-     (paired), 7 (code expired), 8 (pairing revoked) and 20 (couldn't get a code). State 6 hides "Choose folders" and
-     its line until #384 (owner decision on #514). -->
+     (paired, whose "Choose folders" opens the watched folders of companion-sync, #551), 7 (code expired), 8 (pairing
+     revoked) and 20 (couldn't get a code). -->
 <UserControl xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:pairing="using:RaidManager.Companion.Client.Features.Pairing"
@@ -45,9 +45,11 @@
       </Panel>
       <TextBlock x:Name="PairedHeading" Classes="heading" HorizontalAlignment="Center" Margin="0,34,0,0"
                  Text="{Binding PairedHeading}" />
-      <TextBlock Classes="intro" HorizontalAlignment="Center" Margin="0,10,0,0"
-                 Text="This computer can now upload your character data." />
-      <TextBlock Classes="note" HorizontalAlignment="Center" Margin="0,117,0,0"
+      <TextBlock Classes="intro" HorizontalAlignment="Center" TextAlignment="Center" Margin="0,10,0,0"
+                 Text="This computer can now upload your character data.&#10;Next, choose the WoW folders to watch." />
+      <Button x:Name="ChooseFoldersButton" Classes="primary" Margin="0,33,0,0" Content="Choose folders"
+              Command="{Binding ChooseFoldersCommand}" />
+      <TextBlock Classes="note" HorizontalAlignment="Center" Margin="0,23,0,0"
                  Text="You can revoke it anytime on the website, under Companion &amp; sync." />
     </StackPanel>
 

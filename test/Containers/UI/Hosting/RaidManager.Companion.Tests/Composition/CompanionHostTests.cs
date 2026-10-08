@@ -6,11 +6,14 @@ using Moq;
 using RaidManager.Companion.Client.Configuration;
 using RaidManager.Companion.Client.Features.Pairing;
 using RaidManager.Companion.Client.Features.Shared;
+using RaidManager.Companion.Client.Features.Shell;
+using RaidManager.Companion.Client.Features.Sync;
 using RaidManager.Companion.Client.Features.Tokens;
 using RaidManager.Companion.Client.Features.Tray;
 using RaidManager.Companion.Composition;
 using RaidManager.Companion.Features.Shared;
 using RaidManager.Companion.Features.Shell;
+using RaidManager.Companion.Features.Sync;
 using Shouldly;
 using Xunit;
 
@@ -45,7 +48,7 @@ public sealed class CompanionHostTests
         options.WebsiteBaseUrl.ShouldBe(new Uri(website));
     }
 
-    /// <summary>Every root view model resolves, over the host's shell and launcher; the sync loop runs on Windows only.</summary>
+    /// <summary>Every root view model resolves, over the host's shell, launcher, folder picker and UI thread; the sync loop runs on Windows only.</summary>
     [Fact]
     public void BuildResolvesTheViewModels()
     {
@@ -73,6 +76,10 @@ public sealed class CompanionHostTests
         provider.GetRequiredService<IBrowserLauncher>().ShouldBeOfType<AvaloniaBrowserLauncher>();
         provider.GetRequiredService<ITokenProtector>().ShouldNotBeNull();
         provider.GetRequiredService<KeepsRunningNoticePresenter>().ShouldNotBeNull();
+        provider.GetRequiredService<ShellViewModel>().ShouldNotBeNull();
+        provider.GetRequiredService<SyncViewModel>().ShouldNotBeNull();
+        provider.GetRequiredService<IFolderPicker>().ShouldBeOfType<AvaloniaFolderPicker>();
+        provider.GetRequiredService<IUiThread>().ShouldBeOfType<AvaloniaUiThread>();
         services.Count(service => service.ServiceType == typeof(IHostedService)).ShouldBe(OperatingSystem.IsWindows() ? 1 : 0);
     }
 

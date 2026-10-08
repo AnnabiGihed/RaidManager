@@ -78,7 +78,7 @@ internal sealed partial class SnapshotSync : BackgroundService, ISnapshotSync
     #endregion Fields
 
     #region Constructors
-    /// <summary>Initializes a new instance of the <see cref="SnapshotSync"/> class and reads the player's choices.</summary>
+    /// <summary>Initializes a new instance of the <see cref="SnapshotSync"/> class, reads the player's choices and their folders.</summary>
     /// <param name="settingsStore">The settings file.</param>
     /// <param name="finder">The folder search.</param>
     /// <param name="queue">The queue.</param>
@@ -100,6 +100,7 @@ internal sealed partial class SnapshotSync : BackgroundService, ISnapshotSync
         _time = time;
         _logger = logger;
         _settings = settingsStore.Load();
+        Refresh();
         _uploader.Changed += (_, _) => OnStatusChanged();
     }
     #endregion Constructors
@@ -203,6 +204,7 @@ internal sealed partial class SnapshotSync : BackgroundService, ISnapshotSync
                     _problems.Clear();
                 }
 
+                _uploader.ForgetRefusals();
                 _nextScan = DateTimeOffset.MinValue;
             },
             cancellationToken);

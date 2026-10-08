@@ -160,6 +160,7 @@ and its task #388 wait for #409 and #411.
 | 2026-10-08 | #563 merged and closed #562 before its deployment criterion; the dev deployment failed, so bug #564 with #565 was added under #150 and #562 reopened as Blocked (owner decision on #564). The review merge of #566 failed on the image's old `gh`: the owner upgraded it, and bug #567 with #568 was added after #565 (owner decisions on #567). #566 and #569 merged, and #562 closed with the deployment's evidence. |
 | 2026-10-08 | Improvement #570 added to the Backlog under #156 at the owner's request: automate the evidence comment later; spike #424 stays in the Backlog. |
 | 2026-10-08 | #571 with #572 added under the standing approval on #510: the session's lessons in the skills; #551 resumes in the next session. |
+| 2026-10-08 | #573 merged and closed #572 and #571. #551 resumed: on the owner's decisions recorded on it, a computer already paired opens on the sync screens, board 6 shows only after a new pairing, and a folder that isn't a WoW installation shows a warning on a new board 9 of the companion sync mockup. |
 
 ## Outcome
 
