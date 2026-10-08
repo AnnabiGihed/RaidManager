@@ -1,7 +1,8 @@
 """Give each Dependabot pull request its own task, so dependency updates follow the work rules (#460).
 
 Dependabot opens a pull request for each new release of a GitHub Action the workflows pin. Every pull request must
-close a task in the hierarchy (ADR-0025), so this script, run by the `dependency-task` workflow:
+close a task in the hierarchy (ADR-0025), so this script, run by the `review` workflow when Dependabot opens or
+reopens its pull request and by the `dependency-task` workflow when one closes:
 
 - when Dependabot opens or reopens a pull request, creates a task under the standing improvement for updates, with
   its contract, type label, the improvement's milestone and the owner as assignee, links it as a sub-issue, and

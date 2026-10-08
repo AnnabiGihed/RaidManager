@@ -12,7 +12,7 @@ from pathlib import Path
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import check_scope  # noqa: E402
-from check_scope import ChangedFile, affects_companion, affects_dotnet, scopes  # noqa: E402
+from check_scope import ChangedFile, affects_companion, affects_dotnet, publishes, scopes  # noqa: E402
 
 ALL = {"docs": True, "build-test": True, "companion": True}
 
@@ -89,13 +89,34 @@ class ScopeTests(unittest.TestCase):
                 self.assertEqual(scopes(files(path)), ALL)
 
 
+class PublishTests(unittest.TestCase):
+    def test_documentation_the_site_config_and_the_wiki_builder_publish(self) -> None:
+        for path in ("docs/reference/project-automation.md", "mkdocs.yml", "scripts/build_wiki.py",
+                     ".github/workflows/docs-publish.yml"):
+            with self.subTest(path=path):
+                self.assertTrue(publishes(files(path)))
+
+    def test_code_skills_and_root_documents_do_not_publish(self) -> None:
+        self.assertFalse(publishes(files("src/Core/A.cs", ".agents/skills/x/SKILL.md", "CHANGELOG.md",
+                                         "scripts/work_gate.py")))
+
+    def test_a_page_moved_out_of_docs_publishes(self) -> None:
+        self.assertTrue(publishes([ChangedFile("notes/a.md", "renamed", "docs/a.md")]))
+
+
 class MainTests(unittest.TestCase):
-    def run_main(self, environment: dict[str, str]) -> str:
+    def run_main(self, environment: dict[str, str], *arguments: str) -> str:
         output = io.StringIO()
-        with unittest.mock.patch.dict(os.environ, environment, clear=True), redirect_stdout(output), \
+        with unittest.mock.patch.dict(os.environ, environment, clear=True), \
+                unittest.mock.patch.object(sys, "argv", ["check_scope.py", *arguments]), redirect_stdout(output), \
                 redirect_stderr(io.StringIO()):
             self.assertEqual(check_scope.main(), 0)
         return output.getvalue()
+
+    def test_published_reads_the_merged_pull_request(self) -> None:
+        listed = '{"path": "src/Core/A.cs", "status": "modified", "previous_path": null}\n'
+        with unittest.mock.patch.object(check_scope.subprocess, "run", return_value=unittest.mock.Mock(stdout=listed)):
+            self.assertEqual(self.run_main({"PR_NUMBER": "586"}, "--published"), "publish=false\n")
 
     def test_a_run_on_main_runs_every_check(self) -> None:
         self.assertEqual(self.run_main({"EVENT_NAME": "workflow_dispatch"}),

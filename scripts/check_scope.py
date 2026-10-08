@@ -13,6 +13,9 @@ whenever that isn't certain, it runs (owner decisions on #579 and #582):
   break a link, and those file types have documentation rules.
 - `sonar` isn't decided here: SonarCloud reads every language, so it runs on every pull request.
 
+With `--published`, it decides instead whether a merged pull request changed what `docs-publish` builds (the site
+and the wiki come from `docs/`, `mkdocs.yml` and `scripts/build_wiki.py`), and prints `publish=` (#586).
+
 A change to `checks.yml` or to this script runs everything, and so does any event other than a pull request (a run
 on `main`).
 
@@ -22,10 +25,13 @@ constant, so no command-line text reaches `gh`.
 
 Usage, in the `changes` job, with GH_TOKEN, EVENT_NAME and PR_NUMBER set by the workflow:
     check_scope.py >> "$GITHUB_OUTPUT"
+and in the review workflow after a merge, with GH_TOKEN and PR_NUMBER:
+    check_scope.py --published
 """
 
 from __future__ import annotations
 
+import argparse
 import json
 import os
 import subprocess
@@ -51,6 +57,8 @@ BUILD_FILES = frozenset({"Directory.Build.props", "Directory.Packages.props", "n
 CODE_FOLDERS = ("src/", "test/")
 DOCUMENTED_SUFFIXES = (".md", ".svg", ".penpot")
 UNCHANGED_PATHS = frozenset({"added", "modified"})
+PUBLISHED_FOLDERS = ("docs/",)
+PUBLISHED_FILES = frozenset({"mkdocs.yml", "scripts/build_wiki.py", ".github/workflows/docs-publish.yml"})
 
 
 @dataclass(frozen=True)
@@ -81,6 +89,16 @@ def affects_companion(path: str) -> bool:
     return path.startswith(COMPANION_FOLDERS) or path in BUILD_FILES
 
 
+def affects_published_docs(path: str) -> bool:
+    """Tells whether a changed file can change the published site or wiki."""
+    return path.startswith(PUBLISHED_FOLDERS) or path in PUBLISHED_FILES
+
+
+def publishes(changed: list[ChangedFile]) -> bool:
+    """Tells whether a merged pull request needs the site and the wiki published again."""
+    return any(affects_published_docs(path) for item in changed for path in item.paths)
+
+
 def is_plain_code(changed: ChangedFile) -> bool:
     """Tells whether a change is code the documentation checks never read."""
     return (changed.status in UNCHANGED_PATHS and changed.path.startswith(CODE_FOLDERS)
@@ -108,6 +126,16 @@ def changed_files(number: int) -> list[ChangedFile]:
 
 
 def main() -> int:
+    parser = argparse.ArgumentParser(description=__doc__)
+    parser.add_argument("--published", action="store_true",
+                        help="decide whether the merged pull request in PR_NUMBER needs docs-publish")
+    args = parser.parse_args()
+    if args.published:
+        number = int(os.environ["PR_NUMBER"])
+        publish = publishes(changed_files(number))
+        print(f"publish={'true' if publish else 'false'}")
+        print(f"docs-publish: {'runs' if publish else 'skipped, no published file changed'}", file=sys.stderr)
+        return 0
     if os.environ.get("EVENT_NAME") != PULL_REQUEST_EVENT:
         chosen = dict.fromkeys(CHECKS, True)
         print("Not a pull request: every check runs.", file=sys.stderr)

@@ -510,15 +510,17 @@ Every workflow job runs on the owner's ephemeral runners, labeled `self-hosted`,
   is.
 - **Every trigger has a reason.** The "Workflow triggers" table of `docs/reference/project-automation.md` says why
   each workflow runs on each event; a new trigger adds its row in the same pull request (#579, #582):
-  - `pull-request` (job `description`) checks the description, the work items it closes and the mockup rule, on each
-    commit and description edit. `checks` runs `changes` once (`scripts/check_scope.py`), then `docs`, `build-test`
-    and `companion` only when their files changed, and `sonar` on every pull request. Required: `description`,
-    `docs`, `build-test`, `sonar` and `review-gate`.
+  - `checks` runs `changes` once (`scripts/check_scope.py`), then `docs`, `build-test` and `companion` only when
+    their files changed, and `sonar` on every pull request. `review` runs `main`'s copy of the description checks on
+    each commit and description edit and posts `description` like `review-gate`, and creates Dependabot's task.
+    Required: `description`, `docs`, `build-test`, `sonar` and `review-gate`. A commit starts three runs (`checks`,
+    `review`, one `review` after `checks`), a description edit one (#586).
   - Skip a check inside the workflow (a job `if` on `changes`), never with a trigger `paths` filter: a required check
     that never starts blocks the merge, while a skipped one counts as passed. So skip only when nothing the check
     reads can have changed; when unsure, run it. `addon` uses `paths` because `lua` isn't required.
-  - A pull request's newer commit or description cancels the older run; runs on `main` are never canceled. `review`
-    follows `checks` and `pull-request`, starts no run for the runs on `main`, and skips a canceled run's completion.
+  - A pull request's newer commit cancels the older `checks` run. `review` follows `checks` only and skips a canceled
+    run's completion. After a merge, nothing re-tests `main` (it must be up to date to merge), `docs-publish` runs only
+    when published content changed and `deploy-dev` only when a deployed file changed (A11).
   - `project-hierarchy` starts on an issue opened, closed or reopened only, one run per action, each also checking
     the issues changed in the last 30 minutes; its audit has its own queue. Adding a trigger that GitHub sends once
     per label or field (labeled, milestoned, edited) starts several runs for one action.
