@@ -3,11 +3,19 @@ name: docs
 on:
   pull_request:
     branches: [main]
-    types: [opened, synchronize, reopened, edited, ready_for_review]
+    # `edited` re-checks a changed description. Marking a draft ready changes nothing these checks read, so it no
+    # longer starts a run (#579; it came with ADR-0005's self-review rule, superseded by ADR-0009).
+    types: [opened, synchronize, reopened, edited]
   push:
     branches: [main]
   # The review workflow starts it on main after merging, because its workflow-token merge triggers no push.
   workflow_dispatch:
+
+# A pull request's newer commit, or a newer description for docs, replaces the run of the older one, whose result no
+# check reads anymore (#579). Runs on main are never cancelled.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
 
 permissions:
   contents: read

@@ -162,6 +162,7 @@ and its task #388 wait for #409 and #411.
 | 2026-10-08 | #571 with #572 added under the standing approval on #510: the session's lessons in the skills; #551 resumes in the next session. |
 | 2026-10-08 | #573 merged and closed #572 and #571. #551 resumed: on the owner's decisions recorded on it, a computer already paired opens on the sync screens, board 6 shows only after a new pairing, and a folder that isn't a WoW installation shows a warning on a new board 9 of the companion sync mockup. |
 | 2026-10-08 | The owner's check of the companion build of #574 found board 1 running past the window, fixed in #574. On the owner's decisions recorded on #551, a whole WoW folder can be excluded (board 10, built in #574), and improvement #575 with task #576 was added to the Backlog under #130: My characters will show the characters waiting for review, which today appear only at the next sign-in as #18 specifies. |
+| 2026-10-08 | The owner reported that website notifications never close and show too low: bug #577 with task #578 added under #163 and selected into Sprint 5 after #551, a notification closing after 6 seconds or with a close button (owner decisions on #577). #574 merged and closed #551, and #17 closed with its evidence. The owner then asked, at the highest priority, to stop the workflows running more often than needed with the same behavior: bug #579 with task #580 added under #150, in Sprint 5 before #578 and #545 (owner request on #579). |
 
 ## Outcome
 

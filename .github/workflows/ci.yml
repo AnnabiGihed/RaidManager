@@ -8,6 +8,12 @@ on:
   # The review workflow starts it on main after merging, because its workflow-token merge triggers no push.
   workflow_dispatch:
 
+# A pull request's newer commit, or a newer description for docs, replaces the run of the older one, whose result no
+# check reads anymore (#579). Runs on main are never cancelled.
+concurrency:
+  group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.run_id }}
+  cancel-in-progress: ${{ github.event_name == 'pull_request' }}
+
 permissions:
   contents: read
 
