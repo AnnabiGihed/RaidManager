@@ -1,8 +1,9 @@
-# Installs the GitHub CLI and jq for the job when the self-hosted runner's image lacks them (ADR-0034, owner decision
-# on #561). No sudo: the runners refuse it, so the binaries go to the job's temporary folder, pinned and checked
-# against their published SHA-256. A tool the image already provides is used as it is.
+# Installs the GitHub CLI and jq for the job when the self-hosted runner's image lacks them or has older versions
+# (ADR-0034, owner decisions on #561 and #567). No sudo: the runners refuse it, so the binaries go to the job's
+# temporary folder, pinned and checked against their published SHA-256. An image tool at the pinned version or newer is
+# used as it is; an older one is shadowed, since the workflows rely on the pinned version's features (#567).
 name: Set up tools
-description: Install gh and jq into the job's temporary folder when the runner lacks them.
+description: Install gh and jq into the job's temporary folder when the runner's are missing or older.
 runs:
   using: composite
   steps:
@@ -18,22 +19,33 @@ runs:
         bin="$RUNNER_TEMP/tools/bin"
         mkdir -p "$bin"
         download() { curl --proto '=https' --tlsv1.2 -sSfL -o "$1" "$2"; }
-        if ! command -v gh >/dev/null || ! command -v jq >/dev/null; then
-          if [ "$(uname -m)" != x86_64 ]; then
-            echo "::error::setup-tools installs x86_64 binaries; this runner is $(uname -m)."
-            exit 1
-          fi
+        # True when version $1 is at least version $2.
+        at_least() { [ "$(printf '%s\n%s\n' "$1" "$2" | sort -V | head -n 1)" = "$2" ]; }
+        gh_current() { command -v gh >/dev/null && gh --version | head -n 1 | awk '{print $3}' || true; }
+        jq_current() { command -v jq >/dev/null && jq --version | sed 's/^jq-//' || true; }
+        need_gh=true
+        need_jq=true
+        current="$(gh_current)"
+        if [ -n "$current" ] && at_least "$current" "$GH_VERSION"; then need_gh=false; fi
+        echo "gh on the runner: ${current:-none}; pinned: $GH_VERSION"
+        current="$(jq_current)"
+        if [ -n "$current" ] && at_least "$current" "$JQ_VERSION"; then need_jq=false; fi
+        echo "jq on the runner: ${current:-none}; pinned: $JQ_VERSION"
+        if { $need_gh || $need_jq; } && [ "$(uname -m)" != x86_64 ]; then
+          echo "::error::setup-tools installs x86_64 binaries; this runner is $(uname -m)."
+          exit 1
         fi
-        if ! command -v gh >/dev/null; then
+        if $need_gh; then
           archive="gh_${GH_VERSION}_linux_amd64"
           download "$RUNNER_TEMP/gh.tar.gz" "https://github.com/cli/cli/releases/download/v${GH_VERSION}/${archive}.tar.gz"
           echo "$GH_SHA256  $RUNNER_TEMP/gh.tar.gz" | sha256sum --check --quiet
           tar -xzf "$RUNNER_TEMP/gh.tar.gz" -C "$RUNNER_TEMP" "${archive}/bin/gh"
           mv "$RUNNER_TEMP/${archive}/bin/gh" "$bin/gh"
         fi
-        if ! command -v jq >/dev/null; then
+        if $need_jq; then
           download "$bin/jq" "https://github.com/jqlang/jq/releases/download/jq-${JQ_VERSION}/jq-linux-amd64"
           echo "$JQ_SHA256  $bin/jq" | sha256sum --check --quiet
           chmod +x "$bin/jq"
         fi
+        # First on the path, so a pinned tool shadows an older one from the image.
         echo "$bin" >> "$GITHUB_PATH"

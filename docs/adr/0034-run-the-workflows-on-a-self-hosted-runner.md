@@ -35,7 +35,8 @@ PostgreSQL tests start containers through `Testcontainers`, the dev deployment b
   `python` or `python3` without `actions/setup-python` (#564).
 - **Jobs install what they can themselves** (owner decision on #561): the local action `.github/actions/setup-tools`
   puts the GitHub CLI and `jq`, pinned and checked against their SHA-256, in the job's temporary folder when the image
-  lacks them, and every job that calls them runs it after checkout. Python, .NET and Node come from the `setup-*`
+  lacks them or has older versions, and every job that calls them runs it after checkout. An older `gh` from the image
+  broke the review merge of #566 (#567). Python, .NET and Node come from the `setup-*`
   actions: the image has no `python` command, and the dev deployment's first run on the runners failed on it (#564).
 - **The runner image provides** what can't be installed without `sudo`: Git, curl, `gzip` and `unzip`; a C compiler
   with `make` for the `lua` job; Docker usable by the job for the PostgreSQL tests and the deployment; and an SSH
