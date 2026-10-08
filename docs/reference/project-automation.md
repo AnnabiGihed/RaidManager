@@ -341,3 +341,22 @@ these steps once in the browser:
 4. After 10 minutes, the next audit labels it `needs-parent`, because it has no feature.
 5. Close the test issue as *not planned* and set its Status to `Canceled`. It stays closed, and the next audit removes
    the label.
+
+### Verify the workflows end to end
+
+After any change to a workflow's triggers, take one task's documentation-only pull request through every step and
+count the runs each step starts (#584). List them with
+`gh api "repos/AnnabiGihed/RaidManager/actions/runs?created=>=<UTC time of the step>"`; the runs `review` starts
+from `workflow_run` show `main` as their branch.
+
+| Step | Runs it starts | Updates |
+| --- | --- | --- |
+| Create the task | One `project-hierarchy` | None |
+| Open the draft pull request | One `checks` (`changes` and `docs` run, `build-test` and `companion` are skipped), one `pull-request`, one `review`, then one `review` after each of `checks` and `pull-request`; no `addon` | `review-gate` pending |
+| Edit the description | One `pull-request`, then one `review` | None |
+| The operator's review and Ready | One `review` for each | The peer is requested |
+| The peer's approval | One `review`, which merges | The task closes with "Completed by #n", and the branch is deleted |
+| After the merge | One each of `checks`, `docs-publish` and `deploy-dev`; no `review` | The task gets `deployed:dev` from `record` |
+| Every 15 minutes | One `project-hierarchy` audit, in its own queue | None |
+
+A run started twice for one event, or an update missing, is a bug to fix before other work.
