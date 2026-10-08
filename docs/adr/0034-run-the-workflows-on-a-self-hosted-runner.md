@@ -30,12 +30,13 @@ PostgreSQL tests start containers through `Testcontainers`, the dev deployment b
   `dependency-task` jobs already skip forks.
 - **The owner sets** "Require approval for all external contributors" under the repository's Settings, Actions,
   General, so a fork's workflows wait for approval even if a guard is missed.
-- **The docs check enforces both rules.** `scripts/workflow_runners.py`, run by `validate_docs.py`, fails on a job
-  without these labels and on a job reachable from a fork pull request without the guard.
+- **The docs check enforces these rules.** `scripts/workflow_runners.py`, run by `validate_docs.py`, fails on a job
+  without these labels, on a job reachable from a fork pull request without the guard, and on a job that calls
+  `python` or `python3` without `actions/setup-python` (#564).
 - **Jobs install what they can themselves** (owner decision on #561): the local action `.github/actions/setup-tools`
   puts the GitHub CLI and `jq`, pinned and checked against their SHA-256, in the job's temporary folder when the image
   lacks them, and every job that calls them runs it after checkout. Python, .NET and Node come from the `setup-*`
-  actions.
+  actions: the image has no `python` command, and the dev deployment's first run on the runners failed on it (#564).
 - **The runner image provides** what can't be installed without `sudo`: Git, curl, `gzip` and `unzip`; a C compiler
   with `make` for the `lua` job; Docker usable by the job for the PostgreSQL tests and the deployment; and an SSH
   client for the deployment.

@@ -27,6 +27,9 @@ jobs:
     steps:
       - uses: actions/checkout@v7
       - uses: ./.github/actions/setup-tools
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
       - uses: actions/setup-dotnet@v6
         with:
           dotnet-version: '10.0.x'
@@ -118,6 +121,9 @@ jobs:
     timeout-minutes: 20
     steps:
       - uses: actions/checkout@v7
+      - uses: actions/setup-python@v7
+        with:
+          python-version: '3.12'
       - name: SonarCloud findings
         env:
           PR_NUMBER: ${{ github.event.pull_request.number }}

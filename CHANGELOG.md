@@ -425,6 +425,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- The dev deployment works again on the self-hosted runners: its `changes` and `record` jobs called `python`, which
+  only GitHub's image had, so the first deployment after the switch failed. Every job that calls Python now sets it
+  up, and the docs check fails on one that doesn't (#565).
 - A test of the paired companions list failed on every run since 2026-10-05, failing the build of every pull request:
   its test double stamped companions with the real clock while the test's clock is fixed. The doubles now pair their
   companions at a fixed date (#558).
