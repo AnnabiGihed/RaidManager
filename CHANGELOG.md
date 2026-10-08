@@ -425,6 +425,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- The workflows' `setup-tools` step now installs its pinned GitHub CLI and `jq` when the runner's are older, not only
+  when they are missing: an older `gh` in the runner image made the review merge of #566 fail (#568).
 - The dev deployment works again on the self-hosted runners: its `changes` and `record` jobs called `python`, which
   only GitHub's image had, so the first deployment after the switch failed. Every job that calls Python now sets it
   up, and the docs check fails on one that doesn't (#565).
