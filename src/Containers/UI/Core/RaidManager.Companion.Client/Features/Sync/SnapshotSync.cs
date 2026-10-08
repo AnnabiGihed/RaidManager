@@ -258,7 +258,8 @@ internal sealed partial class SnapshotSync : BackgroundService, ISnapshotSync
             {
                 var excluded = _settings.ExcludedFolderList.Where(path => !string.Equals(path, folder, StringComparison.OrdinalIgnoreCase));
                 Save(_settings with { ExcludedFolders = watched ? [.. excluded] : [.. excluded, folder] });
-                if (!watched && WowInstallationFinder.Describe(folder) is { } installation)
+                var installation = _installations.FirstOrDefault(listed => string.Equals(listed.Folder, folder, StringComparison.OrdinalIgnoreCase));
+                if (!watched && installation is not null)
                 {
                     foreach (var account in installation.Accounts)
                     {
