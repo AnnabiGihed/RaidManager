@@ -146,7 +146,7 @@ generate the mockup with the `penpot-mockups` skill (ADR-0018), then have the ow
      Run the check from the repository folder, after the PR exists.
 
      When the operator asks for another version of one comment, write a new one and check it the same way.
-   - **Dependabot pull requests** (#460): the owner is the operator. The `dependency-task` workflow writes the
+   - **Dependabot pull requests** (#460): the owner is the operator. The `review` workflow writes the
      description and links the task; the agent selects the task (`raidmanager-board-operations`, "Dependency update
      tasks") and drafts both review comments as for any pull request.
    - The `review` workflow merges the PR itself once every gate passes (ADR-0008). Never queue or perform the merge

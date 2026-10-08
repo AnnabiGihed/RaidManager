@@ -2,14 +2,13 @@ name: checks
 
 # The checks of a commit: `changes` reads which files the pull request changes, once, and each check then runs only
 # when the files it reads changed (#582). A skipped job counts as passed for a required check, so a check is skipped
-# only when nothing it reads can have changed (scripts/check_scope.py). The description checks are in pull-request.yml,
-# so an edited description doesn't run these again.
+# only when nothing it reads can have changed (scripts/check_scope.py). The description checks run in review.yml, so
+# an edited description doesn't run these again.
+# After a merge it doesn't run again: main must be up to date to merge, so the pull request's run tested the merged
+# code (#586). It can still be started by hand on any branch.
 on:
   pull_request:
     branches: [main]
-  push:
-    branches: [main]
-  # The review workflow starts it on main after merging, because its workflow-token merge triggers no push.
   workflow_dispatch:
 
 # A pull request's newer commit replaces the run of the older one, whose result no check reads anymore (#579). Runs on

@@ -1,12 +1,15 @@
 name: dependency-task
 
 # Every pull request closes a task (ADR-0025), so each Dependabot update gets one under #461 (owner decisions on #460).
+# The review workflow creates it when Dependabot opens or reopens its pull request; this workflow cancels it when the
+# pull request closes without a merge, as Dependabot does when a newer release supersedes it (#586). A merge made by
+# the review workflow's token starts no workflow, so this runs only for a pull request closed by hand or by Dependabot.
 # pull_request_target runs main's copy of this workflow with a token that can write issues and pull requests; no step
 # runs pull-request code. The task's sprint is a Project field the token can't write: the agent selects it.
 on:
   pull_request_target:
     branches: [main]
-    types: [opened, reopened, closed]
+    types: [closed]
 
 permissions: {}
 
@@ -33,7 +36,7 @@ jobs:
       - uses: actions/setup-python@v7
         with:
           python-version: '3.12'
-      - name: Create, reuse or cancel the update's task
+      - name: Cancel the update's task
         env:
           GH_TOKEN: ${{ github.token }}
           PR_NUMBER: ${{ github.event.pull_request.number }}

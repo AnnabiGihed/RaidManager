@@ -101,8 +101,10 @@ except the WoW addon in `src/Addon/`, which players install in the game, anythin
 (`Directory.Build.props`, `Directory.Packages.props`, `nuget.config`, `global.json`, `dotnet-tools.json`,
 `RaidManager.sln`) or `deploy-dev.yml`. The `changes` job of `deploy-dev` runs `scripts/deploy_changes.py`, which
 compares `main` with the commit of the last successful dev deployment, so a change from a failed or skipped run is
-deployed by the next one. When nothing deployed changed, the build and deployment are skipped and `record` still runs
-as a success, since dev already runs the same images. A run started by hand from the Actions tab always deploys. The
+deployed by the next one. After a merge, `review` runs the same script and starts `deploy-dev` only when it would
+deploy; when nothing deployed changed, no run starts, and the merged items get `deployed:dev` from the next deployment,
+which records everything in the history of its commit (A11, owner decisions on #579). A run started by hand from the
+Actions tab always deploys. The
 labels follow these rules:
 
 | Label | Color | Meaning |
@@ -127,8 +129,9 @@ labels follow these rules:
 
 Dependabot proposes the new releases of the GitHub Actions the workflows use every Monday, all in one grouped pull
 request that keeps commit-id pins and their version comment (`.github/dependabot.yml`, #460), so the owner reviews
-once a week. Every pull request closes a task, so the
-`dependency-task` workflow runs `scripts/dependency_task.py` with the built-in token:
+once a week. Every pull request closes a task, so `scripts/dependency_task.py` runs with the built-in token: the
+`review` workflow runs it when Dependabot opens or reopens its pull request, and the `dependency-task` workflow when a
+pull request closes without a merge (#586):
 
 - **Opened or reopened:** it creates a task under the standing improvement #461, with its contract, the improvement's
   milestone and the owner as assignee, and writes `Closes #<task>` and the five required sections into the pull
@@ -185,20 +188,18 @@ computer. Each trigger below is there for a reason; a run whose result nothing r
 
 | Workflow | Triggers | Why |
 | --- | --- | --- |
-| `pull-request` | Pull request (opened, new commit, reopened, description edited) | Job `description`, a required check: the description, the work items it closes and the mockup rule, which read the description, so an edit runs them again; seconds. A newer commit or description cancels the older run. Marking a draft ready changes nothing it reads, so it starts no run. |
-| `checks` | Pull request (opened, new commit, reopened); dispatch by `review` after a merge; push to `main` | Job `changes` lists the pull request's files once (`scripts/check_scope.py`); then `docs` (documentation, skills, scripts, wiki and site), `build-test` (format, build, tests, coverage) and `companion` (the Windows executable) each run only when their files changed, and `sonar` on every pull request. `docs`, `build-test` and `sonar` are required; a skipped check counts as passed, so one is skipped only when nothing it reads can have changed. Runs on `main` run every check. A newer commit cancels the run of the older commit. |
+| `checks` | Pull request (opened, new commit, reopened); dispatch by hand | Job `changes` lists the pull request's files once (`scripts/check_scope.py`); then `docs` (documentation, skills, scripts, wiki and site), `build-test` (format, build, tests, coverage) and `companion` (the Windows executable) each run only when their files changed, and `sonar` on every pull request. `docs`, `build-test` and `sonar` are required; a skipped check counts as passed, so one is skipped only when nothing it reads can have changed. A run started by hand runs every check. It doesn't run after a merge: `main` must be up to date to merge, so the pull request's run tested the merged code. A newer commit cancels the run of the older commit. |
 | `addon` | Pull request or push to `main` that changes `src/Addon`, `test/Addon`, `test/Fixtures/Addon`, `.luacheckrc`, `.stylua.toml` or the workflow; dispatch | The addon's Lua checks, only where they can change; `lua` isn't required, so a pull request without those files doesn't wait for it. GitHub compares the whole pull request with `main`, so one that changes the addon runs it on each push. A newer commit cancels the run of the older commit. |
-| `review` | `pull_request_target` (opened, new commit, reopened, ready); a review or review comment; `checks` or `pull-request` completed on a pull request's branch | Sets `review-gate`, hands new commits back to the operator, acts on the sign-off, and merges once every required check passed, so it runs again when one finishes. The runs on `main` start none, and the completion of a canceled check is skipped. |
-| `deploy-dev` | Dispatch by `review` after a merge, or by hand | Deploys `main` to dev when a deployed file changed, and labels the items (#491). |
-| `docs-publish` | Dispatch by `review` after a merge; push to `main` | Publishes GitHub Pages and the Wiki from `main`. |
+| `review` | `pull_request_target` (opened, new commit, reopened, ready, description edited); a review or review comment; `checks` completed on a pull request's branch | Runs `main`'s copy of the description checks (the description, the work items it closes, the mockup rule) and posts the required `description` status, on a commit and on an edit of the description; creates Dependabot's task; sets `review-gate`, hands new commits back to the operator, acts on the sign-off, and merges once every required check passed, so it runs again when `checks` finishes. A commit starts `checks`, this run and one run after `checks`; a description edit only this run. The completion of a canceled check is skipped. |
+| `deploy-dev` | Dispatch by `review` after a merge that changed a deployed file since the last dev deployment, or by hand | Deploys `main` to dev and labels the items (#491, A11). |
+| `docs-publish` | Dispatch by `review` after a merge that changed `docs/`, `mkdocs.yml`, the wiki builder or the workflow, or by hand | Publishes GitHub Pages and the Wiki from `main`. |
 | `project-hierarchy` | An issue opened, closed or reopened; a closed milestone; every 15 minutes; dispatch | The hierarchy, contract, mockup and completion rules; one run per action; the audit, in its own queue, catches later label, milestone and text changes and sub-issue changes, which start no run. |
-| `dependency-task` | `pull_request_target` opened, reopened or closed | Gives Dependabot's pull request its task; its job is skipped for every other pull request, as GitHub can't filter the trigger by author. |
+| `dependency-task` | `pull_request_target` closed | Cancels the task of a Dependabot pull request closed without a merge; skipped for other pull requests, as GitHub can't filter the trigger by author. A merge by `review` starts no run. |
 | `docs-links` | Weekly, and dispatch | External links change without any commit, so they are checked weekly rather than on every pull request. |
 
-A merge through `review` uses the workflow token, which starts no push workflow; `review` dispatches `checks`,
-`docs-publish` and `deploy-dev` on `main` itself, once per merge. The required checks are `description`, `docs`,
-`build-test`, `sonar` and `review-gate`; `review` follows the two workflows that run them, so a commit starts two
-`review` runs and a description edit one.
+A merge through `review` uses the workflow token, which starts no push workflow; `review` dispatches `docs-publish`
+and `deploy-dev` itself, each only when needed. The required checks are `description`, `docs`, `build-test`, `sonar`
+and `review-gate`: `checks` runs three of them, and `review` posts `description` and `review-gate`.
 
 ## Agent preflight and board report
 
@@ -261,7 +262,7 @@ automated** means one of them does it. Each gap the owner wants automated has a 
 | Pull requests | Check formatting, build, run every test | `checks` (`build-test` job) |
 | Pull requests | Measure coverage, comment it, fail under 80% of changed lines or 60% in total | `checks` (`build-test` job) |
 | Pull requests | Fail on any SonarCloud finding | `checks` (`sonar` job), SonarCloud |
-| Pull requests | Check the description, the linked task's hierarchy and the mockup of user-interface changes | `pull-request` (`description` job) |
+| Pull requests | Check the description, the linked task's hierarchy and the mockup of user-interface changes | `review` (`description` status) |
 | Pull requests | Check spelling, prose, Markdown, links, the OpenAPI contract, the site and wiki build, and identical skill trees | `checks` (`docs` job) |
 | Review | Return a ready pull request to draft on new commits | `review` |
 | Review | Check the operator's comment when the pull request is marked ready, then request the peer | `review` |
@@ -352,11 +353,11 @@ from `workflow_run` show `main` as their branch.
 | Step | Runs it starts | Updates |
 | --- | --- | --- |
 | Create the task | One `project-hierarchy` | None |
-| Open the draft pull request | One `checks` (`changes` and `docs` run, `build-test` and `companion` are skipped), one `pull-request`, one `review`, then one `review` after each of `checks` and `pull-request`; no `addon` | `review-gate` pending |
-| Edit the description | One `pull-request`, then one `review` | None |
-| The operator's review and Ready | One `review` for each | The peer is requested |
+| Open the draft pull request, or push a commit | One `checks` (`changes`, then `docs`, `build-test` and `companion` as their files need, and `sonar`), one `review`, then one `review` after `checks`; `addon` only for addon files | `review` posts `description`; `review-gate` pending |
+| Edit the description | One `review` | `description` posted again |
+| The operator's review, then Ready | One `review` for each | The peer is requested |
 | The peer's approval | One `review`, which merges | The task closes with "Completed by #n", and the branch is deleted |
-| After the merge | One each of `checks`, `docs-publish` and `deploy-dev`; no `review` | The task gets `deployed:dev` from `record` |
+| After the merge | `docs-publish` when published content changed, `deploy-dev` when a deployed file changed; no `checks`, no `review` | The task gets `deployed:dev` from the deployment, or from the next one when nothing deployed changed (A11) |
 | Every 15 minutes | One `project-hierarchy` audit, in its own queue | None |
 
 A run started twice for one event, or an update missing, is a bug to fix before other work.

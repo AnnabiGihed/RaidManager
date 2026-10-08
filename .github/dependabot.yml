@@ -1,6 +1,6 @@
 # Dependabot proposes the new releases of the GitHub Actions the workflows use, keeping commit-id pins and their
 # version comment (#460). One grouped pull request a week carries them all, so the owner reviews once (owner decision
-# on #460). The dependency-task workflow gives it its own task under #461, and the owner reviews it as the operator.
+# on #460). The review workflow gives it its own task under #461, and the owner reviews it as the operator.
 version: 2
 updates:
   - package-ecosystem: github-actions

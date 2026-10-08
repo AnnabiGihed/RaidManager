@@ -321,6 +321,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- A pull request's commit now starts three runs and a description edit one (#586): `review` runs the description checks
+  and posts `description` itself, and creates Dependabot's task, so `pull-request.yml` is gone and `dependency-task`
+  handles only closes. After a merge, `checks` no longer re-tests `main`, `docs-publish` runs only when published
+  content changed and `deploy-dev` only when a deployed file changed; a merge with nothing to deploy gets `deployed:dev`
+  from the next deployment (amendment A11).
 - The pull-request checks are split so each runs only when needed (#582): `pull-request` checks the description, the
   work items and the mockup rule in seconds, also on a description edit; `checks` lists the changed files once and runs
   `docs`, `build-test` and `companion` only when their files changed, and `sonar` on every pull request, replacing `ci`
