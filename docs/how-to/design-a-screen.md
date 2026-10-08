@@ -39,7 +39,8 @@ A screen's first version is generated in the repository, so it arrives in Penpot
 
 1. Adjust the design in Penpot. Draw each state as a board, side by side in one file.
 2. While the design is in progress, open **View mode**, choose **Share**, and copy the link into the issue's
-   **Mockup** field. The issue's `needs-mockup` label goes away within 15 minutes, or at once when you edit the issue.
+   **Mockup** field. The issue's `needs-mockup` label goes away at the next hierarchy audit, which the agent's board
+   report starts (GitHub's own schedule runs it only every few hours).
 3. When the design is agreed, choose **Download Penpot file (.penpot)** from the main menu and save it over
    `docs/mockups/<screen>.penpot`. From then on, the downloaded file is the source; don't rerun the screen script.
 4. Render its SVG: `python scripts/penpot_render.py docs/mockups/<screen>.penpot`. Never export or edit the SVG by

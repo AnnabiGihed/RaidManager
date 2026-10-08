@@ -166,6 +166,7 @@ and its task #388 wait for #409 and #411.
 | 2026-10-08 | #581 merged and closed #580. On the owner's decisions recorded on #579 and #582, task #582 was added under #579, in Sprint 5 before #578: the checks split into `pull-request` and `checks` so each runs only when its files changed, the required checks renamed (`description`, `docs`), and `project-hierarchy` starting once per issue opened, closed or reopened. |
 | 2026-10-08 | #583 merged and closed #582; the owner updated the branch protection of `main` (`description`, `docs`), and feature #129 closed on the owner's decision recorded on it. The end-to-end check of task #584 (on #585) showed six runs per commit, a `checks` run re-testing each merge and `deploy-dev` running with nothing to deploy: task #586 added under #579 on the owner's decisions recorded there, with amendment A11 of the specification; #585 finishes its check after #586 merges. |
 | 2026-10-08 | #587 merged and closed #586; the owner relaxed `description` for that merge only and added it back. #585 resumes #584's end-to-end check with the new expectations. |
+| 2026-10-08 | #585 merged and closed #584; its end-to-end check matched every expectation and #579 closed with the results. It also showed GitHub running the hierarchy audit only every few hours: bug #588 with task #589 added under #150, in Sprint 5 before #578, on the owner's decision recorded on #588. |
 
 ## Outcome
 

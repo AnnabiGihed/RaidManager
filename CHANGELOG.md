@@ -450,6 +450,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- The board report (`work_gate.py report`) also starts one `project-hierarchy` audit run, since GitHub runs the audit's
+  15-minute schedule only every few hours: a relabel, milestone change or edit is checked at least at each session start
+  and after each merge (#588).
 - The workflows start fewer runs on the owner's runners with the same results: `docs` no longer runs again when a draft
   is marked ready, and an edited description runs only the description checks once the full ones passed on that commit;
   `addon` runs only for changes to the addon's files; a pull request's newer commit or description cancels the older

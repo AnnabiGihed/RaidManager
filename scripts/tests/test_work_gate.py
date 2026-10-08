@@ -2,13 +2,16 @@
 
 from __future__ import annotations
 
+import subprocess
 import sys
 import tempfile
 import unittest
 from datetime import date, datetime, timezone
 from pathlib import Path
+from unittest import mock
 
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
+import work_gate  # noqa: E402
 from work_gate import (  # noqa: E402
     Item, Sprint, item_from_api, preflight, report, sprint_release_problem, sprint_releases, sprint_state,
     status_problem,
@@ -198,6 +201,24 @@ class ApiTests(unittest.TestCase):
         self.assertEqual((found.status, found.stage, found.points, found.sprint, found.parent, found.prerequisites),
                          ("Ready", "Testing", 5, SPRINT_1, 131, [(31, "closed", "completed")]))
         self.assertIsNone(item_from_api({"content": {}}))
+
+
+class AuditTests(unittest.TestCase):
+    """The report starts one hierarchy audit, since GitHub runs its schedule only every few hours (#588)."""
+
+    def test_the_audit_is_started_on_main(self) -> None:
+        with mock.patch.object(work_gate, "gh", return_value="") as gh, \
+                mock.patch("builtins.print") as printed:
+            work_gate.start_audit()
+        gh.assert_called_once_with("workflow", "run", "project-hierarchy.yml", "--repo", "AnnabiGihed/RaidManager",
+                                   "--ref", "main")
+        printed.assert_called_once_with("Started a project-hierarchy audit run (#588).")
+
+    def test_a_failed_start_is_reported_without_stopping_the_report(self) -> None:
+        failure = subprocess.CalledProcessError(1, ["gh"], stderr="HTTP 403\n")
+        with mock.patch.object(work_gate, "gh", side_effect=failure), mock.patch("builtins.print") as printed:
+            work_gate.start_audit()
+        printed.assert_called_once_with("The hierarchy audit couldn't be started: HTTP 403")
 
 
 if __name__ == "__main__":

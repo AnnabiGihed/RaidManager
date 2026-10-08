@@ -27,6 +27,9 @@ from work_contracts import (BUG, EPIC, FEATURE, IMPROVEMENT, SPIKE, STORY, TASK,
                             task_milestone_problem, unknown_sections)
 
 REPOSITORY = "AnnabiGihed/RaidManager"
+# GitHub starts the hierarchy workflow's 15-minute schedule only every few hours, so the report starts one audit run
+# (#588): a relabel, milestone change or edit is then checked at least at each session start and after each merge.
+AUDIT_WORKFLOW = "project-hierarchy.yml"
 PROJECT = "PVT_kwHOAPL9-M4BlGGp"
 TIMEZONE = ZoneInfo("Europe/Brussels")
 SPRINTS = Path("docs/planning/sprints")
@@ -403,6 +406,16 @@ def run_preflight(number: int, items: dict[int, Item], now: datetime, root: Path
     return 0 if all(finding.passed for finding in findings) else 1
 
 
+def start_audit() -> None:
+    """Starts one run of the hierarchy audit on main, and says whether it started."""
+    try:
+        gh("workflow", "run", AUDIT_WORKFLOW, "--repo", REPOSITORY, "--ref", "main")
+    except subprocess.CalledProcessError as error:
+        print(f"The hierarchy audit couldn't be started: {(error.stderr or '').strip()}")
+        return
+    print("Started a project-hierarchy audit run (#588).")
+
+
 def run_report(items: dict[int, Item], now: datetime, labels: bool) -> int:
     for item in items.values():
         if item.status == "Blocked":
@@ -416,6 +429,7 @@ def run_report(items: dict[int, Item], now: datetime, labels: bool) -> int:
         print()
     if labels:
         apply_labels(items, {number for number, _ in found[SCHEDULING]})
+    start_audit()
     return 1 if any(found[category] for category in VIOLATIONS) else 0
 
 
