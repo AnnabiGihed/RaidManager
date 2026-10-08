@@ -110,7 +110,7 @@ class MainTests(unittest.TestCase):
         with unittest.mock.patch.dict(os.environ, environment, clear=True), \
                 unittest.mock.patch.object(sys, "argv", ["check_scope.py", *arguments]), redirect_stdout(output), \
                 redirect_stderr(io.StringIO()):
-            self.assertEqual(check_scope.main(), 0)
+            check_scope.main()
         return output.getvalue()
 
     def test_published_reads_the_merged_pull_request(self) -> None:

@@ -125,7 +125,7 @@ def changed_files(number: int) -> list[ChangedFile]:
     return [ChangedFile(**json.loads(line)) for line in output.splitlines() if line.strip()]
 
 
-def main() -> int:
+def main() -> None:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--published", action="store_true",
                         help="decide whether the merged pull request in PR_NUMBER needs docs-publish")
@@ -135,7 +135,7 @@ def main() -> int:
         publish = publishes(changed_files(number))
         print(f"publish={'true' if publish else 'false'}")
         print(f"docs-publish: {'runs' if publish else 'skipped, no published file changed'}", file=sys.stderr)
-        return 0
+        return
     if os.environ.get("EVENT_NAME") != PULL_REQUEST_EVENT:
         chosen = dict.fromkeys(CHECKS, True)
         print("Not a pull request: every check runs.", file=sys.stderr)
@@ -147,8 +147,7 @@ def main() -> int:
     for check in CHECKS:
         print(f"{check}={'true' if chosen[check] else 'false'}")
         print(f"{check}: {'runs' if chosen[check] else 'skipped, none of its files changed'}", file=sys.stderr)
-    return 0
 
 
 if __name__ == "__main__":
-    sys.exit(main())
+    main()
