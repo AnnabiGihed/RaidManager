@@ -18,6 +18,7 @@ HISTORY = ["c3", "c2", "c1"]
 class PathTests(unittest.TestCase):
     def test_source_deployment_and_build_files_deploy(self) -> None:
         for path in ("src/Containers/API/RaidManager.ApiService/Program.cs", "deploy/server/deploy-environment.sh",
+                     "src/Containers/UI/Hosting/RaidManager.Web/Program.cs", "src/Containers/UI/Core/RaidManager.ViewModels/A.cs",
                      "Directory.Build.props", "Directory.Packages.props", "nuget.config", "global.json",
                      "dotnet-tools.json", "RaidManager.sln", ".github/workflows/deploy-dev.yml"):
             with self.subTest(path=path):
@@ -28,7 +29,9 @@ class PathTests(unittest.TestCase):
                      "test/Containers/UI/Hosting/RaidManager.Web.Tests/Support/TestClock.cs", "scripts/work_gate.py",
                      "docs/mockups/sign-in.svg", ".github/workflows/review.yml", "mkdocs.yml",
                      "test/Fixtures/Addon/SavedVariables/one-character/WTF/Account/A/SavedVariables/RaidManager.lua",
-                     "srcs/readme.md", "", "src/Addon/RaidManager/Core.lua", "src/Addon/RaidManager/RaidManager.toc"):
+                     "srcs/readme.md", "", "src/Addon/RaidManager/Core.lua", "src/Addon/RaidManager/RaidManager.toc",
+                     "src/Containers/UI/Core/RaidManager.Companion.Client/Features/Sync/Queue/SnapshotQueue.cs",
+                     "src/Containers/UI/Hosting/RaidManager.Companion/Features/Sync/SyncView.axaml"):
             with self.subTest(path=path):
                 self.assertFalse(affects_deployment(path))
 

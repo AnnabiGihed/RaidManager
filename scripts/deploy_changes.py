@@ -6,8 +6,9 @@ cost time and a restart. This script compares `main` with the commit of the last
 from the `dev` environment's deployments, and lists the changed files that can affect a deployment (owner decisions
 on #491):
 
-- anything under `src/` and `deploy/`, except the WoW addon in `src/Addon/`, which players install in the game and
-  never runs on the server (owner decision on #491, ADR-0031);
+- anything under `src/` and `deploy/`, except the WoW addon in `src/Addon/`, which players install in the game, and
+  the desktop companion's two projects, published as a CI artifact for players' computers (#600): neither runs on the
+  server (owner decisions on #491 and #600, ADR-0031, ADR-0032);
 - the build files: `Directory.Build.props`, `Directory.Packages.props`, `nuget.config`, `global.json`,
   `dotnet-tools.json` and `RaidManager.sln`;
 - the deployment workflow itself, `.github/workflows/deploy-dev.yml`.
@@ -36,7 +37,8 @@ REPOSITORY = "AnnabiGihed/RaidManager"
 ENVIRONMENT = "dev"
 MERGE_TRIGGER = "merge"
 DEPLOYED_FOLDERS = ("src/", "deploy/")
-NOT_DEPLOYED_FOLDERS = ("src/Addon/",)
+NOT_DEPLOYED_FOLDERS = ("src/Addon/", "src/Containers/UI/Core/RaidManager.Companion.Client/",
+                        "src/Containers/UI/Hosting/RaidManager.Companion/")
 DEPLOYED_FILES = frozenset({
     "Directory.Build.props", "Directory.Packages.props", "nuget.config", "global.json", "dotnet-tools.json",
     "RaidManager.sln", ".github/workflows/deploy-dev.yml",

@@ -450,6 +450,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- A merge that changes only the desktop companion no longer starts a dev deployment: the companion runs on players'
+  computers, never on the server (#600).
 - After a restart, the companion's sync screen shows the last success and the recent uploads from before it, kept in
   `sync-queue.json`; it no longer says "Not yet" with an empty activity while everything is synced (#592).
 - The board report (`work_gate.py report`) also starts one `project-hierarchy` audit run, since GitHub runs the audit's
