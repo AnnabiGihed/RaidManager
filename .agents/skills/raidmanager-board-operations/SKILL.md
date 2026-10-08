@@ -118,9 +118,10 @@ def item_id(number):
 5. Validate the parent independently (`work-task-execution-and-completion`, action 8) and close it the same way, with
    its own evidence comment. A spike closes when its question is answered and the owner reviewed the answer.
 6. Run `python scripts/work_gate.py report` and report its blocking categories.
-7. The merge starts the dev deployment. When it finishes, check that the task carries `deployed:dev`
-   (`gh issue view <n> --json labels`) and say so in the report; if it carries `deploy-failed:dev`, report the failed
-   run and the bug it needs. The **first real** `deploy-failed:dev` is also noted on #392 with the run and the
+7. A merge that changed a deployed file starts the dev deployment. When it finishes, check that the task carries
+   `deployed:dev`; a merge with nothing to deploy starts none, and its task gets the label from the next deployment
+   (A11). Read the labels with `gh issue view <n> --json labels` and say so in the report; if it carries
+   `deploy-failed:dev`, report the failed run and the bug it needs. The **first real** `deploy-failed:dev` is also noted on #392 with the run and the
    labeled items: its failure path was accepted on unit tests (owner decision on #392).
 
 ### Deployment labels
@@ -135,9 +136,10 @@ The deployment workflows' `record` job sets `deployed:dev`, `deployed:test`, `de
 - To check what a deployment would change, run the script with `--dry-run` from a worktree checked out at the
   deployed commit (`git worktree add <folder> <commit>`), with the full commit id; it reads with your `gh` login and
   writes nothing.
-- A merge that changes no deployed file (documentation, skills, tests, scripts, other workflows) skips the build
-  and deployment, and its `record` job still labels the items `deployed:dev` (#491, A10). Read "the dev deployment
-  of a merge succeeded" as both jobs of `deploy-dev` succeeding or `deploy` being skipped with a successful `record`.
+- A merge that changes no deployed file (documentation, skills, tests, scripts, other workflows) starts no
+  `deploy-dev` run; its items get `deployed:dev` from the next deployment, which records all the history of its commit
+  delivered (#491, A11, owner decisions on #579). Read "the dev deployment of a merge succeeded" as both jobs of
+  `deploy-dev` succeeding, or, when none started, as nothing to deploy.
 - A task closed without a pull request (evidence only) gets `deployed:<environment>` at the next deployment after it
   closes; a parent gets it when all its completed children have it, so it can follow its close by one deployment.
 - A release's `Deployed to production` line is evidence for its record, not the Released state: that still needs the
@@ -145,7 +147,7 @@ The deployment workflows' `record` job sets `deployed:dev`, `deployed:test`, `de
 
 ### Dependency update tasks
 
-Dependabot opens one grouped pull request a week for the new releases of GitHub Actions, and the `dependency-task`
+Dependabot opens one grouped pull request a week for the new releases of GitHub Actions, and the `review`
 workflow gives it a task under #461 (`docs/reference/project-automation.md`, "Dependency updates"). The workflow can't write Project fields,
 so at the start of a session the board report shows `Pull request #<n> is open, but the task has no active sprint`.
 With the owner's standing approval recorded on #460, and without asking again:

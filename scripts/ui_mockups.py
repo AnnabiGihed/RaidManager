@@ -89,7 +89,8 @@ def pull_request_problems(body: str, changed: list[str], root: Path) -> list[str
         return [f"This pull request changes user-interface files ({listed}{more}). Show the mockup it implements "
                 "with a `docs/mockups/<screen>.svg` image or link, or a Penpot link, or explain on its own line: "
                 "`No visual change: <reason>`."]
-    missing = [path for path in REPOSITORY_MOCKUP.findall(body) if not (root / path).is_file()]
+    # The review workflow checks out main, so a mockup this pull request adds counts from its changed files (#586).
+    missing = [path for path in REPOSITORY_MOCKUP.findall(body) if not (root / path).is_file() and path not in changed]
     return [f"The mockup `{path}` isn't in the repository; commit it with its `.penpot` source." for path in missing]
 
 

@@ -105,6 +105,10 @@ class PullRequestRuleTests(unittest.TestCase):
         body = "![Review](docs/mockups/character-review.svg)"
         self.assertEqual(pull_request_problems(body, ["src/Containers/UI/Web/Pages/Review.razor"], self.root), [])
 
+    def test_mockup_the_pull_request_adds_counts(self) -> None:
+        changed = ["src/Containers/UI/a.razor", "docs/mockups/raid-list.svg", "docs/mockups/raid-list.penpot"]
+        self.assertEqual(pull_request_problems("![x](docs/mockups/raid-list.svg)", changed, self.root), [])
+
     def test_mockup_missing_from_the_repository_fails(self) -> None:
         problems = pull_request_problems("![x](docs/mockups/raid-list.svg)", ["src/Containers/UI/a.razor"], self.root)
         self.assertEqual(problems, ["The mockup `docs/mockups/raid-list.svg` isn't in the repository; commit it with its "

@@ -3,17 +3,19 @@ name: review
 # Pull-request events use pull_request_target and check completions use workflow_run, so main's copy of this workflow
 # runs for both and a pull request cannot change them. Reviews and review comments re-evaluate the gate. No step runs
 # pull-request code, and no personal token is used: reviews, comments and the diff are read with the workflow token.
+# It also runs the description checks and creates Dependabot's task, so a commit starts this run, `checks` and one run
+# after `checks`, and a description edit only this run (owner decisions on #579, #586).
 on:
   pull_request_target:
     branches: [main]
-    types: [opened, synchronize, reopened, ready_for_review]
+    types: [opened, synchronize, reopened, ready_for_review, edited]
   pull_request_review:
     types: [submitted, edited, dismissed]
   pull_request_review_comment:
     types: [created, edited, deleted]
   workflow_run:
-    # The workflows of the required checks: `checks` (docs, build-test, sonar) and `pull-request` (description).
-    workflows: [checks, pull-request]
+    # The workflow of the required checks docs, build-test and sonar; this workflow posts description and review-gate.
+    workflows: [checks]
     types: [completed]
     # The runs on main after a merge have no pull request to review, so they start no run at all (#579).
     branches-ignore: [main]
@@ -39,6 +41,8 @@ jobs:
     permissions:
       actions: write
       contents: write
+      # Reads the last dev deployment after a merge, to start deploy-dev only when something deployable changed.
+      deployments: read
       issues: write
       pull-requests: write
       statuses: write
@@ -63,11 +67,52 @@ jobs:
       - name: Hand new commits back to the operator
         if: >-
           github.event_name == 'pull_request_target' && github.run_attempt == 1 &&
-          !github.event.pull_request.draft && github.event.action != 'ready_for_review'
+          !github.event.pull_request.draft && github.event.action != 'ready_for_review' &&
+          github.event.action != 'edited'
         run: |
           gh pr ready "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --undo
           gh pr comment "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --body \
             "Returned to draft: @$AUTHOR reviews the new commits in a review comment, then marks it ready."
+
+      # Every pull request closes a task (ADR-0025), so each Dependabot update gets one under #461 (owner decisions on
+      # #460). Its closes without a merge are handled by dependency-task.yml.
+      - name: Create or reuse Dependabot's task
+        if: >-
+          github.event_name == 'pull_request_target' && github.run_attempt == 1 &&
+          (github.event.action == 'opened' || github.event.action == 'reopened') &&
+          github.event.pull_request.user.login == 'dependabot[bot]'
+        env:
+          PR_ACTION: ${{ github.event.action }}
+        run: python scripts/dependency_task.py
+
+      # The description, the work items it closes and the mockup rule, with main's copy of the checks, on a new commit
+      # and on an edit of the description, posted as the required `description` status like review-gate (#586). The
+      # description is read again, since Dependabot's task step may have just rewritten it.
+      - name: Check the description
+        if: >-
+          github.event_name == 'pull_request_target' && github.event.action != 'ready_for_review' &&
+          (github.event.action != 'edited' || github.event.changes.body != null)
+        run: |
+          head_sha=$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json headRefOid --jq .headRefOid)
+          PR_BODY=$(gh pr view "$PR_NUMBER" --repo "$GITHUB_REPOSITORY" --json body --jq .body)
+          export PR_BODY
+          status=0
+          python scripts/validate_pr.py > description.txt 2>&1 || status=1
+          python scripts/project_hierarchy.py --repository "$GITHUB_REPOSITORY" --pull-request >> description.txt 2>&1 || status=1
+          python scripts/ui_mockups.py --pull-request >> description.txt 2>&1 || status=1
+          cat description.txt
+          state=success
+          problem=""
+          if [ "$status" -ne 0 ]; then
+            state=failure
+            problem=$(grep -m 1 -E '^(ERROR: |- )' description.txt | sed -E 's/^(ERROR: |- )//' | cut -c 1-140)
+          fi
+          gh api -X POST "repos/$GITHUB_REPOSITORY/statuses/$head_sha" \
+            -f state="$state" \
+            -f context=description \
+            -f description="${problem:-Description checks $state}" \
+            -f target_url="$GITHUB_SERVER_URL/$GITHUB_REPOSITORY/actions/runs/$GITHUB_RUN_ID" > /dev/null
+          echo "description: $state"
 
       # Marking the draft ready is the operator's sign-off. Backed by their review comment, it asks the peer to review.
       - name: Act on the operator's sign-off
@@ -162,11 +207,17 @@ jobs:
                 gh issue close "$issue" --repo "$GITHUB_REPOSITORY" --reason completed --comment "Completed by #$PR_NUMBER."
               fi
             done
-            # deploy-dev.yml deploys the merged main to the dev environment (#389), when a deployed file changed (#491).
-            for workflow in checks.yml docs-publish.yml; do
-              gh workflow run "$workflow" --repo "$GITHUB_REPOSITORY" --ref main
-            done
-            gh workflow run deploy-dev.yml --repo "$GITHUB_REPOSITORY" --ref main -f trigger=merge
+            # Main must be up to date to merge, so the pull request's own checks tested the merged code: `checks`
+            # doesn't run again. docs-publish runs when published content changed, and deploy-dev when a deployed file
+            # changed since the last dev deployment (#389, #491, owner decisions on #579).
+            if [ "$(python scripts/check_scope.py --published)" = "publish=true" ]; then
+              gh workflow run docs-publish.yml --repo "$GITHUB_REPOSITORY" --ref main
+            fi
+            git fetch --quiet --unshallow origin main || git fetch --quiet origin main
+            git checkout --quiet FETCH_HEAD
+            if [ "$(TRIGGER=merge python scripts/deploy_changes.py)" = "deploy=true" ]; then
+              gh workflow run deploy-dev.yml --repo "$GITHUB_REPOSITORY" --ref main -f trigger=merge
+            fi
             exit 0
           fi
           # A required check that is still running re-runs this job when it finishes, and that run merges.
