@@ -7,8 +7,8 @@ namespace RaidManager.Companion.Client.Features.Sync;
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-08<br/>
 /// Purpose: An "INSTALLATION" card of <c>companion-sync</c> board 1, with its own checkbox: clearing it excludes the
-/// whole folder, and its accounts show as excluded (board 10, owner decision on #551). The choice is saved by "Save and
-/// sync".
+/// whole folder, and its accounts show as excluded (board 10, owner decision on #551); ticking it again ticks every
+/// account in it, dropping their earlier exclusions (owner decision on #593). The choice is saved by "Save and sync".
 /// </remarks>
 public sealed class WatchedInstallationViewModel : ViewModelBase
 {
@@ -43,15 +43,25 @@ public sealed class WatchedInstallationViewModel : ViewModelBase
     /// <summary>Gets a value indicating whether the folder is watched in the saved choices.</summary>
     public bool WasWatched { get; }
 
-    /// <summary>Gets or sets a value indicating whether the player wants the folder watched.</summary>
+    /// <summary>Gets or sets a value indicating whether the player wants the folder watched; ticking it ticks every
+    /// account in it.</summary>
     public bool IsWatched
     {
         get => _isWatched;
         set
         {
-            if (SetProperty(ref _isWatched, value))
+            if (!SetProperty(ref _isWatched, value))
             {
-                ShowFolderChoice();
+                return;
+            }
+
+            ShowFolderChoice();
+            if (value)
+            {
+                foreach (var account in Accounts)
+                {
+                    account.IsWatched = true;
+                }
             }
         }
     }
