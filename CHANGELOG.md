@@ -9,6 +9,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- An end-to-end check of the workflows in `docs/reference/project-automation.md`: the runs each step of a pull
+  request should start and the work-item updates it should make, run on #584's own pull request (#584).
 - The companion's sync screens (boards 1 to 10 of the companion sync mockup): after pairing, Choose folders opens the
   watched WoW folders, where the player clears a whole folder or an account to keep its characters out, finds folders
   again or adds one with Windows' folder picker, then saves; the installations scroll when they don't fit. The sync
