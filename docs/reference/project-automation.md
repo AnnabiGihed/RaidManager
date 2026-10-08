@@ -168,8 +168,10 @@ runs with the built-in `GITHUB_TOKEN`:
   epic. One action starts one run: label, milestone and text changes start none, because GitHub sends one event for
   each and creating an issue started up to four runs (#582). Issue runs go one at a time, so two never reopen the same
   parent twice.
-- Every 15 minutes it audits every issue, in its own queue so an issue run never replaces it: the safety net for a
-  later label, milestone or text change, and for sub-issue changes, which start no workflow.
+- It audits every issue on a 15-minute schedule, in its own queue so an issue run never replaces it: the safety net
+  for a later label, milestone or text change, and for sub-issue changes, which start no workflow. GitHub runs that
+  schedule on a best-effort basis, only every few hours here, so `python scripts/work_gate.py report`, which the agent
+  runs at each session start and after each merge, also starts one audit run (#588).
 - It reopens an invalid parent with a comment that names the missing or open children.
 - It labels a misplaced item, or one without a type label, `needs-parent` with one comment that says where it
   belongs; an item missing part of its contract `needs-contract`; an item in a dependency cycle or waiting on a
@@ -193,7 +195,7 @@ computer. Each trigger below is there for a reason; a run whose result nothing r
 | `review` | `pull_request_target` (opened, new commit, reopened, ready, description edited); a review or review comment; `checks` completed on a pull request's branch | Runs `main`'s copy of the description checks (the description, the work items it closes, the mockup rule) and posts the required `description` status, on a commit and on an edit of the description; creates Dependabot's task; sets `review-gate`, hands new commits back to the operator, acts on the sign-off, and merges once every required check passed, so it runs again when `checks` finishes. A commit starts `checks`, this run and one run after `checks`; a description edit only this run. The completion of a canceled check is skipped. |
 | `deploy-dev` | Dispatch by `review` after a merge that changed a deployed file since the last dev deployment, or by hand | Deploys `main` to dev and labels the items (#491, A11). |
 | `docs-publish` | Dispatch by `review` after a merge that changed `docs/`, `mkdocs.yml`, the wiki builder or the workflow, or by hand | Publishes GitHub Pages and the Wiki from `main`. |
-| `project-hierarchy` | An issue opened, closed or reopened; a closed milestone; every 15 minutes; dispatch | The hierarchy, contract, mockup and completion rules; one run per action; the audit, in its own queue, catches later label, milestone and text changes and sub-issue changes, which start no run. |
+| `project-hierarchy` | An issue opened, closed or reopened; a closed milestone; a 15-minute schedule (every few hours in practice); dispatch, also by `work_gate.py report` | The hierarchy, contract, mockup and completion rules; one run per action; the audit, in its own queue, catches later label, milestone and text changes and sub-issue changes, which start no run. |
 | `dependency-task` | `pull_request_target` closed | Cancels the task of a Dependabot pull request closed without a merge; skipped for other pull requests, as GitHub can't filter the trigger by author. A merge by `review` starts no run. |
 | `docs-links` | Weekly, and dispatch | External links change without any commit, so they are checked weekly rather than on every pull request. |
 
@@ -358,6 +360,6 @@ from `workflow_run` show `main` as their branch.
 | The operator's review, then Ready | One `review` for each | The peer is requested |
 | The peer's approval | One `review`, which merges | The task closes with "Completed by #n", and the branch is deleted |
 | After the merge | `docs-publish` when published content changed, `deploy-dev` when a deployed file changed; no `checks`, no `review` | The task gets `deployed:dev` from the deployment, or from the next one when nothing deployed changed (A11) |
-| Every 15 minutes | One `project-hierarchy` audit, in its own queue | None |
+| `work_gate.py report`, and the schedule (every few hours in practice) | One `project-hierarchy` audit each, in its own queue | None |
 
 A run started twice for one event, or an update missing, is a bug to fix before other work.

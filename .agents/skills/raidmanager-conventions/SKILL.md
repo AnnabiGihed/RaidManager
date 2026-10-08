@@ -522,5 +522,6 @@ Every workflow job runs on the owner's ephemeral runners, labeled `self-hosted`,
     run's completion. After a merge, nothing re-tests `main` (it must be up to date to merge), `docs-publish` runs only
     when published content changed and `deploy-dev` only when a deployed file changed (A11).
   - `project-hierarchy` starts on an issue opened, closed or reopened only, one run per action, each also checking
-    the issues changed in the last 30 minutes; its audit has its own queue. Adding a trigger that GitHub sends once
+    the issues changed in the last 30 minutes; its audit has its own queue. GitHub runs the audit's 15-minute schedule
+    only every few hours, so `work_gate.py report` starts one audit run each time (#588). Adding a trigger that GitHub sends once
     per label or field (labeled, milestoned, edited) starts several runs for one action.
