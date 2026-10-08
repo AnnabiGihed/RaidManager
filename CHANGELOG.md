@@ -438,9 +438,10 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 ### Fixed
 
 - The workflows start fewer runs on the owner's runners with the same results: `docs` no longer runs again when a draft
-  is marked ready, a pull request's newer commit or description cancels the older `ci`, `addon` and `docs` runs,
-  `review` starts no run for the checks on `main` or for a canceled check, and the hierarchy check no longer loses an
-  issue whose waiting run another issue's event replaced (#579).
+  is marked ready, and an edited description runs only the description checks once the full ones passed on that commit;
+  `addon` runs only for changes to the addon's files; a pull request's newer commit or description cancels the older
+  `ci`, `addon` and `docs` runs; `review` starts no run for the checks on `main` or for a canceled check; and the
+  hierarchy check no longer loses an issue whose waiting run another issue's event replaced (#579).
 - The workflows' `setup-tools` step now installs its pinned GitHub CLI and `jq` when the runner's are older, not only
   when they are missing: an older `gh` in the runner image made the review merge of #566 fail (#568).
 - The dev deployment works again on the self-hosted runners: its `changes` and `record` jobs called `python`, which

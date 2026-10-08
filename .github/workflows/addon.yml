@@ -1,15 +1,32 @@
 name: addon
 
 # Lints, formats and tests the WoW 3.3.5a addon with Lua 5.1 (ADR-0031, #383).
+# Only the addon's files, the files its checks read and this workflow start it; `lua` isn't a required check, so a
+# pull request without them doesn't wait for it (#579). For a pull request, GitHub compares the whole pull request
+# with main, so one that changes the addon runs it on each push.
 on:
   pull_request:
     branches: [main]
+    paths:
+      - 'src/Addon/**'
+      - 'test/Addon/**'
+      - 'test/Fixtures/Addon/**'
+      - '.luacheckrc'
+      - '.stylua.toml'
+      - '.github/workflows/addon.yml'
   push:
     branches: [main]
+    paths:
+      - 'src/Addon/**'
+      - 'test/Addon/**'
+      - 'test/Fixtures/Addon/**'
+      - '.luacheckrc'
+      - '.stylua.toml'
+      - '.github/workflows/addon.yml'
   workflow_dispatch:
 
 # A pull request's newer commit, or a newer description for docs, replaces the run of the older one, whose result no
-# check reads anymore (#579). Runs on main are never cancelled.
+# check reads anymore (#579). Runs on main are never canceled.
 concurrency:
   group: ${{ github.workflow }}-${{ github.event_name == 'pull_request' && github.event.pull_request.number || github.run_id }}
   cancel-in-progress: ${{ github.event_name == 'pull_request' }}
