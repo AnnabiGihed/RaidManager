@@ -311,6 +311,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- Every GitHub Actions job now runs on the owner's self-hosted runner (`self-hosted`, `linux`, `pc-personal`) instead of
+  `ubuntu-latest`, and the jobs a pull request starts skip pull requests from forks, so a fork's code never runs on
+  that machine. The docs check enforces both (ADR-0034, #562).
 - The skills keep the snapshot upload session's lessons: give the scripts their Python packages from the scratchpad,
   restore the Pivot packages from the local cache when the feed credentials are missing, list changed files without
   `git add -N`, take the Radzen version from the package versions in the mockup comparison, start a fake clock at the

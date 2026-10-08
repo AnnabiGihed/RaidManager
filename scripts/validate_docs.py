@@ -8,6 +8,7 @@ import re
 from pathlib import Path
 
 from ui_mockups import folder_problems
+from workflow_runners import runner_problems
 
 
 REQUIRED_FILES = ("README.md", "CHANGELOG.md", "CONTRIBUTING.md", "LICENSE", "SECURITY.md")
@@ -104,6 +105,7 @@ def validate(root: Path) -> list[str]:
             errors.extend(check((root / name).read_text(encoding="utf-8")))
     errors.extend(validate_diagrams(root))
     errors.extend(folder_problems(root))
+    errors.extend(runner_problems(root))
     return errors
 
 

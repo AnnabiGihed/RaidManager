@@ -14,7 +14,9 @@ permissions:
 
 jobs:
   validate:
-    runs-on: ubuntu-latest
+    # A fork's pull request never runs on the owner's self-hosted runner (ADR-0034).
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: [self-hosted, linux, pc-personal]
     permissions:
       contents: read
       checks: write
@@ -24,6 +26,7 @@ jobs:
       pull-requests: read
     steps:
       - uses: actions/checkout@v7
+      - uses: ./.github/actions/setup-tools
       - uses: actions/setup-node@v7
         with:
           node-version: '20'
