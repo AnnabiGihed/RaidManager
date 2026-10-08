@@ -147,6 +147,8 @@ public void Protect_ThenUnprotect_ReturnsTheOriginalBytes()
 ```
 
 Run these locally on Windows before handover and say so in the pull request: CI on Linux reports them as skipped.
+Run both companion test projects on Linux too before pushing (`raidmanager-conventions` §12, "Linux runs in
+Docker"): a passing Windows run hides what depends on the Windows-only services (#550).
 Keep such classes small, because their lines count as uncovered in the CI coverage report.
 
 ## 5. Client and composition tests
@@ -170,6 +172,9 @@ Keep such classes small, because their lines count as uncovered in the CI covera
   advance can come before the timer is scheduled. `FlowClock` and `DispatcherFlowClock` in the companion's test
   projects do this. Prove such a fix with a stress run (for example 100 runs in the Linux SDK image with `--cpus=1`),
   never with one green run.
+- **A hosted loop starts on a pool thread.** .NET 10 runs `BackgroundService.ExecuteAsync` on a pool thread, so after
+  `StartAsync` its first delay may not exist yet, and advancing the clock then misses it. Call
+  `FlowClock.WaitForTimers(1)` before the first `AdvanceSeconds` (`SnapshotSyncLoopTests`, #550).
 - **Polling:** assert the interval (the API's value, never under five seconds, plus five after a 429), that it stops
   on expiry, success and disposal, and that a network failure keeps polling.
 

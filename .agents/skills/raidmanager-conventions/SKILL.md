@@ -313,8 +313,10 @@ SonarCloud analyzes every pull request, and the required `sonar` check fails it 
   commit; a gate run during the analysis can report nothing (#516).
 - **Check before asking for review:** `python scripts/sonar_gate.py --project AnnabiGihed_RaidManager
   --pull-request <number> --commit <head sha>` prints each finding with its file, line and rule. Common ones in this
-  repository: a string literal repeated three or more times (`python:S1192`, name it once as a constant), and
-  `${{ }}` expressions inside `run:` (pass them through `env:`).
+  repository: a string literal repeated three or more times (`python:S1192`, name it once as a constant),
+  `${{ }}` expressions inside `run:` (pass them through `env:`), `curl -L` in a workflow without
+  `--proto '=https'` (`githubactions:S6506`, #562), and runs of spaces in a regular expression ("Replace spaces with
+  quantifier": write ` {2}`, #562).
 - **Scripts never pass command-line text to a subprocess** (`pythonsecurity:S8705`, command argument injection).
   Sonar traces an argument into `subprocess` even after `argparse` validation or `--end-of-options`. Use a constant
   (the repository name), the script's own value (`next(name for name in CHOICES if name == args.x)`), or state the
@@ -345,7 +347,7 @@ Git stores LF.
   inside a Python string in a heredoc also became a real line break twice, breaking the file it wrote. Write any
   script with an apostrophe or an escape to a file with the editor tool first, then run it. Make code and text
   edits with the editor tool or a Python script, not `sed` with escaped patterns, which mangle `\n`, `\s` and
-  quotes.
+  quotes. It happened again in #550's tests on 2026-10-08, where a `\n` in a Python string became a line break.
 - **Issue and pull request bodies** are written with `newline="\n"` too; a body with CRLF breaks the guard's heading
   parsing (`raidmanager-board-operations`).
 
@@ -358,6 +360,14 @@ Git stores LF.
   other sessions' files included (#384). For `dotnet format --include` and staging, combine `git diff --name-only`
   with `git ls-files --others --exclude-standard`, check the list, and stage it with
   `git add --pathspec-from-file=<list>`.
+- **Take that list after the last build or `dotnet format`, never before.** Both regenerate the `.feature.cs` files of
+  other test projects (renumbered table variables). #550's first commit took eight of them in and needed a second
+  commit to restore them. Drop every `.feature.cs` of a feature you didn't change, and read `git show --stat` before
+  pushing.
+- **Linux runs in Docker** (the companion's tests, a workflow job replayed): copy the repository into the container with
+  `tar --exclude=bin --exclude=obj --exclude=.git -cf - . | tar -xf - -C /work` instead of mounting it read-only, since
+  Reqnroll writes its generated files next to the sources. `--exclude='./**/bin'` matches nothing and copies the
+  Windows build folders. Run `dotnet test <project>`, not a DLL path.
 - **Mermaid diagrams** are rendered with the pinned `minlag/mermaid-cli:11.12.0` in Docker (no Node locally), from
   `docs/diagrams`:
 
@@ -445,7 +455,7 @@ ask the owner to repeat what it contains.
 
 At the start of the next session, check each pull request the handover names with `gh pr view` before acting on it:
 the handover of 2026-10-05 called #544 a draft, but it had merged and been closed out in the meantime, and the next
-handover said the same of #549. Report what changed instead of redoing it.
+handover said the same of #549, and the one after of #556. Report what changed instead of redoing it.
 
 ## 15. EF Core and PostgreSQL (mandatory)
 
@@ -466,3 +476,35 @@ handover said the same of #549. Report what changed instead of redoing it.
 - **A failed save hides its cause** behind "An error occurred while saving the entity changes". To read it, call
   `RaidManagerDbContext.SaveChangesAsync` in a temporary `try`/`catch` that rethrows with the inner message (with
   `#pragma warning disable`), then remove it.
+
+## 16. Workflows on the self-hosted runners (mandatory)
+
+Every workflow job runs on the owner's ephemeral runners, labeled `self-hosted`, `linux` and `pc-personal`
+([ADR-0034](../../../docs/adr/0034-run-the-workflows-on-a-self-hosted-runner.md), #561). The docs check
+(`scripts/workflow_runners.py`) enforces the first three rules below.
+
+- **Every job** uses `runs-on: [self-hosted, linux, pc-personal]`.
+- **A job a `pull_request` event starts skips forks** with
+  `if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository`.
+  The repository is public, and the owner also set fork approval to all external contributors.
+- **A job that calls `python` or `python3` sets it up** with `actions/setup-python` (3.12). The image has only
+  `python3`; `deploy-dev` failed on `python: command not found` after the switch (#564).
+- **No `sudo`:** the runners refuse it ("no new privileges"). A setup action that installs packages with `sudo apt-get`
+  can't run; `leafo/gh-actions-lua` was replaced by a Lua build in the job (#562).
+- **`gh` and `jq` come from `.github/actions/setup-tools`**, pinned with their SHA-256: it keeps the image's version
+  when it is at least the pinned one and installs the pinned one otherwise (#568). A job that calls them runs it after
+  checkout. On 2026-10-08 the image had `gh` 2.102.0 and `jq` 1.7.
+- **Review events run the pull request's copy of `review.yml`, over `main`'s checkout** (`ref: main`). A local action
+  added in a pull request therefore doesn't exist for its own review job until it merges: guard the step with
+  `if: hashFiles('<action>/action.yml') != ''` (#562), or the pull request can never merge. `pull_request_target`
+  runs use `main`'s copy of the workflow.
+- **Check workflows with `actionlint` in Docker:**
+  `MSYS_NO_PATHCONV=1 docker run --rm -v "<repository path>:/repo" -w /repo rhysd/actionlint:1.7.7 -no-color -oneline -ignore 'label "pc-personal" is unknown'`.
+  It can't know the custom label. Replay a changed job's shell steps in a Linux container as a non-root user before
+  pushing.
+- **The image is the owner's.** It provides Git, curl, `gzip`, `unzip`, `build-essential`, SSH, Docker through a
+  job-local daemon, and `gh` and `jq`. When a job needs a tool that can't be installed without `sudo`, ask the owner;
+  they chose that jobs install their own tools where they can (#561), and to upgrade `gh` in the image when it was too
+  old (#567), both against the recommended option.
+- **Checks wait while the owner's computer is off**, and a fork's pull request gets no checks: never merge one as it
+  is.
