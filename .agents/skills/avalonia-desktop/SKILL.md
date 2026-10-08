@@ -335,6 +335,10 @@ public sealed class DpapiTokenProtector : ITokenProtector
   folder and `File.Move(temporary, target, overwrite: true)`, so a crash never leaves half a file, and deletes it on a
   401 for a revoked or expired token (ADR-0030).
 - Its tests use a fake protector; the DPAPI round trip is a Windows-only test (`avalonia-tests` §4).
+- **A hosted service that reads the token runs only where the protector exists.** The background sync's loop reads
+  the device token at its first upload, so the host adds it with `AddSnapshotSyncLoop()` inside the same
+  `OperatingSystem.IsWindows()` block (#550). Registered for every system, starting the host on Linux CI failed in
+  `StartedHostValidatesTheAddresses` while every Windows run passed.
 
 ## 10. HTTP and configuration
 

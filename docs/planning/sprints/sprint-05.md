@@ -81,6 +81,11 @@ date on the Project, both inclusive) follows the blocked-by order; the item's ow
 | #542 Keep the Avalonia companion session's lessons in the skills | Improvement | 1 | 4 to 5 Oct | #543 (Business Analysis) | None |
 | #547 Keep the character profiles session's lessons in the skills | Improvement | 1 | 5 Oct | #548 (Business Analysis) | None |
 | #554 Keep the snapshot upload session's lessons in the skills | Improvement | 1 | 5 Oct | #555 (Business Analysis) | None |
+| #557 A pairing test of the companions list fails since 2026-10-05 | Bug | 1 | 7 Oct | #558 (Development) | None |
+| #561 Run the repository's workflows on the owner's self-hosted runner | Improvement | 2 | 8 Oct | #562 (Development) | None |
+| #564 The dev deployment fails on the self-hosted runners | Bug | 1 | 8 Oct | #565 (Development) | None |
+| #567 `setup-tools` keeps an outdated `gh` from the runner image | Bug | 1 | 8 Oct | #568 (Development) | #565 |
+| #571 Keep the background sync and self-hosted runner session's lessons in the skills | Improvement | 2 | 8 Oct | #572 (Business Analysis) | None |
 
 16 October is kept as a buffer.
 
@@ -148,6 +153,13 @@ and its task #388 wait for #409 and #411.
 | 2026-10-05 | #384 split on the owner's decision recorded on it: #384 keeps the API that imports snapshots, and the new tasks #550 (the companion's background sync, blocked by #384) and #551 (its sync screens and the Choose folders button, blocked by #550) go under #17. Story #552 (GearScore and stats from an item catalog) was created under #130 and waits in the Backlog: on the owner's decisions recorded on #384, imports store what the addon reports, GearScore and stats show a dash until #552, and loadouts are the talent groups. |
 | 2026-10-05 | #553 merged and closed #384; #550 started on the owner's decision recorded on it (search the usual folders, then let the player add one) and stopped at a safe checkpoint with no code when the session ended. |
 | 2026-10-05 | #554 with #555 added under the standing approval on #510: the session's lessons in the skills. |
+| 2026-10-07 | #556 had merged before the session began. On the owner's decisions recorded on #550, a queued snapshot of an excluded account is dropped, a snapshot RaidManager refuses with 400 is dropped and shown, and the newest snapshot of a character replaces an older one. |
+| 2026-10-07 | Bug #557 with #558 added under #127 on the owner's decision recorded on it: a test of #527 failed every build from 2026-10-05; fixed first, in #559, before #550's pull request. |
+| 2026-10-07 | #560 merged and closed #550. #551 started: on the owner's decisions recorded on it, the window follows each board's size, board 1 gains "Add a folder", and boards 6 to 8 show the refused, unsupported and unreadable cases; the owner confirmed the mockup in Penpot. |
+| 2026-10-08 | #551 paused at its checkpoint for the owner's request: improvement #561 with #562 under #150, moving every workflow to the owner's self-hosted runners (ADR-0034), with a fork guard and the approval setting on the owner's decision recorded on #561, and jobs that install their own tools. |
+| 2026-10-08 | #563 merged and closed #562 before its deployment criterion; the dev deployment failed, so bug #564 with #565 was added under #150 and #562 reopened as Blocked (owner decision on #564). The review merge of #566 failed on the image's old `gh`: the owner upgraded it, and bug #567 with #568 was added after #565 (owner decisions on #567). #566 and #569 merged, and #562 closed with the deployment's evidence. |
+| 2026-10-08 | Improvement #570 added to the Backlog under #156 at the owner's request: automate the evidence comment later; spike #424 stays in the Backlog. |
+| 2026-10-08 | #571 with #572 added under the standing approval on #510: the session's lessons in the skills; #551 resumes in the next session. |
 
 ## Outcome
 

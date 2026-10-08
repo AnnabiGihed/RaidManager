@@ -56,5 +56,8 @@ These hold in every agent session; the skills named give the details.
 - **"New session"**: when the owner says "new session", run the session-close routine of `raidmanager-conventions`
   §14 without asking for the details again: reach a safe checkpoint, record the session's lessons through a work item
   and one pull request, then give the handover message for the next session (owner decision on #510).
+- **Workflows run on the owner's self-hosted runners** (ADR-0034): every job uses
+  `runs-on: [self-hosted, linux, pc-personal]`, skips fork pull requests, sets up Python itself and never uses `sudo`;
+  checks wait while the owner's computer is off (`raidmanager-conventions` §16).
 - **Blazor work** follows `blazor-components`: pages in feature folders, specific looks as standalone generic
   components, colors only from the project-wide theme.
