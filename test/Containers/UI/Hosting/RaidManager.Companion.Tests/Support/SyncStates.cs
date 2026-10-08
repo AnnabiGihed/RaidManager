@@ -78,6 +78,19 @@ internal sealed class SyncStates : IDisposable
         _ => Watching(),
     };
 
+    /// <summary>Builds board 1's status with more installations than the window holds, as the owner's computer has.</summary>
+    /// <returns>The status.</returns>
+    public static SyncStatus ManyInstallations()
+    {
+        IReadOnlyList<WowInstallation> installations =
+        [
+            new(@"D:\Games\World of Warcraft\_retail_", [Account("RETAILACC", 9)]),
+            new(@"D:\Games\WOW 3.3.5a", [Account("HIDEMEE", 3), Account("PROTESS10", 10), Account("SHAZZROTH", 10), Account("TOIHIO", 6), Account("TOIHIO3", 1)]),
+            new(@"D:\Games\WOW 3.3.5a - Modified", [Account("PROTESS10B", 10), Account("SHAZZROTHB", 10), Account("TOIHIOB", 6), Account("TOIHIO3B", 1)]),
+        ];
+        return Watching() with { Installations = installations, ExcludedAccounts = ["RETAILACC-id"] };
+    }
+
     /// <summary>Pairs the computer, so the footer names the player.</summary>
     /// <returns>A task that completes once paired.</returns>
     public Task PairAsync() => _pairing.ShowAsync(PairingState.Paired);

@@ -1,3 +1,4 @@
+using Avalonia;
 using Avalonia.Automation;
 using Avalonia.Controls;
 using Avalonia.Controls.Primitives;
@@ -55,6 +56,44 @@ public sealed class SyncViewTests : IDisposable
             "Save and sync", "Find folders again", "Add a folder", Footer + Environment.MachineName]);
         VisibleButtons(window).ShouldBe(["SaveButton", "FindAgainButton", "AddFolderButton"]);
         CheckBoxes(window).Select(AutomationProperties.GetName).ShouldBe(["ARTHASACC", "JAINAACC", "ALTACC", "THRALLACC"]);
+    }
+
+    /// <summary>More installations than the window holds scroll between the intro and the buttons, which stay visible
+    /// above the footer (the owner's check of #574).</summary>
+    /// <returns>A task that completes when the test is done.</returns>
+    [AvaloniaFact]
+    public async Task ManyInstallationsScrollAboveTheButtons()
+    {
+        var window = await ShowFoldersAsync();
+        _states.Change(SyncStates.ManyInstallations());
+        _states.ViewModel.ShowFolders();
+        Dispatcher.UIThread.RunJobs();
+
+        var scroller = window.GetVisualDescendants().OfType<ScrollViewer>().Single(viewer => viewer.Name == "InstallationScroller");
+        var save = Button(window, "SaveButton");
+        var footer = window.GetVisualDescendants().OfType<TextBlock>().Single(text => text.Name == "PairedText");
+        var scrollerBottom = scroller.TranslatePoint(new Point(0, scroller.Bounds.Height), window)!.Value.Y;
+        var saveTop = save.TranslatePoint(new Point(0, 0), window)!.Value.Y;
+        var saveBottom = save.TranslatePoint(new Point(0, save.Bounds.Height), window)!.Value.Y;
+
+        scroller.Extent.Height.ShouldBeGreaterThan(scroller.Viewport.Height);
+        scrollerBottom.ShouldBeLessThanOrEqualTo(saveTop);
+        saveBottom.ShouldBeLessThanOrEqualTo(footer.TranslatePoint(new Point(0, 0), window)!.Value.Y);
+        save.IsEffectivelyVisible.ShouldBeTrue();
+    }
+
+    /// <summary>A short list keeps the buttons right under the cards, as board 1 places them.</summary>
+    /// <returns>A task that completes when the test is done.</returns>
+    [AvaloniaFact]
+    public async Task AShortListKeepsTheButtonsUnderTheCards()
+    {
+        var window = await ShowFoldersAsync();
+
+        var scroller = window.GetVisualDescendants().OfType<ScrollViewer>().Single(viewer => viewer.Name == "InstallationScroller");
+        var saveTop = Button(window, "SaveButton").TranslatePoint(new Point(0, 0), window)!.Value.Y;
+
+        scroller.Extent.Height.ShouldBe(scroller.Viewport.Height);
+        (saveTop - scroller.TranslatePoint(new Point(0, scroller.Bounds.Height), window)!.Value.Y).ShouldBe(24);
     }
 
     /// <summary>A click on an account's checkbox clears it, and Save and sync sends the exclusion.</summary>
