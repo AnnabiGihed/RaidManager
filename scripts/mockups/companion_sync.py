@@ -14,6 +14,8 @@ linked as a clickable prototype:
    that isn't the addon's: variants of 5, each with what to do and a retry (owner decision on #551). Retry shows 2.
 9. Not a WoW folder: board 1 after "Add a folder" was given a folder without WTF/Account, with a warning notice
    (owner decision on #551).
+10. Folder excluded: board 1 with the second installation's own checkbox cleared, so its accounts, and any WoW adds
+    there later, stay out (owner decision on #551).
 
 Board 1 has an "Add a folder" button that opens Windows' folder picker (owner decision on #551).
 
@@ -53,6 +55,7 @@ REFUSED = "6 · Refused snapshot"
 UNSUPPORTED = "7 · Unsupported addon"
 UNREADABLE = "8 · Unreadable file"
 NOT_WOW = "9 · Not a WoW folder"
+FOLDER_EXCLUDED = "10 · Folder excluded"
 NEEDS_ATTENTION = ("Needs attention", "warning")
 NEEDS_HELP = "One snapshot needs your help."
 RETRY_BUTTON = "Retry button"
@@ -87,11 +90,15 @@ def footer() -> Group:
     ])
 
 
-def installation(index: int, y: float, path: str, accounts: list[tuple[str, int, bool]]) -> Group:
+def installation(index: int, y: float, path: str, accounts: list[tuple[str, int, bool]], folder_watched: bool = True) -> Group:
+    """An installation card: its own checkbox beside the path (clearing it excludes the folder), then its accounts."""
     row_h = 44
     height = 64 + row_h * len(accounts) + 8
-    items: list[Item] = [*card(X, y, INNER_W, height), label("Installation label", X + 20, y + 28, "INSTALLATION"),
-                         text("Path", X + 20, y + 50, path, 13, 600)]
+    items: list[Item] = [*card(X, y, INNER_W, height), label("Installation label", X + 50, y + 28, "INSTALLATION"),
+                         Group("Folder checkbox", checkbox(X + 20, y + 33, folder_watched)),
+                         text("Path", X + 50, y + 50, path, 13, 600, P["Text/primary"] if folder_watched else MUTED)]
+    if not folder_watched:
+        accounts = [(account, characters, False) for account, characters, _ in accounts]
     for row, (account, characters, watched) in enumerate(accounts):
         ry = y + 64 + row * row_h
         count = f"{characters} character" + ("" if characters == 1 else "s")
@@ -106,10 +113,11 @@ def installation(index: int, y: float, path: str, accounts: list[tuple[str, int,
     return Group(f"Installation {index}", items)
 
 
-def folders(rejected: bool = False) -> list[Item]:
-    """Board 1, or board 9 when the folder the player added isn't a WoW installation: a warning above the one found."""
-    items = heading("Watched folders", ["RaidManager found these World of Warcraft folders. Clear",
-                                        "an account to keep its characters out of RaidManager."])
+def folders(rejected: bool = False, folder_excluded: bool = False) -> list[Item]:
+    """Board 1; board 9 when the folder the player added isn't a WoW installation (a warning above the one found);
+    board 10 when the player cleared the second installation's own checkbox."""
+    items = heading("Watched folders", ["RaidManager found these World of Warcraft folders. Clear a",
+                                        "folder or an account to keep its characters out of RaidManager."])
     y = TITLE_BAR_H + 112
     installations = INSTALLATIONS
     if rejected:
@@ -118,7 +126,7 @@ def folders(rejected: bool = False) -> list[Item]:
         y += 72 + 16
         installations = INSTALLATIONS[:1]
     for index, (path, accounts) in enumerate(installations):
-        items.append(installation(index + 1, y, path, accounts))
+        items.append(installation(index + 1, y, path, accounts, not (folder_excluded and index == 1)))
         y += 64 + 44 * len(accounts) + 8 + 16
     items += [button("Save button", X, y + 8, "Save and sync", "primary", 168, Click("navigate", SYNCING)),
               button("Find again button", X + 176, y + 8, "Find folders again", SECONDARY_BUTTON, 168),
@@ -239,7 +247,7 @@ def boards() -> list[Board]:
     return [window(FOLDERS, 0, folders()), window(SYNCING, 1, syncing()), window(PAUSED, 2, paused()),
             window(OFFLINE, 3, offline()), window(INCOMPLETE, 4, incomplete()), window(REFUSED, 5, refused()),
             window(UNSUPPORTED, 6, unsupported()), window(UNREADABLE, 7, unreadable()),
-            window(NOT_WOW, 8, folders(rejected=True))]
+            window(NOT_WOW, 8, folders(rejected=True)), window(FOLDER_EXCLUDED, 9, folders(folder_excluded=True))]
 
 
 def main(repository: Path = REPOSITORY) -> Path:
@@ -247,7 +255,7 @@ def main(repository: Path = REPOSITORY) -> Path:
                         flows={"Choose folders": FOLDERS, "Pause and resume": SYNCING, "Offline": OFFLINE,
                                "Incomplete snapshot": INCOMPLETE, "Refused snapshot": REFUSED,
                                "Unsupported addon": UNSUPPORTED, "Unreadable file": UNREADABLE,
-                               "Not a WoW folder": NOT_WOW})
+                               "Not a WoW folder": NOT_WOW, "Folder excluded": FOLDER_EXCLUDED})
 
 
 if __name__ == "__main__":
