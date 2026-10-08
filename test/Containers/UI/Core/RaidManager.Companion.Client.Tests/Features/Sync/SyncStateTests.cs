@@ -127,6 +127,66 @@ public sealed class SyncStateTests : IDisposable
         sync.Status.Queued.ShouldBe(0);
         sync.Status.Connection.ShouldBe(UploadConnection.Online);
     }
+
+    /// <summary>The retry of boards 5 to 8 forgets the refused snapshots, so the screens show syncing again (#551).</summary>
+    /// <returns>A task that completes when the test is done.</returns>
+    [Fact]
+    public async Task ReadingAgainForgetsTheRefusals()
+    {
+        using var sync = NewSync(out var queue);
+        queue.Offer(Snapshots.Queued("Jainaice"));
+        _api.Answer = new SnapshotUploadResult(SnapshotUploadOutcome.Refused, "Character.Snapshot.IdentityUnavailable");
+        await sync.TickAsync(CancellationToken.None);
+        sync.Status.Refusals.ShouldHaveSingleItem();
+        var changes = 0;
+        sync.StatusChanged += (_, _) => changes++;
+
+        await sync.ReadAgainAsync(CancellationToken.None);
+
+        sync.Status.Refusals.ShouldBeEmpty();
+        changes.ShouldBeGreaterThan(0);
+    }
+
+    /// <summary>Excluding a folder stops watching its accounts and drops their waiting snapshots; watching it again
+    /// brings them back (owner decision on #551).</summary>
+    /// <returns>A task that completes when the test is done.</returns>
+    [Fact]
+    public async Task ExcludingAFolderLeavesItsAccountsOut()
+    {
+        var installation = _drive.AddInstallation("Games/WoW");
+        WowDrive.AddCharacter(installation, "ARTHASACC", Snapshots.Realm, "Arthasdk");
+        using var sync = NewSync(out var queue);
+        await sync.TickAsync(CancellationToken.None);
+        queue.Offer(Snapshots.Queued("Arthasdk", account: WowDrive.AccountId(installation, "ARTHASACC")));
+
+        await sync.SetFolderWatchedAsync(installation.ToUpperInvariant(), false, CancellationToken.None);
+
+        sync.Status.WatchedAccountCount.ShouldBe(0);
+        sync.Status.AccountCount.ShouldBe(1);
+        sync.Status.ExcludedFolders.ShouldBe([installation.ToUpperInvariant()]);
+        queue.Count.ShouldBe(0);
+        await sync.SetFolderWatchedAsync(installation, true, CancellationToken.None);
+        sync.Status.WatchedAccountCount.ShouldBe(1);
+        sync.Status.ExcludedFolders.ShouldBeEmpty();
+        Should.Throw<ArgumentNullException>(() => sync.SetFolderWatchedAsync(null!, true, CancellationToken.None));
+        Should.Throw<ArgumentNullException>(() => sync.Status.IsWatched(null!));
+    }
+
+    /// <summary>A later start lists the watched folders before its first step, so the window opens on the right board (#551).</summary>
+    /// <returns>A task that completes when the test is done.</returns>
+    [Fact]
+    public async Task ALaterStartListsTheWatchedFoldersAtOnce()
+    {
+        WowDrive.AddCharacter(_drive.AddInstallation("Games/WoW"), "ARTHASACC", Snapshots.Realm, "Arthasdk");
+        using (var first = NewSync(out _))
+        {
+            await first.TickAsync(CancellationToken.None);
+        }
+
+        using var later = NewSync(out _);
+
+        later.Status.WatchedAccountCount.ShouldBe(1);
+    }
     #endregion Tests
 
     #region Private Helpers

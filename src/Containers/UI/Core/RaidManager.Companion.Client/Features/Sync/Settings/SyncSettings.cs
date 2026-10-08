@@ -7,21 +7,29 @@ namespace RaidManager.Companion.Client.Features.Sync.Settings;
 /// <param name="AddedFolders">The installations the player chose with Choose folders.</param>
 /// <param name="ExcludedAccounts">The hashes of the accounts the player cleared on board 1.</param>
 /// <param name="Paused">Whether the player paused sync.</param>
+/// <param name="ExcludedFolders">The installation folders the player cleared on board 1, or <see langword="null"/> in a
+/// file written before folders could be excluded.</param>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-07<br/>
 /// Purpose: Keeps the watched folders, the exclusions and the pause across restarts (#550). Accounts are kept as
-/// hashes: the folder name is the player's WoW login (avalonia-desktop §1).
+/// hashes: the folder name is the player's WoW login (avalonia-desktop §1). A whole installation can be excluded too
+/// (owner decision on #551).
 /// </remarks>
 internal sealed record SyncSettings(
     IReadOnlyList<string>? FoundFolders,
     IReadOnlyList<string> AddedFolders,
     IReadOnlyList<string> ExcludedAccounts,
-    bool Paused)
+    bool Paused,
+    IReadOnlyList<string>? ExcludedFolders = null)
 {
     #region Public Properties
     /// <summary>Gets the settings of a companion that hasn't searched yet.</summary>
-    public static SyncSettings Initial { get; } = new(null, [], [], false);
+    public static SyncSettings Initial { get; } = new(null, [], [], false, []);
+
+    /// <summary>Gets the installation folders the player cleared, empty in an older file.</summary>
+    [JsonIgnore]
+    public IReadOnlyList<string> ExcludedFolderList => ExcludedFolders ?? [];
 
     /// <summary>Gets every watched installation folder, found or added, without duplicates.</summary>
     [JsonIgnore]

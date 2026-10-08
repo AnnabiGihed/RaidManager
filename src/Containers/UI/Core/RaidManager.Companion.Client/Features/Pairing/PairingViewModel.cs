@@ -14,7 +14,8 @@ namespace RaidManager.Companion.Client.Features.Pairing;
 /// Purpose: The companion side of ADR-0030 and the states of the companion pairing mockup (boards 5 to 8, 19 and 20):
 /// request a code, open the website with it, poll every five seconds or more until the player confirms it or it
 /// expires, store the token, and check the token at start, every five minutes while paired and when the player opens
-/// the companion, forgetting it only when RaidManager refuses it (owner decision on #524).
+/// the companion, forgetting it only when RaidManager refuses it (owner decision on #524). Board 6's "Choose folders"
+/// asks the shell for the watched folders (#551).
 /// </remarks>
 public sealed partial class PairingViewModel : ViewModelBase, IDisposable
 {
@@ -99,8 +100,14 @@ public sealed partial class PairingViewModel : ViewModelBase, IDisposable
         RequestCodeCommand = new AsyncRelayCommand(RequestCodeAsync, OnFlowFailed);
         OpenWebsiteCommand = new AsyncRelayCommand(OpenWebsiteAsync, OnOpenWebsiteFailed);
         CheckPairingCommand = new AsyncRelayCommand(CheckPairingAsync, OnPairingCheckFailed);
+        ChooseFoldersCommand = new RelayCommand(() => ChooseFoldersRequested?.Invoke(this, EventArgs.Empty));
     }
     #endregion Constructors
+
+    #region Events
+    /// <summary>Occurs when the player chooses "Choose folders" on board 6, to open the watched folders (#551).</summary>
+    public event EventHandler? ChooseFoldersRequested;
+    #endregion Events
 
     #region Public Properties
     /// <summary>Gets the command that loads a stored pairing, or requests a code when there is none.</summary>
@@ -114,6 +121,9 @@ public sealed partial class PairingViewModel : ViewModelBase, IDisposable
 
     /// <summary>Gets the command that checks the token at once, when the player opens the companion.</summary>
     public AsyncRelayCommand CheckPairingCommand { get; }
+
+    /// <summary>Gets the command behind "Choose folders" on board 6.</summary>
+    public RelayCommand ChooseFoldersCommand { get; }
 
     /// <summary>Gets this computer's name, as the website shows it.</summary>
     public string ComputerLabel { get; }

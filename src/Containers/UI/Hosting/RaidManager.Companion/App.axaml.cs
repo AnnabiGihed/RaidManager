@@ -7,6 +7,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 using RaidManager.Companion.Client.Features.Pairing;
+using RaidManager.Companion.Client.Features.Shell;
 using RaidManager.Companion.Client.Features.Tray;
 using RaidManager.Companion.Composition;
 using RaidManager.Companion.Features.Shared;
@@ -85,7 +86,7 @@ public sealed partial class App : Application
         var tray = _host.Services.GetRequiredService<TrayViewModel>();
         DataContext = tray;
         var pairing = _host.Services.GetRequiredService<PairingViewModel>();
-        var window = new MainWindow { DataContext = pairing };
+        var window = new MainWindow { DataContext = _host.Services.GetRequiredService<ShellViewModel>() };
         var notice = _host.Services.GetRequiredService<KeepsRunningNoticePresenter>();
         window.HiddenToTray += (_, _) => notice.ShowOnFirstClose();
         shell.Attach(window);

@@ -78,7 +78,7 @@ internal sealed partial class SnapshotSync : BackgroundService, ISnapshotSync
     #endregion Fields
 
     #region Constructors
-    /// <summary>Initializes a new instance of the <see cref="SnapshotSync"/> class and reads the player's choices.</summary>
+    /// <summary>Initializes a new instance of the <see cref="SnapshotSync"/> class, reads the player's choices and their folders.</summary>
     /// <param name="settingsStore">The settings file.</param>
     /// <param name="finder">The folder search.</param>
     /// <param name="queue">The queue.</param>
@@ -100,6 +100,7 @@ internal sealed partial class SnapshotSync : BackgroundService, ISnapshotSync
         _time = time;
         _logger = logger;
         _settings = settingsStore.Load();
+        Refresh();
         _uploader.Changed += (_, _) => OnStatusChanged();
     }
     #endregion Constructors
@@ -125,6 +126,7 @@ internal sealed partial class SnapshotSync : BackgroundService, ISnapshotSync
                     _queue.Count,
                     _installations,
                     [.. _settings.ExcludedAccounts],
+                    [.. _settings.ExcludedFolderList],
                     Activity(),
                     [.. _problems.Values],
                     _uploader.Refusals);
@@ -203,6 +205,7 @@ internal sealed partial class SnapshotSync : BackgroundService, ISnapshotSync
                     _problems.Clear();
                 }
 
+                _uploader.ForgetRefusals();
                 _nextScan = DateTimeOffset.MinValue;
             },
             cancellationToken);
@@ -245,6 +248,27 @@ internal sealed partial class SnapshotSync : BackgroundService, ISnapshotSync
                 }
             },
             cancellationToken);
+
+    /// <inheritdoc />
+    public Task SetFolderWatchedAsync(string folder, bool watched, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(folder);
+        return ChangeAsync(
+            () =>
+            {
+                var excluded = _settings.ExcludedFolderList.Where(path => !string.Equals(path, folder, StringComparison.OrdinalIgnoreCase));
+                Save(_settings with { ExcludedFolders = watched ? [.. excluded] : [.. excluded, folder] });
+                var installation = _installations.FirstOrDefault(listed => string.Equals(listed.Folder, folder, StringComparison.OrdinalIgnoreCase));
+                if (!watched && installation is not null)
+                {
+                    foreach (var account in installation.Accounts)
+                    {
+                        _queue.DropAccount(account.Id);
+                    }
+                }
+            },
+            cancellationToken);
+    }
 
     /// <inheritdoc />
     public override void Dispose()
@@ -360,7 +384,9 @@ internal sealed partial class SnapshotSync : BackgroundService, ISnapshotSync
     private void Refresh()
     {
         var installations = _settings.Folders.Select(WowInstallationFinder.Describe).OfType<WowInstallation>().ToList();
-        var watched = installations.SelectMany(installation => installation.Accounts)
+        var watched = installations
+            .Where(installation => !_settings.ExcludedFolderList.Contains(installation.Folder, StringComparer.OrdinalIgnoreCase))
+            .SelectMany(installation => installation.Accounts)
             .Where(account => !_settings.ExcludedAccounts.Contains(account.Id))
             .ToDictionary(account => account.Id, StringComparer.Ordinal);
         lock (_state)

@@ -1,8 +1,12 @@
-<!-- The companion application: the dark Fluent theme with RaidManager's palette and styles, and the tray icon of board
-     18 (a click opens the window; the menu has Open and Quit). -->
+<!-- The companion application: the dark Fluent theme with RaidManager's palette and styles, the view of each screen's
+     view model, and the tray icon of board 18 (a click opens the window; the menu has Open and Quit). -->
 <Application xmlns="https://github.com/avaloniaui"
              xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
              xmlns:tray="using:RaidManager.Companion.Client.Features.Tray"
+             xmlns:pairing="using:RaidManager.Companion.Client.Features.Pairing"
+             xmlns:pairingViews="using:RaidManager.Companion.Features.Pairing"
+             xmlns:sync="using:RaidManager.Companion.Client.Features.Sync"
+             xmlns:syncViews="using:RaidManager.Companion.Features.Sync"
              x:Class="RaidManager.Companion.App"
              x:DataType="tray:TrayViewModel"
              RequestedThemeVariant="Dark">
@@ -13,6 +17,14 @@
       </ResourceDictionary.MergedDictionaries>
     </ResourceDictionary>
   </Application.Resources>
+  <Application.DataTemplates>
+    <DataTemplate DataType="pairing:PairingViewModel">
+      <pairingViews:PairingView />
+    </DataTemplate>
+    <DataTemplate DataType="sync:SyncViewModel">
+      <syncViews:SyncView />
+    </DataTemplate>
+  </Application.DataTemplates>
   <Application.Styles>
     <FluentTheme />
     <StyleInclude Source="/Theme/Controls.axaml" />

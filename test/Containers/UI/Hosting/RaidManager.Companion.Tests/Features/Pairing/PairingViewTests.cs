@@ -63,16 +63,34 @@ public sealed class PairingViewTests : IDisposable
         AutomationProperties.GetName(window.GetVisualDescendants().OfType<TextBlock>().Single(text => text.Name == "CodeText")).ShouldBe("Pairing code");
     }
 
-    /// <summary>Board 6, without "Choose folders" until #384 (owner decision on #514).</summary>
+    /// <summary>Board 6: the player, the next step and "Choose folders" (#551).</summary>
     /// <returns>A task that completes when the test is done.</returns>
     [AvaloniaFact]
     public async Task PairedNamesThePlayer()
     {
         var window = await ShowAsync(PairingState.Paired);
 
-        VisibleTexts(window).ShouldBe(["✓", $"Paired with {PairingStates.Player}", "This computer can now upload your character data.",
+        VisibleTexts(window).ShouldBe(["✓", $"Paired with {PairingStates.Player}",
+            "This computer can now upload your character data.\nNext, choose the WoW folders to watch.", "Choose folders",
             "You can revoke it anytime on the website, under Companion & sync."]);
-        VisibleButtons(window).ShouldBeEmpty();
+        VisibleButtons(window).ShouldBe(["ChooseFoldersButton"]);
+    }
+
+    /// <summary>A click on "Choose folders" asks for the watched folders, through the binding.</summary>
+    /// <returns>A task that completes when the test is done.</returns>
+    [AvaloniaFact]
+    public async Task ChooseFoldersAsksForTheWatchedFolders()
+    {
+        var window = await ShowAsync(PairingState.Paired);
+        var requests = 0;
+        _states.ViewModel.ChooseFoldersRequested += (_, _) => requests++;
+
+        Button(window, "ChooseFoldersButton").Focus();
+        window.KeyPressQwerty(PhysicalKey.Space, RawInputModifiers.None);
+        window.KeyReleaseQwerty(PhysicalKey.Space, RawInputModifiers.None);
+        Dispatcher.UIThread.RunJobs();
+
+        requests.ShouldBe(1);
     }
 
     /// <summary>Board 7: the expired code, the notice and a new code.</summary>

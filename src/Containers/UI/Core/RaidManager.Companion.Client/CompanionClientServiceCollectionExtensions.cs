@@ -5,6 +5,7 @@ using Microsoft.Extensions.Options;
 using RaidManager.Companion.Client.Configuration;
 using RaidManager.Companion.Client.Features.Notices;
 using RaidManager.Companion.Client.Features.Pairing;
+using RaidManager.Companion.Client.Features.Shell;
 using RaidManager.Companion.Client.Features.Sync;
 using RaidManager.Companion.Client.Features.Sync.Discovery;
 using RaidManager.Companion.Client.Features.Sync.Queue;
@@ -20,7 +21,7 @@ namespace RaidManager.Companion.Client;
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-04<br/>
 /// Purpose: The client half of the companion's composition root; the host adds the platform services the view models
-/// need (the token protector, the browser launcher and the application shell).
+/// need (the token protector, the browser launcher, the application shell, the folder picker and the window's thread).
 /// </remarks>
 public static class CompanionClientServiceCollectionExtensions
 {
@@ -53,6 +54,8 @@ public static class CompanionClientServiceCollectionExtensions
         services.AddSingleton<PairingViewModel>();
         services.AddSingleton<TrayViewModel>();
         services.AddSnapshotSync();
+        services.AddSingleton<SyncViewModel>();
+        services.AddSingleton<ShellViewModel>();
         return services;
     }
 

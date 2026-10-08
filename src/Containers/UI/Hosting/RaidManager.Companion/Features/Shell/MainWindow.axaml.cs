@@ -6,7 +6,7 @@ namespace RaidManager.Companion.Features.Shell;
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-04<br/>
-/// Purpose: Hosts the pairing view. Closing the window hides it to the tray, so the companion keeps running, and says so
+/// Purpose: Hosts the pairing or the sync view, at the size of their boards (#551). Closing the window hides it to the tray, so the companion keeps running, and says so
 /// through <see cref="HiddenToTray"/> (board 21); Quit in the tray menu, or Windows shutting down, closes it for real
 /// (owner decisions on #514 and #528, board 18).
 /// </remarks>

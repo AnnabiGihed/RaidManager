@@ -1,15 +1,15 @@
-<!-- The companion's only window, 480 x 600 with its title bar, as on the companion boards of the mockup. -->
+<!-- The companion's only window. It follows each board, title bar included: 480 x 600 for the pairing states and
+     560 x 680 for the sync screens (owner decision on #551); the application's data templates pick the view. -->
 <Window xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
-        xmlns:pairing="using:RaidManager.Companion.Client.Features.Pairing"
-        xmlns:pairingViews="using:RaidManager.Companion.Features.Pairing"
+        xmlns:shell="using:RaidManager.Companion.Client.Features.Shell"
         x:Class="RaidManager.Companion.Features.Shell.MainWindow"
-        x:DataType="pairing:PairingViewModel"
+        x:DataType="shell:ShellViewModel"
         Title="RaidManager Companion"
         Icon="/Assets/raidmanager.ico"
-        Width="480"
-        Height="556"
+        Width="{Binding WindowWidth}"
+        Height="{Binding WindowHeight}"
         CanResize="False"
         WindowStartupLocation="CenterScreen">
-  <pairingViews:PairingView />
+  <ContentControl x:Name="Screen" Content="{Binding Current}" />
 </Window>

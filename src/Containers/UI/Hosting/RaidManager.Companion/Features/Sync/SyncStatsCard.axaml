@@ -1,0 +1,23 @@
+<!-- The stats card of boards 2, 3 and 4 of companion-sync: last success, queued uploads and watched accounts. -->
+<UserControl xmlns="https://github.com/avaloniaui"
+             xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
+             xmlns:sync="using:RaidManager.Companion.Client.Features.Sync"
+             x:Class="RaidManager.Companion.Features.Sync.SyncStatsCard"
+             x:DataType="sync:SyncViewModel">
+  <Border Classes="card" Height="84">
+    <Grid ColumnDefinitions="*,*,*" Margin="20,18,0,0">
+      <StackPanel Spacing="7">
+        <TextBlock Classes="eyebrow" Text="LAST SUCCESS" />
+        <TextBlock x:Name="LastSuccessValue" Classes="value" Text="{Binding LastSuccessText}" />
+      </StackPanel>
+      <StackPanel Grid.Column="1" Spacing="7">
+        <TextBlock Classes="eyebrow" Text="QUEUED" />
+        <TextBlock x:Name="QueuedValue" Classes="value" Text="{Binding QueuedText}" />
+      </StackPanel>
+      <StackPanel Grid.Column="2" Spacing="7">
+        <TextBlock Classes="eyebrow" Text="ACCOUNTS" />
+        <TextBlock x:Name="AccountsValue" Classes="value" Text="{Binding AccountsText}" />
+      </StackPanel>
+    </Grid>
+  </Border>
+</UserControl>

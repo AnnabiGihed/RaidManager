@@ -10,6 +10,14 @@ linked as a clickable prototype:
 3. Paused. Resume sync shows 2.
 4. Offline: uploads wait in the queue. Retry now shows 2.
 5. An incomplete SavedVariables write, with how to fix it and a retry. Retry shows 2.
+6. A snapshot RaidManager refused, 7. a file written by an addon version the companion doesn't read, and 8. a file
+   that isn't the addon's: variants of 5, each with what to do and a retry (owner decision on #551). Retry shows 2.
+9. Not a WoW folder: board 1 after "Add a folder" was given a folder without WTF/Account, with a warning notice
+   (owner decision on #551).
+10. Folder excluded: board 1 with the second installation's own checkbox cleared, so its accounts, and any WoW adds
+    there later, stay out (owner decision on #551).
+
+Board 1 has an "Add a folder" button that opens Windows' folder picker (owner decision on #551).
 
 Run from the repository root: python scripts/mockups/companion_sync.py
 Once the owner edits the design in Penpot, the downloaded file replaces docs/mockups/companion-sync.penpot and this
@@ -43,6 +51,15 @@ SYNCING = "2 · Syncing"
 PAUSED = "3 · Paused"
 OFFLINE = "4 · Offline"
 INCOMPLETE = "5 · Incomplete snapshot"
+REFUSED = "6 · Refused snapshot"
+UNSUPPORTED = "7 · Unsupported addon"
+UNREADABLE = "8 · Unreadable file"
+NOT_WOW = "9 · Not a WoW folder"
+FOLDER_EXCLUDED = "10 · Folder excluded"
+NEEDS_ATTENTION = ("Needs attention", "warning")
+NEEDS_HELP = "One snapshot needs your help."
+RETRY_BUTTON = "Retry button"
+SECONDARY_BUTTON = "secondary"
 
 INSTALLATIONS = [
     (r"C:\Games\Warmane\World of Warcraft", [("ARTHASACC", 3, True), ("JAINAACC", 2, True), ("ALTACC", 4, False)]),
@@ -73,11 +90,15 @@ def footer() -> Group:
     ])
 
 
-def installation(index: int, y: float, path: str, accounts: list[tuple[str, int, bool]]) -> Group:
+def installation(index: int, y: float, path: str, accounts: list[tuple[str, int, bool]], folder_watched: bool = True) -> Group:
+    """An installation card: its own checkbox beside the path (clearing it excludes the folder), then its accounts."""
     row_h = 44
     height = 64 + row_h * len(accounts) + 8
-    items: list[Item] = [*card(X, y, INNER_W, height), label("Installation label", X + 20, y + 28, "INSTALLATION"),
-                         text("Path", X + 20, y + 50, path, 13, 600)]
+    items: list[Item] = [*card(X, y, INNER_W, height), label("Installation label", X + 50, y + 28, "INSTALLATION"),
+                         Group("Folder checkbox", checkbox(X + 20, y + 33, folder_watched)),
+                         text("Path", X + 50, y + 50, path, 13, 600, P["Text/primary"] if folder_watched else MUTED)]
+    if not folder_watched:
+        accounts = [(account, characters, False) for account, characters, _ in accounts]
     for row, (account, characters, watched) in enumerate(accounts):
         ry = y + 64 + row * row_h
         count = f"{characters} character" + ("" if characters == 1 else "s")
@@ -92,15 +113,24 @@ def installation(index: int, y: float, path: str, accounts: list[tuple[str, int,
     return Group(f"Installation {index}", items)
 
 
-def folders() -> list[Item]:
-    items = heading("Watched folders", ["RaidManager found these World of Warcraft folders. Clear",
-                                        "an account to keep its characters out of RaidManager."])
+def folders(rejected: bool = False, folder_excluded: bool = False) -> list[Item]:
+    """Board 1; board 9 when the folder the player added isn't a WoW installation (a warning above the one found);
+    board 10 when the player cleared the second installation's own checkbox."""
+    items = heading("Watched folders", ["RaidManager found these World of Warcraft folders. Clear a",
+                                        "folder or an account to keep its characters out of RaidManager."])
     y = TITLE_BAR_H + 112
-    for index, (path, accounts) in enumerate(INSTALLATIONS):
-        items.append(installation(index + 1, y, path, accounts))
+    installations = INSTALLATIONS
+    if rejected:
+        items.append(notice("Not a WoW folder notice", X, y, INNER_W, "This isn't a WoW folder",
+                            "Choose the folder that holds Wow.exe and the WTF folder.", "warning"))
+        y += 72 + 16
+        installations = INSTALLATIONS[:1]
+    for index, (path, accounts) in enumerate(installations):
+        items.append(installation(index + 1, y, path, accounts, not (folder_excluded and index == 1)))
         y += 64 + 44 * len(accounts) + 8 + 16
-    items += [button("Save button", X, y + 8, "Save and sync", "primary", 180, Click("navigate", SYNCING)),
-              button("Find again button", X + 188, y + 8, "Find folders again", "secondary", 180), footer()]
+    items += [button("Save button", X, y + 8, "Save and sync", "primary", 168, Click("navigate", SYNCING)),
+              button("Find again button", X + 176, y + 8, "Find folders again", SECONDARY_BUTTON, 168),
+              button("Add folder button", X + 352, y + 8, "Add a folder", SECONDARY_BUTTON, 144), footer()]
     return items
 
 
@@ -144,8 +174,8 @@ def syncing() -> list[Item]:
     top = TITLE_BAR_H + 96
     return [*heading(SYNC_TITLE, ["Snapshots upload when WoW finishes writing them."], ("Syncing", "success")),
             stats(top, 2), activity(top + 100),
-            button("Pause button", X, top + 400, "Pause sync", "secondary", 140, Click("navigate", PAUSED)),
-            button("Folders button", X + 148, top + 400, "Watched folders", "secondary", 160, Click("navigate", FOLDERS)),
+            button("Pause button", X, top + 400, "Pause sync", SECONDARY_BUTTON, 140, Click("navigate", PAUSED)),
+            button("Folders button", X + 148, top + 400, "Watched folders", SECONDARY_BUTTON, 160, Click("navigate", FOLDERS)),
             footer()]
 
 
@@ -169,17 +199,43 @@ def offline() -> list[Item]:
             footer()]
 
 
-def incomplete() -> list[Item]:
+def needs_help(name: str, heading_line: str, title: str, body: str, steps: list[str], retry: str) -> list[Item]:
+    """Board 5 and its variants: a warning notice, what to do in two lines, and a retry that leads back to syncing."""
     top = TITLE_BAR_H + 96
-    steps = ["To fix it, log in with Jainaice in WoW and type /reload, or",
-             "log out. Then retry. Your other characters keep syncing."]
-    return [*heading(SYNC_TITLE, ["One snapshot needs your help."], ("Needs attention", "warning")),
-            notice("Incomplete notice", X, top, INNER_W, "Jainaice's snapshot is incomplete",
-                   "WoW didn't finish writing it, perhaps after a crash.", "warning"),
+    return [*heading(SYNC_TITLE, [heading_line], NEEDS_ATTENTION),
+            notice(name, X, top, INNER_W, title, body, "warning"),
             *[text(f"Fix line {index + 1}", X, top + 108 + index * 20, line, 14, 400, SECONDARY)
               for index, line in enumerate(steps)],
-            button("Retry button", X, top + 152, "Retry Jainaice", "primary", 160, Click("navigate", SYNCING)),
+            button(RETRY_BUTTON, X, top + 152, retry, "primary", 160, Click("navigate", SYNCING)),
             footer()]
+
+
+def incomplete() -> list[Item]:
+    return needs_help("Incomplete notice", NEEDS_HELP, "Jainaice's snapshot is incomplete",
+                      "WoW didn't finish writing it, perhaps after a crash.",
+                      ["To fix it, log in with Jainaice in WoW and type /reload, or",
+                       "log out. Then retry. Your other characters keep syncing."], "Retry Jainaice")
+
+
+def refused() -> list[Item]:
+    return needs_help("Refused notice", NEEDS_HELP, "RaidManager refused Jainaice's snapshot",
+                      "WoW didn't report who the character is, so it wasn't saved.",
+                      ["To fix it, log in with Jainaice in WoW, wait a few seconds",
+                       "and type /reload. Then retry. Others keep syncing."], "Retry Jainaice")
+
+
+def unsupported() -> list[Item]:
+    return needs_help("Unsupported notice", "An account's file needs your help.", "This addon version isn't supported",
+                      "ARTHASACC's file was written by addon 0.2.0.",
+                      ["Update the companion, or install the addon version that",
+                       "came with it. Then retry. Other accounts keep syncing."], "Retry")
+
+
+def unreadable() -> list[Item]:
+    return needs_help("Unreadable notice", "An account's file needs your help.", "This file isn't RaidManager's",
+                      "ARTHASACC's RaidManager.lua can't be read.",
+                      ["Reinstall the RaidManager addon, log in to WoW and type",
+                       "/reload. Then retry. Other accounts keep syncing."], "Retry")
 
 
 def boards() -> list[Board]:
@@ -189,13 +245,17 @@ def boards() -> list[Board]:
         return companion_window(name, index * step, 0, content, width=WIDTH, height=HEIGHT)
 
     return [window(FOLDERS, 0, folders()), window(SYNCING, 1, syncing()), window(PAUSED, 2, paused()),
-            window(OFFLINE, 3, offline()), window(INCOMPLETE, 4, incomplete())]
+            window(OFFLINE, 3, offline()), window(INCOMPLETE, 4, incomplete()), window(REFUSED, 5, refused()),
+            window(UNSUPPORTED, 6, unsupported()), window(UNREADABLE, 7, unreadable()),
+            window(NOT_WOW, 8, folders(rejected=True)), window(FOLDER_EXCLUDED, 9, folders(folder_excluded=True))]
 
 
 def main(repository: Path = REPOSITORY) -> Path:
     return write_mockup(repository, "companion-sync", "Companion sync", boards(),
                         flows={"Choose folders": FOLDERS, "Pause and resume": SYNCING, "Offline": OFFLINE,
-                               "Incomplete snapshot": INCOMPLETE})
+                               "Incomplete snapshot": INCOMPLETE, "Refused snapshot": REFUSED,
+                               "Unsupported addon": UNSUPPORTED, "Unreadable file": UNREADABLE,
+                               "Not a WoW folder": NOT_WOW, "Folder excluded": FOLDER_EXCLUDED})
 
 
 if __name__ == "__main__":

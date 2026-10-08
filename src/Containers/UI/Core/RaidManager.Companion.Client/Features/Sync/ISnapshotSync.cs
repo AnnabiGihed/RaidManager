@@ -5,7 +5,8 @@ namespace RaidManager.Companion.Client.Features.Sync;
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-07<br/>
 /// Purpose: What #551's screens bind to (#550): the status, and the actions of boards 1 to 5 of <c>companion-sync</c>
-/// (Save and sync, Find folders again, Choose folders, Pause, Resume, Retry now, Retry a character).
+/// (Save and sync, Find folders again, Choose folders, Pause, Resume, Retry now, Retry a character), and excluding a
+/// whole folder (#551).
 /// <see cref="StatusChanged"/> is raised on a background thread.
 /// </remarks>
 public interface ISnapshotSync
@@ -34,7 +35,7 @@ public interface ISnapshotSync
     /// <summary>Uploads at once, whatever the wait after a failure (board 4's "Retry now").</summary>
     void RetryNow();
 
-    /// <summary>Reads every watched file again at once (board 5's retry).</summary>
+    /// <summary>Reads every watched file again at once and forgets the refused snapshots (the retry of boards 5 to 8).</summary>
     /// <param name="cancellationToken">A token to cancel the change.</param>
     /// <returns>A task that completes when the next read is scheduled.</returns>
     Task ReadAgainAsync(CancellationToken cancellationToken);
@@ -56,5 +57,13 @@ public interface ISnapshotSync
     /// <param name="cancellationToken">A token to cancel the change.</param>
     /// <returns>A task that completes when the choice is saved.</returns>
     Task SetAccountWatchedAsync(string accountId, bool watched, CancellationToken cancellationToken);
+
+    /// <summary>Watches or excludes a whole installation; excluding drops its accounts' waiting snapshots, and an
+    /// account WoW adds there later stays out too (owner decision on #551).</summary>
+    /// <param name="folder">The installation's folder.</param>
+    /// <param name="watched">Whether to watch it.</param>
+    /// <param name="cancellationToken">A token to cancel the change.</param>
+    /// <returns>A task that completes when the choice is saved.</returns>
+    Task SetFolderWatchedAsync(string folder, bool watched, CancellationToken cancellationToken);
     #endregion Public Methods
 }

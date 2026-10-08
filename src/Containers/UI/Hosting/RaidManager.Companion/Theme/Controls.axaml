@@ -1,5 +1,6 @@
 <!-- The companion's shared looks, from the mockups' shared components: window, text roles, card, buttons (primary,
-     secondary, disabled) and the notice. Colors and sizes come only from Palette.axaml. -->
+     secondary, disabled), the notice, the badge, the 18 px checkbox and the upload bar. Colors and sizes come only
+     from Palette.axaml. -->
 <Styles xmlns="https://github.com/avaloniaui"
         xmlns:x="http://schemas.microsoft.com/winfx/2006/xaml"
         xmlns:shared="using:RaidManager.Companion.Features.Shared">
@@ -46,6 +47,89 @@
           <Setter Property="Foreground" Value="{StaticResource StatusDangerTextBrush}" />
         </Style>
       </Style>
+      <Style Selector="^.info">
+        <Setter Property="Background" Value="{StaticResource StatusInfoBackgroundBrush}" />
+        <Setter Property="BorderBrush" Value="{StaticResource StatusInfoBorderBrush}" />
+        <Style Selector="^ /template/ Ellipse#PART_Icon">
+          <Setter Property="Fill" Value="{StaticResource AccentBlueBrush}" />
+        </Style>
+        <Style Selector="^ /template/ TextBlock#PART_Mark">
+          <Setter Property="Text" Value="i" />
+        </Style>
+        <Style Selector="^ /template/ TextBlock#PART_Title">
+          <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+        </Style>
+        <Style Selector="^ /template/ TextBlock#PART_Message">
+          <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+        </Style>
+      </Style>
+    </ControlTheme>
+
+    <ControlTheme x:Key="{x:Type shared:Badge}" TargetType="shared:Badge">
+      <Setter Property="Height" Value="24" />
+      <Setter Property="Padding" Value="12,0" />
+      <Setter Property="Background" Value="{StaticResource SurfaceRaisedBrush}" />
+      <Setter Property="Foreground" Value="{StaticResource TextSecondaryBrush}" />
+      <Setter Property="FontSize" Value="{StaticResource FontSizeCaption}" />
+      <Setter Property="FontWeight" Value="SemiBold" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Border Background="{TemplateBinding Background}" CornerRadius="{StaticResource RadiusBadge}"
+                  Padding="{TemplateBinding Padding}">
+            <TextBlock Text="{TemplateBinding Text}" VerticalAlignment="Center" HorizontalAlignment="Center" />
+          </Border>
+        </ControlTemplate>
+      </Setter>
+      <Style Selector="^.success">
+        <Setter Property="Background" Value="{StaticResource StatusSuccessBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource BrandAccentBrush}" />
+      </Style>
+      <Style Selector="^.danger">
+        <Setter Property="Background" Value="{StaticResource StatusDangerBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource StatusDangerTextBrush}" />
+      </Style>
+      <Style Selector="^.warning">
+        <Setter Property="Background" Value="{StaticResource StatusWarningBackgroundBrush}" />
+        <Setter Property="Foreground" Value="{StaticResource StatusWarningTitleBrush}" />
+      </Style>
+    </ControlTheme>
+
+    <!-- The 18 px checkbox of the mockups: teal with a check mark when checked, outlined otherwise; its label is
+         semibold when checked and muted when not, as the account rows of board 1 show. -->
+    <ControlTheme x:Key="AccountCheckBox" TargetType="CheckBox">
+      <Setter Property="Background" Value="Transparent" />
+      <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
+      <Setter Property="FontSize" Value="{StaticResource FontSizeBody}" />
+      <Setter Property="Cursor" Value="Hand" />
+      <Setter Property="Template">
+        <ControlTemplate>
+          <Grid Background="{TemplateBinding Background}" ColumnDefinitions="18,12,*">
+            <Border Name="PART_Box" Width="18" Height="18" VerticalAlignment="Center"
+                    CornerRadius="{StaticResource RadiusCheckBox}" BorderThickness="1"
+                    Background="{StaticResource SurfaceCardBrush}" BorderBrush="{StaticResource TextSecondaryBrush}">
+              <TextBlock Name="PART_Mark" Text="✓" FontSize="{StaticResource FontSizeCaption}" FontWeight="ExtraBold"
+                         Foreground="{StaticResource BrandOnAccentBrush}" IsVisible="False"
+                         HorizontalAlignment="Center" VerticalAlignment="Center" />
+            </Border>
+            <ContentPresenter Name="PART_ContentPresenter" Grid.Column="2" VerticalAlignment="Center"
+                              Content="{TemplateBinding Content}" />
+          </Grid>
+        </ControlTemplate>
+      </Setter>
+      <Style Selector="^:checked">
+        <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+        <Setter Property="FontWeight" Value="SemiBold" />
+        <Style Selector="^ /template/ Border#PART_Box">
+          <Setter Property="Background" Value="{StaticResource BrandAccentBrush}" />
+          <Setter Property="BorderBrush" Value="{StaticResource BrandAccentBrush}" />
+        </Style>
+        <Style Selector="^ /template/ TextBlock#PART_Mark">
+          <Setter Property="IsVisible" Value="True" />
+        </Style>
+      </Style>
+      <Style Selector="^:focus-visible /template/ Border#PART_Box">
+        <Setter Property="BorderBrush" Value="{StaticResource TextPrimaryBrush}" />
+      </Style>
     </ControlTheme>
   </Styles.Resources>
 
@@ -90,6 +174,35 @@
   </Style>
   <Style Selector="TextBlock.code.expired">
     <Setter Property="Foreground" Value="{StaticResource TextMutedBrush}" />
+  </Style>
+
+  <Style Selector="TextBlock.title">
+    <Setter Property="FontSize" Value="{StaticResource FontSizeTitle}" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+  </Style>
+  <Style Selector="TextBlock.value">
+    <Setter Property="FontSize" Value="{StaticResource FontSizeValue}" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+    <Setter Property="Foreground" Value="{StaticResource TextPrimaryBrush}" />
+  </Style>
+
+  <Style Selector="CheckBox.folder">
+    <Setter Property="FontSize" Value="{StaticResource FontSizeLabel}" />
+    <Setter Property="FontWeight" Value="SemiBold" />
+  </Style>
+
+  <Style Selector="Border.divider">
+    <Setter Property="Height" Value="1" />
+    <Setter Property="Background" Value="{StaticResource LineDividerBrush}" />
+  </Style>
+
+  <Style Selector="ProgressBar.upload">
+    <Setter Property="Height" Value="6" />
+    <Setter Property="MinHeight" Value="6" />
+    <Setter Property="CornerRadius" Value="{StaticResource RadiusTrack}" />
+    <Setter Property="Background" Value="{StaticResource SurfaceTrackBrush}" />
+    <Setter Property="Foreground" Value="{StaticResource BrandAccentBrush}" />
   </Style>
 
   <Style Selector="Border.card">

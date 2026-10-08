@@ -218,6 +218,17 @@ internal sealed partial class SnapshotUploader
             _notBefore = DateTimeOffset.MinValue;
         }
     }
+
+    /// <summary>Forgets the refused snapshots, as the retry of board 6 does; a new refusal shows again.</summary>
+    public void ForgetRefusals()
+    {
+        lock (_gate)
+        {
+            _refusals.Clear();
+        }
+
+        OnChanged();
+    }
     #endregion Public Methods
 
     #region Private Helpers
