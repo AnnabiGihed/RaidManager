@@ -102,7 +102,9 @@ generate the mockup with the `penpot-mockups` skill (ADR-0018), then have the ow
      (`gh pr checks <number>` no longer shows it pending): right after a push, the gate reported "no open issue" for
      #516 while SonarCloud was still analyzing, and the `sonar` check then failed on a code smell the owner had to
      point out. Wait for the `sonar` check by name, never for every check: `review-gate` stays pending until the
-     reviews are posted, so a loop waiting for nothing pending never ends (the owner stopped one on #553).
+     reviews are posted, so a loop waiting for nothing pending never ends (the owner stopped one on #553). On
+     2026-10-08 the owner stopped two background waits for CI and reported the results instead: once a pull request is
+     open, tell the owner what is pending and run the gate when they say the checks finished.
    - **Check first, review texts after** (#523, #531). Posting both reviews lets the `review` workflow merge, and the
      merge closes the task. When the task's completion needs an owner check that can run before the merge (a
      companion build from the PR's artifact, a run on the server), give the check steps one at a time first, and the

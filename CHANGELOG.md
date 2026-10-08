@@ -311,6 +311,13 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- The skills keep the background sync and self-hosted runner session's lessons: a section on the self-hosted runners
+  (labels, fork guard, Python, no `sudo`, `setup-tools`, the review job's checkout, `actionlint`), Linux runs in
+  Docker, when to list changed files, two more SonarCloud findings, test doubles that take their time from the test's
+  clock, hosted services that need Windows-only services, and the owner's choices of this session (#572).
+- Every GitHub Actions job now runs on the owner's self-hosted runner (`self-hosted`, `linux`, `pc-personal`) instead of
+  `ubuntu-latest`, and the jobs a pull request starts skip pull requests from forks, so a fork's code never runs on
+  that machine. The docs check enforces both (ADR-0034, #562).
 - The skills keep the snapshot upload session's lessons: give the scripts their Python packages from the scratchpad,
   restore the Pivot packages from the local cache when the feed credentials are missing, list changed files without
   `git add -N`, take the Radzen version from the package versions in the mockup comparison, start a fake clock at the
@@ -422,6 +429,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- The workflows' `setup-tools` step now installs its pinned GitHub CLI and `jq` when the runner's are older, not only
+  when they are missing: an older `gh` in the runner image made the review merge of #566 fail (#568).
+- The dev deployment works again on the self-hosted runners: its `changes` and `record` jobs called `python`, which
+  only GitHub's image had, so the first deployment after the switch failed. Every job that calls Python now sets it
+  up, and the docs check fails on one that doesn't (#565).
 - A test of the paired companions list failed on every run since 2026-10-05, failing the build of every pull request:
   its test double stamped companions with the real clock while the test's clock is fixed. The doubles now pair their
   companions at a fixed date (#558).

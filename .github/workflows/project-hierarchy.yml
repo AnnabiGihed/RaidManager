@@ -24,7 +24,7 @@ permissions:
 
 jobs:
   hierarchy:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, pc-personal]
     env:
       GH_TOKEN: ${{ github.token }}
     steps:
@@ -32,6 +32,7 @@ jobs:
         with:
           ref: main
           persist-credentials: false
+      - uses: ./.github/actions/setup-tools
       - uses: actions/setup-python@v7
         with:
           python-version: '3.12'

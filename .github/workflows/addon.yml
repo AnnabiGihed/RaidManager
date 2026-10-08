@@ -13,15 +13,27 @@ permissions:
 
 jobs:
   lua:
-    runs-on: ubuntu-latest
+    # A fork's pull request never runs on the owner's self-hosted runner (ADR-0034).
+    if: github.event_name != 'pull_request' || github.event.pull_request.head.repo.full_name == github.repository
+    runs-on: [self-hosted, linux, pc-personal]
     timeout-minutes: 10
     steps:
       - uses: actions/checkout@v7
         with:
           persist-credentials: false
-      - uses: leafo/gh-actions-lua@6919171ccf181b826f44b9bca76307b577217377 # v13.0.0
-        with:
-          luaVersion: '5.1.5'
+      # Built here instead of with leafo/gh-actions-lua, which runs sudo apt-get for readline, refused on the
+      # self-hosted runners (ADR-0034). Readline only serves the interactive shell; dynamic loading stays for the C
+      # modules busted needs. The LuaRocks step below finds this build in .lua, where it looks by default.
+      - name: Build Lua 5.1.5
+        env:
+          LUA_SHA256: 2640fc56a795f29d28ef15e13c34a47e223960b0240e8cb0a82d9b0738695333
+        run: |
+          curl --proto '=https' --tlsv1.2 -sSfL -o "$RUNNER_TEMP/lua.tar.gz" https://www.lua.org/ftp/lua-5.1.5.tar.gz
+          echo "$LUA_SHA256  $RUNNER_TEMP/lua.tar.gz" | sha256sum --check --quiet
+          tar -xzf "$RUNNER_TEMP/lua.tar.gz" -C "$RUNNER_TEMP"
+          make -C "$RUNNER_TEMP/lua-5.1.5/src" all MYCFLAGS="-DLUA_USE_POSIX -DLUA_USE_DLOPEN" MYLIBS="-Wl,-E -ldl"
+          make -C "$RUNNER_TEMP/lua-5.1.5" install INSTALL_TOP="$PWD/.lua"
+          echo "$PWD/.lua/bin" >> "$GITHUB_PATH"
       - uses: leafo/gh-actions-luarocks@35d062def313a7699a0d513e996bcf4352f05389 # v6.1.0
       - name: Install busted and luacheck
         run: |

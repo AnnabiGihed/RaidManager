@@ -11,7 +11,7 @@ permissions:
 
 jobs:
   external-links:
-    runs-on: ubuntu-latest
+    runs-on: [self-hosted, linux, pc-personal]
     steps:
       - uses: actions/checkout@v7
       - name: Check external links

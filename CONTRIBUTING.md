@@ -76,6 +76,12 @@ conversations are all in place ([ADR-0008](docs/adr/0008-merge-with-the-workflow
 decides, and nobody queues or clicks the merge. Do not use administrator bypass or merge your own pull request. GitHub
 deletes the source branch after merge; confirm the linked task is closed and its project status is `Done`.
 
+Every workflow job runs on the owner's self-hosted runner, labeled `self-hosted`, `linux` and `pc-personal`
+([ADR-0034](docs/adr/0034-run-the-workflows-on-a-self-hosted-runner.md)): checks wait while it is offline. A job that a
+`pull_request` event starts skips pull requests from forks, so a fork's code never runs on that machine; such a pull
+request gets no checks and isn't merged as it is. The docs check fails on a job without these labels or without that
+guard.
+
 ## Local setup
 
 Install the .NET 10 SDK and give your machine access to the Pivot.Framework packages as

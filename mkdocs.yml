@@ -71,6 +71,7 @@ nav:
       - WoW addon in Lua: adr/0031-build-the-wow-addon-in-lua-under-src-addon.md
       - Windows companion in Avalonia: adr/0032-build-the-windows-companion-in-avalonia.md
       - Companion in the Microsoft Store: adr/0033-publish-the-companion-through-the-microsoft-store.md
+      - Workflows on a self-hosted runner: adr/0034-run-the-workflows-on-a-self-hosted-runner.md
 theme:
   name: material
 markdown_extensions:

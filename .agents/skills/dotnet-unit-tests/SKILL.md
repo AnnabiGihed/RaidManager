@@ -73,6 +73,10 @@ anything with no business rule to express. If you can't write the scenario in th
   than five minutes after `DateTimeOffset.UtcNow`, so a `FakeTimeProvider` set to a fixed noon made a capture one hour
   earlier look like the future (#384). Use `new FakeTimeProvider(DateTimeOffset.UtcNow)`, and give a repeated upload
   the same snapshot object instead of recomputing "one hour ago" after `Advance`.
+- **A test double takes its times from the test's clock.** `FakeCompanionsApiClient.Companion` stamped companions
+  with `DateTimeOffset.UtcNow.AddDays(-1)` while `PairedCompanionsWaitTests` ran on a clock fixed at 2026-10-04; from
+  2026-10-05 the "older" row was newer and every build failed (#557). Give a double a fixed time earlier than every
+  fixed test clock, or take the time from the test's `TimeProvider`.
 - **Parentheses in a cucumber expression mean optional text.** `[When("validated without a (user id|character id)")]`
   never matched, and Reqnroll reported the step as pending (#385). Pass the choice as `{string}` from the feature file
   instead of reaching for a regular expression.
