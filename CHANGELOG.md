@@ -9,13 +9,14 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
-- The companion's sync screens (boards 1 to 9 of the companion sync mockup): after pairing, Choose folders opens the
-  watched WoW folders, where the player clears an account to keep its characters out, finds folders again or adds
-  one with Windows' folder picker, then saves. The sync screen shows the last success, the snapshots queued, the
-  accounts watched and the recent activity, pauses and resumes uploads, and says what to do, with a retry, when
-  RaidManager can't be reached, a snapshot is incomplete or refused, or an account's file comes from another addon
-  version or isn't the addon's. A folder that isn't a WoW installation shows a warning (board 9). The window follows
-  each board: 480 x 600 for pairing and 560 x 680 for sync, and a computer already paired opens on the sync (#551).
+- The companion's sync screens (boards 1 to 10 of the companion sync mockup): after pairing, Choose folders opens the
+  watched WoW folders, where the player clears a whole folder or an account to keep its characters out, finds folders
+  again or adds one with Windows' folder picker, then saves; the installations scroll when they don't fit. The sync
+  screen shows the last success, the snapshots queued, the accounts watched and the recent activity, pauses and resumes
+  uploads, and says what to do, with a retry, when RaidManager can't be reached, a snapshot is incomplete or refused, or
+  an account's file comes from another addon version or isn't the addon's. A folder that isn't a WoW installation shows
+  a warning (board 9). The window follows each board: 480 x 600 for pairing and 560 x 680 for sync, and a computer
+  already paired opens on the sync (#551).
 - The companion syncs characters in the background: at its first start it finds the WoW installations on the
   computer's fixed drives, then reads each account's `RaidManager.lua` without running it, once WoW has finished
   writing it, and uploads each character's snapshot to RaidManager. Waiting snapshots survive restarts and retry with

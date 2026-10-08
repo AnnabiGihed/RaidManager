@@ -138,7 +138,7 @@ internal sealed class SyncStates : IDisposable
             new(new CharacterKey("Icecrown", "Thrallsham"), CharacterActivityState.Uploaded, LastSuccess),
             new(new CharacterKey("Icecrown", "Sylvanash"), CharacterActivityState.Uploaded, LastSuccess),
         ];
-        return new(paused, false, connection, LastSuccess, queued, installations, ["ALTACC-id"], activity, problems ?? [], refusals ?? []);
+        return new(paused, false, connection, LastSuccess, queued, installations, ["ALTACC-id"], [], activity, problems ?? [], refusals ?? []);
     }
 
     /// <summary>Builds an account row.</summary>

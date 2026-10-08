@@ -58,10 +58,13 @@ public sealed class SyncFilesTests : IDisposable
         Store().Load().ShouldBe(SyncSettings.Initial);
     }
 
-    /// <summary>The watched folders list each folder once, found or added.</summary>
+    /// <summary>The watched folders list each folder once, found or added; a file without excluded folders excludes none.</summary>
     [Fact]
-    public void FoldersListEachFolderOnce() =>
+    public void FoldersListEachFolderOnce()
+    {
         new SyncSettings(["C:/WoW"], ["c:/wow", "D:/WoW"], [], Paused: false).Folders.ShouldBe(["C:/WoW", "D:/WoW"]);
+        new SyncSettings(["C:/WoW"], [], [], Paused: false).ExcludedFolderList.ShouldBeEmpty();
+    }
 
     /// <summary>An account's hash doesn't depend on the case or a final separator of its path.</summary>
     [Fact]

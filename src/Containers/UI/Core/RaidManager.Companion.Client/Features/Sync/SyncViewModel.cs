@@ -264,10 +264,15 @@ public sealed partial class SyncViewModel : ViewModelBase, IDisposable
     [LoggerMessage(Level = LogLevel.Warning, Message = "A sync action of the player failed.")]
     private static partial void LogActionFailed(ILogger logger, Exception exception);
 
-    /// <summary>Saves the account choices and shows the status (board 2 or the board it calls for).</summary>
+    /// <summary>Saves the folder and account choices and shows the status (board 2 or the board it calls for).</summary>
     /// <returns>A task that completes when the choices are saved.</returns>
     private async Task SaveAsync()
     {
+        foreach (var installation in _installations.Where(installation => installation.IsWatched != installation.WasWatched))
+        {
+            await _sync.SetFolderWatchedAsync(installation.Folder, installation.IsWatched, _lifetime.Token);
+        }
+
         foreach (var account in _installations.SelectMany(installation => installation.Accounts).Where(account => account.IsWatched != account.WasWatched))
         {
             await _sync.SetAccountWatchedAsync(account.Id, account.IsWatched, _lifetime.Token);
@@ -333,15 +338,16 @@ public sealed partial class SyncViewModel : ViewModelBase, IDisposable
         }
     }
 
-    /// <summary>Builds the account rows again when the installations or the saved exclusions changed, so the player's
-    /// unsaved choices survive the sync's regular checks.</summary>
+    /// <summary>Builds the installation and account rows again when the installations or the saved exclusions changed,
+    /// so the player's unsaved choices survive the sync's regular checks.</summary>
     /// <param name="force">Whether to drop the unsaved choices anyway.</param>
     private void RebuildInstallations(bool force = false)
     {
         var key = string.Join(
             '\n',
             _status.Installations.Select(installation => installation.Folder + ":" + string.Join(',', installation.Accounts.Select(account => account.Id)))
-                .Append(string.Join(',', _status.ExcludedAccounts.Order(StringComparer.Ordinal))));
+                .Append(string.Join(',', _status.ExcludedAccounts.Order(StringComparer.Ordinal)))
+                .Append(string.Join('\n', _status.ExcludedFolders.Order(StringComparer.OrdinalIgnoreCase))));
         if (!force && key == _installationsKey)
         {
             return;
@@ -352,6 +358,7 @@ public sealed partial class SyncViewModel : ViewModelBase, IDisposable
         [
             .. _status.Installations.Select(installation => new WatchedInstallationViewModel(
                 installation.Folder,
+                _status.IsWatched(installation),
                 [.. installation.Accounts.Select(account => new WatchedAccountViewModel(
                     account.Id, account.Name, account.CharacterCount, !_status.ExcludedAccounts.Contains(account.Id)))])),
         ];

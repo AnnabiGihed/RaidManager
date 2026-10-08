@@ -120,7 +120,7 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Sync/CompanionSyncScreens.feature.ndjson", 22);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Sync/CompanionSyncScreens.feature.ndjson", 24);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -197,15 +197,15 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="Ticking an excluded account watches it again")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="Clearing a folder excludes it with its accounts")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Companion sync screens")]
-        [global::Xunit.TraitAttribute("Description", "Ticking an excluded account watches it again")]
-        public async global::System.Threading.Tasks.Task TickingAnExcludedAccountWatchesItAgain()
+        [global::Xunit.TraitAttribute("Description", "Clearing a folder excludes it with its accounts")]
+        public async global::System.Threading.Tasks.Task ClearingAFolderExcludesItWithItsAccounts()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "1";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Ticking an excluded account watches it again", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Clearing a folder excludes it with its accounts", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The player reviews the watched folders and excludes an account", null, tagsOfRule);
 #line 21
@@ -225,12 +225,107 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
       await testRunner.GivenAsync("the window shows the watched folders", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
 #line 23
-      await testRunner.WhenAsync("the player ticks \"ALTACC\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+      await testRunner.WhenAsync("the player clears the folder \"D:\\WoW\\Warmane\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 24
-      await testRunner.AndAsync("the player saves and syncs", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+      await testRunner.ThenAsync("the row of \"THRALLACC\" reads \"Excluded · 1 character\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
 #line 25
+      await testRunner.AndAsync("the row of \"THRALLACC\" can\'t be changed", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 26
+      await testRunner.WhenAsync("the player saves and syncs", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 27
+      await testRunner.ThenAsync("the sync was asked to \"exclude folder D:\\WoW\\Warmane\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="Ticking an excluded folder again shows its accounts\' own choices")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Companion sync screens")]
+        [global::Xunit.TraitAttribute("Description", "Ticking an excluded folder again shows its accounts\' own choices")]
+        public async global::System.Threading.Tasks.Task TickingAnExcludedFolderAgainShowsItsAccountsOwnChoices()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "2";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Ticking an excluded folder again shows its accounts\' own choices", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The player reviews the watched folders and excludes an account", null, tagsOfRule);
+#line 29
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 30
+      await testRunner.GivenAsync("the window shows the watched folders", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 31
+      await testRunner.WhenAsync("the player clears the folder \"C:\\Games\\Warmane\\World of Warcraft\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 32
+      await testRunner.AndAsync("the player ticks the folder \"C:\\Games\\Warmane\\World of Warcraft\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 33
+      await testRunner.ThenAsync("the row of \"ARTHASACC\" reads \"3 characters\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 34
+      await testRunner.AndAsync("the row of \"ALTACC\" reads \"Excluded · 4 characters\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 35
+      await testRunner.WhenAsync("the player saves and syncs", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 36
+      await testRunner.ThenAsync("the sync was asked nothing", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="Ticking an excluded account watches it again")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Companion sync screens")]
+        [global::Xunit.TraitAttribute("Description", "Ticking an excluded account watches it again")]
+        public async global::System.Threading.Tasks.Task TickingAnExcludedAccountWatchesItAgain()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "3";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Ticking an excluded account watches it again", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The player reviews the watched folders and excludes an account", null, tagsOfRule);
+#line 38
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 39
+      await testRunner.GivenAsync("the window shows the watched folders", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 40
+      await testRunner.WhenAsync("the player ticks \"ALTACC\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 41
+      await testRunner.AndAsync("the player saves and syncs", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 42
       await testRunner.ThenAsync("the sync was asked to \"watch ALTACC-id\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
@@ -244,11 +339,11 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "2";
+            string pickleIndex = "4";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A folder that isn\'t a WoW installation shows a warning", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The player reviews the watched folders and excludes an account", null, tagsOfRule);
-#line 27
+#line 44
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -261,19 +356,19 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-#line 28
+#line 45
       await testRunner.GivenAsync("the window shows the watched folders", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 29
+#line 46
       await testRunner.AndAsync("the sync refuses folders without WTF/Account", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 30
+#line 47
       await testRunner.WhenAsync("the player adds the folder \"D:\\Backups\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 31
+#line 48
       await testRunner.ThenAsync("the sync was asked to \"add D:\\Backups\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
-#line 32
+#line 49
       await testRunner.AndAsync("the window shows the \"Watched folders\" board with a warning", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
@@ -287,11 +382,11 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "3";
+            string pickleIndex = "5";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A WoW folder added is watched without a warning", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The player reviews the watched folders and excludes an account", null, tagsOfRule);
-#line 34
+#line 51
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -304,13 +399,13 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-#line 35
+#line 52
       await testRunner.GivenAsync("the window shows the watched folders", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 36
+#line 53
       await testRunner.WhenAsync("the player adds the folder \"D:\\WoW\\Warmane\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 37
+#line 54
       await testRunner.ThenAsync("the window shows the \"Watched folders\" board without a warning", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
@@ -324,11 +419,11 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "4";
+            string pickleIndex = "6";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Finding folders again clears the warning", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The player reviews the watched folders and excludes an account", null, tagsOfRule);
-#line 39
+#line 56
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -341,22 +436,22 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-#line 40
+#line 57
       await testRunner.GivenAsync("the window shows the watched folders", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 41
+#line 58
       await testRunner.AndAsync("the sync refuses folders without WTF/Account", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 42
+#line 59
       await testRunner.AndAsync("the player added the folder \"D:\\Backups\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 43
+#line 60
       await testRunner.WhenAsync("the player finds folders again", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 44
+#line 61
       await testRunner.ThenAsync("the sync was asked to \"add D:\\Backups, find folders again\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
-#line 45
+#line 62
       await testRunner.AndAsync("the window shows the \"Watched folders\" board without a warning", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
@@ -366,13 +461,13 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
         [global::Xunit.SkippableTheoryAttribute(DisplayName="Each status has its board")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Companion sync screens")]
         [global::Xunit.TraitAttribute("Description", "Each status has its board")]
-        [global::Xunit.InlineDataAttribute("uploading", "Syncing", "5", new string[0])]
-        [global::Xunit.InlineDataAttribute("paused", "Paused", "6", new string[0])]
-        [global::Xunit.InlineDataAttribute("offline", "Offline", "7", new string[0])]
-        [global::Xunit.InlineDataAttribute("holding an incomplete file", "Incomplete snapshot", "8", new string[0])]
-        [global::Xunit.InlineDataAttribute("holding a refused snapshot", "Refused snapshot", "9", new string[0])]
-        [global::Xunit.InlineDataAttribute("holding an unsupported file", "Unsupported addon", "10", new string[0])]
-        [global::Xunit.InlineDataAttribute("holding an unreadable file", "Unreadable file", "11", new string[0])]
+        [global::Xunit.InlineDataAttribute("uploading", "Syncing", "7", new string[0])]
+        [global::Xunit.InlineDataAttribute("paused", "Paused", "8", new string[0])]
+        [global::Xunit.InlineDataAttribute("offline", "Offline", "9", new string[0])]
+        [global::Xunit.InlineDataAttribute("holding an incomplete file", "Incomplete snapshot", "10", new string[0])]
+        [global::Xunit.InlineDataAttribute("holding a refused snapshot", "Refused snapshot", "11", new string[0])]
+        [global::Xunit.InlineDataAttribute("holding an unsupported file", "Unsupported addon", "12", new string[0])]
+        [global::Xunit.InlineDataAttribute("holding an unreadable file", "Unreadable file", "13", new string[0])]
         public async global::System.Threading.Tasks.Task EachStatusHasItsBoard(string status, string board, string @__pickleIndex, string[] exampleTags)
         {
             string[] tagsOfScenario = exampleTags;
@@ -383,7 +478,7 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Each status has its board", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The window shows the board the sync\'s status calls for", null, tagsOfRule);
-#line 49
+#line 66
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -396,13 +491,13 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-#line 50
+#line 67
       await testRunner.GivenAsync(string.Format("the sync is \"{0}\"", status), ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 51
+#line 68
       await testRunner.WhenAsync("the player opens the sync", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 52
+#line 69
       await testRunner.ThenAsync(string.Format("the window shows the \"{0}\" board", board), ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
@@ -416,11 +511,11 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "12";
+            string pickleIndex = "14";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A companion that watches nothing opens on the watched folders", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The window shows the board the sync\'s status calls for", null, tagsOfRule);
-#line 64
+#line 81
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -433,13 +528,13 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-#line 65
+#line 82
       await testRunner.GivenAsync("the sync has found nothing yet", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 66
+#line 83
       await testRunner.WhenAsync("the player opens the sync", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 67
+#line 84
       await testRunner.ThenAsync("the window shows the \"Watched folders\" board", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
@@ -453,11 +548,11 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "13";
+            string pickleIndex = "15";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("The syncing board shows the stats and the recent activity", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The status shows pairing, last success, queued uploads and actionable failures", null, tagsOfRule);
-#line 71
+#line 88
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -470,16 +565,16 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-#line 72
+#line 89
       await testRunner.GivenAsync("the sync is \"uploading\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 73
+#line 90
       await testRunner.WhenAsync("the player opens the sync", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 74
+#line 91
       await testRunner.ThenAsync("the stats read \"Today, 14:05\", \"2 snapshots\" and \"3 of 4 watched\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
-#line 75
+#line 92
       await testRunner.AndAsync("the footer names \"Bryn\" and this computer", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
                 global::Reqnroll.Table table1 = new global::Reqnroll.Table(new string[] {
@@ -502,7 +597,7 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
                             "Sylvanash",
                             "Icecrown",
                             "Uploaded yesterday, 14:05"});
-#line 76
+#line 93
       await testRunner.AndAsync("the recent activity reads:", ((string)(null)), table1, "And ");
 #line hidden
             }
@@ -512,10 +607,10 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
         [global::Xunit.SkippableTheoryAttribute(DisplayName="Each problem says what to do and offers a retry")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Companion sync screens")]
         [global::Xunit.TraitAttribute("Description", "Each problem says what to do and offers a retry")]
-        [global::Xunit.InlineDataAttribute("holding an incomplete file", "Jainaice\'s snapshot is incomplete", "Retry Jainaice", "14", new string[0])]
-        [global::Xunit.InlineDataAttribute("holding a refused snapshot", "RaidManager refused Jainaice\'s snapshot", "Retry Jainaice", "15", new string[0])]
-        [global::Xunit.InlineDataAttribute("holding an unsupported file", "This addon version isn\'t supported", "Retry", "16", new string[0])]
-        [global::Xunit.InlineDataAttribute("holding an unreadable file", "This file isn\'t RaidManager\'s", "Retry", "17", new string[0])]
+        [global::Xunit.InlineDataAttribute("holding an incomplete file", "Jainaice\'s snapshot is incomplete", "Retry Jainaice", "16", new string[0])]
+        [global::Xunit.InlineDataAttribute("holding a refused snapshot", "RaidManager refused Jainaice\'s snapshot", "Retry Jainaice", "17", new string[0])]
+        [global::Xunit.InlineDataAttribute("holding an unsupported file", "This addon version isn\'t supported", "Retry", "18", new string[0])]
+        [global::Xunit.InlineDataAttribute("holding an unreadable file", "This file isn\'t RaidManager\'s", "Retry", "19", new string[0])]
         public async global::System.Threading.Tasks.Task EachProblemSaysWhatToDoAndOffersARetry(string status, string title, string retry, string @__pickleIndex, string[] exampleTags)
         {
             string[] tagsOfScenario = exampleTags;
@@ -527,52 +622,6 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Each problem says what to do and offers a retry", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The status shows pairing, last success, queued uploads and actionable failures", null, tagsOfRule);
-#line 83
-    this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 6
-  await this.FeatureBackgroundAsync();
-#line hidden
-#line 84
-      await testRunner.GivenAsync(string.Format("the sync is \"{0}\"", status), ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
-#line hidden
-#line 85
-      await testRunner.WhenAsync("the player opens the sync", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 86
-      await testRunner.ThenAsync(string.Format("the notice reads \"{0}\"", title), ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
-#line hidden
-#line 87
-      await testRunner.AndAsync(string.Format("the retry button reads \"{0}\"", retry), ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
-#line hidden
-#line 88
-      await testRunner.WhenAsync("the player retries", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 89
-      await testRunner.ThenAsync("the sync was asked to \"read again\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Xunit.SkippableFactAttribute(DisplayName="Pausing and resuming")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Companion sync screens")]
-        [global::Xunit.TraitAttribute("Description", "Pausing and resuming")]
-        public async global::System.Threading.Tasks.Task PausingAndResuming()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "18";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Pausing and resuming", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The player pauses, resumes and retries uploads", null, tagsOfRule);
 #line 100
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
@@ -587,21 +636,67 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
   await this.FeatureBackgroundAsync();
 #line hidden
 #line 101
-      await testRunner.GivenAsync("the sync is \"uploading\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+      await testRunner.GivenAsync(string.Format("the sync is \"{0}\"", status), ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
 #line 102
-      await testRunner.AndAsync("the player opened the sync", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+      await testRunner.WhenAsync("the player opens the sync", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 103
-      await testRunner.WhenAsync("the player pauses sync", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+      await testRunner.ThenAsync(string.Format("the notice reads \"{0}\"", title), ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
 #line 104
-      await testRunner.AndAsync("the sync becomes paused", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+      await testRunner.AndAsync(string.Format("the retry button reads \"{0}\"", retry), ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
 #line 105
-      await testRunner.AndAsync("the player resumes sync", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+      await testRunner.WhenAsync("the player retries", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 106
+      await testRunner.ThenAsync("the sync was asked to \"read again\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="Pausing and resuming")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Companion sync screens")]
+        [global::Xunit.TraitAttribute("Description", "Pausing and resuming")]
+        public async global::System.Threading.Tasks.Task PausingAndResuming()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "20";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Pausing and resuming", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The player pauses, resumes and retries uploads", null, tagsOfRule);
+#line 117
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 118
+      await testRunner.GivenAsync("the sync is \"uploading\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 119
+      await testRunner.AndAsync("the player opened the sync", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 120
+      await testRunner.WhenAsync("the player pauses sync", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 121
+      await testRunner.AndAsync("the sync becomes paused", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 122
+      await testRunner.AndAsync("the player resumes sync", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 123
       await testRunner.ThenAsync("the sync was asked to \"pause, resume\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
@@ -615,11 +710,11 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "19";
+            string pickleIndex = "21";
             global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Retrying at once while offline", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The player pauses, resumes and retries uploads", null, tagsOfRule);
-#line 108
+#line 125
     this.ScenarioInitialize(scenarioInfo, ruleInfo);
 #line hidden
             if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
@@ -632,16 +727,16 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
 #line 6
   await this.FeatureBackgroundAsync();
 #line hidden
-#line 109
+#line 126
       await testRunner.GivenAsync("the sync is \"offline\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
-#line 110
+#line 127
       await testRunner.AndAsync("the player opened the sync", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
-#line 111
+#line 128
       await testRunner.WhenAsync("the player retries now", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
-#line 112
+#line 129
       await testRunner.ThenAsync("the sync was asked to \"retry now\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }

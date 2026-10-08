@@ -120,6 +120,16 @@ public sealed class CompanionSyncScreensStepDefinitions : IDisposable
     [When("the player ticks {string}")]
     public void WhenThePlayerTicks(string account) => Row(account).IsWatched = true;
 
+    /// <summary>Clears an installation's own checkbox.</summary>
+    /// <param name="folder">The installation's folder.</param>
+    [When("the player clears the folder {string}")]
+    public void WhenThePlayerClearsTheFolder(string folder) => Installation(folder).IsWatched = false;
+
+    /// <summary>Ticks an installation's own checkbox.</summary>
+    /// <param name="folder">The installation's folder.</param>
+    [When("the player ticks the folder {string}")]
+    public void WhenThePlayerTicksTheFolder(string folder) => Installation(folder).IsWatched = true;
+
     /// <summary>Chooses "Save and sync".</summary>
     /// <returns>A task that completes once the choices are saved.</returns>
     [When("the player saves and syncs")]
@@ -178,6 +188,15 @@ public sealed class CompanionSyncScreensStepDefinitions : IDisposable
     /// <param name="text">The expected text.</param>
     [Then("the row of {string} reads {string}")]
     public void ThenTheRowOfReads(string account, string text) => Row(account).CountText.ShouldBe(text);
+
+    /// <summary>Asserts that an account row of an excluded folder shows cleared and can't be changed.</summary>
+    /// <param name="account">The account.</param>
+    [Then("the row of {string} can't be changed")]
+    public void ThenTheRowOfCantBeChanged(string account)
+    {
+        Row(account).IsFolderWatched.ShouldBeFalse();
+        Row(account).IsChecked.ShouldBeFalse();
+    }
 
     /// <summary>Asserts that the sync was asked nothing.</summary>
     [Then("the sync was asked nothing")]
@@ -262,6 +281,12 @@ public sealed class CompanionSyncScreensStepDefinitions : IDisposable
         { IsWaitingForWow: true } => "waiting for WoW",
         _ => row.UploadedText,
     };
+
+    /// <summary>Finds an installation card of board 1.</summary>
+    /// <param name="folder">The installation's folder.</param>
+    /// <returns>The card.</returns>
+    private WatchedInstallationViewModel Installation(string folder) =>
+        _screens.Sync.Installations.Single(installation => installation.Folder == folder);
 
     /// <summary>Finds an account row of board 1.</summary>
     /// <param name="account">The account's name.</param>

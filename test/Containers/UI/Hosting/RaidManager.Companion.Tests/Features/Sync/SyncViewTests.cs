@@ -41,7 +41,8 @@ public sealed class SyncViewTests : IDisposable
     #endregion Public Methods
 
     #region Tests
-    /// <summary>Board 1: the installations with their accounts, ALTACC excluded, and the three actions.</summary>
+    /// <summary>Board 1: the installations with their own checkboxes and their accounts, ALTACC excluded, and the three
+    /// actions.</summary>
     /// <returns>A task that completes when the test is done.</returns>
     [AvaloniaFact]
     public async Task WatchedFoldersListTheAccounts()
@@ -50,12 +51,33 @@ public sealed class SyncViewTests : IDisposable
 
         VisibleTexts(window).ShouldBe([
             "Watched folders",
-            "RaidManager found these World of Warcraft folders. Clear\nan account to keep its characters out of RaidManager.",
-            "INSTALLATION", @"C:\Games\Warmane\World of Warcraft", "✓", "ARTHASACC", "3 characters", "✓", "JAINAACC", "2 characters",
-            "ALTACC", "Excluded · 4 characters", "INSTALLATION", @"D:\WoW\Warmane", "✓", "THRALLACC", "1 character",
+            "RaidManager found these World of Warcraft folders. Clear a\nfolder or an account to keep its characters out of RaidManager.",
+            "INSTALLATION", "✓", @"C:\Games\Warmane\World of Warcraft", "✓", "ARTHASACC", "3 characters", "✓", "JAINAACC",
+            "2 characters", "ALTACC", "Excluded · 4 characters", "INSTALLATION", "✓", @"D:\WoW\Warmane", "✓", "THRALLACC",
+            "1 character",
             "Save and sync", "Find folders again", "Add a folder", Footer + Environment.MachineName]);
         VisibleButtons(window).ShouldBe(["SaveButton", "FindAgainButton", "AddFolderButton"]);
-        CheckBoxes(window).Select(AutomationProperties.GetName).ShouldBe(["ARTHASACC", "JAINAACC", "ALTACC", "THRALLACC"]);
+        CheckBoxes(window).Select(AutomationProperties.GetName).ShouldBe([
+            @"C:\Games\Warmane\World of Warcraft", "ARTHASACC", "JAINAACC", "ALTACC", @"D:\WoW\Warmane", "THRALLACC"]);
+    }
+
+    /// <summary>Board 10: a key on a folder's checkbox clears it with its accounts, and Save and sync excludes the folder.</summary>
+    /// <returns>A task that completes when the test is done.</returns>
+    [AvaloniaFact]
+    public async Task ClearingAFolderExcludesItWithItsAccounts()
+    {
+        var window = await ShowFoldersAsync();
+        var folder = CheckBoxes(window).Single(box => AutomationProperties.GetName(box) == @"D:\WoW\Warmane");
+        var thrall = CheckBoxes(window).Single(box => AutomationProperties.GetName(box) == "THRALLACC");
+
+        Press(window, folder);
+
+        folder.IsChecked.ShouldBe(false);
+        thrall.IsChecked.ShouldBe(false);
+        thrall.IsEffectivelyEnabled.ShouldBeFalse();
+        VisibleTexts(window).ShouldContain("Excluded · 1 character");
+        Press(window, Button(window, "SaveButton"));
+        _states.Sync.Verify(sync => sync.SetFolderWatchedAsync(@"D:\WoW\Warmane", false, It.IsAny<CancellationToken>()), Times.Once);
     }
 
     /// <summary>More installations than the window holds scroll between the intro and the buttons, which stay visible

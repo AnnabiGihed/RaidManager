@@ -18,6 +18,23 @@ Feature: Companion sync screens
       Then the sync was asked to "exclude JAINAACC-id"
       And the window shows the "Syncing" board
 
+    Scenario: Clearing a folder excludes it with its accounts
+      Given the window shows the watched folders
+      When the player clears the folder "D:\WoW\Warmane"
+      Then the row of "THRALLACC" reads "Excluded · 1 character"
+      And the row of "THRALLACC" can't be changed
+      When the player saves and syncs
+      Then the sync was asked to "exclude folder D:\WoW\Warmane"
+
+    Scenario: Ticking an excluded folder again shows its accounts' own choices
+      Given the window shows the watched folders
+      When the player clears the folder "C:\Games\Warmane\World of Warcraft"
+      And the player ticks the folder "C:\Games\Warmane\World of Warcraft"
+      Then the row of "ARTHASACC" reads "3 characters"
+      And the row of "ALTACC" reads "Excluded · 4 characters"
+      When the player saves and syncs
+      Then the sync was asked nothing
+
     Scenario: Ticking an excluded account watches it again
       Given the window shows the watched folders
       When the player ticks "ALTACC"

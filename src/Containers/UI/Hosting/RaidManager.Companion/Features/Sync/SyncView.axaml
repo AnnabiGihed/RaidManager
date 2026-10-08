@@ -1,5 +1,5 @@
-<!-- The boards of the companion sync mockup, 560 x 680 with the title bar: 1 (watched folders) and 9 (the folder added
-     isn't a WoW installation), 2 (syncing), 3 (paused), 4 (offline), and 5 to 8 (a problem that needs the player),
+<!-- The boards of the companion sync mockup, 560 x 680 with the title bar: 1 (watched folders), 9 (the folder added
+     isn't a WoW installation) and 10 (a folder excluded), 2 (syncing), 3 (paused), 4 (offline), and 5 to 8 (a problem that needs the player),
      with the pairing footer under each, in its own row. Board 1's installations scroll when they don't fit, and its
      buttons stay under them, above the footer. -->
 <UserControl xmlns="https://github.com/avaloniaui"
@@ -14,7 +14,7 @@
           RowDefinitions="Auto,Auto,Auto,*">
       <TextBlock Classes="heading" Text="Watched folders" />
       <TextBlock Grid.Row="1" Classes="intro" Margin="0,10,0,0"
-                 Text="RaidManager found these World of Warcraft folders. Clear&#10;an account to keep its characters out of RaidManager." />
+                 Text="RaidManager found these World of Warcraft folders. Clear a&#10;folder or an account to keep its characters out of RaidManager." />
       <TextBlock x:Name="SearchingText" Grid.Row="2" Classes="status" Margin="0,6,0,0" IsVisible="{Binding IsSearching}"
                  Text="Searching your drives for World of Warcraft…" />
       <Grid Grid.Row="3" VerticalAlignment="Top" RowDefinitions="*,Auto">
@@ -33,8 +33,10 @@
                 <DataTemplate x:DataType="sync:WatchedInstallationViewModel">
                   <Border Classes="card" Padding="0,0,0,8">
                     <StackPanel>
-                      <TextBlock Classes="eyebrow" Margin="20,14,20,0" Text="INSTALLATION" />
-                      <TextBlock Classes="path" Margin="20,4,20,0" Text="{Binding Folder}" />
+                      <TextBlock Classes="eyebrow" Margin="50,14,20,0" Text="INSTALLATION" />
+                      <CheckBox Classes="folder" Theme="{StaticResource AccountCheckBox}" Margin="20,5,20,0"
+                                Content="{Binding Folder}" IsChecked="{Binding IsWatched}"
+                                AutomationProperties.Name="{Binding Folder}" />
                       <ItemsControl Margin="0,9,0,0" ItemsSource="{Binding Accounts}">
                         <ItemsControl.ItemTemplate>
                           <DataTemplate x:DataType="sync:WatchedAccountViewModel">
@@ -42,7 +44,8 @@
                               <Border Classes="divider" />
                               <Grid Height="43" ColumnDefinitions="*,Auto">
                                 <CheckBox Theme="{StaticResource AccountCheckBox}" Margin="20,0,0,0"
-                                          Content="{Binding Name}" IsChecked="{Binding IsWatched}"
+                                          Content="{Binding Name}" IsChecked="{Binding IsChecked}"
+                                          IsEnabled="{Binding IsFolderWatched}"
                                           AutomationProperties.Name="{Binding Name}" />
                                 <TextBlock Grid.Column="1" Classes="note" Margin="0,0,20,0" VerticalAlignment="Center"
                                            Text="{Binding CountText}" />

@@ -7,13 +7,17 @@ namespace RaidManager.Companion.Client.Features.Sync;
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-08<br/>
 /// Purpose: An account of <c>companion-sync</c> board 1: its checkbox, its name and "3 characters" or "Excluded · 4
-/// characters" (#551). The choice is saved by "Save and sync".
+/// characters" (#551). The choice is saved by "Save and sync". In an excluded folder the row shows as excluded and
+/// can't be changed (board 10).
 /// </remarks>
 public sealed class WatchedAccountViewModel : ViewModelBase
 {
     #region Fields
     /// <summary>Stores whether the player wants the account watched.</summary>
     private bool _isWatched;
+
+    /// <summary>Stores whether the account's folder is watched.</summary>
+    private bool _isFolderWatched = true;
     #endregion Fields
 
     #region Constructors
@@ -53,9 +57,30 @@ public sealed class WatchedAccountViewModel : ViewModelBase
         {
             if (SetProperty(ref _isWatched, value))
             {
-                OnPropertyChanged(nameof(CountText));
+                OnShownStateChanged();
             }
         }
+    }
+
+    /// <summary>Gets or sets a value indicating whether the account's folder is watched; its installation sets it.</summary>
+    public bool IsFolderWatched
+    {
+        get => _isFolderWatched;
+        set
+        {
+            if (SetProperty(ref _isFolderWatched, value))
+            {
+                OnShownStateChanged();
+            }
+        }
+    }
+
+    /// <summary>Gets or sets a value indicating whether the checkbox is ticked: the account and its folder are watched.
+    /// Setting it sets <see cref="IsWatched"/>.</summary>
+    public bool IsChecked
+    {
+        get => IsWatched && IsFolderWatched;
+        set => IsWatched = value;
     }
 
     /// <summary>Gets the text at the row's right, such as "3 characters" or "Excluded · 4 characters".</summary>
@@ -64,8 +89,17 @@ public sealed class WatchedAccountViewModel : ViewModelBase
         get
         {
             var count = CharacterCount == 1 ? "1 character" : $"{CharacterCount} characters";
-            return IsWatched ? count : $"Excluded · {count}";
+            return IsChecked ? count : $"Excluded · {count}";
         }
     }
     #endregion Public Properties
+
+    #region Private Helpers
+    /// <summary>Raises the change of what the row shows.</summary>
+    private void OnShownStateChanged()
+    {
+        OnPropertyChanged(nameof(IsChecked));
+        OnPropertyChanged(nameof(CountText));
+    }
+    #endregion Private Helpers
 }

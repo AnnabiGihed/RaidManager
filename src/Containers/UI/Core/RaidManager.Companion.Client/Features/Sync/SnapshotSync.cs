@@ -126,6 +126,7 @@ internal sealed partial class SnapshotSync : BackgroundService, ISnapshotSync
                     _queue.Count,
                     _installations,
                     [.. _settings.ExcludedAccounts],
+                    [.. _settings.ExcludedFolderList],
                     Activity(),
                     [.. _problems.Values],
                     _uploader.Refusals);
@@ -249,6 +250,26 @@ internal sealed partial class SnapshotSync : BackgroundService, ISnapshotSync
             cancellationToken);
 
     /// <inheritdoc />
+    public Task SetFolderWatchedAsync(string folder, bool watched, CancellationToken cancellationToken)
+    {
+        ArgumentNullException.ThrowIfNull(folder);
+        return ChangeAsync(
+            () =>
+            {
+                var excluded = _settings.ExcludedFolderList.Where(path => !string.Equals(path, folder, StringComparison.OrdinalIgnoreCase));
+                Save(_settings with { ExcludedFolders = watched ? [.. excluded] : [.. excluded, folder] });
+                if (!watched && WowInstallationFinder.Describe(folder) is { } installation)
+                {
+                    foreach (var account in installation.Accounts)
+                    {
+                        _queue.DropAccount(account.Id);
+                    }
+                }
+            },
+            cancellationToken);
+    }
+
+    /// <inheritdoc />
     public override void Dispose()
     {
         _gate.Dispose();
@@ -362,7 +383,9 @@ internal sealed partial class SnapshotSync : BackgroundService, ISnapshotSync
     private void Refresh()
     {
         var installations = _settings.Folders.Select(WowInstallationFinder.Describe).OfType<WowInstallation>().ToList();
-        var watched = installations.SelectMany(installation => installation.Accounts)
+        var watched = installations
+            .Where(installation => !_settings.ExcludedFolderList.Contains(installation.Folder, StringComparer.OrdinalIgnoreCase))
+            .SelectMany(installation => installation.Accounts)
             .Where(account => !_settings.ExcludedAccounts.Contains(account.Id))
             .ToDictionary(account => account.Id, StringComparer.Ordinal);
         lock (_state)

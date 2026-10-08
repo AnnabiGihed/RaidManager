@@ -161,6 +161,7 @@ and its task #388 wait for #409 and #411.
 | 2026-10-08 | Improvement #570 added to the Backlog under #156 at the owner's request: automate the evidence comment later; spike #424 stays in the Backlog. |
 | 2026-10-08 | #571 with #572 added under the standing approval on #510: the session's lessons in the skills; #551 resumes in the next session. |
 | 2026-10-08 | #573 merged and closed #572 and #571. #551 resumed: on the owner's decisions recorded on it, a computer already paired opens on the sync screens, board 6 shows only after a new pairing, and a folder that isn't a WoW installation shows a warning on a new board 9 of the companion sync mockup. |
+| 2026-10-08 | The owner's check of the companion build of #574 found board 1 running past the window, fixed in #574. On the owner's decisions recorded on #551, a whole WoW folder can be excluded (board 10, built in #574), and improvement #575 with task #576 was added to the Backlog under #130: My characters will show the characters waiting for review, which today appear only at the next sign-in as #18 specifies. |
 
 ## Outcome
 

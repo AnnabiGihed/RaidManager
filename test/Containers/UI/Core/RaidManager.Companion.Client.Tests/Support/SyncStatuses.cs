@@ -25,7 +25,7 @@ internal static class SyncStatuses
     #region Public Methods
     /// <summary>Builds a status in which nothing is found yet.</summary>
     /// <returns>The status.</returns>
-    public static SyncStatus Empty() => new(false, false, UploadConnection.Unknown, null, 0, [], [], [], [], []);
+    public static SyncStatus Empty() => new(false, false, UploadConnection.Unknown, null, 0, [], [], [], [], [], []);
 
     /// <summary>Builds board 2's status, changed by the arguments.</summary>
     /// <param name="paused">Whether uploads are paused.</param>
@@ -40,7 +40,7 @@ internal static class SyncStatuses
         int queued = 2,
         IReadOnlyList<AccountProblem>? problems = null,
         IReadOnlyList<RefusedSnapshot>? refusals = null) =>
-        new(paused, false, connection, LastSuccess, queued, Installations(), ["ALTACC-id"], Activity(), problems ?? [], refusals ?? []);
+        new(paused, false, connection, LastSuccess, queued, Installations(), ["ALTACC-id"], [], Activity(), problems ?? [], refusals ?? []);
 
     /// <summary>Builds the mockup's two installations.</summary>
     /// <returns>The installations.</returns>

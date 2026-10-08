@@ -147,6 +147,31 @@ public sealed class SyncStateTests : IDisposable
         changes.ShouldBeGreaterThan(0);
     }
 
+    /// <summary>Excluding a folder stops watching its accounts and drops their waiting snapshots; watching it again
+    /// brings them back (owner decision on #551).</summary>
+    /// <returns>A task that completes when the test is done.</returns>
+    [Fact]
+    public async Task ExcludingAFolderLeavesItsAccountsOut()
+    {
+        var installation = _drive.AddInstallation("Games/WoW");
+        WowDrive.AddCharacter(installation, "ARTHASACC", Snapshots.Realm, "Arthasdk");
+        using var sync = NewSync(out var queue);
+        await sync.TickAsync(CancellationToken.None);
+        queue.Offer(Snapshots.Queued("Arthasdk", account: WowDrive.AccountId(installation, "ARTHASACC")));
+
+        await sync.SetFolderWatchedAsync(installation.ToUpperInvariant(), false, CancellationToken.None);
+
+        sync.Status.WatchedAccountCount.ShouldBe(0);
+        sync.Status.AccountCount.ShouldBe(1);
+        sync.Status.ExcludedFolders.ShouldBe([installation.ToUpperInvariant()]);
+        queue.Count.ShouldBe(0);
+        await sync.SetFolderWatchedAsync(installation, true, CancellationToken.None);
+        sync.Status.WatchedAccountCount.ShouldBe(1);
+        sync.Status.ExcludedFolders.ShouldBeEmpty();
+        Should.Throw<ArgumentNullException>(() => sync.SetFolderWatchedAsync(null!, true, CancellationToken.None));
+        Should.Throw<ArgumentNullException>(() => sync.Status.IsWatched(null!));
+    }
+
     /// <summary>A later start lists the watched folders before its first step, so the window opens on the right board (#551).</summary>
     /// <returns>A task that completes when the test is done.</returns>
     [Fact]

@@ -73,6 +73,10 @@ internal sealed class FakeSnapshotSync : ISnapshotSync
     /// <inheritdoc />
     public Task SetAccountWatchedAsync(string accountId, bool watched, CancellationToken cancellationToken) =>
         Record(watched ? $"watch {accountId}" : $"exclude {accountId}");
+
+    /// <inheritdoc />
+    public Task SetFolderWatchedAsync(string folder, bool watched, CancellationToken cancellationToken) =>
+        Record(watched ? $"watch folder {folder}" : $"exclude folder {folder}");
     #endregion Public Methods
 
     #region Private Helpers

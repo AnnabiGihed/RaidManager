@@ -11,6 +11,7 @@ namespace RaidManager.Companion.Client.Features.Sync;
 /// <param name="Queued">The number of snapshots waiting to upload.</param>
 /// <param name="Installations">The watched WoW installations and their accounts (board 1).</param>
 /// <param name="ExcludedAccounts">The hashes of the accounts the player cleared.</param>
+/// <param name="ExcludedFolders">The installation folders the player cleared; their accounts aren't watched.</param>
 /// <param name="Activity">The recent activity, the upload in progress and the characters waiting for WoW first.</param>
 /// <param name="Problems">The accounts whose file needs the player's help (board 5).</param>
 /// <param name="Refusals">The snapshots RaidManager refused, the latest of each character.</param>
@@ -28,6 +29,7 @@ public sealed record SyncStatus(
     int Queued,
     IReadOnlyList<WowInstallation> Installations,
     IReadOnlyCollection<string> ExcludedAccounts,
+    IReadOnlyCollection<string> ExcludedFolders,
     IReadOnlyList<CharacterActivity> Activity,
     IReadOnlyList<AccountProblem> Problems,
     IReadOnlyList<RefusedSnapshot> Refusals)
@@ -38,6 +40,17 @@ public sealed record SyncStatus(
 
     /// <summary>Gets the number of accounts watched, such as the 3 of "3 of 4 watched".</summary>
     public int WatchedAccountCount =>
-        Installations.Sum(installation => installation.Accounts.Count(account => !ExcludedAccounts.Contains(account.Id)));
+        Installations.Where(IsWatched).Sum(installation => installation.Accounts.Count(account => !ExcludedAccounts.Contains(account.Id)));
     #endregion Public Properties
+
+    #region Public Methods
+    /// <summary>Tells whether an installation is watched, that is, the player didn't clear its folder.</summary>
+    /// <param name="installation">The installation.</param>
+    /// <returns><see langword="true"/> unless its folder is excluded.</returns>
+    public bool IsWatched(WowInstallation installation)
+    {
+        ArgumentNullException.ThrowIfNull(installation);
+        return !ExcludedFolders.Contains(installation.Folder, StringComparer.OrdinalIgnoreCase);
+    }
+    #endregion Public Methods
 }
