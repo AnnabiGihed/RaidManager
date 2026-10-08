@@ -104,6 +104,7 @@ public sealed class SyncViewTests : IDisposable
             "Icecrown", "Uploaded today, 14:05", "Pause sync", "Watched folders", Footer + Environment.MachineName]);
         VisibleButtons(window).ShouldBe(["PauseButton", "FoldersButton"]);
         Badge(window).Classes.ShouldContain("success");
+        Badge(window).Text.ShouldBe("Syncing");
         window.GetVisualDescendants().OfType<ProgressBar>().Single(bar => bar.IsEffectivelyVisible).IsIndeterminate.ShouldBeTrue();
     }
 
