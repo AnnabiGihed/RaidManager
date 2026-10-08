@@ -11,8 +11,8 @@ from unittest import mock
 sys.path.insert(0, str(Path(__file__).resolve().parents[1]))
 import project_hierarchy  # noqa: E402
 from project_hierarchy import (  # noqa: E402
-    DEPENDENCY_PROBLEM, NEEDS_CONTRACT, NEEDS_PARENT, Guard, Issue, Node, chain_problem, closing_numbers,
-    completion_problem, parent_problem, placement_problem, prerequisite_problem,
+    DEPENDENCY_PROBLEM, NEEDS_CONTRACT, NEEDS_PARENT, Guard, Issue, Node, chain_problem, check_issues, closing_numbers,
+    completion_problem, parent_problem, placement_problem, prerequisite_problem, recent_issue_numbers,
 )
 from work_contracts import ADOPTED  # noqa: E402
 
@@ -272,6 +272,29 @@ class GuardTests(unittest.TestCase):
         self.guard.check_completion(Node(story, issue(125, "feature"), [task]))
         self.assertEqual(self.calls()[0][:3], ("issue", "reopen", "13"))
         self.assertIn(13, self.guard.reopened)
+
+
+class RecentIssueTests(unittest.TestCase):
+    """An issue run also checks the issues another event's run may have replaced in the queue (#579)."""
+
+    def test_recent_issues_are_those_updated_in_the_last_thirty_minutes(self) -> None:
+        now = datetime(2026, 10, 8, 12, 0, tzinfo=timezone.utc)
+        with mock.patch.object(project_hierarchy, "gh", return_value='[{"number": 578}, {"number": 577}]') as gh:
+            self.assertEqual(recent_issue_numbers(now), [578, 577])
+        self.assertIn("updated:>=2026-10-08T11:30:00Z", gh.call_args.args)
+        self.assertIn("all", gh.call_args.args)
+        self.assertNotIn("--repo", gh.call_args.args)
+
+    def test_each_issue_and_shared_ancestor_is_checked_once(self) -> None:
+        story = Node(issue(13, "story"), issue(129, "feature"))
+        feature = Node(issue(129, "feature"), issue(7, "epic"))
+        nodes = {578: Node(issue(578, "task"), issue(13, "story")), 580: Node(issue(580, "task"), issue(13, "story")),
+                 13: story, 129: feature, 7: Node(issue(7, "epic"))}
+        guard = mock.Mock()
+        with mock.patch.object(project_hierarchy, "fetch_node", side_effect=lambda _, number: nodes[number]) as fetch:
+            check_issues("owner/repo", guard, [580, 578, 580])
+        self.assertEqual([call.args[1] for call in fetch.call_args_list], [580, 13, 129, 7, 578])
+        self.assertEqual(guard.check.call_count, 5)
 
 
 if __name__ == "__main__":

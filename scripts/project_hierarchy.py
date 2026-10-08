@@ -64,6 +64,10 @@ NAMES = {kind: kind.removeprefix("type:") for kind in (EPIC, FEATURE, STORY, IMP
 # Leaves first, so a parent is judged after the children the same run reopened.
 DEPTH = {TASK: 0, **dict.fromkeys(BACKLOG_ITEMS, 1), FEATURE: 2, EPIC: 3}
 ANCESTOR_LEVELS = 3
+# The workflow runs one check at a time, and GitHub keeps one waiting run: an event for another issue replaces it.
+# Each issue run therefore also checks the issues updated in this window, so a replaced run's issue is still checked
+# (#579). It is longer than the time a burst of events takes to drain.
+RECENT = timedelta(minutes=30)
 CLOSING_LINE = re.compile(r"^Closes #(\d+)[ \t]*$", re.IGNORECASE)
 FIELDS = "number state stateReason createdAt milestone { title } labels(first: 20) { nodes { name } }"
 NODE = (f"{FIELDS} body parent {{ {FIELDS} }} subIssues(first: 100) {{ nodes {{ {FIELDS} }} }} "
@@ -354,6 +358,33 @@ class Guard:
         self.check_completion(node)
 
 
+def recent_issue_numbers(now: datetime) -> list[int]:
+    """Lists the issues updated within RECENT of now, open or closed, newest first.
+
+    It asks the repository of the checkout the workflow runs in, so no command-line text reaches the command.
+    """
+    since = (now - RECENT).strftime("%Y-%m-%dT%H:%M:%SZ")
+    found = json.loads(gh("issue", "list", "--state", "all", "--limit", "100",
+                          "--search", f"updated:>={since}", "--json", "number") or "[]")
+    return [item["number"] for item in found]
+
+
+def check_issues(repository: str, guard: Guard, numbers: list[int]) -> None:
+    """Checks each issue and its ancestors once, however many of the issues share them."""
+    checked: set[int] = set()
+    for start in dict.fromkeys(numbers):
+        number = start
+        for _ in range(ANCESTOR_LEVELS + 1):
+            if number in checked:
+                break
+            checked.add(number)
+            node = fetch_node(repository, number)
+            guard.check(node)
+            if node.parent is None:
+                break
+            number = node.parent.number
+
+
 def check_pull_request(repository: str, body: str) -> int:
     problems = [problem for number in closing_numbers(body)
                 if (problem := chain_problem(number, lambda n: fetch_node(repository, n)))]
@@ -367,7 +398,7 @@ def check_pull_request(repository: str, body: str) -> int:
 def main() -> int:
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repository", required=True)
-    parser.add_argument("--issue", type=int, help="check one issue and its ancestors")
+    parser.add_argument("--issue", type=int, help="check one issue and its ancestors, and the recently updated ones")
     parser.add_argument("--pull-request", action="store_true", help="check the work items PR_BODY closes")
     parser.add_argument("--releases", action="store_true", help="check closed release milestones only")
     args = parser.parse_args()
@@ -378,13 +409,7 @@ def main() -> int:
         guard.check_releases()
         return 0
     if args.issue:
-        number: int = args.issue
-        for _ in range(ANCESTOR_LEVELS + 1):
-            node = fetch_node(args.repository, number)
-            guard.check(node)
-            if node.parent is None:
-                break
-            number = node.parent.number
+        check_issues(args.repository, guard, [args.issue, *recent_issue_numbers(guard.now)])
         return 0
     nodes = fetch_all(args.repository)
     for node in sorted(nodes, key=lambda node: DEPTH.get(node.issue.kind or "", -1)):

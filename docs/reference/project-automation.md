@@ -161,7 +161,9 @@ The [hierarchy workflow](https://github.com/AnnabiGihed/RaidManager/blob/main/.g
 runs with the built-in `GITHUB_TOKEN`:
 
 - When an issue is closed or reopened, or its labels change, it checks that issue and its three ancestors. A task
-  reopened under a completed story therefore reopens the story, its feature and its epic.
+  reopened under a completed story therefore reopens the story, its feature and its epic. Checks run one at a time,
+  and GitHub keeps only one waiting run, so an event for another issue can replace it; each issue run therefore also
+  checks the issues updated in the last 30 minutes (#579).
 - Every 15 minutes it audits every issue, as a safety net for events it missed and for sub-issue changes, which
   start no workflow.
 - It reopens an invalid parent with a comment that names the missing or open children.
@@ -174,6 +176,26 @@ runs with the built-in `GITHUB_TOKEN`:
 - Rules that need Project fields, such as the active-sprint gate, Status against the close reason, estimates and
   Delivery Stage, run in the agent preflight and board report instead, because the token can't read a user-owned
   Project (specification §22).
+
+## Workflow triggers
+
+Every workflow runs on the owner's self-hosted runners (ADR-0034), so each run it doesn't need costs the owner's
+computer. Each trigger below is there for a reason; a run whose result nothing reads isn't started (#579).
+
+| Workflow | Triggers | Why |
+| --- | --- | --- |
+| `ci` | Pull request (opened, new commit, reopened); dispatch by `review` after a merge; push to `main` | `build-test` and `sonar` are required checks on the pull request's head; the run on `main` measures the merged code. A newer commit cancels the run of the older commit. |
+| `addon` | Pull request or push to `main` that changes `src/Addon`, `test/Addon`, `test/Fixtures/Addon`, `.luacheckrc`, `.stylua.toml` or the workflow; dispatch | The addon's Lua checks, only where they can change; `lua` isn't required, so a pull request without those files doesn't wait for it. GitHub compares the whole pull request with `main`, so one that changes the addon runs it on each push. A newer commit cancels the run of the older commit. |
+| `docs` | Pull request (opened, new commit, reopened, description edited); dispatch by `review` after a merge; push to `main` | `validate` is a required check, run on each commit so a failure shows before the reviews. An edited description runs only the description checks when the full ones already passed on that commit, in the same job, because GitHub counts a skipped required check as passed. A newer commit or description cancels the older run. Marking a draft ready changes nothing it reads, so it starts no run. |
+| `review` | `pull_request_target` (opened, new commit, reopened, ready); a review or review comment; `ci` or `docs` completed on a pull request's branch | Sets `review-gate`, hands new commits back to the operator, acts on the sign-off, and merges once every required check passed, so it runs again when one finishes. The runs on `main` start none, and the completion of a canceled check is skipped. |
+| `deploy-dev` | Dispatch by `review` after a merge, or by hand | Deploys `main` to dev when a deployed file changed, and labels the items (#491). |
+| `docs-publish` | Dispatch by `review` after a merge; push to `main` | Publishes GitHub Pages and the Wiki from `main`. |
+| `project-hierarchy` | Issue events that change what it checks; a closed milestone; every 15 minutes; dispatch | The hierarchy, contract, mockup and completion rules; the audit catches sub-issue changes, which start no workflow. |
+| `dependency-task` | `pull_request_target` opened, reopened or closed | Gives Dependabot's pull request its task; its job is skipped for every other pull request, as GitHub can't filter the trigger by author. |
+| `docs-links` | Weekly, and dispatch | External links change without any commit, so they are checked weekly rather than on every pull request. |
+
+A merge through `review` uses the workflow token, which starts no push workflow; `review` dispatches `ci`, `docs`,
+`docs-publish` and `deploy-dev` on `main` itself, once per merge.
 
 ## Agent preflight and board report
 

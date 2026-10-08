@@ -508,3 +508,10 @@ Every workflow job runs on the owner's ephemeral runners, labeled `self-hosted`,
   old (#567), both against the recommended option.
 - **Checks wait while the owner's computer is off**, and a fork's pull request gets no checks: never merge one as it
   is.
+- **Every trigger has a reason.** The "Workflow triggers" table of `docs/reference/project-automation.md` says why
+  each workflow runs on each event; a new trigger adds its row in the same pull request. A pull request's `ci`, `addon`
+  and `docs` runs cancel the run of an older commit or description, `addon` runs only for the addon's files, an edited
+  description runs only `docs`' description checks once the full ones passed on that commit (never a separate job: a
+  skipped required check counts as passed), `review` starts no run for the checks on `main`,
+  and an issue run of `project-hierarchy` also checks the issues updated in the last 30 minutes, because an event for
+  another issue can replace its waiting run (#579).
