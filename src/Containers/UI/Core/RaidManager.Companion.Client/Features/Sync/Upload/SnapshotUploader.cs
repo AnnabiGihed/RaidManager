@@ -105,6 +105,15 @@ internal sealed partial class SnapshotUploader
         _time = time;
         _logger = logger;
         _random = random;
+
+        // The uploads kept in the queue file give the sync screen its history after a restart (#592).
+        var history = queue.Uploaded
+            .Where(uploaded => uploaded.UploadedAt is not null)
+            .OrderByDescending(uploaded => uploaded.UploadedAt)
+            .ToList();
+        _lastSuccess = history.Count > 0 ? history[0].UploadedAt : null;
+        _recentUploads.AddRange(history.Take(RecentUploadsKept)
+            .Select(uploaded => new UploadedCharacter(uploaded.Character, uploaded.UploadedAt!.Value)));
     }
     #endregion Constructors
 
@@ -271,7 +280,7 @@ internal sealed partial class SnapshotUploader
         switch (result.Outcome)
         {
             case SnapshotUploadOutcome.Accepted:
-                _queue.Accept(snapshot);
+                _queue.Accept(snapshot, now);
                 Update(() =>
                 {
                     _failures = 0;

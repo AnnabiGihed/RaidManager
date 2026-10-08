@@ -172,6 +172,29 @@ public sealed class SyncStateTests : IDisposable
         Should.Throw<ArgumentNullException>(() => sync.Status.IsWatched(null!));
     }
 
+    /// <summary>After a restart, the status shows the last success and the recent uploads from before it, newest
+    /// first, so a sync with nothing new to send doesn't look idle (#592).</summary>
+    /// <returns>A task that completes when the test is done.</returns>
+    [Fact]
+    public async Task ARestartShowsTheUploadsFromBefore()
+    {
+        using (var first = NewSync(out var queue))
+        {
+            queue.Offer(Snapshots.Queued("Arthasdk"));
+            await first.TickAsync(CancellationToken.None);
+            _time.Advance(TimeSpan.FromMinutes(5));
+            queue.Offer(Snapshots.Queued("Jaina"));
+            await first.TickAsync(CancellationToken.None);
+        }
+
+        using var later = NewSync(out _);
+
+        later.Status.LastSuccess.ShouldBe(_time.GetUtcNow());
+        later.Status.Activity.Select(row => row.Character.Name).ShouldBe(["Jaina", "Arthasdk"]);
+        later.Status.Activity.ShouldAllBe(row => row.State == CharacterActivityState.Uploaded);
+        later.Status.Connection.ShouldBe(UploadConnection.Unknown);
+    }
+
     /// <summary>A later start lists the watched folders before its first step, so the window opens on the right board (#551).</summary>
     /// <returns>A task that completes when the test is done.</returns>
     [Fact]
