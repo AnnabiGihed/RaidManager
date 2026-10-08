@@ -450,6 +450,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- In the companion's watched folders, ticking a folder again ticks every account in it, dropping the accounts cleared
+  one by one before; it used to leave them cleared (#593).
 - A merge that changes only the desktop companion no longer starts a dev deployment: the companion runs on players'
   computers, never on the server (#600).
 - After a restart, the companion's sync screen shows the last success and the recent uploads from before it, kept in

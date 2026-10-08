@@ -26,14 +26,15 @@ Feature: Companion sync screens
       When the player saves and syncs
       Then the sync was asked to "exclude folder D:\WoW\Warmane"
 
-    Scenario: Ticking an excluded folder again shows its accounts' own choices
+    Scenario: Ticking a folder again ticks every account in it
       Given the window shows the watched folders
-      When the player clears the folder "C:\Games\Warmane\World of Warcraft"
+      When the player clears "JAINAACC"
+      And the player clears the folder "C:\Games\Warmane\World of Warcraft"
       And the player ticks the folder "C:\Games\Warmane\World of Warcraft"
-      Then the row of "ARTHASACC" reads "3 characters"
-      And the row of "ALTACC" reads "Excluded · 4 characters"
+      Then the row of "JAINAACC" reads "2 characters"
+      And the row of "ALTACC" reads "4 characters"
       When the player saves and syncs
-      Then the sync was asked nothing
+      Then the sync was asked to "watch ALTACC-id"
 
     Scenario: Ticking an excluded account watches it again
       Given the window shows the watched folders

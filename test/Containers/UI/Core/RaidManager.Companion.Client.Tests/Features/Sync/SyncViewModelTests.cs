@@ -62,6 +62,19 @@ public sealed class SyncViewModelTests : IDisposable
         _screens.Sync.HasNoFolders.ShouldBeTrue();
     }
 
+    /// <summary>Ticking a folder that is already ticked keeps an account the player cleared (#593).</summary>
+    [Fact]
+    public void TickingAWatchedFolderChangesNothing()
+    {
+        _screens.Sync.ShowFolders();
+        var installation = _screens.Sync.Installations[0];
+        installation.Accounts[0].IsWatched = false;
+
+        installation.IsWatched = true;
+
+        installation.Accounts[0].IsWatched.ShouldBeFalse();
+    }
+
     /// <summary>Saving sends only the accounts whose choice changed.</summary>
     /// <returns>A task that completes when the test is done.</returns>
     [Fact]

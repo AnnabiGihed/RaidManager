@@ -118,6 +118,26 @@ public sealed class SyncViewTests : IDisposable
         (saveTop - scroller.TranslatePoint(new Point(0, scroller.Bounds.Height), window)!.Value.Y).ShouldBe(24);
     }
 
+    /// <summary>Clearing an account, then its folder, then ticking the folder again ticks every account in it, as the
+    /// owner expects (#593).</summary>
+    /// <returns>A task that completes when the test is done.</returns>
+    [AvaloniaFact]
+    public async Task TickingAFolderAgainTicksItsAccounts()
+    {
+        var window = await ShowFoldersAsync();
+        CheckBox Box(string name) => CheckBoxes(window).Single(box => AutomationProperties.GetName(box) == name);
+        const string Folder = @"C:\Games\Warmane\World of Warcraft";
+
+        Press(window, Box("JAINAACC"));
+        Press(window, Box(Folder));
+        Press(window, Box(Folder));
+
+        Box("JAINAACC").IsChecked.ShouldBe(true);
+        Box("ALTACC").IsChecked.ShouldBe(true);
+        Box("ARTHASACC").IsChecked.ShouldBe(true);
+        Box("ALTACC").IsEffectivelyEnabled.ShouldBeTrue();
+    }
+
     /// <summary>A click on an account's checkbox clears it, and Save and sync sends the exclusion.</summary>
     /// <returns>A task that completes when the test is done.</returns>
     [AvaloniaFact]
