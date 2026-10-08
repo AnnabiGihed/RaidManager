@@ -79,17 +79,17 @@ generate the mockup with the `penpot-mockups` skill (ADR-0018), then have the ow
    committing and leave every file you didn't create alone. Commit with a Conventional Commit title containing the
    task number, and open one draft PR for that task against `main`:
    - Link the task with `Closes #<task-number>` on a standalone line before the first heading. Only tasks may be
-     closed by a PR, and the docs `validate` check fails unless each one reaches an epic through a story,
+     closed by a PR, and the `description` check fails unless each one reaches an epic through a story,
      improvement, bug or spike and a feature (ADR-0025).
    - When the change touches user-interface files, show the mockup it implements
-     (`![<screen>](docs/mockups/<screen>.svg)`), or state `No visual change: <reason>` on its own line. The docs
-     `validate` check fails otherwise.
+     (`![<screen>](docs/mockups/<screen>.svg)`), or state `No visual change: <reason>` on its own line. The
+     `description` check fails otherwise.
    - Reference the parents with `Refs #<number>`. Examples and parent references must not use closing keywords.
    - Map each task criterion to evidence, quote the coverage comment's numbers, and include the five required
      sections, in this order: `## What changed`, `## Why it changed`, `## How it was tested`, `## What to review
      carefully`, `## Migration or deployment notes` (write `None.` if none), then `### Author self-review` with
      its six checkboxes from `pr-and-branching-standards`. Do not describe a skipped or failing check as passed.
-   - Check the description before opening the PR, as the `validate` check does:
+   - Check the description before opening the PR, as the `description` check does:
      `PR_BODY="$(cat <body file>)" python scripts/validate_pr.py` must print "Pull-request description passed"
      (#453 failed it once for the two last sections).
 6. Never mark the PR ready and never write a review or review comment in the operator's name: those are the

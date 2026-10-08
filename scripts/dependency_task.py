@@ -6,7 +6,7 @@ close a task in the hierarchy (ADR-0025), so this script, run by the `dependency
 - when Dependabot opens or reopens a pull request, creates a task under the standing improvement for updates, with
   its contract, type label, the improvement's milestone and the owner as assignee, links it as a sub-issue, and
   rewrites the pull request description with `Closes #<task>` and the five required sections. The self-review
-  checklist stays unticked: the owner ticks it while reviewing, which also re-runs the `validate` check;
+  checklist stays unticked: the owner ticks it while reviewing, which also re-runs the `description` check;
 - when Dependabot closes a pull request without merging it (a newer release supersedes it), closes its task as not
   planned with a comment.
 
@@ -87,7 +87,7 @@ The required checks of the pull request, which run the updated workflows.
 
 
 def pull_request_body(pull_request: PullRequest, task: int) -> str:
-    """The description the `validate` check requires, written for an update the owner reviews as the operator."""
+    """The description the `description` check requires, written for an update the owner reviews as the operator."""
     return f"""Closes #{task}
 
 Refs #{UPDATES}

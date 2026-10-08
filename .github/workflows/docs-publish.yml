@@ -1,7 +1,7 @@
 name: docs-publish
 
 # Publishing runs only on main, in its own workflow, so pull requests never list a skipped deploy job.
-# Content reaching main already passed the docs validate check on its pull request. The review workflow starts it
+# Content reaching main already passed the `docs` check on its pull request. The review workflow starts it
 # after merging, because its workflow-token merge triggers no push.
 on:
   push:
