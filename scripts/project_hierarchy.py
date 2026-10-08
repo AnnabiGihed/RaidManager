@@ -358,10 +358,13 @@ class Guard:
         self.check_completion(node)
 
 
-def recent_issue_numbers(repository: str, now: datetime) -> list[int]:
-    """Lists the issues updated within RECENT of now, open or closed, newest first."""
+def recent_issue_numbers(now: datetime) -> list[int]:
+    """Lists the issues updated within RECENT of now, open or closed, newest first.
+
+    It asks the repository of the checkout the workflow runs in, so no command-line text reaches the command.
+    """
     since = (now - RECENT).strftime("%Y-%m-%dT%H:%M:%SZ")
-    found = json.loads(gh("issue", "list", "--repo", repository, "--state", "all", "--limit", "100",
+    found = json.loads(gh("issue", "list", "--state", "all", "--limit", "100",
                           "--search", f"updated:>={since}", "--json", "number") or "[]")
     return [item["number"] for item in found]
 
@@ -406,7 +409,7 @@ def main() -> int:
         guard.check_releases()
         return 0
     if args.issue:
-        check_issues(args.repository, guard, [args.issue, *recent_issue_numbers(args.repository, guard.now)])
+        check_issues(args.repository, guard, [args.issue, *recent_issue_numbers(guard.now)])
         return 0
     nodes = fetch_all(args.repository)
     for node in sorted(nodes, key=lambda node: DEPTH.get(node.issue.kind or "", -1)):
