@@ -62,7 +62,7 @@ public sealed class CompanionUploadQueueStepDefinitions : IDisposable
     {
         var snapshot = Snapshots.Queued(name, capturedAt);
         _queue.Offer(snapshot).ShouldBeTrue();
-        _queue.Accept(snapshot);
+        _queue.Accept(snapshot, DateTimeOffset.UnixEpoch);
     }
 
     /// <summary>Reopens the queue from its file.</summary>

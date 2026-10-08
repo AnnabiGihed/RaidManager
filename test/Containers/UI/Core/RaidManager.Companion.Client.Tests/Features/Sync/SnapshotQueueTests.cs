@@ -84,10 +84,38 @@ public sealed class SnapshotQueueTests : IDisposable
     public void AcceptingAnOlderSnapshotKeepsTheNewerCaptureTime()
     {
         var queue = Snapshots.Queue(_folder);
-        queue.Accept(Snapshots.Queued("Arthasdk", 200));
-        queue.Accept(Snapshots.Queued("Arthasdk", 100));
+        queue.Accept(Snapshots.Queued("Arthasdk", 200), DateTimeOffset.UnixEpoch);
+        queue.Accept(Snapshots.Queued("Arthasdk", 100), DateTimeOffset.UnixEpoch);
 
         queue.Offer(Snapshots.Queued("Arthasdk", 150)).ShouldBeFalse();
+    }
+
+    /// <summary>The time of an upload is kept in the file, so a restart knows when the latest upload happened (#592).</summary>
+    [Fact]
+    public void TheUploadTimeSurvivesARestart()
+    {
+        var uploadedAt = new DateTimeOffset(2026, 10, 8, 14, 5, 0, TimeSpan.Zero);
+        Snapshots.Queue(_folder).Accept(Snapshots.Queued("Arthasdk", 200), uploadedAt);
+
+        var uploaded = Snapshots.Queue(_folder).Uploaded.ShouldHaveSingleItem();
+
+        uploaded.UploadedAt.ShouldBe(uploadedAt);
+        uploaded.CapturedAt.ShouldBe(200);
+    }
+
+    /// <summary>A file written before upload times were kept still loads, without a time (#592).</summary>
+    [Fact]
+    public void AFileWithoutUploadTimesLoads()
+    {
+        Directory.CreateDirectory(_folder);
+        File.WriteAllText(
+            new SyncFileLocation(_folder).QueuePath,
+            """{"queued":[],"uploaded":[{"realm":"Icecrown","name":"Arthasdk","capturedAt":200}]}""");
+
+        var queue = Snapshots.Queue(_folder);
+
+        queue.Uploaded.ShouldHaveSingleItem().UploadedAt.ShouldBeNull();
+        queue.Offer(Snapshots.Queued("Arthasdk", 200)).ShouldBeFalse();
     }
     #endregion Tests
 }

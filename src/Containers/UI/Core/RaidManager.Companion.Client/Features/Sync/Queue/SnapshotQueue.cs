@@ -30,8 +30,8 @@ internal sealed partial class SnapshotQueue
     /// <summary>Stores the snapshots waiting, oldest first.</summary>
     private readonly List<QueuedSnapshot> _queued;
 
-    /// <summary>Stores the capture time of the latest accepted snapshot of each character.</summary>
-    private readonly Dictionary<CharacterKey, long> _uploaded;
+    /// <summary>Stores the latest accepted snapshot of each character, with when it was accepted.</summary>
+    private readonly Dictionary<CharacterKey, UploadedSnapshot> _uploaded;
     #endregion Fields
 
     #region Constructors
@@ -44,7 +44,7 @@ internal sealed partial class SnapshotQueue
         _filePath = location.QueuePath;
         var stored = Load(_filePath, logger);
         _queued = [.. stored.Queued];
-        _uploaded = stored.Uploaded.ToDictionary(uploaded => new CharacterKey(uploaded.Realm, uploaded.Name), uploaded => uploaded.CapturedAt);
+        _uploaded = stored.Uploaded.ToDictionary(uploaded => uploaded.Character);
     }
     #endregion Constructors
 
@@ -57,6 +57,18 @@ internal sealed partial class SnapshotQueue
             lock (_gate)
             {
                 return _queued.Count;
+            }
+        }
+    }
+
+    /// <summary>Gets the latest accepted snapshot of each character, with when it was accepted when known.</summary>
+    public IReadOnlyList<UploadedSnapshot> Uploaded
+    {
+        get
+        {
+            lock (_gate)
+            {
+                return [.. _uploaded.Values];
             }
         }
     }
@@ -84,7 +96,7 @@ internal sealed partial class SnapshotQueue
         lock (_gate)
         {
             var key = snapshot.Key;
-            if (_uploaded.TryGetValue(key, out var accepted) && accepted >= snapshot.CapturedAt)
+            if (_uploaded.TryGetValue(key, out var accepted) && accepted.CapturedAt >= snapshot.CapturedAt)
             {
                 return false;
             }
@@ -118,15 +130,16 @@ internal sealed partial class SnapshotQueue
 
     /// <summary>Removes a snapshot RaidManager accepted, and remembers it as its character's latest.</summary>
     /// <param name="snapshot">The snapshot.</param>
-    public void Accept(QueuedSnapshot snapshot)
+    /// <param name="uploadedAt">When RaidManager accepted it.</param>
+    public void Accept(QueuedSnapshot snapshot, DateTimeOffset uploadedAt)
     {
         ArgumentNullException.ThrowIfNull(snapshot);
         lock (_gate)
         {
             _queued.Remove(snapshot);
-            if (!_uploaded.TryGetValue(snapshot.Key, out var accepted) || accepted < snapshot.CapturedAt)
+            if (!_uploaded.TryGetValue(snapshot.Key, out var accepted) || accepted.CapturedAt < snapshot.CapturedAt)
             {
-                _uploaded[snapshot.Key] = snapshot.CapturedAt;
+                _uploaded[snapshot.Key] = new UploadedSnapshot(snapshot.Realm, snapshot.Name, snapshot.CapturedAt, uploadedAt);
             }
 
             Save();
@@ -199,7 +212,7 @@ internal sealed partial class SnapshotQueue
     {
         var stored = new SnapshotQueueFile(
             [.. _queued],
-            [.. _uploaded.Select(uploaded => new UploadedSnapshot(uploaded.Key.Realm, uploaded.Key.Name, uploaded.Value))]);
+            [.. _uploaded.Values]);
         Directory.CreateDirectory(Path.GetDirectoryName(_filePath)!);
         var temporaryPath = _filePath + TemporarySuffix;
         File.WriteAllBytes(temporaryPath, JsonSerializer.SerializeToUtf8Bytes(stored, SyncJsonContext.Default.SnapshotQueueFile));

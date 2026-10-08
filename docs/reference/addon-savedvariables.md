@@ -200,7 +200,9 @@ How the companion reads and uploads the file (#550):
   the file has stayed the same for 30 seconds, as an incomplete snapshot the player fixes with `/reload` or a logout.
 - **Queue:** waiting snapshots are kept in `%LOCALAPPDATA%\RaidManager\sync-queue.json`, keyed by realm, name and
   `capturedAt`; a newer snapshot of a character replaces the waiting one, and one as old as the last accepted isn't
-  queued again. The file keeps a hash of the account folder, never its name.
+  queued again. It also keeps each character's latest accepted snapshot and when it was accepted, so after a restart
+  the sync screen still shows the last success and the recent uploads (#592). The file keeps a hash of the account
+  folder, never its name.
 - **Answers:** 202 and 200 remove the snapshot; 400 drops it and shows the refusal. A network failure, a timeout or a
   server error retries after 5 seconds, doubling to at most 5 minutes, each wait up to a fifth longer at random; 429
   waits for `Retry-After` (a minute without it); 401 stops uploads until the companion is paired again.

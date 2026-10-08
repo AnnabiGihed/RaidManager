@@ -450,6 +450,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- After a restart, the companion's sync screen shows the last success and the recent uploads from before it, kept in
+  `sync-queue.json`; it no longer says "Not yet" with an empty activity while everything is synced (#592).
 - The board report (`work_gate.py report`) also starts one `project-hierarchy` audit run, since GitHub runs the audit's
   15-minute schedule only every few hours: a relabel, milestone change or edit is checked at least at each session start
   and after each merge (#588).
