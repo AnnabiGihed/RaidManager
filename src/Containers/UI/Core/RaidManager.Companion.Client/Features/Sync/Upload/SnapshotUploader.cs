@@ -238,6 +238,15 @@ internal sealed partial class SnapshotUploader
 
         OnChanged();
     }
+
+    /// <summary>Asks RaidManager whether the player asked to send every character again, with the stored token (#615).</summary>
+    /// <param name="cancellationToken">A token to stop.</param>
+    /// <returns>When the player asked, or <see langword="null"/> when not paired, never asked, or not reachable.</returns>
+    public async Task<DateTimeOffset?> SyncAgainRequestAsync(CancellationToken cancellationToken)
+    {
+        var token = await _tokens.LoadAsync(cancellationToken);
+        return token is null ? null : await _api.GetSyncAgainRequestAsync(token.DeviceToken, cancellationToken);
+    }
     #endregion Public Methods
 
     #region Private Helpers

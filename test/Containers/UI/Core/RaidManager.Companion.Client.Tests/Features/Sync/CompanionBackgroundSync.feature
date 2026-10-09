@@ -162,3 +162,34 @@ Feature: Companion background sync
       And the player watches the account "ARTHASACCOUNT" again
       When the companion syncs for 5 seconds
       Then RaidManager received "Arthasdk"
+
+  Rule: A request to sync again sends every character again, once
+
+    Scenario: A request to sync again uploads every character again
+      Given World of Warcraft is installed in "World of Warcraft" with the account "MAINACCOUNT"
+      And the addon file of "MAINACCOUNT" is the "multiple-accounts" fixture
+      And the companion has started syncing
+      And the companion has synced for 30 seconds
+      And the player asked to send every character again
+      When the companion syncs for 70 seconds
+      Then RaidManager received "Arthasdk, Jaína, Arthasdk, Jaína"
+
+    Scenario: A request is carried out once
+      Given World of Warcraft is installed in "World of Warcraft" with the account "MAINACCOUNT"
+      And the addon file of "MAINACCOUNT" is the "multiple-accounts" fixture
+      And the companion has started syncing
+      And the companion has synced for 30 seconds
+      And the player asked to send every character again
+      When the companion syncs for 190 seconds
+      Then RaidManager received "Arthasdk, Jaína, Arthasdk, Jaína"
+      And the sync asked about a request 4 times
+
+    Scenario: A request made while the companion was off is carried out at the next start
+      Given World of Warcraft is installed in "World of Warcraft" with the account "MAINACCOUNT"
+      And the addon file of "MAINACCOUNT" is the "multiple-accounts" fixture
+      And the companion has started syncing
+      And the companion has synced for 30 seconds
+      And the player asked to send every character again
+      When the companion restarts
+      And the companion syncs for 10 seconds
+      Then RaidManager received "Arthasdk, Jaína, Arthasdk, Jaína"

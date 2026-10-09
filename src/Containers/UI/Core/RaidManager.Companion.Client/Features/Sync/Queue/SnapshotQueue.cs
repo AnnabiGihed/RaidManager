@@ -175,6 +175,17 @@ internal sealed partial class SnapshotQueue
             return removed;
         }
     }
+
+    /// <summary>Forgets which snapshots were uploaded, so the next read sends every character again (#615).</summary>
+    /// <remarks>The waiting snapshots stay; the history on the sync screen comes back as the characters upload.</remarks>
+    public void ForgetUploaded()
+    {
+        lock (_gate)
+        {
+            _uploaded.Clear();
+            Save();
+        }
+    }
     #endregion Public Methods
 
     #region Private Helpers

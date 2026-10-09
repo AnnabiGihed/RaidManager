@@ -90,6 +90,20 @@ public sealed class SnapshotQueueTests : IDisposable
         queue.Offer(Snapshots.Queued("Arthasdk", 150)).ShouldBeFalse();
     }
 
+    /// <summary>Forgetting the uploads lets the same snapshot be sent again, also after a restart (#615).</summary>
+    [Fact]
+    public void ForgettingTheUploadsLetsTheSameSnapshotBeSentAgain()
+    {
+        var queue = Snapshots.Queue(_folder);
+        queue.Accept(Snapshots.Queued("Arthasdk", 200), DateTimeOffset.UnixEpoch);
+        queue.Offer(Snapshots.Queued("Arthasdk", 200)).ShouldBeFalse();
+
+        queue.ForgetUploaded();
+
+        Snapshots.Queue(_folder).Uploaded.ShouldBeEmpty();
+        queue.Offer(Snapshots.Queued("Arthasdk", 200)).ShouldBeTrue();
+    }
+
     /// <summary>The time of an upload is kept in the file, so a restart knows when the latest upload happened (#592).</summary>
     [Fact]
     public void TheUploadTimeSurvivesARestart()

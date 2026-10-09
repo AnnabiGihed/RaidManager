@@ -29,6 +29,12 @@ internal sealed class FakeSnapshotApi : ISnapshotApi
 
     /// <summary>Gets the uploads received, as the character's name and the device token used.</summary>
     public List<(string Name, string DeviceToken)> Uploads { get; } = [];
+
+    /// <summary>Gets or sets when the player asked to send every character again, as /companion/me reports it (#615).</summary>
+    public DateTimeOffset? SyncAgainRequest { get; set; }
+
+    /// <summary>Gets the number of times the sync asked whether the player asked to sync again.</summary>
+    public int SyncAgainChecks { get; private set; }
     #endregion Public Properties
 
     #region Public Methods
@@ -46,6 +52,13 @@ internal sealed class FakeSnapshotApi : ISnapshotApi
         return Task.FromResult(deviceToken == RefusedToken
             ? new SnapshotUploadResult(SnapshotUploadOutcome.Unauthorized)
             : _answersByCharacter.GetValueOrDefault(snapshot.Name, Answer));
+    }
+
+    /// <inheritdoc />
+    public Task<DateTimeOffset?> GetSyncAgainRequestAsync(string deviceToken, CancellationToken cancellationToken)
+    {
+        SyncAgainChecks++;
+        return Task.FromResult(SyncAgainRequest);
     }
     #endregion Public Methods
 }

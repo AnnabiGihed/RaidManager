@@ -17,5 +17,11 @@ internal interface ISnapshotApi
     /// <param name="cancellationToken">A token to cancel the call.</param>
     /// <returns>What RaidManager answered; a network failure or timeout is <see cref="SnapshotUploadOutcome.Unavailable"/>.</returns>
     Task<SnapshotUploadResult> UploadAsync(string deviceToken, QueuedSnapshot snapshot, CancellationToken cancellationToken);
+
+    /// <summary>Asks RaidManager whether the player asked this companion to send every character again (#615).</summary>
+    /// <param name="deviceToken">The companion's device token.</param>
+    /// <param name="cancellationToken">A token to stop the call.</param>
+    /// <returns>When the player asked, or <see langword="null"/> when they never did or RaidManager couldn't be asked.</returns>
+    Task<DateTimeOffset?> GetSyncAgainRequestAsync(string deviceToken, CancellationToken cancellationToken);
     #endregion Public Methods
 }

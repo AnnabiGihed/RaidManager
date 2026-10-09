@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Security.Claims;
 using System.Text.Encodings.Web;
 using MediatR;
@@ -61,12 +62,17 @@ internal sealed class CompanionTokenAuthenticationHandler : AuthenticationHandle
         }
 
         var companion = result.Value;
-        Claim[] claims =
+        List<Claim> claims =
         [
             new Claim(CompanionTokenDefaults.CompanionClaim, companion.CompanionId.ToString()),
             new Claim(CompanionTokenDefaults.UserClaim, companion.UserId.ToString()),
             new Claim(CompanionTokenDefaults.LabelClaim, companion.Label),
         ];
+        if (companion.SyncAgainRequestedAtUtc is { } requested)
+        {
+            claims.Add(new Claim(CompanionTokenDefaults.SyncAgainClaim, requested.ToString("O", CultureInfo.InvariantCulture)));
+        }
+
         var identity = new ClaimsIdentity(claims, Scheme.Name);
         return AuthenticateResult.Success(new AuthenticationTicket(new ClaimsPrincipal(identity), Scheme.Name));
     }

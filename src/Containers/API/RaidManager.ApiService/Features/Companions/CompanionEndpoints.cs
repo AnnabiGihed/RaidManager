@@ -1,3 +1,4 @@
+using System.Globalization;
 using System.Security.Claims;
 using MediatR;
 using Microsoft.AspNetCore.Http.HttpResults;
@@ -126,6 +127,15 @@ public static class CompanionEndpoints
     /// <returns>200 with the companion.</returns>
     private static Ok<CurrentCompanion> GetCurrent(ClaimsPrincipal user) => TypedResults.Ok(new CurrentCompanion(
         Guid.Parse(user.FindFirstValue(CompanionTokenDefaults.CompanionClaim)!),
-        user.FindFirstValue(CompanionTokenDefaults.LabelClaim)!));
+        user.FindFirstValue(CompanionTokenDefaults.LabelClaim)!,
+        SyncAgainRequestedAt(user)));
+
+    /// <summary>Reads when the player asked the companion to send every character again, from its claims.</summary>
+    /// <param name="user">The authenticated companion.</param>
+    /// <returns>The request's time, or <see langword="null"/> when there is none.</returns>
+    private static DateTimeOffset? SyncAgainRequestedAt(ClaimsPrincipal user) =>
+        user.FindFirstValue(CompanionTokenDefaults.SyncAgainClaim) is { } requested
+            ? DateTimeOffset.Parse(requested, CultureInfo.InvariantCulture, DateTimeStyles.RoundtripKind)
+            : null;
     #endregion Private Helpers
 }

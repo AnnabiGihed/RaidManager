@@ -115,7 +115,7 @@ namespace RaidManager.Domain.Tests.Features.Companions.Aggregates
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Companions/Aggregates/Companion.feature.ndjson", 13);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Companions/Aggregates/Companion.feature.ndjson", 14);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -506,6 +506,40 @@ namespace RaidManager.Domain.Tests.Features.Companions.Aggregates
 #line hidden
 #line 63
       await testRunner.ThenAsync(string.Format("its last upload is {0} hours after its pairing", latest), ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="Asking to sync again records the request\'s time")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Companion token")]
+        [global::Xunit.TraitAttribute("Description", "Asking to sync again records the request\'s time")]
+        public async global::System.Threading.Tasks.Task AskingToSyncAgainRecordsTheRequestsTime()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "11";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Asking to sync again records the request\'s time", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("The player can ask a companion to send every character again", null, tagsOfRule);
+#line 72
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 73
+      await testRunner.WhenAsync("\"Bryn\" asks the companion to sync again 2 hours after its pairing", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 74
+      await testRunner.ThenAsync("the companion\'s request to sync again is 2 hours after its pairing", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

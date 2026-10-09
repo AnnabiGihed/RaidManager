@@ -116,7 +116,7 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Sync/CompanionBackgroundSync.feature.ndjson", 22);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Sync/CompanionBackgroundSync.feature.ndjson", 25);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -1005,6 +1005,162 @@ namespace RaidManager.Companion.Client.Tests.Features.Sync
 #line hidden
 #line 164
       await testRunner.ThenAsync("RaidManager received \"Arthasdk\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="A request to sync again uploads every character again")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Companion background sync")]
+        [global::Xunit.TraitAttribute("Description", "A request to sync again uploads every character again")]
+        public async global::System.Threading.Tasks.Task ARequestToSyncAgainUploadsEveryCharacterAgain()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "20";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A request to sync again uploads every character again", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A request to sync again sends every character again, once", null, tagsOfRule);
+#line 168
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 169
+      await testRunner.GivenAsync("World of Warcraft is installed in \"World of Warcraft\" with the account \"MAINACCOU" +
+                        "NT\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 170
+      await testRunner.AndAsync("the addon file of \"MAINACCOUNT\" is the \"multiple-accounts\" fixture", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 171
+      await testRunner.AndAsync("the companion has started syncing", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 172
+      await testRunner.AndAsync("the companion has synced for 30 seconds", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 173
+      await testRunner.AndAsync("the player asked to send every character again", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 174
+      await testRunner.WhenAsync("the companion syncs for 70 seconds", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 175
+      await testRunner.ThenAsync("RaidManager received \"Arthasdk, Jaína, Arthasdk, Jaína\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="A request is carried out once")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Companion background sync")]
+        [global::Xunit.TraitAttribute("Description", "A request is carried out once")]
+        public async global::System.Threading.Tasks.Task ARequestIsCarriedOutOnce()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "21";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A request is carried out once", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A request to sync again sends every character again, once", null, tagsOfRule);
+#line 177
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 178
+      await testRunner.GivenAsync("World of Warcraft is installed in \"World of Warcraft\" with the account \"MAINACCOU" +
+                        "NT\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 179
+      await testRunner.AndAsync("the addon file of \"MAINACCOUNT\" is the \"multiple-accounts\" fixture", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 180
+      await testRunner.AndAsync("the companion has started syncing", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 181
+      await testRunner.AndAsync("the companion has synced for 30 seconds", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 182
+      await testRunner.AndAsync("the player asked to send every character again", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 183
+      await testRunner.WhenAsync("the companion syncs for 190 seconds", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 184
+      await testRunner.ThenAsync("RaidManager received \"Arthasdk, Jaína, Arthasdk, Jaína\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 185
+      await testRunner.AndAsync("the sync asked about a request 4 times", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="A request made while the companion was off is carried out at the next start")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Companion background sync")]
+        [global::Xunit.TraitAttribute("Description", "A request made while the companion was off is carried out at the next start")]
+        public async global::System.Threading.Tasks.Task ARequestMadeWhileTheCompanionWasOffIsCarriedOutAtTheNextStart()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "22";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A request made while the companion was off is carried out at the next start", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("A request to sync again sends every character again, once", null, tagsOfRule);
+#line 187
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 188
+      await testRunner.GivenAsync("World of Warcraft is installed in \"World of Warcraft\" with the account \"MAINACCOU" +
+                        "NT\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 189
+      await testRunner.AndAsync("the addon file of \"MAINACCOUNT\" is the \"multiple-accounts\" fixture", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 190
+      await testRunner.AndAsync("the companion has started syncing", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 191
+      await testRunner.AndAsync("the companion has synced for 30 seconds", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 192
+      await testRunner.AndAsync("the player asked to send every character again", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 193
+      await testRunner.WhenAsync("the companion restarts", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 194
+      await testRunner.AndAsync("the companion syncs for 10 seconds", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 195
+      await testRunner.ThenAsync("RaidManager received \"Arthasdk, Jaína, Arthasdk, Jaína\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

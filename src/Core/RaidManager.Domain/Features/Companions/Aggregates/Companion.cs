@@ -73,6 +73,10 @@ public sealed class Companion : AggregateRoot<CompanionId>
 
     /// <summary>Gets when the companion last uploaded a character snapshot, if it ever did.</summary>
     public DateTimeOffset? LastUploadAtUtc { get; private set; }
+
+    /// <summary>Gets when the player last asked the companion to send every character again, if they did.</summary>
+    /// <remarks>Set when the player removes all their characters on dev or test, so they all come back for review (#615).</remarks>
+    public DateTimeOffset? SyncAgainRequestedAtUtc { get; private set; }
     #endregion Properties
 
     #region Domain Behavior
@@ -142,6 +146,10 @@ public sealed class Companion : AggregateRoot<CompanionId>
     /// <summary>Records that the companion uploaded a character snapshot, which the website's paired companions list shows.</summary>
     /// <param name="nowUtc">The UTC instant of the upload.</param>
     public void RecordUpload(DateTimeOffset nowUtc) => LastUploadAtUtc = LastUploadAtUtc > nowUtc ? LastUploadAtUtc : nowUtc;
+
+    /// <summary>Asks the companion to forget what it uploaded and send every character again at its next check (#615).</summary>
+    /// <param name="nowUtc">The UTC instant of the request.</param>
+    public void RequestSyncAgain(DateTimeOffset nowUtc) => SyncAgainRequestedAtUtc = nowUtc;
     #endregion Domain Behavior
 
     #region Internal Methods

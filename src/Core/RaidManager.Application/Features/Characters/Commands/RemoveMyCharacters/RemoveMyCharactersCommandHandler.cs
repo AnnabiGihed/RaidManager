@@ -2,6 +2,8 @@ using Pivot.Framework.Application.Abstractions.Messaging.Commands;
 using Pivot.Framework.Domain.Repositories;
 using Pivot.Framework.Domain.Shared;
 using RaidManager.Domain.Features.Characters.Repositories;
+using RaidManager.Domain.Features.Companions.Enums;
+using RaidManager.Domain.Features.Companions.Repositories;
 using RaidManager.Domain.Features.Shared.Identifiers;
 
 namespace RaidManager.Application.Features.Characters.Commands.RemoveMyCharacters;
@@ -13,7 +15,8 @@ namespace RaidManager.Application.Features.Characters.Commands.RemoveMyCharacter
 /// Date: 2026-10-09<br/>
 /// Purpose: A character only the player owns or claims is deleted with its claims, loadouts, raid saves and
 /// professions, so the next sync imports it again with a pending claim; on a character another player owns or claims
-/// too, only the player's claim goes (#613).
+/// too, only the player's claim goes (#613). Each of the player's active companions is asked to send every character
+/// again, so they all come back for review without the player logging in with each (#615).
 /// </remarks>
 internal sealed class RemoveMyCharactersCommandHandler : ICommandHandler<RemoveMyCharactersCommand, int>
 {
@@ -21,18 +24,28 @@ internal sealed class RemoveMyCharactersCommandHandler : ICommandHandler<RemoveM
     /// <summary>Stores the character repository.</summary>
     private readonly ICharacterRepository _characters;
 
+    /// <summary>Stores the companion repository.</summary>
+    private readonly ICompanionRepository _companions;
+
     /// <summary>Stores the unit of work that commits the removal.</summary>
     private readonly IUnitOfWork _unitOfWork;
+
+    /// <summary>Stores the clock that dates the companions' request.</summary>
+    private readonly TimeProvider _timeProvider;
     #endregion Fields
 
     #region Constructors
     /// <summary>Initializes a new instance of the <see cref="RemoveMyCharactersCommandHandler"/> class.</summary>
     /// <param name="characters">The character repository.</param>
+    /// <param name="companions">The companion repository.</param>
     /// <param name="unitOfWork">The unit of work.</param>
-    public RemoveMyCharactersCommandHandler(ICharacterRepository characters, IUnitOfWork unitOfWork)
+    /// <param name="timeProvider">The clock.</param>
+    public RemoveMyCharactersCommandHandler(ICharacterRepository characters, ICompanionRepository companions, IUnitOfWork unitOfWork, TimeProvider timeProvider)
     {
         _characters = characters;
+        _companions = companions;
         _unitOfWork = unitOfWork;
+        _timeProvider = timeProvider;
     }
     #endregion Constructors
 
@@ -55,6 +68,16 @@ internal sealed class RemoveMyCharactersCommandHandler : ICommandHandler<RemoveM
 
             _ = character.WithdrawClaim(userId);
             await _characters.UpdateAsync(character, cancellationToken);
+        }
+
+        var nowUtc = _timeProvider.GetUtcNow();
+        foreach (var companion in await _companions.ListByUserAsync(userId, cancellationToken))
+        {
+            if (companion.StatusAt(nowUtc) == CompanionStatus.Active)
+            {
+                companion.RequestSyncAgain(nowUtc);
+                await _companions.UpdateAsync(companion, cancellationToken);
+            }
         }
 
         var saved = await _unitOfWork.SaveChangesAsync(cancellationToken);
