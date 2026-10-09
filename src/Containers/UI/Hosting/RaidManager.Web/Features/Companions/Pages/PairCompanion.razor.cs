@@ -63,6 +63,9 @@ public sealed partial class PairCompanion : IDisposable
     #endregion Overrides
 
     #region Private Helpers
+    /// <summary>Forgets the notification once it closes, so the next one shows afresh.</summary>
+    private void ForgetNotice() => _notice = null;
+
     /// <summary>Checks the code for the player in the session.</summary>
     /// <returns>A task that completes when the answer is shown or the failure is recorded.</returns>
     private async Task LoadAsync()

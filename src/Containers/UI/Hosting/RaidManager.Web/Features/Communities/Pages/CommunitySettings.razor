@@ -8,11 +8,11 @@
         case CommunityPageStatus.Ready:
             @if (Roles.JustSaved)
             {
-                <Toast Title="@CommunityRolesViewModel.SavedTitle" Message="@CommunityRolesViewModel.SavedMessage" data-testid="saved-confirmation" />
+                <Toast Title="@CommunityRolesViewModel.SavedTitle" Message="@CommunityRolesViewModel.SavedMessage" Closed="Roles.ForgetSaved" data-testid="saved-confirmation" />
             }
-            else if (JustLinked)
+            else if (JustLinked && !_linkedClosed)
             {
-                <Toast Title="@ViewModel.LinkedTitle" Message="Members see it at their next sign-in." data-testid="linked-confirmation" />
+                <Toast Title="@ViewModel.LinkedTitle" Message="Members see it at their next sign-in." Closed="ForgetLinked" data-testid="linked-confirmation" />
             }
             <PageHeading Eyebrow="Community" Title="@ViewModel.Community!.Name" Subtitle="@ViewModel.Overview">
                 <Actions>

@@ -8,6 +8,7 @@ using Xunit;
 using RaidManager.ViewModels.Features.Companions;
 using RaidManager.Web.Features.Authentication;
 using RaidManager.Web.Features.Companions.Pages;
+using RaidManager.Web.Features.Shared.Components;
 using RaidManager.Web.Tests.Support;
 
 namespace RaidManager.Web.Tests.Features.Companions.Pages;
@@ -26,6 +27,9 @@ public sealed class PairedCompanionsTests : BunitContext
 
     /// <summary>Stores the fake companions API.</summary>
     private readonly FakeCompanionsApiClient _api = new();
+
+    /// <summary>Stores the layout's notification area, once a test looks at it.</summary>
+    private IRenderedComponent<NotificationArea>? _notifications;
     #endregion Fields
 
     #region Constructors
@@ -39,6 +43,11 @@ public sealed class PairedCompanionsTests : BunitContext
         JSInterop.Mode = JSRuntimeMode.Loose;
     }
     #endregion Constructors
+
+    #region Properties
+    /// <summary>Gets the layout's notification area, where the page's notifications show (#577).</summary>
+    private IRenderedComponent<NotificationArea> Notifications => _notifications ??= Render<NotificationArea>();
+    #endregion Properties
 
     #region Tests
     /// <summary>Lists active, revoked and expired companions, as boards 2, 4 and 14.</summary>
@@ -77,11 +86,23 @@ public sealed class PairedCompanionsTests : BunitContext
     {
         _api.Companions = [FakeCompanionsApiClient.Companion("BRYN-DESKTOP")];
 
-        var page = RenderPage("/companion?paired=BRYN-DESKTOP");
+        RenderPage("/companion?paired=BRYN-DESKTOP");
 
-        var notice = page.Find("[data-testid=companions-notice]");
+        var notice = Notifications.Find("[data-testid=companions-notice]");
         notice.ClassList.ShouldContain("toast-success");
         notice.QuerySelector(".toast-title")!.TextContent.ShouldBe("BRYN-DESKTOP is paired");
+    }
+
+    /// <summary>Closing the notification forgets it (#577).</summary>
+    [Fact]
+    public void ClosingTheNotificationForgetsIt()
+    {
+        _api.Companions = [FakeCompanionsApiClient.Companion("BRYN-DESKTOP")];
+        RenderPage("/companion?paired=BRYN-DESKTOP");
+
+        Notifications.Find("[data-testid=companions-notice] .toast-close").Click();
+
+        Notifications.FindAll("[data-testid=companions-notice]").ShouldBeEmpty();
     }
 
     /// <summary>After a confirmation, the list reloads until the computer's companion has created its row (#526).</summary>
@@ -92,13 +113,15 @@ public sealed class PairedCompanionsTests : BunitContext
         Services.AddSingleton<TimeProvider>(time);
 
         var page = RenderPage("/companion?paired=BRYN-DESKTOP");
-        SpinWait.SpinUntil(() => time.Armed > 0, TimeSpan.FromSeconds(10)).ShouldBeTrue();
+
+        // The notification's close timer is armed first, then the page's reload delay.
+        SpinWait.SpinUntil(() => time.Armed > 1, TimeSpan.FromSeconds(10)).ShouldBeTrue();
         page.FindAll("tbody tr").ShouldBeEmpty();
         _api.Companions = [new PairedCompanion(Guid.NewGuid(), "BRYN-DESKTOP", time.GetUtcNow(), PairedCompanion.ActiveStatus, null)];
         time.Advance(PairedCompanionsViewModel.ReloadInterval);
 
         page.WaitForAssertion(() => page.FindAll("tbody tr").Count.ShouldBe(1));
-        page.Find("[data-testid=companions-notice] .toast-title").TextContent.ShouldBe("BRYN-DESKTOP is paired");
+        Notifications.Find("[data-testid=companions-notice] .toast-title").TextContent.ShouldBe("BRYN-DESKTOP is paired");
         _api.Calls.ShouldBe(["list", "list"]);
     }
 
@@ -118,7 +141,7 @@ public sealed class PairedCompanionsTests : BunitContext
         _api.Calls.ShouldBe(["list"]);
         page.FindAll("[data-testid=revoke-dialog] button").First(button => button.TextContent.Trim() == "Revoke").Click();
 
-        page.WaitForAssertion(() => page.Find("[data-testid=companions-notice] .toast-title").TextContent.ShouldBe("BRYN-LAPTOP was revoked"));
+        Notifications.WaitForAssertion(() => Notifications.Find("[data-testid=companions-notice] .toast-title").TextContent.ShouldBe("BRYN-LAPTOP was revoked"));
         page.FindAll("[data-testid=revoke-dialog]").ShouldBeEmpty();
         page.Find(".companion-note").TextContent.ShouldStartWith("Revoked today, ");
         _api.Calls.ShouldBe(["list", $"revoke {laptop.CompanionId}", "list"]);
@@ -151,7 +174,7 @@ public sealed class PairedCompanionsTests : BunitContext
         page.Find("[data-testid=revoke-BRYN-DESKTOP]").Click();
         page.FindAll("[data-testid=revoke-dialog] button").First(button => button.TextContent.Trim() == "Revoke").Click();
 
-        var notice = page.WaitForElement("[data-testid=companions-notice]");
+        var notice = Notifications.WaitForElement("[data-testid=companions-notice]");
         notice.ClassList.ShouldContain("toast-danger");
         notice.QuerySelector(".toast-title")!.TextContent.ShouldBe("BRYN-DESKTOP wasn't revoked");
     }

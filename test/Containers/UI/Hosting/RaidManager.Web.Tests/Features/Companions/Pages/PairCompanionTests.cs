@@ -8,6 +8,7 @@ using Xunit;
 using RaidManager.ViewModels.Features.Companions;
 using RaidManager.Web.Features.Authentication;
 using RaidManager.Web.Features.Companions.Pages;
+using RaidManager.Web.Features.Shared.Components;
 using RaidManager.Web.Tests.Support;
 
 namespace RaidManager.Web.Tests.Features.Companions.Pages;
@@ -26,6 +27,9 @@ public sealed class PairCompanionTests : BunitContext
 
     /// <summary>Stores the fake companions API.</summary>
     private readonly FakeCompanionsApiClient _api = new();
+
+    /// <summary>Stores the layout's notification area, once a test looks at it.</summary>
+    private IRenderedComponent<NotificationArea>? _notifications;
     #endregion Fields
 
     #region Constructors
@@ -39,6 +43,11 @@ public sealed class PairCompanionTests : BunitContext
         JSInterop.Mode = JSRuntimeMode.Loose;
     }
     #endregion Constructors
+
+    #region Properties
+    /// <summary>Gets the layout's notification area, where the page's notifications show (#577).</summary>
+    private IRenderedComponent<NotificationArea> Notifications => _notifications ??= Render<NotificationArea>();
+    #endregion Properties
 
     #region Tests
     /// <summary>Shows the code card as board 1.</summary>
@@ -81,9 +90,24 @@ public sealed class PairCompanionTests : BunitContext
 
         page.Find("[data-testid=confirm-pairing]").Click();
 
-        var notice = page.WaitForElement("[data-testid=pair-notice]");
+        var notice = Notifications.WaitForElement("[data-testid=pair-notice]");
         notice.ClassList.ShouldContain("toast-danger");
         notice.QuerySelector(".toast-title")!.TextContent.ShouldBe("BRYN-DESKTOP wasn't paired");
+        page.Find("[data-testid=pair-card]").ShouldNotBeNull();
+    }
+
+    /// <summary>Closing the notification forgets it (#577).</summary>
+    [Fact]
+    public void ClosingTheNotificationForgetsIt()
+    {
+        _api.ChangesFail = true;
+        var page = RenderPage("K7M-4QX");
+        page.WaitForElement("[data-testid=confirm-pairing]");
+        page.Find("[data-testid=confirm-pairing]").Click();
+
+        Notifications.WaitForElement("[data-testid=pair-notice] .toast-close").Click();
+
+        Notifications.FindAll("[data-testid=pair-notice]").ShouldBeEmpty();
         page.Find("[data-testid=pair-card]").ShouldNotBeNull();
     }
 
