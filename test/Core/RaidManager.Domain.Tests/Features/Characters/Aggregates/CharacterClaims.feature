@@ -56,3 +56,32 @@ Feature: Character claims
       Then the claim decision fails with "Character.Claim.OwnedByAnotherUser"
       And the claim of "Bob" is "Conflict"
       And "Alice" owns the character
+
+  Rule: Removing a player's characters on dev and test deletes only what is theirs alone
+
+    Scenario Outline: A character is only the player's when they own it or are its only claimant
+      Given <setup>
+      Then the character <belongs> only to "Alice"
+
+      Examples:
+        | setup                                           | belongs        |
+        | "Alice" owns the character                      | belongs        |
+        | the companion of "Alice" uploaded the character | belongs        |
+        | "Bob" owns the character                        | doesn't belong |
+
+    Scenario: A character another player claims too isn't only the player's
+      Given the companion of "Alice" uploaded the character
+      And the companion of "Bob" uploaded the character
+      Then the character doesn't belong only to "Alice"
+
+    Scenario: Withdrawing a claim on another player's character keeps their ownership
+      Given "Bob" owns the character
+      And the companion of "Alice" uploaded the character
+      When "Alice" withdraws the claim
+      Then the claim decision succeeds
+      And "Alice" has no claim
+      And "Bob" owns the character
+
+    Scenario: Withdrawing without a claim is not found
+      When "Alice" withdraws the claim
+      Then the claim decision fails with "Character.Claim.NotFound"

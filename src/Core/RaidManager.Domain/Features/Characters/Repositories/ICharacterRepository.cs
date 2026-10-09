@@ -21,5 +21,11 @@ public interface ICharacterRepository : IAsyncCommandRepository<Character, Chara
     /// <param name="cancellationToken">A token to cancel the operation.</param>
     /// <returns>The character, or <see langword="null"/> when RaidManager doesn't know it.</returns>
     Task<Character?> FindByRealmAndNameAsync(WarmaneRealm realm, CharacterName name, CancellationToken cancellationToken);
+
+    /// <summary>Lists the characters a user owns or claims, in any state.</summary>
+    /// <param name="userId">The user.</param>
+    /// <param name="cancellationToken">A token to cancel the operation.</param>
+    /// <returns>The characters, tracked for changes; empty when the user has none.</returns>
+    Task<IReadOnlyList<Character>> ListOwnedOrClaimedByAsync(UserId userId, CancellationToken cancellationToken);
     #endregion Methods
 }

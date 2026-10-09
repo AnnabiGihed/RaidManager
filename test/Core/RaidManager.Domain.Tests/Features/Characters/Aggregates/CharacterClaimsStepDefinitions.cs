@@ -81,6 +81,12 @@ public sealed class CharacterClaimsStepDefinitions
     [When("{string} approves the claim")]
     public void WhenApprovesTheClaim(string player) =>
         _decision = _character.ApproveClaim(PlayerId(player), DateTimeOffset.UtcNow);
+
+    /// <summary>Withdraws the player's claim and captures the decision (#597).</summary>
+    /// <param name="player">The player name.</param>
+    [When("{string} withdraws the claim")]
+    public void WhenWithdrawsTheClaim(string player) =>
+        _decision = _character.WithdrawClaim(PlayerId(player));
     #endregion When Steps
 
     #region Then Steps
@@ -91,6 +97,22 @@ public sealed class CharacterClaimsStepDefinitions
     public void ThenTheClaimOfIs(string player, string expectedState) =>
         _character.Claims.Single(claim => claim.RequestedByUserId == PlayerId(player)).State
             .ShouldBe(Enum.Parse<CharacterClaimState>(expectedState));
+
+    /// <summary>Asserts that the character is only the player's (#597).</summary>
+    /// <param name="player">The player name.</param>
+    [Then("the character belongs only to {string}")]
+    public void ThenTheCharacterBelongsOnlyTo(string player) => _character.BelongsOnlyTo(PlayerId(player)).ShouldBeTrue();
+
+    /// <summary>Asserts that the character isn't only the player's (#597).</summary>
+    /// <param name="player">The player name.</param>
+    [Then("the character doesn't belong only to {string}")]
+    public void ThenTheCharacterDoesNotBelongOnlyTo(string player) => _character.BelongsOnlyTo(PlayerId(player)).ShouldBeFalse();
+
+    /// <summary>Asserts that the player has no claim on the character.</summary>
+    /// <param name="player">The player name.</param>
+    [Then("{string} has no claim")]
+    public void ThenHasNoClaim(string player) =>
+        _character.Claims.ShouldNotContain(claim => claim.RequestedByUserId == PlayerId(player));
 
     /// <summary>Asserts that nobody owns the character.</summary>
     [Then("the character has no owner")]

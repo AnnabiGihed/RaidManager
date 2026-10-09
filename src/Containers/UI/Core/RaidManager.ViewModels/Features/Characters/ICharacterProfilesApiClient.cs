@@ -21,5 +21,12 @@ public interface ICharacterProfilesApiClient
     /// <param name="cancellationToken">A token to cancel the call.</param>
     /// <returns>The profile, or <see langword="null"/> when the character isn't the player's.</returns>
     Task<CharacterProfile?> GetProfileAsync(Guid userId, Guid characterId, CancellationToken cancellationToken);
+
+    /// <summary>Removes all the player's characters, claims and loadouts; offered on dev and test only (#597).</summary>
+    /// <param name="userId">The signed-in player.</param>
+    /// <param name="cancellationToken">A token to cancel the call.</param>
+    /// <returns>The number of characters the player no longer has.</returns>
+    /// <exception cref="HttpRequestException">Thrown when the API refuses the call or cannot be reached.</exception>
+    Task<int> RemoveAllAsync(Guid userId, CancellationToken cancellationToken);
     #endregion Methods
 }

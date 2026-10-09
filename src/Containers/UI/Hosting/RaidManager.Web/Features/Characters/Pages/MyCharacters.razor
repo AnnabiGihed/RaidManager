@@ -3,7 +3,22 @@
 <PageTitle>My characters</PageTitle>
 
 <div class="characters-page">
-    <PageHeading Eyebrow="Characters" Title="My characters" Subtitle="Your approved characters. Open one to see its profile." />
+    @if (_notice is { } notice)
+    {
+        <Toast Title="@notice.Title" Message="@notice.Detail" Tone="@(notice.Kind == ReviewNoticeKind.Success ? ToastTone.Success : ToastTone.Danger)" Closed="ForgetNotice" data-testid="removal-notice" />
+    }
+
+    <PageHeading Eyebrow="Characters" Title="My characters" Subtitle="Your approved characters. Open one to see its profile.">
+        <Actions>
+            @if (ShowsRemoval)
+            {
+                <div class="characters-removal">
+                    <TagChip Text="Dev and test only" Tone="TagChipTone.Warning" data-testid="test-only" />
+                    <ActionButton Text="Remove all my characters" Appearance="ActionButtonAppearance.Danger" Disabled="@ViewModel.Removing" Click="ViewModel.AskRemoval" data-testid="remove-all" />
+                </div>
+            }
+        </Actions>
+    </PageHeading>
 
     @if (ViewModel.WaitingCount > 0)
     {
@@ -50,5 +65,12 @@
             </DataTable>
             <p class="characters-note">@MyCharactersViewModel.FreshnessNote</p>
         </div>
+    }
+
+    @if (ViewModel.ConfirmingRemoval)
+    {
+        <ConfirmDialog Title="@MyCharactersViewModel.RemovalTitle" Message="@ViewModel.RemovalMessage" Detail="@MyCharactersViewModel.RemovalAdvice"
+                       ConfirmText="Remove all" ConfirmAppearance="ActionButtonAppearance.Danger" OnConfirm="RemoveAllAsync" OnCancel="ViewModel.CancelRemoval"
+                       data-testid="removal-dialog" />
     }
 </div>

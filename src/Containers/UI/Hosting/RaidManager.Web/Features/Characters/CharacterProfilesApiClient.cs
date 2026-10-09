@@ -47,6 +47,16 @@ internal sealed class CharacterProfilesApiClient : ICharacterProfilesApiClient
         return await response.Content.ReadFromJsonAsync<CharacterProfile>(cancellationToken)
             ?? throw new HttpRequestException("The API returned an empty profile response.");
     }
+
+    /// <inheritdoc />
+    public async Task<int> RemoveAllAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        using var response = await _httpClient.DeleteAsync(CharactersRoute(userId), cancellationToken);
+        response.EnsureSuccessStatusCode();
+        var removal = await response.Content.ReadFromJsonAsync<Removal>(cancellationToken)
+            ?? throw new HttpRequestException("The API returned an empty removal response.");
+        return removal.Removed;
+    }
     #endregion Public Methods
 
     #region Private Helpers
@@ -55,4 +65,10 @@ internal sealed class CharacterProfilesApiClient : ICharacterProfilesApiClient
     /// <returns>The relative route.</returns>
     private static string CharactersRoute(Guid userId) => $"internal/users/{userId}/characters";
     #endregion Private Helpers
+
+    #region Nested Types
+    /// <summary>Reads the API's answer to a removal.</summary>
+    /// <param name="Removed">The number of characters the player no longer has.</param>
+    private sealed record Removal(int Removed);
+    #endregion Nested Types
 }

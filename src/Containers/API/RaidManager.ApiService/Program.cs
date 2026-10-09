@@ -71,6 +71,7 @@ app.MapGet("/", () => Results.Ok(new { service = "RaidManager.ApiService", statu
 app.MapIdentityEndpoints();
 app.MapCharacterClaimEndpoints();
 app.MapCharacterProfileEndpoints();
+app.MapCharacterRemovalEndpoints(app.Environment);
 app.MapCommunityEndpoints();
 app.MapCompanionEndpoints();
 app.MapCompanionManagementEndpoints();

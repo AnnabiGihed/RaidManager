@@ -71,6 +71,19 @@ public sealed class CharacterProfilesApiClientTests
         profile.RaidSaves.ShouldHaveSingleItem().Instance.ShouldBe("IcecrownCitadel");
     }
 
+    /// <summary>Removes the player's characters with a DELETE and reads how many went (#597).</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task RemovalIsSentAndItsCountRead()
+    {
+        var handler = new StubHandler(HttpStatusCode.OK, """{"removed":3}""");
+
+        var removed = await Client(handler).RemoveAllAsync(UserId, CancellationToken.None);
+
+        handler.Requests.ShouldBe([$"DELETE /internal/users/{UserId}/characters"]);
+        removed.ShouldBe(3);
+    }
+
     /// <summary>Reads 404 as a character that isn't the player's.</summary>
     /// <returns>A task that completes when the test has run.</returns>
     [Fact]
@@ -90,6 +103,7 @@ public sealed class CharacterProfilesApiClientTests
 
         await Should.ThrowAsync<HttpRequestException>(() => client.GetProfileAsync(UserId, CharacterId, CancellationToken.None));
         await Should.ThrowAsync<HttpRequestException>(() => client.GetCharactersAsync(UserId, CancellationToken.None));
+        await Should.ThrowAsync<HttpRequestException>(() => client.RemoveAllAsync(UserId, CancellationToken.None));
     }
     #endregion Tests
 

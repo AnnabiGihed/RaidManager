@@ -9,6 +9,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Added
 
+- On dev and test, My characters offers "Remove all my characters": after a confirmation, the player's characters,
+  claims and loadouts are removed, and the companion's next sync brings them back for review. Production neither shows
+  it nor accepts it (`DELETE /internal/users/{userId}/characters`, #597).
 - The website shows the characters a sync brings while it is open: every 15 seconds it checks for new characters
   waiting for the player's review. On another page a notification names them, with a "Review them" link to the review
   page; on the review page the list updates itself without a refresh. A sync that brings nothing shows nothing (#595).

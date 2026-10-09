@@ -22,6 +22,9 @@ internal sealed class FakeCharacterProfilesApiClient : ICharacterProfilesApiClie
 
     /// <summary>Gets the number of calls made.</summary>
     public int Loads { get; private set; }
+
+    /// <summary>Gets the number of removals asked.</summary>
+    public int Removals { get; private set; }
     #endregion Properties
 
     #region Public Methods
@@ -73,6 +76,20 @@ internal sealed class FakeCharacterProfilesApiClient : ICharacterProfilesApiClie
     {
         Loads++;
         return Fails ? Task.FromException<CharacterProfile?>(new HttpRequestException("down")) : Task.FromResult(Profile);
+    }
+
+    /// <inheritdoc />
+    public Task<int> RemoveAllAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        Removals++;
+        if (Fails)
+        {
+            return Task.FromException<int>(new HttpRequestException("down"));
+        }
+
+        var removed = Characters.Count;
+        Characters = [];
+        return Task.FromResult(removed);
     }
     #endregion Public Methods
 }
