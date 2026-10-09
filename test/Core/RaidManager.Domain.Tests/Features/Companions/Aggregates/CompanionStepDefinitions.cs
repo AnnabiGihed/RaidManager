@@ -91,6 +91,17 @@ public sealed class CompanionStepDefinitions
     /// <param name="hours">The hours after pairing.</param>
     [When("the companion uploads {int} hours after its pairing")]
     public void WhenTheCompanionUploadsHoursAfterItsPairing(int hours) => _companion.RecordUpload(PairedAt.AddHours(hours));
+
+    /// <summary>Asks the companion to send every character again (#615).</summary>
+    /// <param name="player">The player name.</param>
+    /// <param name="hours">The hours after pairing.</param>
+    [When("{string} asks the companion to sync again {int} hours after its pairing")]
+    public void WhenAsksTheCompanionToSyncAgain(string player, int hours)
+    {
+        _ = PlayerId(player);
+        _companion.SyncAgainRequestedAtUtc.ShouldBeNull();
+        _companion.RequestSyncAgain(PairedAt.AddHours(hours));
+    }
     #endregion When Steps
 
     #region Then Steps
@@ -158,6 +169,11 @@ public sealed class CompanionStepDefinitions
     /// <param name="hours">The expected hours after pairing.</param>
     [Then("its last upload is {int} hours after its pairing")]
     public void ThenItsLastUploadIsHoursAfterItsPairing(int hours) => _companion.LastUploadAtUtc.ShouldBe(PairedAt.AddHours(hours));
+
+    /// <summary>Asserts when the companion was asked to send every character again.</summary>
+    /// <param name="hours">The hours after pairing.</param>
+    [Then("the companion's request to sync again is {int} hours after its pairing")]
+    public void ThenTheRequestToSyncAgainIs(int hours) => _companion.SyncAgainRequestedAtUtc.ShouldBe(PairedAt.AddHours(hours));
     #endregion Then Steps
 
     #region Private Helpers

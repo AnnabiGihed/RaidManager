@@ -15,6 +15,12 @@ Feature: Remove my characters
       And "Sylvanash" stays with "Bob", without the claim of "Alice"
       And the removal is committed once
 
+    Scenario: The player's active companions are asked to send every character again
+      Given "Alice" owns a character "Arthasdk"
+      And "Alice" has an active companion and a revoked one
+      When "Alice" removes all their characters
+      Then only the active companion is asked to sync again
+
     Scenario: A player without characters removes nothing
       When "Alice" removes all their characters
       Then the removal succeeds with 0 characters

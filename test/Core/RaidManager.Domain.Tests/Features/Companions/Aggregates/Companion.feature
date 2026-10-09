@@ -66,3 +66,9 @@ Feature: Companion token
         | hours | latest |
         | 3     | 3      |
         | 1     | 2      |
+
+  Rule: The player can ask a companion to send every character again
+
+    Scenario: Asking to sync again records the request's time
+      When "Bryn" asks the companion to sync again 2 hours after its pairing
+      Then the companion's request to sync again is 2 hours after its pairing

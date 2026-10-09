@@ -106,7 +106,7 @@ namespace RaidManager.Application.Tests.Features.Characters.Commands
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Characters/Commands/RemoveMyCharacters.feature.ndjson", 6);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Characters/Commands/RemoveMyCharacters.feature.ndjson", 7);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -183,15 +183,15 @@ namespace RaidManager.Application.Tests.Features.Characters.Commands
             await this.ScenarioCleanupAsync();
         }
         
-        [global::Xunit.SkippableFactAttribute(DisplayName="A player without characters removes nothing")]
+        [global::Xunit.SkippableFactAttribute(DisplayName="The player\'s active companions are asked to send every character again")]
         [global::Xunit.TraitAttribute("FeatureTitle", "Remove my characters")]
-        [global::Xunit.TraitAttribute("Description", "A player without characters removes nothing")]
-        public async global::System.Threading.Tasks.Task APlayerWithoutCharactersRemovesNothing()
+        [global::Xunit.TraitAttribute("Description", "The player\'s active companions are asked to send every character again")]
+        public async global::System.Threading.Tasks.Task ThePlayersActiveCompanionsAreAskedToSendEveryCharacterAgain()
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "1";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A player without characters removes nothing", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("The player\'s active companions are asked to send every character again", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("Only what is the player\'s alone is deleted", null, tagsOfRule);
 #line 18
@@ -205,12 +205,49 @@ namespace RaidManager.Application.Tests.Features.Characters.Commands
             {
                 await this.ScenarioStartAsync();
 #line 19
-      await testRunner.WhenAsync("\"Alice\" removes all their characters", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+      await testRunner.GivenAsync("\"Alice\" owns a character \"Arthasdk\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
 #line 20
-      await testRunner.ThenAsync("the removal succeeds with 0 characters", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+      await testRunner.AndAsync("\"Alice\" has an active companion and a revoked one", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
 #line 21
+      await testRunner.WhenAsync("\"Alice\" removes all their characters", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 22
+      await testRunner.ThenAsync("only the active companion is asked to sync again", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="A player without characters removes nothing")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Remove my characters")]
+        [global::Xunit.TraitAttribute("Description", "A player without characters removes nothing")]
+        public async global::System.Threading.Tasks.Task APlayerWithoutCharactersRemovesNothing()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "2";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A player without characters removes nothing", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("Only what is the player\'s alone is deleted", null, tagsOfRule);
+#line 24
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 25
+      await testRunner.WhenAsync("\"Alice\" removes all their characters", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 26
+      await testRunner.ThenAsync("the removal succeeds with 0 characters", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 27
       await testRunner.AndAsync("the removal is committed once", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
             }
@@ -224,45 +261,8 @@ namespace RaidManager.Application.Tests.Features.Characters.Commands
         {
             string[] tagsOfScenario = ((string[])(null));
             global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
-            string pickleIndex = "2";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A failed commit is returned", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
-            string[] tagsOfRule = ((string[])(null));
-            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("Only what is the player\'s alone is deleted", null, tagsOfRule);
-#line 23
-    this.ScenarioInitialize(scenarioInfo, ruleInfo);
-#line hidden
-            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
-            {
-                await testRunner.SkipScenarioAsync();
-            }
-            else
-            {
-                await this.ScenarioStartAsync();
-#line 24
-      await testRunner.GivenAsync("\"Alice\" owns a character \"Arthasdk\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
-#line hidden
-#line 25
-      await testRunner.AndAsync("the commit will fail", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
-#line hidden
-#line 26
-      await testRunner.WhenAsync("\"Alice\" removes all their characters", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
-#line hidden
-#line 27
-      await testRunner.ThenAsync("the removal fails with \"Commit.Failed\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
-#line hidden
-            }
-            await this.ScenarioCleanupAsync();
-        }
-        
-        [global::Xunit.SkippableFactAttribute(DisplayName="An empty player is refused before anything is loaded")]
-        [global::Xunit.TraitAttribute("FeatureTitle", "Remove my characters")]
-        [global::Xunit.TraitAttribute("Description", "An empty player is refused before anything is loaded")]
-        public async global::System.Threading.Tasks.Task AnEmptyPlayerIsRefusedBeforeAnythingIsLoaded()
-        {
-            string[] tagsOfScenario = ((string[])(null));
-            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
             string pickleIndex = "3";
-            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("An empty player is refused before anything is loaded", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A failed commit is returned", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
             string[] tagsOfRule = ((string[])(null));
             global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("Only what is the player\'s alone is deleted", null, tagsOfRule);
 #line 29
@@ -276,9 +276,46 @@ namespace RaidManager.Application.Tests.Features.Characters.Commands
             {
                 await this.ScenarioStartAsync();
 #line 30
-      await testRunner.WhenAsync("a removal is validated without a user id", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+      await testRunner.GivenAsync("\"Alice\" owns a character \"Arthasdk\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
 #line hidden
 #line 31
+      await testRunner.AndAsync("the commit will fail", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 32
+      await testRunner.WhenAsync("\"Alice\" removes all their characters", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 33
+      await testRunner.ThenAsync("the removal fails with \"Commit.Failed\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="An empty player is refused before anything is loaded")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Remove my characters")]
+        [global::Xunit.TraitAttribute("Description", "An empty player is refused before anything is loaded")]
+        public async global::System.Threading.Tasks.Task AnEmptyPlayerIsRefusedBeforeAnythingIsLoaded()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "4";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("An empty player is refused before anything is loaded", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("Only what is the player\'s alone is deleted", null, tagsOfRule);
+#line 35
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 36
+      await testRunner.WhenAsync("a removal is validated without a user id", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 37
       await testRunner.ThenAsync("the validation fails on \"UserId\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }

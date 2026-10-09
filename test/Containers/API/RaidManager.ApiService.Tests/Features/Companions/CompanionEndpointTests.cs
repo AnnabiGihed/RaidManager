@@ -145,6 +145,23 @@ public sealed class CompanionEndpointTests : IDisposable
         (await ProblemAsync(collected, HttpStatusCode.BadRequest)).Title.ShouldBe("CompanionPairing.Expired");
     }
 
+    /// <summary>Removing a player's characters asks their companion to send every character again (#615).</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task RemovingMyCharactersAsksTheCompanionToSyncAgain()
+    {
+        var bryn = await RegisterAsync("Bryn Valewood");
+        var token = await PairAsync(bryn);
+        using var website = WebsiteClient();
+        var before = await (await MeAsync(token.DeviceToken)).Content.ReadFromJsonAsync<CurrentCompanion>();
+
+        (await website.DeleteAsync($"/internal/users/{bryn}/characters")).StatusCode.ShouldBe(HttpStatusCode.OK);
+
+        var after = await (await MeAsync(token.DeviceToken)).Content.ReadFromJsonAsync<CurrentCompanion>();
+        before.ShouldNotBeNull().SyncAgainRequestedAtUtc.ShouldBeNull();
+        after.ShouldNotBeNull().SyncAgainRequestedAtUtc.ShouldNotBeNull();
+    }
+
     /// <summary>Uses a companion after 180 days without use.</summary>
     /// <returns>A task that completes when the test has run.</returns>
     [Fact]

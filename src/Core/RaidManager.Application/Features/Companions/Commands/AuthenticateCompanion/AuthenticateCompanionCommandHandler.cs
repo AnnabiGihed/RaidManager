@@ -77,7 +77,7 @@ internal sealed class AuthenticateCompanionCommandHandler : ICommandHandler<Auth
             }
         }
 
-        return new AuthenticatedCompanionResponse(companion.Id.Value, companion.UserId.Value, companion.Label);
+        return new AuthenticatedCompanionResponse(companion.Id.Value, companion.UserId.Value, companion.Label, companion.SyncAgainRequestedAtUtc);
     }
     #endregion Public Methods
 }

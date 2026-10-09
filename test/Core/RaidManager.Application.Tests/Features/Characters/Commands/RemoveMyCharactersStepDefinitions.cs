@@ -8,6 +8,9 @@ using RaidManager.Domain.Features.Characters.Aggregates;
 using RaidManager.Domain.Features.Characters.Enums;
 using RaidManager.Domain.Features.Characters.Repositories;
 using RaidManager.Domain.Features.Characters.ValueObjects;
+using RaidManager.Domain.Features.Companions.Aggregates;
+using RaidManager.Domain.Features.Companions.Repositories;
+using RaidManager.Domain.Features.Companions.ValueObjects;
 using RaidManager.Domain.Features.Shared.Enums;
 using RaidManager.Domain.Features.Shared.Identifiers;
 
@@ -33,6 +36,12 @@ public sealed class RemoveMyCharactersStepDefinitions
 
     /// <summary>Stores the repository double.</summary>
     private readonly Mock<ICharacterRepository> _repository = new();
+
+    /// <summary>Stores the companion repository double.</summary>
+    private readonly Mock<ICompanionRepository> _companionRepository = new();
+
+    /// <summary>Stores the player's companions.</summary>
+    private readonly List<Companion> _companions = [];
 
     /// <summary>Stores the unit-of-work double that records commits.</summary>
     private readonly Mock<IUnitOfWork> _unitOfWork = new();
@@ -74,6 +83,17 @@ public sealed class RemoveMyCharactersStepDefinitions
     public void GivenOwnsACharacterThatAlsoClaimed(string owner, string name, string player) =>
         Owned(owner, name).RequestClaim(PlayerId(player), DateTimeOffset.UtcNow).IsSuccess.ShouldBeTrue();
 
+    /// <summary>Pairs two companions for the player and revokes the second.</summary>
+    /// <param name="player">The player name.</param>
+    [Given("{string} has an active companion and a revoked one")]
+    public void GivenHasAnActiveCompanionAndARevokedOne(string player)
+    {
+        _companions.Add(Paired(player, "active"));
+        var revoked = Paired(player, "revoked");
+        revoked.Revoke(PlayerId(player), DateTimeOffset.UtcNow).IsSuccess.ShouldBeTrue();
+        _companions.Add(revoked);
+    }
+
     /// <summary>Makes the next commit fail.</summary>
     [Given("the commit will fail")]
     public void GivenTheCommitWillFail() =>
@@ -90,8 +110,10 @@ public sealed class RemoveMyCharactersStepDefinitions
         var userId = PlayerId(player);
         _repository.Setup(repository => repository.ListOwnedOrClaimedByAsync(userId, It.IsAny<CancellationToken>()))
             .ReturnsAsync([.. _characters.Values]);
+        _companionRepository.Setup(repository => repository.ListByUserAsync(userId, It.IsAny<CancellationToken>()))
+            .ReturnsAsync([.. _companions]);
         _unitOfWork.Setup(unitOfWork => unitOfWork.SaveChangesAsync(It.IsAny<CancellationToken>())).ReturnsAsync(_commitResult);
-        _removal = await new RemoveMyCharactersCommandHandler(_repository.Object, _unitOfWork.Object)
+        _removal = await new RemoveMyCharactersCommandHandler(_repository.Object, _companionRepository.Object, _unitOfWork.Object, TimeProvider.System)
             .Handle(new RemoveMyCharactersCommand(userId.Value), CancellationToken.None);
     }
 
@@ -146,6 +168,16 @@ public sealed class RemoveMyCharactersStepDefinitions
         _repository.Verify(repository => repository.UpdateAsync(character, It.IsAny<CancellationToken>()), Times.Once);
     }
 
+    /// <summary>Asserts that only the active companion was asked to sync again, and updated.</summary>
+    [Then("only the active companion is asked to sync again")]
+    public void ThenOnlyTheActiveCompanionIsAskedToSyncAgain()
+    {
+        _companions[0].SyncAgainRequestedAtUtc.ShouldNotBeNull();
+        _companions[1].SyncAgainRequestedAtUtc.ShouldBeNull();
+        _companionRepository.Verify(repository => repository.UpdateAsync(_companions[0], It.IsAny<CancellationToken>()), Times.Once);
+        _companionRepository.Verify(repository => repository.UpdateAsync(_companions[1], It.IsAny<CancellationToken>()), Times.Never);
+    }
+
     /// <summary>Asserts the removal was committed exactly once.</summary>
     [Then("the removal is committed once")]
     public void ThenTheRemovalIsCommittedOnce() =>
@@ -182,6 +214,18 @@ public sealed class RemoveMyCharactersStepDefinitions
         character.RequestClaim(PlayerId(player), DateTimeOffset.UtcNow).IsSuccess.ShouldBeTrue();
         character.ApproveClaim(PlayerId(player), DateTimeOffset.UtcNow).IsSuccess.ShouldBeTrue();
         return character;
+    }
+
+    /// <summary>Pairs a companion for the player.</summary>
+    /// <param name="player">The player name.</param>
+    /// <param name="token">A token that tells the companions apart.</param>
+    /// <returns>The companion.</returns>
+    private Companion Paired(string player, string token)
+    {
+        var code = PairingCode.Create(token == "active" ? "K7M4QX" : "P3R8TW");
+        var pairing = CompanionPairing.Start(CredentialHash.Of(token + "-device-code"), code, $"PC-{token}", DateTimeOffset.UtcNow);
+        pairing.Confirm(PlayerId(player), DateTimeOffset.UtcNow).IsSuccess.ShouldBeTrue();
+        return pairing.Complete(CredentialHash.Of(token), DateTimeOffset.UtcNow).Value;
     }
 
     /// <summary>Returns the stable user identifier for a player name.</summary>

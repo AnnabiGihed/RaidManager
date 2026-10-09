@@ -24,6 +24,9 @@ public static class CompanionTokenDefaults
     /// <summary>Defines the claim holding the computer's label.</summary>
     public const string LabelClaim = "raidmanager:companion-label";
 
+    /// <summary>Defines the claim holding when the player asked the companion to send every character again, if they did.</summary>
+    public const string SyncAgainClaim = "raidmanager:companion-sync-again";
+
     /// <summary>Defines the prefix of the authorization header value.</summary>
     public const string BearerPrefix = "Bearer ";
     #endregion Constants
