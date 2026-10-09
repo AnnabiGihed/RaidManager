@@ -7,7 +7,7 @@
 
     @if (_notice is { } notice)
     {
-        <Toast Title="@notice.Title" Message="@notice.Detail" Tone="@CompanionTones.ToastOf(notice.Kind)" data-testid="pair-notice" />
+        <Toast Title="@notice.Title" Message="@notice.Detail" Tone="@CompanionTones.ToastOf(notice.Kind)" Closed="ForgetNotice" data-testid="pair-notice" />
     }
 
     @if (ViewModel.Status == CompanionPageStatus.Loading)

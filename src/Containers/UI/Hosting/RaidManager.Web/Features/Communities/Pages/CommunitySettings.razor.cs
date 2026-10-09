@@ -17,6 +17,9 @@ public sealed partial class CommunitySettings : IDisposable
     #region Fields
     /// <summary>Stores the token cancelled when the page goes away, so its calls stop with it.</summary>
     private readonly CancellationTokenSource _lifetime = new();
+
+    /// <summary>Stores whether the player closed the confirmation of linking.</summary>
+    private bool _linkedClosed;
     #endregion Fields
 
     #region Properties
@@ -153,5 +156,8 @@ public sealed partial class CommunitySettings : IDisposable
     /// <summary>Deletes the role being edited, once confirmed.</summary>
     /// <returns>A task that completes when the deletion was tried.</returns>
     private Task DeleteAsync() => Roles.DeleteAsync(_lifetime.Token);
+
+    /// <summary>Keeps the confirmation of linking closed once it closes.</summary>
+    private void ForgetLinked() => _linkedClosed = true;
     #endregion Private Helpers
 }

@@ -134,6 +134,9 @@ public sealed class CommunityRolesViewModel
         JustSaved = false;
     }
 
+    /// <summary>Forgets the last change's confirmation once the page's notification closes.</summary>
+    public void ForgetSaved() => JustSaved = false;
+
     /// <summary>Closes the picker without changing anything.</summary>
     public void ClosePicker()
     {

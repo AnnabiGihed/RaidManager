@@ -51,7 +51,7 @@ sys.path.insert(0, str(REPOSITORY / "scripts"))
 
 from penpot_components import (  # noqa: E402
     BOARD_GAP, BOARD_H, BOARD_W, CONTENT_TOP, CONTENT_W, CONTENT_X, PLAYER, TITLE_BAR_H, WINDOW_PADDING, WINDOW_W,
-    app_screen, badge, button, card, companion_window, notice, page_header,
+    app_screen, badge, button, card, companion_window, notice, page_header, toast as shared_toast,
 )
 from penpot_scene import HOUSE_PALETTE, Board, Circle, Click, Group, Item, Rect, text, write_mockup  # noqa: E402
 
@@ -158,10 +158,7 @@ def companions_table(revoked: bool, linked: bool, expired: bool = False) -> Grou
 
 
 def toast(title: str, message: str, accent: str = ACCENT) -> Group:
-    x = BOARD_W - 40 - 380
-    return Group("Notification", [*card(x, 80, 380, 72, accent),
-                                  text(TITLE_LAYER, x + 24, 111, title, 14, 600),
-                                  text(MESSAGE_LAYER, x + 24, 133, message, 13, 400, SECONDARY)])
+    return shared_toast("Notification", title, message, accent)
 
 
 def companions_header() -> Group:

@@ -9,6 +9,7 @@ using Xunit;
 using RaidManager.ViewModels.Features.Characters;
 using RaidManager.Web.Features.Characters.Pages;
 using RaidManager.Web.Features.Authentication;
+using RaidManager.Web.Features.Shared.Components;
 using RaidManager.Web.Tests.Support;
 
 namespace RaidManager.Web.Tests.Features.Characters.Pages;
@@ -28,6 +29,9 @@ public sealed class CharacterReviewTests : BunitContext
 
     /// <summary>Stores the fake claims API.</summary>
     private readonly FakeCharacterClaimsApiClient _api = new();
+
+    /// <summary>Stores the layout's notification area, once a test looks at it.</summary>
+    private IRenderedComponent<NotificationArea>? _notifications;
     #endregion Fields
 
     #region Constructors
@@ -41,6 +45,11 @@ public sealed class CharacterReviewTests : BunitContext
         JSInterop.Mode = JSRuntimeMode.Loose;
     }
     #endregion Constructors
+
+    #region Properties
+    /// <summary>Gets the layout's notification area, where the page's notifications show (#577).</summary>
+    private IRenderedComponent<NotificationArea> Notifications => _notifications ??= Render<NotificationArea>();
+    #endregion Properties
 
     #region Tests
     /// <summary>Lists pending and conflicted claims.</summary>
@@ -73,9 +82,25 @@ public sealed class CharacterReviewTests : BunitContext
         page.Markup.ShouldContain("Sylvanash stays in conflict review until an officer decides.");
         page.FindAll("[data-testid=decide-later]").ShouldBeEmpty();
         _api.Decisions.ShouldBe([("approve", _userId, arthasdk.CharacterId)]);
-        var notice = page.Find("[data-testid=review-notice]");
+        var notice = Notifications.Find("[data-testid=review-notice]");
         notice.ClassList.ShouldContain("toast-success");
         notice.QuerySelector(".toast-title")!.TextContent.ShouldBe("Arthasdk approved");
+    }
+
+    /// <summary>Closing the notification forgets it, and the next decision shows its own (#577).</summary>
+    [Fact]
+    public void ClosingTheNotificationLetsTheNextOneShow()
+    {
+        _api.Claims = [FakeCharacterClaimsApiClient.Claim("Arthasdk"), FakeCharacterClaimsApiClient.Claim("Jainaice")];
+        var page = RenderPage();
+        page.WaitForElement("[data-testid=approve-Arthasdk]");
+        page.Find("[data-testid=approve-Arthasdk]").Click();
+        Notifications.WaitForElement("[data-testid=review-notice] .toast-close").Click();
+
+        Notifications.FindAll("[data-testid=review-notice]").ShouldBeEmpty();
+        page.Find("[data-testid=approve-Jainaice]").Click();
+
+        Notifications.WaitForAssertion(() => Notifications.Find("[data-testid=review-notice] .toast-title").TextContent.ShouldBe("Jainaice approved"));
     }
 
     /// <summary>Rejects a claim after confirming.</summary>
@@ -113,7 +138,7 @@ public sealed class CharacterReviewTests : BunitContext
         page.FindAll("[data-testid=reject-dialog]").ShouldBeEmpty();
         page.Find("[data-testid=approve-Jainaice]").ShouldNotBeNull();
         _api.Decisions.ShouldBeEmpty();
-        page.FindAll("[data-testid=review-notice]").ShouldBeEmpty();
+        Notifications.FindAll("[data-testid=review-notice]").ShouldBeEmpty();
     }
 
     /// <summary>Lists a claim in the design system's table: the class by its readable name and color, the status as a badge.</summary>
@@ -145,7 +170,7 @@ public sealed class CharacterReviewTests : BunitContext
 
         page.Find("[data-testid=approve-Arthasdk]").Click();
 
-        page.WaitForAssertion(() => page.Find("[data-testid=review-notice]").ClassList.ShouldContain("toast-danger"));
+        Notifications.WaitForAssertion(() => Notifications.Find("[data-testid=review-notice]").ClassList.ShouldContain("toast-danger"));
     }
 
     /// <summary>Leaves the review undecided.</summary>

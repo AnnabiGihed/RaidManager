@@ -134,5 +134,8 @@ public sealed partial class CharacterReview : IDisposable
 
     /// <summary>Leaves the page for the requested page without deciding anything.</summary>
     private void Continue() => Navigation.NavigateTo(CharacterRoutes.ContinueUrl(ReturnUrl));
+
+    /// <summary>Forgets the notification once it closes, so the next one shows afresh.</summary>
+    private void ForgetNotice() => _notice = null;
     #endregion Private Helpers
 }

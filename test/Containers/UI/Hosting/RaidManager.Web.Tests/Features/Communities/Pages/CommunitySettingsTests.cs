@@ -9,6 +9,7 @@ using RaidManager.ViewModels.Features.Communities;
 using RaidManager.Web.Features.Authentication;
 using RaidManager.Web.Features.Communities;
 using RaidManager.Web.Features.Communities.Pages;
+using RaidManager.Web.Features.Shared.Components;
 using RaidManager.Web.Tests.Support;
 
 namespace RaidManager.Web.Tests.Features.Communities.Pages;
@@ -27,6 +28,9 @@ public sealed class CommunitySettingsTests : BunitContext
 
     /// <summary>Stores the fake API's community endpoints.</summary>
     private readonly FakeCommunitiesApiClient _communities = new();
+
+    /// <summary>Stores the layout's notification area, once a test looks at it.</summary>
+    private IRenderedComponent<NotificationArea>? _notifications;
     #endregion Fields
 
     #region Constructors
@@ -37,9 +41,15 @@ public sealed class CommunitySettingsTests : BunitContext
         Services.AddSingleton<ICommunitiesApiClient>(_communities);
         Services.AddTransient<CommunityViewModel>();
         Services.AddTransient<CommunityRolesViewModel>();
+        Services.AddSingleton(TimeProvider.System);
         JSInterop.Mode = JSRuntimeMode.Loose;
     }
     #endregion Constructors
+
+    #region Properties
+    /// <summary>Gets the layout's notification area, where the page's notifications show (#577).</summary>
+    private IRenderedComponent<NotificationArea> Notifications => _notifications ??= Render<NotificationArea>();
+    #endregion Properties
 
     #region Tests
     /// <summary>Shows the server, realm and Administrator in the heading, and the confirmation right after linking.</summary>
@@ -55,8 +65,8 @@ public sealed class CommunitySettingsTests : BunitContext
         page.WaitForAssertion(() => page.Find("h1").TextContent.ShouldBe("Dark Templars"));
         page.Find(".page-heading-eyebrow").TextContent.ShouldBe("Community");
         page.Find(".page-heading-subtitle").TextContent.ShouldBe("Discord server linked to RaidManager on Icecrown. Administrator: Gihed Annabi.");
-        page.Find("[data-testid=linked-confirmation] .toast-title").TextContent.ShouldBe("Dark Templars is linked");
-        page.Find("[data-testid=linked-confirmation] .toast-message").TextContent.ShouldBe("Members see it at their next sign-in.");
+        Notifications.Find("[data-testid=linked-confirmation] .toast-title").TextContent.ShouldBe("Dark Templars is linked");
+        Notifications.Find("[data-testid=linked-confirmation] .toast-message").TextContent.ShouldBe("Members see it at their next sign-in.");
     }
 
     /// <summary>Leaves the confirmation out on a later visit.</summary>
@@ -70,7 +80,23 @@ public sealed class CommunitySettingsTests : BunitContext
         var page = Render<CommunitySettings>();
 
         page.WaitForAssertion(() => page.Find("h1").TextContent.ShouldBe("Dark Templars"));
-        page.FindAll("[data-testid=linked-confirmation]").ShouldBeEmpty();
+        Notifications.FindAll("[data-testid=linked-confirmation]").ShouldBeEmpty();
+    }
+
+    /// <summary>Closing the confirmation of linking keeps it closed (#577).</summary>
+    [Fact]
+    public void ClosingTheLinkedConfirmationKeepsItClosed()
+    {
+        _communities.Communities.Add(FakeCommunitiesApiClient.Community(_userId));
+        SignIn();
+        Services.GetRequiredService<NavigationManager>().NavigateTo(CommunityRoutes.SettingsAfterLinking());
+        var page = Render<CommunitySettings>();
+        page.WaitForAssertion(() => page.Find("h1").TextContent.ShouldBe("Dark Templars"));
+
+        Notifications.Find("[data-testid=linked-confirmation] .toast-close").Click();
+        page.Render();
+
+        Notifications.FindAll("[data-testid=linked-confirmation]").ShouldBeEmpty();
     }
 
     /// <summary>Shows the Administrator each role with its chips and counts, and the controls of board 8.</summary>
@@ -118,8 +144,21 @@ public sealed class CommunitySettingsTests : BunitContext
         page.FindAll("[data-testid=role-picker] button").First(button => button.TextContent.Contains("Add", StringComparison.Ordinal)).Click();
 
         _communities.RoleChanges.ShouldHaveSingleItem().ShouldBe(("13", FakeCommunitiesApiClient.OfficerId, true));
-        page.WaitForAssertion(() => page.Find("[data-testid=saved-confirmation] .toast-title").TextContent.ShouldBe("Roles saved"));
+        Notifications.WaitForAssertion(() => Notifications.Find("[data-testid=saved-confirmation] .toast-title").TextContent.ShouldBe("Roles saved"));
         page.FindAll("[data-testid=role-picker]").ShouldBeEmpty();
+    }
+
+    /// <summary>Closing the confirmation of a change forgets it (#577).</summary>
+    [Fact]
+    public void ClosingTheSavedConfirmationForgetsIt()
+    {
+        var page = OpenAdministratorPage();
+        page.FindAll($"[data-testid=role-row-{FakeCommunitiesApiClient.OfficerId}] button").First(button => button.TextContent.Contains("+ Add Discord role", StringComparison.Ordinal)).Click();
+        page.FindAll("[data-testid=role-picker] button").First(button => button.TextContent.Contains("Add", StringComparison.Ordinal)).Click();
+
+        Notifications.WaitForElement("[data-testid=saved-confirmation] .toast-close").Click();
+
+        Notifications.FindAll("[data-testid=saved-confirmation]").ShouldBeEmpty();
     }
 
     /// <summary>Closes the picker without changing anything.</summary>
@@ -217,7 +256,7 @@ public sealed class CommunitySettingsTests : BunitContext
         page.Find("[data-testid=permission-RunRaidNight] input").Change(true);
         page.Find("[data-testid=save-role]").Click();
 
-        page.WaitForAssertion(() => page.Find("[data-testid=saved-confirmation] .toast-title").TextContent.ShouldBe("Roles saved"));
+        Notifications.WaitForAssertion(() => Notifications.Find("[data-testid=saved-confirmation] .toast-title").TextContent.ShouldBe("Roles saved"));
         _communities.RoleWrites.ShouldHaveSingleItem().ShouldSatisfyAllConditions(
             write => write.Action.ShouldBe("create"),
             write => write.Name.ShouldBe("Veteran"),

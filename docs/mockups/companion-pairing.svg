@@ -142,6 +142,7 @@
 <rect x="2540" y="92" width="4" height="48" rx="2" fill="#5de0c1"/>
 <text x="2564" y="111" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">BRYN-DESKTOP is paired</text>
 <text x="2564" y="133" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">It can upload your character data now.</text>
+<text x="2894" y="111" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="18" font-weight="600" fill="#8394aa" text-anchor="middle">×</text>
 </g>
 <text x="3040" y="-14" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">3 · Website: revoke confirmation</text>
 <clipPath id="clip3"><rect x="3040" y="0" width="1440" height="900"/></clipPath>
@@ -305,6 +306,7 @@
 <rect x="5580" y="92" width="4" height="48" rx="2" fill="#5de0c1"/>
 <text x="5604" y="111" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">BRYN-LAPTOP was revoked</text>
 <text x="5604" y="133" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">It can&#x27;t upload until it&#x27;s paired again.</text>
+<text x="5934" y="111" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="18" font-weight="600" fill="#8394aa" text-anchor="middle">×</text>
 </g>
 <text x="0" y="966" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">5 · Companion: waiting</text>
 <clipPath id="clip5"><rect x="0" y="980" width="480" height="600"/></clipPath>
@@ -848,6 +850,7 @@
 <rect x="2540" y="3032" width="4" height="48" rx="2" fill="#f2878c"/>
 <text x="2564" y="3051" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">BRYN-DESKTOP wasn&#x27;t revoked</text>
 <text x="2564" y="3073" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Nothing changed. Try again in a moment.</text>
+<text x="2894" y="3051" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="18" font-weight="600" fill="#8394aa" text-anchor="middle">×</text>
 </g>
 <text x="3040" y="2926" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">15 · Website: no paired companions</text>
 <clipPath id="clip19"><rect x="3040" y="2940" width="1440" height="900"/></clipPath>
@@ -1031,5 +1034,6 @@
 <rect x="1020" y="4012" width="4" height="48" rx="2" fill="#f2878c"/>
 <text x="1044" y="4031" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">BRYN-DESKTOP wasn&#x27;t paired</text>
 <text x="1044" y="4053" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Nothing changed. Try again in a moment.</text>
+<text x="1374" y="4031" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="18" font-weight="600" fill="#8394aa" text-anchor="middle">×</text>
 </g>
 </svg>

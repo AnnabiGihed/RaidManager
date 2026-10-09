@@ -46,7 +46,7 @@ sys.path.insert(0, str(REPOSITORY / "scripts"))
 
 from penpot_components import (  # noqa: E402
     BOARD_GAP, BOARD_H, BOARD_W, CONTENT_TOP, CONTENT_W, CONTENT_X, PLAYER, User, app_screen, avatar, badge,
-    button, card, checkbox, form_field, notice, page_header,
+    button, card, checkbox, form_field, notice, page_header, toast,
 )
 from penpot_scene import HOUSE_PALETTE, Board, Circle, Click, Group, Item, Rect, text, write_mockup  # noqa: E402
 
@@ -225,7 +225,6 @@ def settings() -> list[Item]:
     top = CONTENT_TOP + 120
     left_w, right_x = 400, CONTENT_X + 416
     right_w = CONTENT_W - 416
-    toast_x = BOARD_W - 40 - 380
     rows = [("Administrator", ["Added RaidManager to the server"], 1), ("Officer", [OFFICER_ROLE], 3),
             (RAID_LEADER, [RAID_LEAD_ROLE], 2), ("Member", ["Everyone in the Discord server"], 38)]
     return [
@@ -240,11 +239,7 @@ def settings() -> list[Item]:
             button("Members button", right_x + 24, top + 88 + 4 * 64 + 24, "View members", "secondary", 136,
                    Click("navigate", MEMBERS)),
         ]),
-        Group("Linked notification", [
-            *card(toast_x, 80, 380, 72, ACCENT),
-            text("Title", toast_x + 24, 111, f"{SERVER} is linked", 14, 600),
-            text("Message", toast_x + 24, 133, "Members see it at their next sign-in.", 13, 400, SECONDARY),
-        ]),
+        toast("Linked notification", f"{SERVER} is linked", "Members see it at their next sign-in."),
     ]
 
 
@@ -253,7 +248,6 @@ def mapping_roles() -> list[Item]:
     top = CONTENT_TOP + 120
     left_w, right_x = 400, CONTENT_X + 416
     right_w = CONTENT_W - 416
-    toast_x = BOARD_W - 40 - 380
     chip_x = right_x + 184
 
     def row_frame(y: float, role: str, members: int) -> list[Item]:
@@ -290,11 +284,7 @@ def mapping_roles() -> list[Item]:
             Group("Member row", [*row_frame(member_y, "Member", 38),
                                  text("Source", chip_x, member_y + 34, "Everyone in the Discord server", 13, 400, SECONDARY)]),
         ]),
-        Group("Saved notification", [
-            *card(toast_x, 80, 380, 72, ACCENT),
-            text("Title", toast_x + 24, 111, "Officer roles saved", 14, 600),
-            text("Message", toast_x + 24, 133, "Members get them at their next check.", 13, 400, SECONDARY),
-        ]),
+        toast("Saved notification", "Officer roles saved", "Members get them at their next check."),
     ]
 
 

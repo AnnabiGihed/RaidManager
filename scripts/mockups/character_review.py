@@ -29,7 +29,7 @@ sys.path.insert(0, str(REPOSITORY / "scripts"))
 
 from penpot_components import (  # noqa: E402
     BOARD_GAP, BOARD_H, BOARD_W, CONTENT_TOP, CONTENT_W, CONTENT_X, PLAYER, app_screen, badge, button, card, notice,
-    page_header,
+    page_header, toast,
 )
 from penpot_scene import HOUSE_PALETTE, Board, Circle, Click, Group, Item, Rect, text  # noqa: E402
 from penpot_scene import write_mockup  # noqa: E402
@@ -143,7 +143,6 @@ def reject_dialog() -> list[Item]:
 def all_set() -> list[Item]:
     top, height = CONTENT_TOP + 120, 312
     middle = CONTENT_X + CONTENT_W / 2
-    toast_x, toast_y, toast_w = BOARD_W - 40 - 420, 80, 420
     return [
         *header(decide_later=False),
         Group("Empty state", [
@@ -157,12 +156,8 @@ def all_set() -> list[Item]:
                  13, 400, MUTED, CONTENT_W, "center"),
             button("Continue button", middle - 56, top + 240, "Continue", "primary", 112),
         ]),
-        Group("Approved notification", [
-            *card(toast_x, toast_y, toast_w, 72, P["Brand/accent"]),
-            text("Title", toast_x + 24, toast_y + 31, "Thrallsham approved", 14, 600),
-            text("Message", toast_x + 24, toast_y + 53, "It's now one of your characters and can sign up for raids.", 13,
-                 400, SECONDARY),
-        ]),
+        toast("Approved notification", "Thrallsham approved",
+              "It's now one of your characters and can sign up for raids.", P["Brand/accent"], 420),
     ]
 
 

@@ -84,6 +84,19 @@ public sealed class CommunityRolesViewModelTests
         roles.IsSaving.ShouldBeFalse();
     }
 
+    /// <summary>The confirmation goes once the page's notification closes, so the next change shows it again (#577).</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task TheConfirmationGoesOnceItsNotificationCloses()
+    {
+        var roles = await LoadedAsync(canEdit: true);
+        await roles.RemoveAsync("12", Officer, CancellationToken.None);
+
+        roles.ForgetSaved();
+
+        roles.JustSaved.ShouldBeFalse();
+    }
+
     /// <summary>Removes a mapping and confirms it.</summary>
     /// <returns>A task that completes when the test has run.</returns>
     [Fact]

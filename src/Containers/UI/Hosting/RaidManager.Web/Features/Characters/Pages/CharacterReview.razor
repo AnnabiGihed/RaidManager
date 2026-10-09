@@ -14,7 +14,7 @@
 
     @if (_notice is { } notice)
     {
-        <Toast Title="@notice.Title" Message="@notice.Detail" Tone="@ToneOf(notice.Kind)" data-testid="review-notice" />
+        <Toast Title="@notice.Title" Message="@notice.Detail" Tone="@ToneOf(notice.Kind)" Closed="ForgetNotice" data-testid="review-notice" />
     }
 
     @if (ViewModel.Status == CharacterReviewStatus.Loading)
