@@ -224,16 +224,21 @@ def card(x: float, y: float, w: float, h: float, accent: str | None = None, fill
     return items
 
 
-def toast(name: str, title: str, message: str, accent: str = ACCENT, width: float = 380) -> Group:
+def toast(name: str, title: str, message: str, accent: str = ACCENT, width: float = 380, action: str | None = None,
+          on_action: Click | None = None) -> Group:
     """A website notification, 16 px under the top bar at the right: a card with its accent bar, a title, one line of
-    text, and a close button (×). It closes by itself after 6 seconds or at once with the button (#577)."""
+    text, and a close button (×). It closes by itself after 6 seconds or at once with the button (#577). An `action`
+    adds a link under the text, such as "Review them" (#595)."""
     x, y = BOARD_W - 40 - width, TOP_BAR_H + 16
-    return Group(name, [
-        *card(x, y, width, 72, accent),
+    items: list[Item] = [
+        *card(x, y, width, 96 if action else 72, accent),
         text("Title", x + 24, y + 31, title, 14, 600),
         text("Message", x + 24, y + 53, message, 13, 400, SECONDARY),
         Group("Close button", [text("Close mark", x + width - 36, y + 31, "×", 18, 600, MUTED, 20, "center", icon=True)]),
-    ])
+    ]
+    if action:
+        items.append(Group("Action link", [text("Action", x + 24, y + 77, action, 13, 600, ACCENT)], on_action))
+    return Group(name, items)
 
 
 def button(name: str, x: float, y: float, label: str, style: str = "primary", width: float | None = None,
