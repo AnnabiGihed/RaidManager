@@ -18,7 +18,7 @@ imports as-is, so no Penpot API, MCP server, plugin or access token is needed.
 
 - **Name repeated texts before pushing a script.** SonarCloud flags any string literal used three times or more in a
   script (`python:S1192`), and its count grows with every board added: #523 failed on nine, layer names such as
-  `"Code card"` included. Before pushing, compare the literals used three times or more with `main`, and name every
+  `"Code card"` included, and #612 on a page title drawn three times (fixed with a shared header helper). Before pushing, compare the literals used three times or more with `main`, and name every
   new or grown one as a module constant (`APP_NAME`, `TITLE_LAYER`). Regenerate and check that the `.penpot` is
   byte-identical, so the refactor changed nothing:
 

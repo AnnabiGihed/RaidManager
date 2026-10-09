@@ -307,6 +307,7 @@ What the owner's files showed, and the addon and contract now follow:
 | `Riding` is a row under the `Secondary Skills` header; the headers are `Professions` and `Secondary Skills`. | Professions keep it raw; RaidManager ignores `Riding` when it maps professions. |
 | Expired saves that can still be extended come back with `locked = false`. | They are kept and flagged, never dropped. |
 | `GetGuildInfo` answered at login on every character checked; the server clock read UTC. | `not-loaded` stays for slower cases; `serverTime` agrees with `capturedAt`. |
+| `/reload` renews the snapshot of the character logged in only; the other characters in the file keep their `capturedAt`. | The companion skips a snapshot it already uploaded, so a character removed on the website came back only once logged in with (#613); a removal now asks the companion to send every character again (#615). |
 
 ## Completion criteria
 

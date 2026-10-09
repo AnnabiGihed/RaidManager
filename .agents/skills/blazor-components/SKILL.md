@@ -150,6 +150,8 @@ These govern the UI layer as a whole, not a single component. Every one of them 
 - Bind `RadzenTabsItem` content via a `Template` / child-content render fragment, not the `Text` property with string interpolation — the interpolated `Text` does not re-render reliably when the bound value changes. Prefer a `Template` fragment for any tab/header text that updates at runtime.
 - For dropdowns that must filter their option set by a rule (e.g. eligible validators by required level), compute the filtered collection in a helper and bind `Data` to it; don't filter inside the markup.
 - Radzen components raise their own change events — wire them with `EventCallback` handlers and let Blazor render; avoid manually forcing `StateHasChanged` unless a value changed outside the event.
+- **`RadzenBody` is transformed** (`.rz-layout .rz-body{transform:translateZ(0)}` in Radzen 11.5.1), so it becomes the box a `position: fixed` element inside it is placed in: a notification at `top: 80px` sat 64 px too low and scrolled with the page (#577). Anything fixed to the window renders outside the body: `Toast` sends its markup to the layout's `NotificationArea` through a section, which `MainLayout` places before `RadzenLayout`.
+- **A notification about something that happened while the player was away lasts.** Website notifications close after 6 seconds (#577), but the sync notification closed before the owner came back from the game; `Toast Lasting="true"` keeps it until it is closed or its link is followed (owner decision on #595).
 
 ## Workflow
 
