@@ -85,6 +85,10 @@ ROWS = [
 ]
 
 
+def characters_header() -> Item:
+    return page_header("Characters", PAGE, "Your approved characters. Open one to see its profile.")
+
+
 def characters() -> list[Item]:
     head_h, row_h = 44, 72
     columns = {"character": 24, "level": 260, "loadout": 340, "saves": 640, "sync": 820}
@@ -107,7 +111,7 @@ def characters() -> list[Item]:
             badge("Sync badge", CONTENT_X + columns["sync"], y + 24, synced, tone),
         ], Click("navigate", PROFILE) if name == "Arthasdk" else None))
     return [
-        page_header("Characters", "My characters", "Your approved characters. Open one to see its profile."),
+        characters_header(),
         Group("Characters table", table),
         text("Freshness note", CONTENT_X, TOP + head_h + row_h * len(ROWS) + 40,
              "Data older than 3 days may be out of date: log in with that character so the companion syncs it.",
@@ -318,7 +322,7 @@ def removal_dialog() -> list[Item]:
 def removed() -> list[Item]:
     top, height = TOP, 160
     return [
-        page_header("Characters", "My characters", "Your approved characters. Open one to see its profile."),
+        characters_header(),
         Group("Empty state", [
             *card(CONTENT_X, top, CONTENT_W, height),
             text("Title", CONTENT_X, top + 64, "No characters yet", 18, 700, P["Text/primary"], CONTENT_W, "center"),
