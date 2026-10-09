@@ -35,5 +35,12 @@ internal sealed class CharacterRepository : BaseAsyncCommandRepository<Character
     /// <inheritdoc/>
     public Task<Character?> FindByRealmAndNameAsync(WarmaneRealm realm, CharacterName name, CancellationToken cancellationToken) =>
         _dbContext.Characters.FirstOrDefaultAsync(character => character.Realm == realm && character.Name == name, cancellationToken);
+
+    /// <inheritdoc/>
+    public async Task<IReadOnlyList<Character>> ListOwnedOrClaimedByAsync(UserId userId, CancellationToken cancellationToken) =>
+        await _dbContext.Characters
+            .Where(character => !character.IsDeleted
+                && (character.OwnerId == userId || character.Claims.Any(claim => claim.RequestedByUserId == userId)))
+            .ToListAsync(cancellationToken);
     #endregion Public Methods
 }

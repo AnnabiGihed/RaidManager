@@ -115,7 +115,7 @@ namespace RaidManager.Domain.Tests.Features.Characters.Aggregates
         
         private static global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages InitializeCucumberMessages()
         {
-            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Characters/Aggregates/CharacterClaims.feature.ndjson", 9);
+            return new global::Reqnroll.Formatters.RuntimeSupport.FeatureLevelCucumberMessages("Features/Characters/Aggregates/CharacterClaims.feature.ndjson", 15);
         }
         
         async global::System.Threading.Tasks.Task global::Xunit.IAsyncLifetime.InitializeAsync()
@@ -427,6 +427,162 @@ namespace RaidManager.Domain.Tests.Features.Characters.Aggregates
 #line hidden
 #line 58
       await testRunner.AndAsync("\"Alice\" owns the character", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableTheoryAttribute(DisplayName="A character is only the player\'s when they own it or are its only claimant")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Character claims")]
+        [global::Xunit.TraitAttribute("Description", "A character is only the player\'s when they own it or are its only claimant")]
+        [global::Xunit.InlineDataAttribute("\"Alice\" owns the character", "belongs", "7", new string[0])]
+        [global::Xunit.InlineDataAttribute("the companion of \"Alice\" uploaded the character", "belongs", "8", new string[0])]
+        [global::Xunit.InlineDataAttribute("\"Bob\" owns the character", "doesn\'t belong", "9", new string[0])]
+        public async global::System.Threading.Tasks.Task ACharacterIsOnlyThePlayersWhenTheyOwnItOrAreItsOnlyClaimant(string setup, string belongs, string @__pickleIndex, string[] exampleTags)
+        {
+            string[] tagsOfScenario = exampleTags;
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            argumentsOfScenario.Add("setup", setup);
+            argumentsOfScenario.Add("belongs", belongs);
+            string pickleIndex = @__pickleIndex;
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A character is only the player\'s when they own it or are its only claimant", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("Removing a player\'s characters on dev and test deletes only what is theirs alone", null, tagsOfRule);
+#line 62
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 63
+      await testRunner.GivenAsync(string.Format("{0}", setup), ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 64
+      await testRunner.ThenAsync(string.Format("the character {0} only to \"Alice\"", belongs), ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="A character another player claims too isn\'t only the player\'s")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Character claims")]
+        [global::Xunit.TraitAttribute("Description", "A character another player claims too isn\'t only the player\'s")]
+        public async global::System.Threading.Tasks.Task ACharacterAnotherPlayerClaimsTooIsntOnlyThePlayers()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "10";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("A character another player claims too isn\'t only the player\'s", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("Removing a player\'s characters on dev and test deletes only what is theirs alone", null, tagsOfRule);
+#line 72
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 73
+      await testRunner.GivenAsync("the companion of \"Alice\" uploaded the character", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 74
+      await testRunner.AndAsync("the companion of \"Bob\" uploaded the character", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 75
+      await testRunner.ThenAsync("the character doesn\'t belong only to \"Alice\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="Withdrawing a claim on another player\'s character keeps their ownership")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Character claims")]
+        [global::Xunit.TraitAttribute("Description", "Withdrawing a claim on another player\'s character keeps their ownership")]
+        public async global::System.Threading.Tasks.Task WithdrawingAClaimOnAnotherPlayersCharacterKeepsTheirOwnership()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "11";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Withdrawing a claim on another player\'s character keeps their ownership", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("Removing a player\'s characters on dev and test deletes only what is theirs alone", null, tagsOfRule);
+#line 77
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 78
+      await testRunner.GivenAsync("\"Bob\" owns the character", ((string)(null)), ((global::Reqnroll.Table)(null)), "Given ");
+#line hidden
+#line 79
+      await testRunner.AndAsync("the companion of \"Alice\" uploaded the character", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 80
+      await testRunner.WhenAsync("\"Alice\" withdraws the claim", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 81
+      await testRunner.ThenAsync("the claim decision succeeds", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
+#line hidden
+#line 82
+      await testRunner.AndAsync("\"Alice\" has no claim", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+#line 83
+      await testRunner.AndAsync("\"Bob\" owns the character", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
+#line hidden
+            }
+            await this.ScenarioCleanupAsync();
+        }
+        
+        [global::Xunit.SkippableFactAttribute(DisplayName="Withdrawing without a claim is not found")]
+        [global::Xunit.TraitAttribute("FeatureTitle", "Character claims")]
+        [global::Xunit.TraitAttribute("Description", "Withdrawing without a claim is not found")]
+        public async global::System.Threading.Tasks.Task WithdrawingWithoutAClaimIsNotFound()
+        {
+            string[] tagsOfScenario = ((string[])(null));
+            global::System.Collections.Specialized.OrderedDictionary argumentsOfScenario = new global::System.Collections.Specialized.OrderedDictionary();
+            string pickleIndex = "12";
+            global::Reqnroll.ScenarioInfo scenarioInfo = new global::Reqnroll.ScenarioInfo("Withdrawing without a claim is not found", null, tagsOfScenario, argumentsOfScenario, featureTags, pickleIndex);
+            string[] tagsOfRule = ((string[])(null));
+            global::Reqnroll.RuleInfo ruleInfo = new global::Reqnroll.RuleInfo("Removing a player\'s characters on dev and test deletes only what is theirs alone", null, tagsOfRule);
+#line 85
+    this.ScenarioInitialize(scenarioInfo, ruleInfo);
+#line hidden
+            if ((global::Reqnroll.TagHelper.ContainsIgnoreTag(scenarioInfo.CombinedTags) || global::Reqnroll.TagHelper.ContainsIgnoreTag(featureTags)))
+            {
+                await testRunner.SkipScenarioAsync();
+            }
+            else
+            {
+                await this.ScenarioStartAsync();
+#line 6
+  await this.FeatureBackgroundAsync();
+#line hidden
+#line 86
+      await testRunner.WhenAsync("\"Alice\" withdraws the claim", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+#line hidden
+#line 87
+      await testRunner.ThenAsync("the claim decision fails with \"Character.Claim.NotFound\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
 #line hidden
             }
             await this.ScenarioCleanupAsync();

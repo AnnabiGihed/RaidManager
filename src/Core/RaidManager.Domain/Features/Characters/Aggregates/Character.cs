@@ -191,6 +191,28 @@ public sealed class Character : AggregateRoot<CharacterId>
         return Result.Success();
     }
 
+    /// <summary>Determines whether the character is only the user's: they own it, or nobody owns it and only they claim it.</summary>
+    /// <param name="userId">The user.</param>
+    /// <returns><see langword="true"/> when removing the user's characters deletes this one with its data (#597).</returns>
+    public bool BelongsOnlyTo(UserId userId) =>
+        IsOwnershipVerified ? OwnerId == userId : _claims.All(claim => claim.RequestedByUserId == userId);
+
+    /// <summary>Withdraws the user's claim, whatever its state, when the user's characters are removed on dev or test.</summary>
+    /// <param name="userId">The user.</param>
+    /// <returns>Success, or <see cref="CharacterErrors.ClaimNotFound"/> (<see cref="ResultExceptionType.NotFound"/>).</returns>
+    /// <remarks>Used on a character another player owns or claims too, which stays for them (#597).</remarks>
+    public Result WithdrawClaim(UserId userId)
+    {
+        var claim = FindClaim(userId);
+        if (claim is null)
+        {
+            return Result.Failure(CharacterErrors.ClaimNotFound, ResultExceptionType.NotFound);
+        }
+
+        _claims.Remove(claim);
+        return Result.Success();
+    }
+
     /// <summary>Rejects the user's pending claim so the character never appears among their signup choices.</summary>
     /// <param name="userId">The user rejecting their own claim.</param>
     /// <param name="decidedAtUtc">The UTC instant of the rejection.</param>
