@@ -67,6 +67,19 @@ public sealed class CharacterArrivalsWatcherTests : BunitContext
         area.FindAll("[data-testid=arrivals-notice]").ShouldBeEmpty();
     }
 
+    /// <summary>The notification on another page stays until closed or followed, for a player back from the game (#595).</summary>
+    [Fact]
+    public void TheNotificationOnAnotherPageStays()
+    {
+        var area = Open("/characters");
+        Sync(1, FakeCharacterClaimsApiClient.Claim("Uthertank"));
+        area.WaitForElement("[data-testid=arrivals-notice]");
+
+        _time.Advance(Toast.Lifetime * 10);
+
+        area.FindAll("[data-testid=arrivals-notice]").Count.ShouldBe(1);
+    }
+
     /// <summary>Without a sync, nothing is shown, however long the page stays open.</summary>
     [Fact]
     public void NothingShowsWithoutASync()
@@ -105,8 +118,7 @@ public sealed class CharacterArrivalsWatcherTests : BunitContext
         Sync(1, FakeCharacterClaimsApiClient.Claim("Uthertank"));
         area.WaitForElement("[data-testid=arrivals-notice] .toast-close").Click();
 
-        // The first notification armed its own close timer between the two waits.
-        Sync(3, FakeCharacterClaimsApiClient.Claim("Valeerarog"));
+        Sync(2, FakeCharacterClaimsApiClient.Claim("Valeerarog"));
 
         area.WaitForAssertion(() => area.Find("[data-testid=arrivals-notice] .toast-message").TextContent.ShouldBe("Your companion found Valeerarog."));
     }
@@ -137,7 +149,7 @@ public sealed class CharacterArrivalsWatcherTests : BunitContext
     }
 
     /// <summary>Adds what a sync brought, then lets the next check run once the watcher waits for it.</summary>
-    /// <param name="check">The number of timers armed by then: the watcher's waits and the notifications' own.</param>
+    /// <param name="check">The number of the check about to run, counted from the first wait.</param>
     /// <param name="arrived">The new claims.</param>
     private void Sync(int check, params CharacterClaim[] arrived)
     {

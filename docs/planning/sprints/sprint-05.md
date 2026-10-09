@@ -175,6 +175,7 @@ and its task #388 wait for #409 and #411.
 | 2026-10-09 | #604 merged; #578 was reopened as Blocked until the owner's check on dev (owner decision on #578), then closed with it, and bug #577 closed. #163 stays open for later design items (owner decision on #163). #596 started for story #595. |
 | 2026-10-09 | The owner confirmed the boards of `character-sync`; #605 merged and closed #596. On the owner's decision recorded on #595 (the website checks every 15 seconds while a page is open), task #606 was added under #595 in Sprint 5 and started. |
 | 2026-10-09 | #607 merged; #606 closed with the owner's check on dev (the review page updates itself; the sync notification closed before the owner came back from the game). On the owner's decisions recorded on #595, its criteria were amended (the sync notification stays until closed or followed; My characters leads to the review page), and tasks #608 (mockup) and #609 (build, blocked by #608) were added under #595 in Sprint 5. #608 started. |
+| 2026-10-09 | The owner confirmed board 5 of `character-sync`; #610 merged and closed #608. #609 started. |
 
 ## Outcome
 

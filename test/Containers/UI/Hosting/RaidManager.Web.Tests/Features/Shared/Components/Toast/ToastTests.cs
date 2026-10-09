@@ -125,6 +125,25 @@ public sealed class ToastTests : BunitContext
         _closed.ShouldBe(1);
     }
 
+    /// <summary>A lasting notification doesn't close by itself, only with its button (#595).</summary>
+    [Fact]
+    public void LastingNotificationStaysUntilClosed()
+    {
+        var area = Render<NotificationArea>();
+        Render<Toast>(parameters => parameters
+            .Add(component => component.Title, "2 new characters to review")
+            .Add(component => component.Message, "Your companion found Uthertank and Valeerarog.")
+            .Add(component => component.Lasting, true)
+            .Add(component => component.Closed, EventCallback.Factory.Create(this, () => _closed++)));
+
+        _time.Advance(Toast.Lifetime * 10);
+
+        area.FindAll(".toast").Count.ShouldBe(1);
+        area.Find(".toast-close").Click();
+        area.FindAll(".toast").ShouldBeEmpty();
+        _closed.ShouldBe(1);
+    }
+
     /// <summary>A new message shows the notification again for a full six seconds.</summary>
     [Fact]
     public void NewMessageRestartsTheNotification()

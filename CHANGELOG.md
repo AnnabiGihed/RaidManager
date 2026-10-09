@@ -12,6 +12,8 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 - The website shows the characters a sync brings while it is open: every 15 seconds it checks for new characters
   waiting for the player's review. On another page a notification names them, with a "Review them" link to the review
   page; on the review page the list updates itself without a refresh. A sync that brings nothing shows nothing (#595).
+- My characters shows a notice while characters wait for the player's review, with a "Review them" button that opens
+  the review page, and the notification of a sync stays until the player closes it or follows its link (#595).
 - An end-to-end check of the workflows in `docs/reference/project-automation.md`: the runs each step of a pull
   request should start and the work-item updates it should make, run on #584's own pull request (#584).
 - The companion's sync screens (boards 1 to 10 of the companion sync mockup): after pairing, Choose folders opens the

@@ -35,18 +35,30 @@ public sealed partial class MyCharacters : IDisposable
     /// <summary>Gets or sets the view model that loads the characters.</summary>
     [Inject]
     private MyCharactersViewModel ViewModel { get; set; } = default!;
+
+    /// <summary>Gets or sets the check that tells when a sync brought characters, so the notice follows it.</summary>
+    [Inject]
+    private CharacterArrivalsViewModel Arrivals { get; set; } = default!;
+
+    /// <summary>Gets or sets the navigation manager.</summary>
+    [Inject]
+    private NavigationManager Navigation { get; set; } = default!;
     #endregion Properties
 
     #region Public Methods
     /// <inheritdoc />
     public void Dispose()
     {
+        Arrivals.Arrived -= OnArrived;
         _lifetime.Cancel();
         _lifetime.Dispose();
     }
     #endregion Public Methods
 
     #region Overrides
+    /// <inheritdoc />
+    protected override void OnInitialized() => Arrivals.Arrived += OnArrived;
+
     /// <inheritdoc />
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -76,6 +88,25 @@ public sealed partial class MyCharacters : IDisposable
         var state = AuthenticationState is null ? null : await AuthenticationState;
         var userId = Guid.TryParse(state?.User.FindFirst(RaidManagerClaimTypes.UserId)?.Value, out var id) ? id : (Guid?)null;
         await ViewModel.LoadAsync(userId, _lifetime.Token);
+        await ViewModel.LoadWaitingAsync(userId, _lifetime.Token);
     }
+
+    /// <summary>Counts the characters waiting again when a sync brought some, without a refresh (#595).</summary>
+    /// <param name="sender">The check.</param>
+    /// <param name="arrival">The characters that arrived.</param>
+    private void OnArrived(object? sender, CharacterArrival arrival) => _ = InvokeAsync(RecountAsync);
+
+    /// <summary>Counts the characters waiting for review and shows the notice.</summary>
+    /// <returns>A task that completes when the notice is shown.</returns>
+    private async Task RecountAsync()
+    {
+        var state = AuthenticationState is null ? null : await AuthenticationState;
+        var userId = Guid.TryParse(state?.User.FindFirst(RaidManagerClaimTypes.UserId)?.Value, out var id) ? id : (Guid?)null;
+        await ViewModel.LoadWaitingAsync(userId, _lifetime.Token);
+        StateHasChanged();
+    }
+
+    /// <summary>Opens the review page, returning here when the player continues.</summary>
+    private void Review() => Navigation.NavigateTo(CharacterRoutes.ReviewFor(CharacterRoutes.Mine));
     #endregion Private Helpers
 }

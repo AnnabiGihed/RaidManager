@@ -24,6 +24,9 @@ public sealed class MyCharactersTests : BunitContext
     #region Fields
     /// <summary>Stores the fake profiles API.</summary>
     private readonly FakeCharacterProfilesApiClient _api = new();
+
+    /// <summary>Stores the fake claims API.</summary>
+    private readonly FakeCharacterClaimsApiClient _claims = new();
     #endregion Fields
 
     #region Constructors
@@ -32,6 +35,8 @@ public sealed class MyCharactersTests : BunitContext
     {
         Services.AddRadzenComponents();
         Services.AddSingleton<ICharacterProfilesApiClient>(_api);
+        Services.AddSingleton<ICharacterClaimsApiClient>(_claims);
+        Services.AddScoped<CharacterArrivalsViewModel>();
         Services.AddSingleton(TimeProvider.System);
         Services.AddTransient<MyCharactersViewModel>();
         JSInterop.Mode = JSRuntimeMode.Loose;
@@ -62,6 +67,38 @@ public sealed class MyCharactersTests : BunitContext
         badges[1].ClassList.ShouldContain("tag-chip-warning");
         badges[1].TextContent.Trim().ShouldBe("5 days ago");
         page.Markup.ShouldContain(MyCharactersViewModel.FreshnessNote);
+    }
+
+    /// <summary>While characters wait for review, a notice counts them and its button opens the review page (#595).</summary>
+    [Fact]
+    public void WaitingCharactersLeadToTheReviewPage()
+    {
+        _claims.Claims = [FakeCharacterClaimsApiClient.Claim("Uthertank"), FakeCharacterClaimsApiClient.Claim("Sylvanash", CharacterClaim.ConflictState)];
+        var page = RenderPage();
+
+        var notice = page.WaitForElement("[data-testid=review-waiting]");
+        notice.QuerySelector(".notice-title")!.TextContent.ShouldBe("1 character waits for your review");
+        notice.QuerySelector(".notice-message")!.TextContent.ShouldBe(MyCharactersViewModel.WaitingMessage);
+        page.Find("[data-testid=review-them]").Click();
+
+        Services.GetRequiredService<NavigationManager>().Uri.ShouldEndWith("/characters/review?returnUrl=%2Fcharacters");
+    }
+
+    /// <summary>A sync's characters update the notice without a refresh, and none shows when nothing waits.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task ASyncUpdatesTheNotice()
+    {
+        var page = RenderPage();
+        page.WaitForElement("[data-testid=no-characters]");
+        page.FindAll("[data-testid=review-waiting]").ShouldBeEmpty();
+        var arrivals = Services.GetRequiredService<CharacterArrivalsViewModel>();
+        await arrivals.CheckAsync(Guid.NewGuid(), CancellationToken.None);
+        _claims.Claims = [FakeCharacterClaimsApiClient.Claim("Uthertank"), FakeCharacterClaimsApiClient.Claim("Valeerarog")];
+
+        await page.InvokeAsync(() => arrivals.CheckAsync(Guid.NewGuid(), CancellationToken.None));
+
+        page.WaitForAssertion(() => page.Find("[data-testid=review-waiting] .notice-title").TextContent.ShouldBe("2 characters wait for your review"));
     }
 
     /// <summary>Shows the empty state to a player without characters.</summary>

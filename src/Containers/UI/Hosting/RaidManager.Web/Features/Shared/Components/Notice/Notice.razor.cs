@@ -24,6 +24,10 @@ public sealed partial class Notice
     [Parameter]
     public NoticeTone Tone { get; set; } = NoticeTone.Info;
 
+    /// <summary>Gets or sets the actions shown at the notice's right, such as a button; none by default.</summary>
+    [Parameter]
+    public RenderFragment? Actions { get; set; }
+
     /// <summary>Gets or sets attributes passed through to the notice, such as a test id.</summary>
     [Parameter(CaptureUnmatchedValues = true)]
     public IReadOnlyDictionary<string, object>? AdditionalAttributes { get; set; }

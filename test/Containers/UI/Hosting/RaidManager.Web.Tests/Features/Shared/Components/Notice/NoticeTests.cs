@@ -49,5 +49,18 @@ public sealed class NoticeTests : BunitContext
         notice.Find(".notice").GetAttribute("role").ShouldBe("status");
         notice.Find(".notice-mark").TextContent.ShouldBe("!");
     }
+
+    /// <summary>Shows its actions at the right only when given, such as a button (#595).</summary>
+    [Fact]
+    public void ActionsShowOnlyWhenGiven()
+    {
+        var plain = Render<Notice>(parameters => parameters.Add(component => component.Title, "Heads up"));
+        var withActions = Render<Notice>(parameters => parameters
+            .Add(component => component.Title, "2 characters wait for your review")
+            .Add(component => component.Actions, "<button type=\"button\">Review them</button>"));
+
+        plain.FindAll(".notice-actions").ShouldBeEmpty();
+        withActions.Find(".notice-actions button").TextContent.ShouldBe("Review them");
+    }
     #endregion Tests
 }
