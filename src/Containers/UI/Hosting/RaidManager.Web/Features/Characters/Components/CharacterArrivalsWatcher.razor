@@ -1,0 +1,12 @@
+@namespace RaidManager.Web.Features.Characters.Components
+@if (_arrival is { } arrival)
+{
+    @if (_onReviewPage)
+    {
+        <Toast Title="@arrival.ArrivedTitle" Message="@arrival.ArrivedMessage" Tone="ToastTone.Info" Closed="Forget" data-testid="arrivals-notice" />
+    }
+    else
+    {
+        <Toast Title="@arrival.ToReviewTitle" Message="@arrival.ToReviewMessage" Tone="ToastTone.Info" ActionText="Review them" ActionHref="@_reviewHref" Closed="Forget" data-testid="arrivals-notice" />
+    }
+}

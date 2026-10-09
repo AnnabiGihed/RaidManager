@@ -42,6 +42,7 @@ public sealed class CharacterReviewTests : BunitContext
         Services.AddSingleton<ICharacterClaimsApiClient>(_api);
         Services.AddSingleton(TimeProvider.System);
         Services.AddScoped<CharacterReviewViewModel>();
+        Services.AddScoped<CharacterArrivalsViewModel>();
         JSInterop.Mode = JSRuntimeMode.Loose;
     }
     #endregion Constructors

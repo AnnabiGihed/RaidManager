@@ -5,6 +5,7 @@ using Microsoft.Extensions.DependencyInjection;
 using Radzen;
 using Shouldly;
 using Xunit;
+using RaidManager.ViewModels.Features.Characters;
 using RaidManager.ViewModels.Features.Communities;
 using RaidManager.ViewModels.Features.Shared.Shell;
 using RaidManager.Web.Features.Authentication;
@@ -35,6 +36,9 @@ public sealed class MainLayoutTests : BunitContext
         Services.AddShellNavigation();
         Services.AddSingleton<ICommunitiesApiClient>(_communities);
         Services.AddScoped<ShellCommunityViewModel>();
+        Services.AddSingleton<ICharacterClaimsApiClient>(new FakeCharacterClaimsApiClient());
+        Services.AddScoped<CharacterArrivalsViewModel>();
+        Services.AddSingleton(TimeProvider.System);
         JSInterop.Mode = JSRuntimeMode.Loose;
     }
     #endregion Constructors

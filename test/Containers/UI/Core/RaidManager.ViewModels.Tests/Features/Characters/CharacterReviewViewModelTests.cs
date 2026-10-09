@@ -60,6 +60,36 @@ public sealed class CharacterReviewViewModelTests
         _viewModel.WaitingTitle.ShouldBe("2 characters are waiting for your decision");
     }
 
+    /// <summary>A reload after a sync shows the new claims, and keeps the list when the API fails (#595).</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task ReloadShowsWhatASyncBrought()
+    {
+        _api.Claims = [Sylvanash];
+        await _viewModel.LoadAsync(UserId, CancellationToken.None);
+        _api.Claims = [Arthasdk, Sylvanash];
+
+        await _viewModel.ReloadAsync(CancellationToken.None);
+
+        _viewModel.Claims.ShouldBe([Arthasdk, Sylvanash]);
+        _api.Claims = [];
+        _api.LoadFailure = new HttpRequestException("The API is unavailable.");
+        await _viewModel.ReloadAsync(CancellationToken.None);
+        _viewModel.Claims.ShouldBe([Arthasdk, Sylvanash]);
+        _viewModel.Status.ShouldBe(CharacterReviewStatus.Ready);
+    }
+
+    /// <summary>A reload before the page has loaded asks nothing: the page's own load shows the claims.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task ReloadWaitsForTheFirstLoad()
+    {
+        await _viewModel.ReloadAsync(CancellationToken.None);
+
+        _api.Loads.ShouldBe(0);
+        _viewModel.Status.ShouldBe(CharacterReviewStatus.Loading);
+    }
+
     /// <summary>Uses the singular for one waiting character.</summary>
     /// <returns>A task that completes when the test has run.</returns>
     [Fact]

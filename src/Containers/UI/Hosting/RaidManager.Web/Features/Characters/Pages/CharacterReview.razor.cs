@@ -53,6 +53,10 @@ public sealed partial class CharacterReview : IDisposable
     [Inject]
     private NavigationManager Navigation { get; set; } = default!;
 
+    /// <summary>Gets or sets the check that tells when a sync brought characters, so the list updates itself.</summary>
+    [Inject]
+    private CharacterArrivalsViewModel Arrivals { get; set; } = default!;
+
     /// <summary>Gets a value indicating whether a decision is being sent.</summary>
     private bool IsDeciding => ViewModel.Deciding is not null;
 
@@ -64,12 +68,16 @@ public sealed partial class CharacterReview : IDisposable
     /// <inheritdoc />
     public void Dispose()
     {
+        Arrivals.Arrived -= OnArrived;
         _lifetime.Cancel();
         _lifetime.Dispose();
     }
     #endregion Public Methods
 
     #region Overrides
+    /// <inheritdoc />
+    protected override void OnInitialized() => Arrivals.Arrived += OnArrived;
+
     /// <inheritdoc />
     protected override async Task OnAfterRenderAsync(bool firstRender)
     {
@@ -134,6 +142,19 @@ public sealed partial class CharacterReview : IDisposable
 
     /// <summary>Leaves the page for the requested page without deciding anything.</summary>
     private void Continue() => Navigation.NavigateTo(CharacterRoutes.ContinueUrl(ReturnUrl));
+
+    /// <summary>Updates the list when a sync brought characters, without a refresh (#595).</summary>
+    /// <param name="sender">The check.</param>
+    /// <param name="arrival">The characters that arrived.</param>
+    private void OnArrived(object? sender, CharacterArrival arrival) => _ = InvokeAsync(ReloadAsync);
+
+    /// <summary>Loads the claims again and shows them.</summary>
+    /// <returns>A task that completes when the list is shown.</returns>
+    private async Task ReloadAsync()
+    {
+        await ViewModel.ReloadAsync(_lifetime.Token);
+        StateHasChanged();
+    }
 
     /// <summary>Forgets the notification once it closes, so the next one shows afresh.</summary>
     private void ForgetNotice() => _notice = null;

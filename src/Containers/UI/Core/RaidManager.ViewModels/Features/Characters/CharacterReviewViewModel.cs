@@ -116,6 +116,27 @@ public sealed class CharacterReviewViewModel
         }
     }
 
+    /// <summary>Loads the claims again after a sync brought new ones, keeping the list on screen meanwhile.</summary>
+    /// <param name="cancellationToken">A token tied to the page's lifetime.</param>
+    /// <returns>A task that completes when the list is updated, or left as it was when the API fails.</returns>
+    /// <remarks>Only once the page has loaded: before that, its own load shows the claims (#595).</remarks>
+    public async Task ReloadAsync(CancellationToken cancellationToken)
+    {
+        if (Status != CharacterReviewStatus.Ready)
+        {
+            return;
+        }
+
+        try
+        {
+            Claims = await _api.GetPendingAsync(_userId, cancellationToken);
+        }
+        catch (Exception exception) when (IsApiFailure(exception, cancellationToken))
+        {
+            // The list stays as it was; the next check tries again.
+        }
+    }
+
     /// <summary>Approves a claim; a recorded approval removes it from the list.</summary>
     /// <param name="claim">The claim to approve.</param>
     /// <param name="cancellationToken">A token tied to the page's lifetime.</param>
