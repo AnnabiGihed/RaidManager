@@ -331,6 +331,11 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Changed
 
+- The skills keep the notifications and character reset session's lessons: dump markup from a new test file deleted
+  with `rm`, keep a file's line endings, add migrations with the persistence project as the startup project, test the
+  `Dev` environment name, read a runner's shutdown signal as the host, edit a pull request's description once, Reqnroll
+  without `{bool}`, notifications sent through the layout's area and lasting when the player is away, and which
+  snapshot `/reload` renews (#617).
 - A pull request's commit now starts three runs and a description edit one (#586): `review` runs the description checks
   and posts `description` itself, and creates Dependabot's task, so `pull-request.yml` is gone and `dependency-task`
   handles only closes. After a merge, `checks` no longer re-tests `main`, `docs-publish` runs only when published

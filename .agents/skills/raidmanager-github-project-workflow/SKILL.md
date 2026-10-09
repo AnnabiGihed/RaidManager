@@ -96,6 +96,9 @@ generate the mockup with the `penpot-mockups` skill (ADR-0018), then have the ow
    operator's review (ADR-0006, ADR-0009). Tell the operator the draft is ready for their review once required CI is
    green. The operator posts a meaningful review comment and marks it Ready for review; the workflow then requests
    the peer, and any new commit returns the PR to draft.
+   - **Edit the description once, at handover.** Each edit of a pull request's description starts one `review` run;
+     on #605 an edit made while CI ran gave the owner three runs at once and a question. Put the owner's confirmation,
+     the CI results and coverage in the description in one edit, after CI has finished.
    - **Hand over only a clean PR:** wait for `python scripts/sonar_gate.py --project AnnabiGihed_RaidManager
      --pull-request <number> --commit <head sha> --timeout 1200` to report no finding, and fix every finding first
      (`raidmanager-conventions` §11). Run it only once the PR's `sonar` check has finished on the head commit
@@ -109,8 +112,11 @@ generate the mockup with the `penpot-mockups` skill (ADR-0018), then have the ow
      merge closes the task. When the task's completion needs an owner check that can run before the merge (a
      companion build from the PR's artifact, a run on the server), give the check steps one at a time first, and the
      review texts only after the check passed. When the check can only run after the merge (a website change seen on
-     dev), ask the owner first; their choice on #527, and again on #385, was to merge, reopen the task as Blocked with
-     the unblock condition, and close it with the check's evidence. Offer it as the recommended option.
+     dev), ask the owner first; their choice on #527, and again on #385, #578, #606, #609, #613 and #615, was to
+     merge, reopen the task as Blocked with the unblock condition, and close it with the check's evidence. Offer it
+     as the recommended option; when the owner's check shows the delivered behavior falls short of what they need
+     (#606, #613), close the task with that evidence and ask how to deliver the rest, as a new task under the same
+     item.
    - **Check every fact the description states** in the code or the run before opening the PR. #531's first draft
      said `/companion/me` was rate-limited; it isn't.
    - **Draft both review comments, every PR (mandatory).** With the summary of the PR, give the operator two texts

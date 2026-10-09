@@ -80,6 +80,12 @@ anything with no business rule to express. If you can't write the scenario in th
 - **Parentheses in a cucumber expression mean optional text.** `[When("validated without a (user id|character id)")]`
   never matched, and Reqnroll reported the step as pending (#385). Pass the choice as `{string}` from the feature file
   instead of reaching for a regular expression.
+- **Reqnroll has no `{bool}` parameter.** A step such as `[Then("... is {bool}")]` is a binding error, and one binding
+  error fails every scenario of the test project, not only the new one (#613). Write two steps ("belongs" and "doesn't
+  belong") instead.
+- **Commit a changed feature's regenerated `.feature.cs` after its last edit.** The generated file carries the step
+  texts; #613 committed it before a step's wording changed, so the next build showed it modified again. Stage it once
+  the feature is final, after a build.
 - **Don't commit regenerated `.feature.cs` files of features you didn't touch.** A build renumbers Reqnroll's table
   variables (`table3` to `table11`) in every generated file; restore those with `git checkout --` before staging
   (#385, eight files again in #553), and commit only the files of features you changed.
@@ -100,6 +106,16 @@ anything with no business rule to express. If you can't write the scenario in th
 - Radzen components need their services and JS: call `Services.AddRadzenComponents()` and set `JSInterop.Mode = JSRuntimeMode.Loose` on the bUnit context; assert on Radzen's rendered markup (e.g. `.rz-data-row`, `.rz-notification`) or, better, on the view model state the component drives.
 - Register fakes for injected services (view models, `IBlazorKeycloakAuthService` as a Moq mock, a test `AuthenticationStateProvider` for `<AuthorizeView>`); supply parameters through the render builder.
 - Stub JS interop with bUnit; no real browser. Render-mode behaviour is integration-level (see `blazor-components`).
+- **Content sent to a section shows only where its outlet is.** The website's notifications render through
+  `SectionContent` into the layout's `NotificationArea`; a page test renders the area as a second root in the same
+  context (`Render<NotificationArea>()`, kept in a lazy `Notifications` property) and finds the notification there,
+  not in the page's markup (#578).
+- **`ArmedTimeProvider` counts every timer armed on it,** the notifications' own close timers included. A test that
+  waits for the page's next delay waits for the right count (two timers on #578, three before the sync notification
+  lasted on #609), or it races the page.
+- **Don't test the order of disposal against an awaited call in flight.** bUnit ran a disposal after a held API call
+  had already finished and armed the next wait, so the test failed only without a sleep (#606). Write such a loop so
+  that it ends only through its token (`while (true)` around the wait), and test leaving with the token instead.
 
 ## Workflow
 1. Decide the stack (service vs framework repo) and business vs technical.

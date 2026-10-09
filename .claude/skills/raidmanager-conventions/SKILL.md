@@ -281,7 +281,10 @@ A mockup comes before the screen, for every user interface: website, companion, 
   --screenshot=<png> <file URL>` for each. Take the Radzen version from `Directory.Packages.props`
   (`radzen.blazor/<version>/staticwebassets/css/material-base.css`): the cache holds several, and `ls | tail -1`
   picks 9.1.0 before 11.5.1 (#384). A throwaway bUnit test that writes `page.Markup` to the scratchpad gives the
-  markup; restore its test file with `git checkout --` afterwards.
+  markup: put it in a **new test file** (a copy of the page's test class renamed, such as `ZzDumpTests.cs`) and delete
+  that file with `rm` afterwards. Never add it to an existing test file and restore that file with `git checkout --`:
+  it also throws away the file's uncommitted edits (#578 lost its page tests that way and rewrote them). A page whose
+  notification renders through the layout needs the notification area in the dump too (`Notifications.Markup`).
 - **A board with many cards uses `SurfaceCard Compact="true"`**: its title is 16 px semibold, as the mockups'
   `card_title` draws it; the default 18 px bold title is for pages with one or two cards. The comparison of #385 found
   the difference, and long text cut off with an ellipsis where the board shows it whole.
@@ -336,6 +339,11 @@ Git stores LF.
   files nobody changed. CI on Linux doesn't. Verify only the files you changed, after normalizing them to LF:
   `dotnet format RaidManager.sln --verify-no-changes --include <changed .cs and .razor files>`, and ignore
   `ENDOFLINE` lines for files you didn't touch.
+- **Keep a file's own line endings when editing it.** An edit that writes LF lines into a CRLF working copy (or the
+  reverse) leaves the file mixed: `dotnet format` reports `ENDOFLINE` on exactly those lines, and the commit can store
+  CRLF, which fails CI's format check on Linux (#613 committed `Character.cs` that way and fixed it). A script edit
+  reads the file, notes `"\r\n" if "\r\n" in text else "\n"`, works on LF and writes back with that newline.
+  Before committing, `git diff --cached --name-only | xargs git ls-files --eol` must show `i/lf` for every file.
 - **Line-ending-only diffs:** a regenerated file that differs only in line endings shows as modified;
   `git diff --ignore-cr-at-eol --name-only` lists the real changes. Don't commit or report line-ending-only changes.
 - **Binary files** such as fonts are marked in `.gitattributes`; add a rule there for any new binary type.
@@ -477,6 +485,18 @@ handover said the same of #549, and the one after of #556. Report what changed i
   `RaidManagerDbContext.SaveChangesAsync` in a temporary `try`/`catch` that rethrows with the inner message (with
   `#pragma warning disable`), then remove it.
 
+- **Add a migration with the persistence project as the startup project.** The API doesn't reference
+  `Microsoft.EntityFrameworkCore.Design`, so `--startup-project` must be the persistence project, which has
+  `RaidManagerDbContextFactory`: `dotnet ef migrations add <Name> --project
+  src/Infrastructure/RaidManager.Persistence.EntityFrameworkCore --startup-project
+  src/Infrastructure/RaidManager.Persistence.EntityFrameworkCore` (#615). The API tests on `Development` migrate their
+  database, so they prove the migration.
+- **Dev runs as the environment `Dev`, not `Development`** (`deploy-dev.yml`). Code that depends on the environment
+  goes through one shared rule (`TestEnvironments.OffersTestTools` in `RaidManager.ServiceDefaults`, used by the API
+  and the website), and gets a test on `DevApiFactory` and one on `ProductionApiFactory`. `DevApiFactory`'s database
+  isn't migrated (the API migrates only on `Development`), so a test there stops before any query, for example at the
+  validation of an empty id (#613).
+
 ## 16. Workflows on the self-hosted runners (mandatory)
 
 Every workflow job runs on the owner's ephemeral runners, labeled `self-hosted`, `linux` and `pc-personal`
@@ -521,6 +541,12 @@ Every workflow job runs on the owner's ephemeral runners, labeled `self-hosted`,
   - A pull request's newer commit cancels the older `checks` run. `review` follows `checks` only and skips a canceled
     run's completion. After a merge, nothing re-tests `main` (it must be up to date to merge), `docs-publish` runs only
     when published content changed and `deploy-dev` only when a deployed file changed (A11).
+  - **A job stopped with "The runner has received a shutdown signal" is the host, not the code.** On 2026-10-09 two
+    `build-test` attempts of #611 stopped during `dotnet format` because the runner supervisor's window was closed;
+    the runner repository fixed it (decision 0025, each runner's Docker attach has its own hidden console). A job
+    still stops when Windows shuts down or the owner logs off, since Docker stops with the session. Compare with a
+    run that passed the same step, check the runner's logs (`Github-Runners/.local/diagnostics`, read-only, never
+    shared), then re-run the failed job only: `gh run rerun <run> --failed`.
   - `project-hierarchy` starts on an issue opened, closed or reopened only, one run per action, each also checking
     the issues changed in the last 30 minutes; its audit has its own queue. GitHub runs the audit's 15-minute schedule
     only every few hours, so `work_gate.py report` starts one audit run each time (#588). Adding a trigger that GitHub sends once

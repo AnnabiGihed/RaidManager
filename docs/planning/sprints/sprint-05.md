@@ -179,6 +179,8 @@ and its task #388 wait for #409 and #411.
 | 2026-10-09 | #611 merged; #609 closed with the owner's check on dev (the lasting notification and the notice on My characters), and story #595 closed with its validation. #598 started for story #597. |
 | 2026-10-09 | The owner confirmed boards 5 to 7 of `character-profile`; #612 merged and closed #598. Task #613 (the build) was added under #597 in Sprint 5 and started. |
 | 2026-10-09 | #614 merged; #613 closed with the owner's check on dev (the removal works; only the character logged in with came back). On the owner's decision recorded on #597, task #615 (the companions send every character again) was added under #597 in Sprint 5 and started. |
+| 2026-10-09 | #616 merged; #615 closed with the owner's check on dev (every character came back without logging in), and story #597 closed with its validation. Sprint 5 has no planned work left; the owner decided to wait for its end date (2026-10-17) before starting Sprint 6. |
+| 2026-10-09 | The owner said "new session": improvement #617 with task #618 added under #156 in Sprint 5 to keep the session's lessons in the skills (standing approval on #510). |
 
 ## Outcome
 
