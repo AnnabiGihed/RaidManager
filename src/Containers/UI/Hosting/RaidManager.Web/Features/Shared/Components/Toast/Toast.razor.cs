@@ -9,7 +9,8 @@ namespace RaidManager.Web.Features.Shared.Components;
 /// Purpose: The 380 by 72 px notification of ADR-0019, such as "Officer roles saved", placed above the page so it
 /// doesn't cover the content under it. It renders into the layout's <see cref="NotificationArea"/>, 16 px under the
 /// top bar, and closes by itself after <see cref="Lifetime"/> or at once with its × (#577, mockup confirmed on #578).
-/// A new title, message or tone shows it again for a full <see cref="Lifetime"/>.
+/// A new title, message or tone shows it again for a full <see cref="Lifetime"/>. An optional link under the message
+/// leads to another page and closes the notification (<c>character-sync</c> board 1, #595).
 /// </remarks>
 public sealed partial class Toast : IDisposable
 {
@@ -41,6 +42,14 @@ public sealed partial class Toast : IDisposable
     /// <summary>Gets or sets the accent; <see cref="ToastTone.Success"/> by default.</summary>
     [Parameter]
     public ToastTone Tone { get; set; } = ToastTone.Success;
+
+    /// <summary>Gets or sets the text of a link under the message, such as "Review them"; none by default.</summary>
+    [Parameter]
+    public string? ActionText { get; set; }
+
+    /// <summary>Gets or sets where the link leads; following it closes the notification.</summary>
+    [Parameter]
+    public string? ActionHref { get; set; }
 
     /// <summary>Gets or sets what the page does once the notification closes, such as forgetting it.</summary>
     [Parameter]

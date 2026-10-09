@@ -103,6 +103,28 @@ public sealed class ToastTests : BunitContext
         _closed.ShouldBe(1);
     }
 
+    /// <summary>A link under the message leads to its page and closes the notification; none by default (#595).</summary>
+    [Fact]
+    public void ActionLinkLeadsOnAndCloses()
+    {
+        var area = Render<NotificationArea>();
+        RenderToast();
+        area.FindAll(".toast-action").ShouldBeEmpty();
+
+        Render<Toast>(parameters => parameters
+            .Add(component => component.Title, "2 new characters to review")
+            .Add(component => component.Message, "Your companion found Uthertank and Valeerarog.")
+            .Add(component => component.ActionText, "Review them")
+            .Add(component => component.ActionHref, "/characters/review")
+            .Add(component => component.Closed, EventCallback.Factory.Create(this, () => _closed++)));
+        var link = area.Find(".toast-action");
+        link.GetAttribute("href").ShouldBe("/characters/review");
+        link.Click();
+
+        area.FindAll(".toast").ShouldBeEmpty();
+        _closed.ShouldBe(1);
+    }
+
     /// <summary>A new message shows the notification again for a full six seconds.</summary>
     [Fact]
     public void NewMessageRestartsTheNotification()

@@ -173,6 +173,7 @@ and its task #388 wait for #409 and #411.
 | 2026-10-08 | #603 merged and closed #594 and bug #593; #129 closed again with its evidence. #578 started for bug #577. |
 | 2026-10-09 | The owner confirmed the notification mockup with its close button (recorded on #578). |
 | 2026-10-09 | #604 merged; #578 was reopened as Blocked until the owner's check on dev (owner decision on #578), then closed with it, and bug #577 closed. #163 stays open for later design items (owner decision on #163). #596 started for story #595. |
+| 2026-10-09 | The owner confirmed the boards of `character-sync`; #605 merged and closed #596. On the owner's decision recorded on #595 (the website checks every 15 seconds while a page is open), task #606 was added under #595 in Sprint 5 and started. |
 
 ## Outcome
 

@@ -6,6 +6,10 @@
             <span class="toast-accent" aria-hidden="true"></span>
             <p class="toast-title">@Title</p>
             <p class="toast-message">@Message</p>
+            @if (ActionText is not null && ActionHref is not null)
+            {
+                <a class="toast-action" href="@ActionHref" @onclick="CloseAsync">@ActionText</a>
+            }
             <button type="button" class="toast-close" aria-label="@CloseLabel" @onclick="CloseAsync">×</button>
         </div>
     }

@@ -18,6 +18,7 @@ builder.Services.AddRaidManagerDataProtection(builder.Configuration);
 builder.Services.AddRaidManagerAuthentication(builder.Configuration);
 builder.Services.AddScoped<SignInFailedViewModel>();
 builder.Services.AddScoped<CharacterReviewViewModel>();
+builder.Services.AddScoped<CharacterArrivalsViewModel>();
 builder.Services.AddTransient<MyCharactersViewModel>();
 builder.Services.AddTransient<CharacterProfileViewModel>();
 builder.Services.AddScoped<OverviewViewModel>();
