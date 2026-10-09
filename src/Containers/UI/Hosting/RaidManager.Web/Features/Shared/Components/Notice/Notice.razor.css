@@ -89,3 +89,9 @@
 .notice-warning .notice-message {
     color: var(--rm-status-warning-text);
 }
+
+/* The actions sit at the right, as the "Review them" button of character-sync board 5. */
+.notice-actions {
+    flex: none;
+    margin-left: auto;
+}

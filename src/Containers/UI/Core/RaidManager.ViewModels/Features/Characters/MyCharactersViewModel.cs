@@ -17,6 +17,9 @@ public sealed class MyCharactersViewModel
 
     /// <summary>Defines the label of a character never synchronized.</summary>
     public const string NeverSynced = "Not synced yet";
+
+    /// <summary>Defines the line of the notice shown while characters wait for review (board 5 of character-sync).</summary>
+    public const string WaitingMessage = "Approve the ones that are yours so they can sign up for raids.";
     #endregion Constants
 
     #region Fields
@@ -26,6 +29,9 @@ public sealed class MyCharactersViewModel
     /// <summary>Stores the profiles API client.</summary>
     private readonly ICharacterProfilesApiClient _api;
 
+    /// <summary>Stores the claims API client, which tells how many characters wait for review.</summary>
+    private readonly ICharacterClaimsApiClient _claims;
+
     /// <summary>Stores the clock that ages each sync.</summary>
     private readonly TimeProvider _timeProvider;
     #endregion Fields
@@ -33,10 +39,12 @@ public sealed class MyCharactersViewModel
     #region Constructors
     /// <summary>Initializes a new instance of the <see cref="MyCharactersViewModel"/> class.</summary>
     /// <param name="api">The profiles API client.</param>
+    /// <param name="claims">The claims API client, which counts the characters waiting for review.</param>
     /// <param name="timeProvider">The clock that ages each sync.</param>
-    public MyCharactersViewModel(ICharacterProfilesApiClient api, TimeProvider timeProvider)
+    public MyCharactersViewModel(ICharacterProfilesApiClient api, ICharacterClaimsApiClient claims, TimeProvider timeProvider)
     {
         _api = api;
+        _claims = claims;
         _timeProvider = timeProvider;
     }
     #endregion Constructors
@@ -47,6 +55,14 @@ public sealed class MyCharactersViewModel
 
     /// <summary>Gets the player's characters, by realm and name.</summary>
     public IReadOnlyList<CharacterSummary> Characters { get; private set; } = [];
+
+    /// <summary>Gets the number of characters waiting for the player's review; the notice shows while it isn't 0.</summary>
+    public int WaitingCount { get; private set; }
+
+    /// <summary>Gets the title of the notice, such as "2 characters wait for your review".</summary>
+    public string WaitingTitle => WaitingCount == 1
+        ? "1 character waits for your review"
+        : $"{WaitingCount} characters wait for your review";
     #endregion Properties
 
     #region Public Methods
@@ -102,6 +118,29 @@ public sealed class MyCharactersViewModel
         catch (Exception exception) when (CharacterApiFailures.IsApiFailure(exception, cancellationToken))
         {
             Status = CharacterPageStatus.Failed;
+        }
+    }
+
+    /// <summary>Counts the characters waiting for the player's review, for the notice that leads to the review page.</summary>
+    /// <param name="userId">The signed-in player, or <see langword="null"/> when the session holds no user id.</param>
+    /// <param name="cancellationToken">A token tied to the page's lifetime.</param>
+    /// <returns>A task that completes when the count is known; a failure counts none, so no notice shows (#595).</returns>
+    public async Task LoadWaitingAsync(Guid? userId, CancellationToken cancellationToken)
+    {
+        if (userId is not { } id || id == Guid.Empty)
+        {
+            WaitingCount = 0;
+            return;
+        }
+
+        try
+        {
+            var claims = await _claims.GetPendingAsync(id, cancellationToken);
+            WaitingCount = claims.Count(claim => claim.IsPending);
+        }
+        catch (Exception exception) when (CharacterApiFailures.IsApiFailure(exception, cancellationToken))
+        {
+            WaitingCount = 0;
         }
     }
 

@@ -51,6 +51,12 @@ public sealed partial class Toast : IDisposable
     [Parameter]
     public string? ActionHref { get; set; }
 
+    /// <summary>Gets or sets a value indicating whether the notification stays until the player closes it or follows
+    /// its link, instead of closing after <see cref="Lifetime"/>; for news a player away from the browser must see
+    /// (#595).</summary>
+    [Parameter]
+    public bool Lasting { get; set; }
+
     /// <summary>Gets or sets what the page does once the notification closes, such as forgetting it.</summary>
     [Parameter]
     public EventCallback Closed { get; set; }
@@ -88,6 +94,11 @@ public sealed partial class Toast : IDisposable
         _shown = content;
         _closed = false;
         StopWaiting();
+        if (Lasting)
+        {
+            return;
+        }
+
         _wait = new CancellationTokenSource();
         _ = CloseLaterAsync(_wait.Token);
     }

@@ -20,6 +20,9 @@ public sealed class MyCharactersViewModelTests
     /// <summary>Stores the fake API.</summary>
     private readonly FakeCharacterProfilesApi _api = new();
 
+    /// <summary>Stores the fake claims API.</summary>
+    private readonly FakeCharacterClaimsApi _claims = new();
+
     /// <summary>Stores the view model under test.</summary>
     private readonly MyCharactersViewModel _viewModel;
     #endregion Fields
@@ -28,11 +31,45 @@ public sealed class MyCharactersViewModelTests
     /// <summary>Initializes a new instance of the <see cref="MyCharactersViewModelTests"/> class.</summary>
     public MyCharactersViewModelTests()
     {
-        _viewModel = new MyCharactersViewModel(_api, new FixedTimeProvider(Now));
+        _viewModel = new MyCharactersViewModel(_api, _claims, new FixedTimeProvider(Now));
     }
     #endregion Constructors
 
     #region Tests
+    /// <summary>Counts only the pending claims, for the notice that leads to the review page (#595).</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task WaitingCountsThePendingClaims()
+    {
+        _claims.Claims = [Claim("Uthertank", CharacterClaim.PendingState), Claim("Valeerarog", CharacterClaim.PendingState), Claim("Sylvanash", CharacterClaim.ConflictState)];
+
+        await _viewModel.LoadWaitingAsync(Guid.NewGuid(), CancellationToken.None);
+
+        _viewModel.WaitingCount.ShouldBe(2);
+        _viewModel.WaitingTitle.ShouldBe("2 characters wait for your review");
+        _claims.Claims = [Claim("Uthertank", CharacterClaim.PendingState)];
+        await _viewModel.LoadWaitingAsync(Guid.NewGuid(), CancellationToken.None);
+        _viewModel.WaitingTitle.ShouldBe("1 character waits for your review");
+    }
+
+    /// <summary>A failed count, or a session without a user id, shows no notice.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task NoCountShowsNoNotice()
+    {
+        _claims.Claims = [Claim("Uthertank", CharacterClaim.PendingState)];
+        await _viewModel.LoadWaitingAsync(Guid.NewGuid(), CancellationToken.None);
+
+        _claims.LoadFailure = new HttpRequestException("The API is unavailable.");
+        await _viewModel.LoadWaitingAsync(Guid.NewGuid(), CancellationToken.None);
+        _viewModel.WaitingCount.ShouldBe(0);
+
+        _claims.LoadFailure = null;
+        await _viewModel.LoadWaitingAsync(null, CancellationToken.None);
+        _viewModel.WaitingCount.ShouldBe(0);
+        _claims.Loads.ShouldBe(2);
+    }
+
     /// <summary>Loads the player's characters.</summary>
     /// <returns>A task that completes when the test has run.</returns>
     [Fact]
@@ -101,5 +138,12 @@ public sealed class MyCharactersViewModelTests
     /// <returns>The character.</returns>
     private static CharacterSummary Character(DateTimeOffset? lastSync) =>
         new(Guid.NewGuid(), "Icecrown", "Arthasdk", "DeathKnight", 80, new CharacterLoadoutSummary("Frost DPS", "MeleeDamage", 5712), 2, lastSync);
+
+    /// <summary>Builds a claim for a test.</summary>
+    /// <param name="name">The character name.</param>
+    /// <param name="state">The claim state.</param>
+    /// <returns>The claim.</returns>
+    private static CharacterClaim Claim(string name, string state) =>
+        new(Guid.NewGuid(), "Icecrown", name, "Paladin", "Human", 80, state, Now);
     #endregion Private Helpers
 }

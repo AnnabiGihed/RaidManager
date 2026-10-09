@@ -5,6 +5,15 @@
 <div class="characters-page">
     <PageHeading Eyebrow="Characters" Title="My characters" Subtitle="Your approved characters. Open one to see its profile." />
 
+    @if (ViewModel.WaitingCount > 0)
+    {
+        <Notice Title="@ViewModel.WaitingTitle" Message="@MyCharactersViewModel.WaitingMessage" data-testid="review-waiting">
+            <Actions>
+                <ActionButton Text="Review them" Click="Review" data-testid="review-them" />
+            </Actions>
+        </Notice>
+    }
+
     @if (ViewModel.Status == CharacterPageStatus.Loading)
     {
         <TextNote Text="Loading your characters…" />
