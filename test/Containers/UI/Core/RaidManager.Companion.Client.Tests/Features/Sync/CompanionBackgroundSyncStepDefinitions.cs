@@ -151,6 +151,10 @@ public sealed class CompanionBackgroundSyncStepDefinitions : IDisposable
     /// <returns>A task that completes when the choice is saved.</returns>
     [Given("the player watches the account {string} again")]
     public Task GivenThePlayerWatchesTheAccountAgain(string account) => SetWatchedAsync(account, watched: true);
+
+    /// <summary>Makes /companion/me report that the player asked to send every character again, now (#615).</summary>
+    [Given("the player asked to send every character again")]
+    public void GivenThePlayerAskedToSendEveryCharacterAgain() => _api.SyncAgainRequest = _time.GetUtcNow();
     #endregion Given Steps
 
     #region When Steps
@@ -273,6 +277,11 @@ public sealed class CompanionBackgroundSyncStepDefinitions : IDisposable
     /// <param name="state"><c>paused</c> or <c>running</c>.</param>
     [Then("the sync is {string}")]
     public void ThenTheSyncIs(string state) => _sync.Status.Paused.ShouldBe(state == "paused");
+
+    /// <summary>Checks how many times the sync asked whether the player asked to sync again.</summary>
+    /// <param name="times">The expected number.</param>
+    [Then("the sync asked about a request {int} times")]
+    public void ThenTheSyncAskedAboutARequest(int times) => _api.SyncAgainChecks.ShouldBe(times);
     #endregion Then Steps
 
     #region Private Helpers

@@ -9,6 +9,7 @@ namespace RaidManager.Companion.Client.Features.Sync.Settings;
 /// <param name="Paused">Whether the player paused sync.</param>
 /// <param name="ExcludedFolders">The installation folders the player cleared on board 1, or <see langword="null"/> in a
 /// file written before folders could be excluded.</param>
+/// <param name="SyncedAgainFor">The player's last request to send every character again that the sync has carried out, if any (#615).</param>
 /// <remarks>
 /// Author: Gihed Annabi<br/>
 /// Date: 2026-10-07<br/>
@@ -21,7 +22,8 @@ internal sealed record SyncSettings(
     IReadOnlyList<string> AddedFolders,
     IReadOnlyList<string> ExcludedAccounts,
     bool Paused,
-    IReadOnlyList<string>? ExcludedFolders = null)
+    IReadOnlyList<string>? ExcludedFolders = null,
+    DateTimeOffset? SyncedAgainFor = null)
 {
     #region Public Properties
     /// <summary>Gets the settings of a companion that hasn't searched yet.</summary>

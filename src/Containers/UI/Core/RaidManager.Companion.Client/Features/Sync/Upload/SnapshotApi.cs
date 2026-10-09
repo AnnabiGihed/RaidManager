@@ -22,6 +22,9 @@ internal sealed class SnapshotApi : ISnapshotApi
     #region Constants
     /// <summary>Defines the upload route.</summary>
     private const string SnapshotsRoute = "companion/snapshots";
+
+    /// <summary>Defines the route that describes the companion, with the player's request to sync again.</summary>
+    private const string CurrentCompanionRoute = "companion/me";
     #endregion Constants
 
     #region Fields
@@ -53,6 +56,29 @@ internal sealed class SnapshotApi : ISnapshotApi
         catch (Exception exception) when (exception is HttpRequestException || (exception is TaskCanceledException && !cancellationToken.IsCancellationRequested))
         {
             return new SnapshotUploadResult(SnapshotUploadOutcome.Unavailable);
+        }
+    }
+
+    /// <inheritdoc />
+    public async Task<DateTimeOffset?> GetSyncAgainRequestAsync(string deviceToken, CancellationToken cancellationToken)
+    {
+        try
+        {
+            using var request = new HttpRequestMessage(HttpMethod.Get, CurrentCompanionRoute);
+            request.Headers.Authorization = new AuthenticationHeaderValue("Bearer", deviceToken);
+            using var response = await _httpClient.SendAsync(request, cancellationToken);
+            if (!response.IsSuccessStatusCode)
+            {
+                return null;
+            }
+
+            var body = JsonNode.Parse(await response.Content.ReadAsStringAsync(cancellationToken));
+            return body?["syncAgainRequestedAtUtc"]?.GetValue<DateTimeOffset?>();
+        }
+        catch (Exception exception) when (exception is HttpRequestException or JsonException or InvalidOperationException or FormatException
+            || (exception is TaskCanceledException && !cancellationToken.IsCancellationRequested))
+        {
+            return null;
         }
     }
     #endregion Public Methods

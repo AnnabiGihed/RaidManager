@@ -31,6 +31,9 @@ internal sealed partial class SnapshotSync : BackgroundService, ISnapshotSync
     /// <summary>Stores how often the watched files are checked.</summary>
     public static readonly TimeSpan ScanInterval = TimeSpan.FromSeconds(5);
 
+    /// <summary>Gets how often the sync asks whether the player asked to send every character again (#615).</summary>
+    public static readonly TimeSpan SyncAgainCheckInterval = TimeSpan.FromMinutes(1);
+
     /// <summary>Stores the lock that serializes the loop and the player's actions.</summary>
     private readonly SemaphoreSlim _gate = new(1, 1);
 
@@ -75,6 +78,9 @@ internal sealed partial class SnapshotSync : BackgroundService, ISnapshotSync
 
     /// <summary>Stores when the watched files are checked next.</summary>
     private DateTimeOffset _nextScan = DateTimeOffset.MinValue;
+
+    /// <summary>Stores when the sync next asks whether the player asked to send every character again.</summary>
+    private DateTimeOffset _nextSyncAgainCheck = DateTimeOffset.MinValue;
     #endregion Fields
 
     #region Constructors
@@ -163,6 +169,7 @@ internal sealed partial class SnapshotSync : BackgroundService, ISnapshotSync
 
         if (!_settings.Paused)
         {
+            await SyncAgainIfAskedAsync(cancellationToken);
             await _uploader.UploadDueAsync(cancellationToken);
         }
     }
@@ -324,6 +331,49 @@ internal sealed partial class SnapshotSync : BackgroundService, ISnapshotSync
     /// <param name="count">The number found.</param>
     [LoggerMessage(Level = LogLevel.Information, Message = "The search for World of Warcraft found {Count} installations.")]
     private static partial void LogSearchFinished(ILogger logger, int count);
+
+    /// <summary>Writes that the player asked to send every character again.</summary>
+    /// <param name="logger">The logger.</param>
+    [LoggerMessage(Level = LogLevel.Information, Message = "The player asked to send every character again; reading every account.")]
+    private static partial void LogSyncingAgain(ILogger logger);
+
+    /// <summary>Once a minute, asks whether the player asked to send every character again, and does it once per request.</summary>
+    /// <param name="cancellationToken">A token to stop.</param>
+    /// <returns>A task that completes when the check is done.</returns>
+    /// <remarks>"Remove all my characters" on dev and test asks it, so every character comes back for review (#615).</remarks>
+    private async Task SyncAgainIfAskedAsync(CancellationToken cancellationToken)
+    {
+        var now = _time.GetUtcNow();
+        if (now < _nextSyncAgainCheck)
+        {
+            return;
+        }
+
+        _nextSyncAgainCheck = now + SyncAgainCheckInterval;
+        var requested = await _uploader.SyncAgainRequestAsync(cancellationToken);
+        if (requested is not { } at || at <= (_settings.SyncedAgainFor ?? DateTimeOffset.MinValue))
+        {
+            return;
+        }
+
+        LogSyncingAgain(_logger);
+        await ChangeAsync(
+            () =>
+            {
+                _queue.ForgetUploaded();
+                lock (_state)
+                {
+                    foreach (var watch in _watches.Values)
+                    {
+                        watch.ReadAgain();
+                    }
+                }
+
+                _nextScan = DateTimeOffset.MinValue;
+                Save(_settings with { SyncedAgainFor = at });
+            },
+            cancellationToken);
+    }
 
     /// <summary>Runs a change of the player's choices under the lock on a pool thread, then refreshes the watched folders.</summary>
     /// <param name="change">The change.</param>

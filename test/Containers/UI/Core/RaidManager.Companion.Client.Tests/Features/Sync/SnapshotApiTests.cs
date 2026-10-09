@@ -47,6 +47,49 @@ public sealed class SnapshotApiTests : IDisposable
     #endregion Public Methods
 
     #region Tests
+    /// <summary>Reads the player's request to sync again from /companion/me, with the device token (#615).</summary>
+    /// <returns>A task that completes when the test is done.</returns>
+    [Fact]
+    public async Task TheRequestToSyncAgainIsRead()
+    {
+        _handler.Answer(HttpStatusCode.OK, """{"companionId":"0b7c6a52-6d1e-4f0f-9f4e-1a2b3c4d5e6f","label":"PC","syncAgainRequestedAtUtc":"2026-10-09T10:40:00+00:00"}""");
+
+        var requested = await _api.GetSyncAgainRequestAsync("device-token", CancellationToken.None);
+
+        requested.ShouldBe(new DateTimeOffset(2026, 10, 9, 10, 40, 0, TimeSpan.Zero));
+        var request = _handler.Requests.ShouldHaveSingleItem().Request;
+        request.RequestUri!.AbsolutePath.ShouldBe("/companion/me");
+        request.Headers.Authorization!.Parameter.ShouldBe("device-token");
+    }
+
+    /// <summary>No request, a refused token, an error or an unreadable answer all read as no request.</summary>
+    /// <param name="status">The status RaidManager answers.</param>
+    /// <param name="body">The body.</param>
+    /// <returns>A task that completes when the test is done.</returns>
+    [Theory]
+    [InlineData(HttpStatusCode.OK, """{"companionId":"0b7c6a52-6d1e-4f0f-9f4e-1a2b3c4d5e6f","label":"PC","syncAgainRequestedAtUtc":null}""")]
+    [InlineData(HttpStatusCode.OK, """{"companionId":"0b7c6a52-6d1e-4f0f-9f4e-1a2b3c4d5e6f","label":"PC"}""")]
+    [InlineData(HttpStatusCode.Unauthorized, "{}")]
+    [InlineData(HttpStatusCode.InternalServerError, null)]
+    [InlineData(HttpStatusCode.OK, "not json")]
+    [InlineData(HttpStatusCode.OK, """{"syncAgainRequestedAtUtc":"yesterday"}""")]
+    public async Task NoReadableRequestIsNoRequest(HttpStatusCode status, string? body)
+    {
+        _handler.Answer(status, body);
+
+        (await _api.GetSyncAgainRequestAsync("device-token", CancellationToken.None)).ShouldBeNull();
+    }
+
+    /// <summary>RaidManager out of reach reads as no request; the next check tries again.</summary>
+    /// <returns>A task that completes when the test is done.</returns>
+    [Fact]
+    public async Task AnUnreachableApiIsNoRequest()
+    {
+        _handler.Fail(new HttpRequestException("down"));
+
+        (await _api.GetSyncAgainRequestAsync("device-token", CancellationToken.None)).ShouldBeNull();
+    }
+
     /// <summary>The snapshot is posted to the upload route with the device token and the contract's body.</summary>
     /// <returns>A task that completes when the test is done.</returns>
     [Fact]
