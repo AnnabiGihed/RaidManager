@@ -177,6 +177,7 @@ and its task #388 wait for #409 and #411.
 | 2026-10-09 | #607 merged; #606 closed with the owner's check on dev (the review page updates itself; the sync notification closed before the owner came back from the game). On the owner's decisions recorded on #595, its criteria were amended (the sync notification stays until closed or followed; My characters leads to the review page), and tasks #608 (mockup) and #609 (build, blocked by #608) were added under #595 in Sprint 5. #608 started. |
 | 2026-10-09 | The owner confirmed board 5 of `character-sync`; #610 merged and closed #608. #609 started. |
 | 2026-10-09 | #611 merged; #609 closed with the owner's check on dev (the lasting notification and the notice on My characters), and story #595 closed with its validation. #598 started for story #597. |
+| 2026-10-09 | The owner confirmed boards 5 to 7 of `character-profile`; #612 merged and closed #598. Task #613 (the build) was added under #597 in Sprint 5 and started. |
 
 ## Outcome
 
