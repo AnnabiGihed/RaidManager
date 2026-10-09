@@ -1,6 +1,7 @@
-"""Character profiles (story #19, design story #182, task #219).
+"""Character profiles (story #19, design story #182, task #219), and removing them on dev and test (story #597,
+task #598).
 
-Four boards in RaidManager's design system (ADR-0019), seen by a player, linked as a clickable prototype:
+Seven boards in RaidManager's design system (ADR-0019), seen by a player, linked as a clickable prototype:
 
 1. My characters: realm, class, level, primary loadout, raid saves and sync freshness. The Arthasdk row opens 2.
 2. Arthasdk's profile: data sources and last syncs, professions, note and visibility, loadouts, raid saves and the
@@ -8,6 +9,12 @@ Four boards in RaidManager's design system (ADR-0019), seen by a player, linked 
 3. Editing: visibility (Community or Officers only, owner decision on #19), note, loadout labels, a profession, and
    a raid save the player reports. Save shows 4; Cancel goes back to 2.
 4. The profile after saving: player-reported data is marked, and the synced raid saves are unchanged.
+5. My characters on dev and test: a "Remove all my characters" button, marked as offered on dev and test only, opens 6.
+   Production never shows it, and its API refuses it there (owner decision on #597).
+6. The confirmation: what goes (the characters, their claims and loadouts) and how they come back (the companion's
+   next sync, for review). Cancel goes back to 5; Remove all shows 7.
+7. My characters after the removal: the empty state, without the action since nothing is left to remove, and a
+   notification that the next sync brings them back.
 
 The data comes from the domain (`Character`, `Loadout`, `GearItem`, `RaidLockout`, `CharacterDataSource`), plus the
 professions, note and visibility the story adds.
@@ -27,7 +34,7 @@ sys.path.insert(0, str(REPOSITORY / "scripts"))
 
 from penpot_components import (  # noqa: E402
     BOARD_GAP, BOARD_H, BOARD_W, CONTENT_TOP, CONTENT_W, CONTENT_X, PLAYER, app_screen, badge, button, card,
-    form_field, page_header,
+    form_field, page_header, toast,
 )
 from penpot_scene import HOUSE_PALETTE, Board, Circle, Click, Group, Item, Rect, text, write_mockup  # noqa: E402
 
@@ -49,6 +56,10 @@ CHARACTERS = "1 · My characters"
 PROFILE = "2 · Profile"
 EDIT = "3 · Edit profile"
 SAVED = "4 · Profile after saving"
+DEV_ACTION = "5 · My characters on dev and test"
+CONFIRM_REMOVAL = "6 · Remove all my characters?"
+REMOVED = "7 · After removing them"
+REMOVE_W = 216
 
 TOP = CONTENT_TOP + 120
 COLUMN_W, COLUMN_GAP = 360, 20
@@ -74,6 +85,10 @@ ROWS = [
 ]
 
 
+def characters_header() -> Item:
+    return page_header("Characters", PAGE, "Your approved characters. Open one to see its profile.")
+
+
 def characters() -> list[Item]:
     head_h, row_h = 44, 72
     columns = {"character": 24, "level": 260, "loadout": 340, "saves": 640, "sync": 820}
@@ -96,7 +111,7 @@ def characters() -> list[Item]:
             badge("Sync badge", CONTENT_X + columns["sync"], y + 24, synced, tone),
         ], Click("navigate", PROFILE) if name == "Arthasdk" else None))
     return [
-        page_header("Characters", "My characters", "Your approved characters. Open one to see its profile."),
+        characters_header(),
         Group("Characters table", table),
         text("Freshness note", CONTENT_X, TOP + head_h + row_h * len(ROWS) + 40,
              "Data older than 3 days may be out of date: log in with that character so the companion syncs it.",
@@ -268,6 +283,58 @@ def edit() -> list[Item]:
     ]
 
 
+# 5, 6 and 7 · Removing all my characters on dev and test (#597)
+
+def remove_action(on_click: Click | None) -> Group:
+    """The page header's action on dev and test: a badge naming where it exists, then the danger button."""
+    x = CONTENT_X + CONTENT_W - REMOVE_W
+    return Group("Remove all action", [
+        badge("Environment badge", x - 152, CONTENT_TOP + 36, "Dev and test only", "warning"),
+        button("Remove all button", x, CONTENT_TOP + 28, "Remove all my characters", "danger", REMOVE_W, on_click),
+    ])
+
+
+def dev_characters(on_click: Click | None = None) -> list[Item]:
+    return [*characters(), remove_action(on_click)]
+
+
+def removal_dialog() -> list[Item]:
+    w, h = 520, 224
+    x, y = (BOARD_W - w) / 2, (BOARD_H - h) / 2
+    return [
+        Rect("Dim overlay", 0, 0, BOARD_W, BOARD_H, P["Neutral/black"], 0.6),
+        Group("Removal dialog", [
+            *card(x, y, w, h),
+            text("Title", x + 24, y + 44, "Remove all your characters?", 18, 700),
+            text("Body line 1", x + 24, y + 80, "Your 3 characters, their claims and loadouts are removed from", 14,
+                 400, SECONDARY),
+            text("Body line 2", x + 24, y + 100, "this environment.", 14, 400, SECONDARY),
+            text("Body line 3", x + 24, y + 128, "Your companion's next sync brings them back for review.", 14, 400,
+                 SECONDARY),
+            button("Cancel button", x + w - 24 - 120 - 8 - 96, y + h - 64, "Cancel", "secondary", 96,
+                   Click("navigate", DEV_ACTION)),
+            button("Confirm removal button", x + w - 24 - 120, y + h - 64, "Remove all", "danger", 120,
+                   Click("navigate", REMOVED)),
+        ]),
+    ]
+
+
+def removed() -> list[Item]:
+    top, height = TOP, 160
+    return [
+        characters_header(),
+        Group("Empty state", [
+            *card(CONTENT_X, top, CONTENT_W, height),
+            text("Title", CONTENT_X, top + 64, "No characters yet", 18, 700, P["Text/primary"], CONTENT_W, "center"),
+            text("Message", CONTENT_X, top + 92,
+                 "Characters appear here once your companion finds them and you approve them.", 14, 400, SECONDARY,
+                 CONTENT_W, "center"),
+        ]),
+        toast("Removed notification", "Your characters were removed",
+              "Your companion's next sync brings them back for review.", P["Brand/accent"], 420),
+    ]
+
+
 def boards() -> list[Board]:
     right, below = BOARD_W + BOARD_GAP, BOARD_H + BOARD_GAP
 
@@ -275,12 +342,16 @@ def boards() -> list[Board]:
         return app_screen(name, x, y, PAGE, content, user=PLAYER, links={PAGE: CHARACTERS})
 
     return [screen(CHARACTERS, 0, 0, characters()), screen(PROFILE, right, 0, profile(False)),
-            screen(EDIT, 0, below, edit()), screen(SAVED, right, below, profile(True))]
+            screen(EDIT, 0, below, edit()), screen(SAVED, right, below, profile(True)),
+            screen(DEV_ACTION, 0, 2 * below, dev_characters(Click("navigate", CONFIRM_REMOVAL))),
+            screen(CONFIRM_REMOVAL, right, 2 * below, dev_characters() + removal_dialog()),
+            screen(REMOVED, 0, 3 * below, removed())]
 
 
 def main(repository: Path = REPOSITORY) -> Path:
     return write_mockup(repository, "character-profile", "Character profile", boards(), PALETTE,
-                        {"View a profile": CHARACTERS, "Edit a profile": PROFILE})
+                        {"View a profile": CHARACTERS, "Edit a profile": PROFILE,
+                         "Remove all my characters": DEV_ACTION})
 
 
 if __name__ == "__main__":
