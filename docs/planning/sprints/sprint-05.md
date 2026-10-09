@@ -170,6 +170,8 @@ and its task #388 wait for #409 and #411.
 | 2026-10-08 | #590 merged and closed #589 and #588. The owner reported companion and website bugs; on the owner's decisions recorded on each, added to Sprint 5 in this order: bug #591 with #592 (the companion's sync looked idle after a restart; diagnosed, no snapshot lost) and bug #593 with #594 (re-ticking a folder) under #129, which reopened; #578; story #595 with #596 (live updates after a sync, replacing #575 and #576, closed as not planned) and story #597 with #598 (remove all my characters on dev and test) under #130. Story #19 with #385 and #545 moved to Sprint 6. |
 | 2026-10-08 | #599 merged and closed #592; bug #591 closed with its diagnosis and the owner's check. The merge started a dev deployment for a companion-only change: bug #600 with task #601 added under #150, in Sprint 5 before #593, on the owner's decision recorded on #600. |
 | 2026-10-08 | #602 merged and closed #601; bug #600 closed. #594 started for bug #593. |
+| 2026-10-08 | #603 merged and closed #594 and bug #593; #129 closed again with its evidence. #578 started for bug #577. |
+| 2026-10-09 | The owner confirmed the notification mockup with its close button (recorded on #578). |
 
 ## Outcome
 

@@ -450,6 +450,9 @@ The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.1.0/),
 
 ### Fixed
 
+- Website notifications, such as "Officer roles saved", close by themselves after 6 seconds or at once with their
+  close button, and sit 16 pixels under the top bar instead of 64 pixels lower, staying in place when the page
+  scrolls (#577).
 - In the companion's watched folders, ticking a folder again ticks every account in it, dropping the accounts cleared
   one by one before; it used to leave them cleared (#593).
 - A merge that changes only the desktop companion no longer starts a dev deployment: the companion runs on players'
