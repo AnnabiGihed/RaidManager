@@ -165,7 +165,7 @@ namespace RaidManager.Application.Tests.Features.Characters.Commands
       await testRunner.AndAsync("\"Bob\" owns a character \"Sylvanash\" that \"Alice\" also claimed", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
 #line 12
-      await testRunner.WhenAsync("\"Alice\" removes all her characters", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+      await testRunner.WhenAsync("\"Alice\" removes all their characters", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 13
       await testRunner.ThenAsync("the removal succeeds with 3 characters", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
@@ -205,7 +205,7 @@ namespace RaidManager.Application.Tests.Features.Characters.Commands
             {
                 await this.ScenarioStartAsync();
 #line 19
-      await testRunner.WhenAsync("\"Alice\" removes all her characters", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+      await testRunner.WhenAsync("\"Alice\" removes all their characters", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 20
       await testRunner.ThenAsync("the removal succeeds with 0 characters", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
@@ -245,7 +245,7 @@ namespace RaidManager.Application.Tests.Features.Characters.Commands
       await testRunner.AndAsync("the commit will fail", ((string)(null)), ((global::Reqnroll.Table)(null)), "And ");
 #line hidden
 #line 26
-      await testRunner.WhenAsync("\"Alice\" removes all her characters", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
+      await testRunner.WhenAsync("\"Alice\" removes all their characters", ((string)(null)), ((global::Reqnroll.Table)(null)), "When ");
 #line hidden
 #line 27
       await testRunner.ThenAsync("the removal fails with \"Commit.Failed\"", ((string)(null)), ((global::Reqnroll.Table)(null)), "Then ");
