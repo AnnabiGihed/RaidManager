@@ -82,7 +82,9 @@ public sealed partial class CharacterArrivalsWatcher : IDisposable
         try
         {
             await Arrivals.CheckAsync(userId, _lifetime.Token);
-            while (!_lifetime.IsCancellationRequested)
+
+            // Ends when the player leaves: the wait throws once the layout's token is canceled.
+            while (true)
             {
                 await Task.Delay(CharacterArrivalsViewModel.CheckInterval, TimeProvider, _lifetime.Token);
                 if (await Arrivals.CheckAsync(userId, _lifetime.Token) is { } arrival)
