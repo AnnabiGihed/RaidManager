@@ -1,6 +1,6 @@
-<svg xmlns="http://www.w3.org/2000/svg" width="3120" height="2040" viewBox="-80 -80 3120 2040">
+<svg xmlns="http://www.w3.org/2000/svg" width="3120" height="3020" viewBox="-80 -80 3120 3020">
 <title>Character sync (rendered from character-sync.penpot)</title>
-<rect x="-80" y="-80" width="3120" height="2040" fill="#e8e8e8"/>
+<rect x="-80" y="-80" width="3120" height="3020" fill="#e8e8e8"/>
 <text x="0" y="-14" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">1 · A sync brings characters, on another page</text>
 <clipPath id="clip1"><rect x="0" y="0" width="1440" height="900"/></clipPath>
 <rect x="0" y="0" width="1440" height="900" fill="#0b111c"/>
@@ -53,43 +53,50 @@
 <text x="280" y="118" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.5">CHARACTERS</text>
 <text x="280" y="160" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#eff5fa" text-anchor="start">My characters</text>
 <text x="280" y="190" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="400" fill="#9eadc1" text-anchor="start">Your approved characters. Open one to see its profile.</text>
-<rect x="280.5" y="224.5" width="1119" height="267" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
-<text x="304" y="251" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">CHARACTER</text>
-<text x="540" y="251" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">LEVEL</text>
-<text x="620" y="251" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">PRIMARY LOADOUT</text>
-<text x="920" y="251" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">RAID SAVES</text>
-<text x="1100" y="251" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">LAST SYNC</text>
-<rect x="280" y="268" width="1120" height="72" fill="#172333"/>
-<rect x="280" y="268" width="1120" height="1" fill="#2b3b50"/>
-<ellipse cx="309" cy="304" rx="5" ry="5" fill="#c41e3a"/>
-<text x="322" y="300" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Arthasdk</text>
-<text x="322" y="320" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Death Knight · Icecrown</text>
-<text x="540" y="309" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#eff5fa" text-anchor="start">80</text>
-<text x="620" y="309" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Frost DPS · GearScore 5,712</text>
-<text x="920" y="309" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">2 this week</text>
-<rect x="1100" y="292" width="108" height="24" rx="12" fill="#173a36"/>
-<text x="1154" y="308" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#5de0c1" text-anchor="middle">Today, 14:05</text>
-<rect x="280" y="340" width="1120" height="72" fill="#172333"/>
-<rect x="280" y="340" width="1120" height="1" fill="#2b3b50"/>
-<ellipse cx="309" cy="376" rx="5" ry="5" fill="#3fc7eb"/>
-<text x="322" y="372" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Jainaice</text>
-<text x="322" y="392" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Mage · Lordaeron</text>
-<text x="540" y="381" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#eff5fa" text-anchor="start">80</text>
-<text x="620" y="381" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Fire DPS · GearScore 5,340</text>
-<text x="920" y="381" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">1 this week</text>
-<rect x="1100" y="364" width="94" height="24" rx="12" fill="#4b382a"/>
-<text x="1147" y="380" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#f9d7a7" text-anchor="middle">5 days ago</text>
-<rect x="280" y="412" width="1120" height="72" fill="#172333"/>
-<rect x="280" y="412" width="1120" height="1" fill="#2b3b50"/>
-<ellipse cx="309" cy="448" rx="5" ry="5" fill="#0070dd"/>
-<text x="322" y="444" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Thrallsham</text>
-<text x="322" y="464" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Shaman · Icecrown</text>
-<text x="540" y="453" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#eff5fa" text-anchor="start">78</text>
-<text x="620" y="453" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Restoration · GearScore 4,120</text>
-<text x="920" y="453" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">None</text>
-<rect x="1100" y="436" width="108" height="24" rx="12" fill="#173a36"/>
-<text x="1154" y="452" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#5de0c1" text-anchor="middle">Today, 14:05</text>
-<text x="280" y="524" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#8394aa" text-anchor="start">Data older than 3 days may be out of date: log in with that character so the companion syncs it.</text>
+<rect x="280.5" y="224.5" width="1119" height="71" rx="10" fill="#1b2e4a" stroke="#2a4468" stroke-width="1"/>
+<ellipse cx="312" cy="260" rx="12" ry="12" fill="#8fb3f6"/>
+<text x="312" y="266" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#102830" text-anchor="middle">i</text>
+<text x="340" y="255" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">2 characters wait for your review</text>
+<text x="340" y="277" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Approve the ones that are yours so they can sign up for raids.</text>
+<rect x="1248" y="240" width="128" height="40" rx="8" fill="#5de0c1"/>
+<text x="1312" y="265" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#102830" text-anchor="middle">Review them</text>
+<rect x="280.5" y="320.5" width="1119" height="267" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="304" y="347" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">CHARACTER</text>
+<text x="540" y="347" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">LEVEL</text>
+<text x="620" y="347" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">PRIMARY LOADOUT</text>
+<text x="920" y="347" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">RAID SAVES</text>
+<text x="1100" y="347" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">LAST SYNC</text>
+<rect x="280" y="364" width="1120" height="72" fill="#172333"/>
+<rect x="280" y="364" width="1120" height="1" fill="#2b3b50"/>
+<ellipse cx="309" cy="400" rx="5" ry="5" fill="#c41e3a"/>
+<text x="322" y="396" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Arthasdk</text>
+<text x="322" y="416" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Death Knight · Icecrown</text>
+<text x="540" y="405" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#eff5fa" text-anchor="start">80</text>
+<text x="620" y="405" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Frost DPS · GearScore 5,712</text>
+<text x="920" y="405" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">2 this week</text>
+<rect x="1100" y="388" width="108" height="24" rx="12" fill="#173a36"/>
+<text x="1154" y="404" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#5de0c1" text-anchor="middle">Today, 14:05</text>
+<rect x="280" y="436" width="1120" height="72" fill="#172333"/>
+<rect x="280" y="436" width="1120" height="1" fill="#2b3b50"/>
+<ellipse cx="309" cy="472" rx="5" ry="5" fill="#3fc7eb"/>
+<text x="322" y="468" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Jainaice</text>
+<text x="322" y="488" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Mage · Lordaeron</text>
+<text x="540" y="477" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#eff5fa" text-anchor="start">80</text>
+<text x="620" y="477" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Fire DPS · GearScore 5,340</text>
+<text x="920" y="477" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">1 this week</text>
+<rect x="1100" y="460" width="94" height="24" rx="12" fill="#4b382a"/>
+<text x="1147" y="476" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#f9d7a7" text-anchor="middle">5 days ago</text>
+<rect x="280" y="508" width="1120" height="72" fill="#172333"/>
+<rect x="280" y="508" width="1120" height="1" fill="#2b3b50"/>
+<ellipse cx="309" cy="544" rx="5" ry="5" fill="#0070dd"/>
+<text x="322" y="540" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Thrallsham</text>
+<text x="322" y="560" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Shaman · Icecrown</text>
+<text x="540" y="549" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#eff5fa" text-anchor="start">78</text>
+<text x="620" y="549" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Restoration · GearScore 4,120</text>
+<text x="920" y="549" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">None</text>
+<rect x="1100" y="532" width="108" height="24" rx="12" fill="#173a36"/>
+<text x="1154" y="548" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#5de0c1" text-anchor="middle">Today, 14:05</text>
+<text x="280" y="620" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#8394aa" text-anchor="start">Data older than 3 days may be out of date: log in with that character so the companion syncs it.</text>
 <rect x="1000.5" y="80.5" width="399" height="95" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
 <rect x="1000" y="92" width="4" height="72" rx="2" fill="#8fb3f6"/>
 <text x="1024" y="111" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">2 new characters to review</text>
@@ -378,5 +385,102 @@
 <text x="2544" y="1091" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">2 new characters arrived</text>
 <text x="2544" y="1113" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Uthertank and Valeerarog were added to the list.</text>
 <text x="2894" y="1091" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="18" font-weight="600" fill="#8394aa" text-anchor="middle">×</text>
+</g>
+<text x="0" y="1946" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" fill="#616161">5 · My characters while characters wait for review</text>
+<clipPath id="clip5"><rect x="0" y="1960" width="1440" height="900"/></clipPath>
+<rect x="0" y="1960" width="1440" height="900" fill="#0b111c"/>
+<g clip-path="url(#clip5)">
+<rect x="0" y="1960" width="240" height="900" fill="#0f1825"/>
+<rect x="239" y="1960" width="1" height="900" fill="#2b3b50"/>
+<rect x="20" y="1976" width="32" height="32" rx="8" fill="#0c2931"/>
+<rect x="28" y="1984" width="16" height="16" rx="4" fill="#5de0c1"/>
+<text x="62" y="1998" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#eff5fa" text-anchor="start" letter-spacing="0.5">RAID</text>
+<text x="104" y="1998" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#5de0c1" text-anchor="start" letter-spacing="0.5">MANAGER</text>
+<rect x="16.5" y="2028.5" width="207" height="59" rx="10" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<rect x="28" y="2042" width="32" height="32" rx="8" fill="#9077b3"/>
+<text x="44" y="2062" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#0b111c" text-anchor="middle">CV</text>
+<text x="70" y="2055" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Citadel Vanguard</text>
+<text x="70" y="2074" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Icecrown · Community</text>
+<text x="204" y="2064" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="18" font-weight="700" fill="#8394aa" text-anchor="middle">›</text>
+<text x="24" y="2124" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">PLAYER</text>
+<rect x="12" y="2136" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="2154" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="2159" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Overview</text>
+<rect x="12" y="2176" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="2194" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="2199" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Raids</text>
+<rect x="12" y="2216" width="216" height="36" rx="8" fill="#1b4548"/>
+<rect x="12" y="2224" width="3" height="20" rx="2" fill="#5de0c1"/>
+<ellipse cx="34" cy="2234" rx="4" ry="4" fill="#5de0c1"/>
+<text x="50" y="2239" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#5de0c1" text-anchor="start">My characters</text>
+<rect x="12" y="2256" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="2274" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="2279" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Readiness</text>
+<rect x="12" y="2296" width="216" height="36" rx="8" fill="#0f1825"/>
+<ellipse cx="34" cy="2314" rx="4" ry="4" fill="#8394aa"/>
+<text x="50" y="2319" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#9eadc1" text-anchor="start">Companion &amp; sync</text>
+<rect x="0" y="2788" width="239" height="1" fill="#2b3b50"/>
+<ellipse cx="36" cy="2824" rx="16" ry="16" fill="#293d58"/>
+<text x="36" y="2828" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#8fb3f6" text-anchor="middle">BV</text>
+<text x="62" y="2820" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Bryn Valewood</text>
+<text x="62" y="2839" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Player</text>
+<rect x="240" y="1960" width="1200" height="64" fill="#111c2a"/>
+<rect x="240" y="2023" width="1200" height="1" fill="#2b3b50"/>
+<text x="280" y="1997" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">CITADEL VANGUARD</text>
+<text x="420.3" y="1997" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">/</text>
+<text x="436.3" y="1997" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#eff5fa" text-anchor="start" letter-spacing="1.2">MY CHARACTERS</text>
+<ellipse cx="1124" cy="1992" rx="4" ry="4" fill="#5de0c1"/>
+<text x="1136" y="1997" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.2">REALM ONLINE</text>
+<ellipse cx="1272" cy="1992" rx="16" ry="16" fill="#293d58"/>
+<text x="1272" y="1996" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="800" fill="#8fb3f6" text-anchor="middle">BV</text>
+<rect x="1304.5" y="1972.5" width="95" height="39" rx="8" fill="#1c2b3e" stroke="#2b3b50" stroke-width="1"/>
+<text x="1352" y="1997" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#eff5fa" text-anchor="middle">Sign out</text>
+<text x="280" y="2078" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="700" fill="#5de0c1" text-anchor="start" letter-spacing="1.5">CHARACTERS</text>
+<text x="280" y="2120" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="32" font-weight="700" fill="#eff5fa" text-anchor="start">My characters</text>
+<text x="280" y="2150" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="15" font-weight="400" fill="#9eadc1" text-anchor="start">Your approved characters. Open one to see its profile.</text>
+<rect x="280.5" y="2184.5" width="1119" height="71" rx="10" fill="#1b2e4a" stroke="#2a4468" stroke-width="1"/>
+<ellipse cx="312" cy="2220" rx="12" ry="12" fill="#8fb3f6"/>
+<text x="312" y="2226" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="16" font-weight="800" fill="#102830" text-anchor="middle">i</text>
+<text x="340" y="2215" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">2 characters wait for your review</text>
+<text x="340" y="2237" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Approve the ones that are yours so they can sign up for raids.</text>
+<rect x="1248" y="2200" width="128" height="40" rx="8" fill="#5de0c1"/>
+<text x="1312" y="2225" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="700" fill="#102830" text-anchor="middle">Review them</text>
+<rect x="280.5" y="2280.5" width="1119" height="267" rx="12" fill="#172333" stroke="#212f41" stroke-width="1"/>
+<text x="304" y="2307" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">CHARACTER</text>
+<text x="540" y="2307" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">LEVEL</text>
+<text x="620" y="2307" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">PRIMARY LOADOUT</text>
+<text x="920" y="2307" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">RAID SAVES</text>
+<text x="1100" y="2307" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="11" font-weight="700" fill="#8394aa" text-anchor="start" letter-spacing="1.2">LAST SYNC</text>
+<rect x="280" y="2324" width="1120" height="72" fill="#172333"/>
+<rect x="280" y="2324" width="1120" height="1" fill="#2b3b50"/>
+<ellipse cx="309" cy="2360" rx="5" ry="5" fill="#c41e3a"/>
+<text x="322" y="2356" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Arthasdk</text>
+<text x="322" y="2376" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Death Knight · Icecrown</text>
+<text x="540" y="2365" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#eff5fa" text-anchor="start">80</text>
+<text x="620" y="2365" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Frost DPS · GearScore 5,712</text>
+<text x="920" y="2365" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">2 this week</text>
+<rect x="1100" y="2348" width="108" height="24" rx="12" fill="#173a36"/>
+<text x="1154" y="2364" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#5de0c1" text-anchor="middle">Today, 14:05</text>
+<rect x="280" y="2396" width="1120" height="72" fill="#172333"/>
+<rect x="280" y="2396" width="1120" height="1" fill="#2b3b50"/>
+<ellipse cx="309" cy="2432" rx="5" ry="5" fill="#3fc7eb"/>
+<text x="322" y="2428" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Jainaice</text>
+<text x="322" y="2448" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Mage · Lordaeron</text>
+<text x="540" y="2437" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#eff5fa" text-anchor="start">80</text>
+<text x="620" y="2437" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Fire DPS · GearScore 5,340</text>
+<text x="920" y="2437" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">1 this week</text>
+<rect x="1100" y="2420" width="94" height="24" rx="12" fill="#4b382a"/>
+<text x="1147" y="2436" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#f9d7a7" text-anchor="middle">5 days ago</text>
+<rect x="280" y="2468" width="1120" height="72" fill="#172333"/>
+<rect x="280" y="2468" width="1120" height="1" fill="#2b3b50"/>
+<ellipse cx="309" cy="2504" rx="5" ry="5" fill="#0070dd"/>
+<text x="322" y="2500" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="600" fill="#eff5fa" text-anchor="start">Thrallsham</text>
+<text x="322" y="2520" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="400" fill="#8394aa" text-anchor="start">Shaman · Icecrown</text>
+<text x="540" y="2509" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="14" font-weight="400" fill="#eff5fa" text-anchor="start">78</text>
+<text x="620" y="2509" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">Restoration · GearScore 4,120</text>
+<text x="920" y="2509" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#9eadc1" text-anchor="start">None</text>
+<rect x="1100" y="2492" width="108" height="24" rx="12" fill="#173a36"/>
+<text x="1154" y="2508" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="12" font-weight="600" fill="#5de0c1" text-anchor="middle">Today, 14:05</text>
+<text x="280" y="2580" font-family="Open Sans, Segoe UI, Arial, sans-serif" font-size="13" font-weight="400" fill="#8394aa" text-anchor="start">Data older than 3 days may be out of date: log in with that character so the companion syncs it.</text>
 </g>
 </svg>
