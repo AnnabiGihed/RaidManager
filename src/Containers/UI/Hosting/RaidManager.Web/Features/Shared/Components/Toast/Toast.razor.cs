@@ -99,18 +99,14 @@ public sealed partial class Toast : IDisposable
             return;
         }
 
-        await InvokeAsync(CloseAsync);
+        // A click on the close button may come first, while this waits for the page's thread: it stops the wait.
+        await InvokeAsync(() => cancellationToken.IsCancellationRequested ? Task.CompletedTask : CloseAsync());
     }
 
     /// <summary>Closes the notification and tells the page.</summary>
     /// <returns>A task that completes when the page has been told.</returns>
     private async Task CloseAsync()
     {
-        if (_closed)
-        {
-            return;
-        }
-
         _closed = true;
         StopWaiting();
         StateHasChanged();
