@@ -18,6 +18,12 @@ public sealed class MyCharactersViewModel
     /// <summary>Defines the label of a character never synchronized.</summary>
     public const string NeverSynced = "Not synced yet";
 
+    /// <summary>Defines the title of the confirmation asked before removing all the player's characters (board 6).</summary>
+    public const string RemovalTitle = "Remove all your characters?";
+
+    /// <summary>Defines how removed characters come back, in the confirmation and the notification (boards 6 and 7).</summary>
+    public const string RemovalAdvice = "Your companion's next sync brings them back for review.";
+
     /// <summary>Defines the line of the notice shown while characters wait for review (board 5 of character-sync).</summary>
     public const string WaitingMessage = "Approve the ones that are yours so they can sign up for raids.";
     #endregion Constants
@@ -59,10 +65,28 @@ public sealed class MyCharactersViewModel
     /// <summary>Gets the number of characters waiting for the player's review; the notice shows while it isn't 0.</summary>
     public int WaitingCount { get; private set; }
 
+    /// <summary>Gets a value indicating whether the player has anything to remove: characters or claims waiting.</summary>
+    public bool HasAnythingToRemove => Characters.Count + WaitingCount > 0;
+
+    /// <summary>Gets a value indicating whether the confirmation of the removal is open (board 6).</summary>
+    public bool ConfirmingRemoval { get; private set; }
+
+    /// <summary>Gets a value indicating whether the removal is being sent; its buttons are disabled meanwhile.</summary>
+    public bool Removing { get; private set; }
+
+    /// <summary>Gets the confirmation's line, such as "Your 3 characters, their claims and loadouts are removed …".</summary>
+    public string RemovalMessage => Characters.Count + WaitingCount == 1
+        ? "Your 1 character, its claims and loadouts are removed from this environment."
+        : $"Your {Characters.Count + WaitingCount} characters, their claims and loadouts are removed from this environment.";
+
     /// <summary>Gets the title of the notice, such as "2 characters wait for your review".</summary>
     public string WaitingTitle => WaitingCount == 1
         ? "1 character waits for your review"
         : $"{WaitingCount} characters wait for your review";
+
+    /// <summary>Gets the notification of a removal that could not be sent.</summary>
+    private static ReviewNotice RemovalFailed { get; } =
+        new(ReviewNoticeKind.Error, "Your characters weren't removed", "Nothing changed. Try again in a moment.");
     #endregion Properties
 
     #region Public Methods
@@ -119,6 +143,43 @@ public sealed class MyCharactersViewModel
         {
             Status = CharacterPageStatus.Failed;
         }
+    }
+
+    /// <summary>Opens the confirmation of the removal (board 6).</summary>
+    public void AskRemoval() => ConfirmingRemoval = true;
+
+    /// <summary>Closes the confirmation without removing anything.</summary>
+    public void CancelRemoval() => ConfirmingRemoval = false;
+
+    /// <summary>Removes all the player's characters, then loads the page again (board 7).</summary>
+    /// <param name="userId">The signed-in player, or <see langword="null"/> when the session holds no user id.</param>
+    /// <param name="cancellationToken">A token tied to the page's lifetime.</param>
+    /// <returns>The notification to show: the removal, or why nothing changed.</returns>
+    public async Task<ReviewNotice> RemoveAllAsync(Guid? userId, CancellationToken cancellationToken)
+    {
+        ConfirmingRemoval = false;
+        if (userId is not { } id || id == Guid.Empty)
+        {
+            return RemovalFailed;
+        }
+
+        Removing = true;
+        try
+        {
+            await _api.RemoveAllAsync(id, cancellationToken);
+        }
+        catch (Exception exception) when (CharacterApiFailures.IsApiFailure(exception, cancellationToken))
+        {
+            return RemovalFailed;
+        }
+        finally
+        {
+            Removing = false;
+        }
+
+        await LoadAsync(id, cancellationToken);
+        await LoadWaitingAsync(id, cancellationToken);
+        return new ReviewNotice(ReviewNoticeKind.Success, "Your characters were removed", RemovalAdvice);
     }
 
     /// <summary>Counts the characters waiting for the player's review, for the notice that leads to the review page.</summary>

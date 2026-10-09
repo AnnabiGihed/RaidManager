@@ -36,6 +36,60 @@ public sealed class MyCharactersViewModelTests
     #endregion Constructors
 
     #region Tests
+    /// <summary>The removal asks first, removes, loads the page again and says how the characters come back (#597).</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task RemovalAsksThenRemovesAndReloads()
+    {
+        var userId = Guid.NewGuid();
+        _api.Characters = [Character(Now)];
+        _claims.Claims = [Claim("Uthertank", CharacterClaim.PendingState)];
+        await _viewModel.LoadAsync(userId, CancellationToken.None);
+        await _viewModel.LoadWaitingAsync(userId, CancellationToken.None);
+        _viewModel.HasAnythingToRemove.ShouldBeTrue();
+        _viewModel.RemovalMessage.ShouldBe("Your 2 characters, their claims and loadouts are removed from this environment.");
+        _viewModel.AskRemoval();
+        _viewModel.ConfirmingRemoval.ShouldBeTrue();
+        _claims.Claims = [];
+
+        var notice = await _viewModel.RemoveAllAsync(userId, CancellationToken.None);
+
+        notice.ShouldBe(new ReviewNotice(ReviewNoticeKind.Success, "Your characters were removed", MyCharactersViewModel.RemovalAdvice));
+        _api.Removals.ShouldBe([userId]);
+        (_viewModel.ConfirmingRemoval, _viewModel.Removing, _viewModel.HasAnythingToRemove).ShouldBe((false, false, false));
+    }
+
+    /// <summary>One character reads in the singular, and cancelling closes the confirmation.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task OneCharacterReadsInTheSingular()
+    {
+        _api.Characters = [Character(Now)];
+        await _viewModel.LoadAsync(Guid.NewGuid(), CancellationToken.None);
+        _viewModel.AskRemoval();
+
+        _viewModel.CancelRemoval();
+
+        _viewModel.ConfirmingRemoval.ShouldBeFalse();
+        _viewModel.RemovalMessage.ShouldBe("Your 1 character, its claims and loadouts are removed from this environment.");
+    }
+
+    /// <summary>A failed removal, or a session without a user id, says nothing changed.</summary>
+    /// <returns>A task that completes when the test has run.</returns>
+    [Fact]
+    public async Task AFailedRemovalChangesNothing()
+    {
+        _api.Failure = new HttpRequestException("The API is unavailable.");
+
+        var failed = await _viewModel.RemoveAllAsync(Guid.NewGuid(), CancellationToken.None);
+        var withoutUser = await _viewModel.RemoveAllAsync(null, CancellationToken.None);
+
+        failed.Kind.ShouldBe(ReviewNoticeKind.Error);
+        withoutUser.ShouldBe(failed);
+        failed.Title.ShouldBe("Your characters weren't removed");
+        _api.Removals.Count.ShouldBe(1);
+    }
+
     /// <summary>Counts only the pending claims, for the notice that leads to the review page (#595).</summary>
     /// <returns>A task that completes when the test has run.</returns>
     [Fact]

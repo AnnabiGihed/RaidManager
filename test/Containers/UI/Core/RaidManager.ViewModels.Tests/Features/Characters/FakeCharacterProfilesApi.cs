@@ -22,6 +22,9 @@ internal sealed class FakeCharacterProfilesApi : ICharacterProfilesApiClient
 
     /// <summary>Gets the player and character of each profile call.</summary>
     public List<(Guid UserId, Guid CharacterId)> ProfileCalls { get; } = [];
+
+    /// <summary>Gets the players whose characters were removed.</summary>
+    public List<Guid> Removals { get; } = [];
     #endregion Properties
 
     #region Public Methods
@@ -46,6 +49,20 @@ internal sealed class FakeCharacterProfilesApi : ICharacterProfilesApiClient
         }
 
         return Task.FromResult(Profile);
+    }
+
+    /// <inheritdoc />
+    public Task<int> RemoveAllAsync(Guid userId, CancellationToken cancellationToken)
+    {
+        Removals.Add(userId);
+        if (Failure is not null)
+        {
+            return Task.FromException<int>(Failure);
+        }
+
+        var removed = Characters.Count;
+        Characters = [];
+        return Task.FromResult(removed);
     }
     #endregion Public Methods
 }

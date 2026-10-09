@@ -2,12 +2,15 @@ using System.Security.Claims;
 using Bunit;
 using Microsoft.AspNetCore.Components;
 using Microsoft.Extensions.DependencyInjection;
+using Microsoft.Extensions.Hosting;
+using Microsoft.Extensions.Hosting.Internal;
 using Radzen;
 using Shouldly;
 using Xunit;
 using RaidManager.ViewModels.Features.Characters;
 using RaidManager.Web.Features.Authentication;
 using RaidManager.Web.Features.Characters.Pages;
+using RaidManager.Web.Features.Shared.Components;
 using RaidManager.Web.Tests.Support;
 
 namespace RaidManager.Web.Tests.Features.Characters.Pages;
@@ -27,6 +30,12 @@ public sealed class MyCharactersTests : BunitContext
 
     /// <summary>Stores the fake claims API.</summary>
     private readonly FakeCharacterClaimsApiClient _claims = new();
+
+    /// <summary>Stores the environment the website runs in; production unless a test says otherwise.</summary>
+    private readonly HostingEnvironment _environment = new() { EnvironmentName = Environments.Production };
+
+    /// <summary>Stores the layout's notification area, once a test looks at it.</summary>
+    private IRenderedComponent<NotificationArea>? _notifications;
     #endregion Fields
 
     #region Constructors
@@ -37,11 +46,17 @@ public sealed class MyCharactersTests : BunitContext
         Services.AddSingleton<ICharacterProfilesApiClient>(_api);
         Services.AddSingleton<ICharacterClaimsApiClient>(_claims);
         Services.AddScoped<CharacterArrivalsViewModel>();
+        Services.AddSingleton<IHostEnvironment>(_environment);
         Services.AddSingleton(TimeProvider.System);
         Services.AddTransient<MyCharactersViewModel>();
         JSInterop.Mode = JSRuntimeMode.Loose;
     }
     #endregion Constructors
+
+    #region Properties
+    /// <summary>Gets the layout's notification area, where the page's notifications show.</summary>
+    private IRenderedComponent<NotificationArea> Notifications => _notifications ??= Render<NotificationArea>();
+    #endregion Properties
 
     #region Tests
     /// <summary>Lists each character with its class dot, profile link, loadout, saves and a fresh or stale badge.</summary>
@@ -101,6 +116,74 @@ public sealed class MyCharactersTests : BunitContext
         page.WaitForAssertion(() => page.Find("[data-testid=review-waiting] .notice-title").TextContent.ShouldBe("2 characters wait for your review"));
     }
 
+    /// <summary>On dev, removing all characters asks first, then shows the empty page and the notification (boards 5 to 7, #597).</summary>
+    [Fact]
+    public void OnDevRemovingAllCharactersAsksThenEmptiesThePage()
+    {
+        _environment.EnvironmentName = TestEnvironments.Dev;
+        _api.Characters = [Summary("Arthasdk"), Summary("Jainaice")];
+        var page = RenderPage();
+        page.WaitForElement("[data-testid=characters]");
+        page.Find("[data-testid=test-only]").TextContent.Trim().ShouldBe("Dev and test only");
+
+        page.Find("[data-testid=remove-all]").Click();
+        var dialog = page.Find("[data-testid=removal-dialog]");
+        dialog.QuerySelector("h2")!.TextContent.ShouldBe(MyCharactersViewModel.RemovalTitle);
+        dialog.QuerySelectorAll("p").Select(paragraph => paragraph.TextContent).ShouldBe(["Your 2 characters, their claims and loadouts are removed from this environment.", MyCharactersViewModel.RemovalAdvice]);
+        page.FindAll("[data-testid=removal-dialog] button").First(button => button.TextContent.Trim() == "Remove all").Click();
+
+        page.WaitForElement("[data-testid=no-characters]");
+        page.FindAll("[data-testid=remove-all]").ShouldBeEmpty();
+        Notifications.Find("[data-testid=removal-notice] .toast-title").TextContent.ShouldBe("Your characters were removed");
+        _api.Removals.ShouldBe(1);
+    }
+
+    /// <summary>Cancelling the confirmation removes nothing.</summary>
+    [Fact]
+    public void CancellingTheRemovalKeepsTheCharacters()
+    {
+        _environment.EnvironmentName = TestEnvironments.Test;
+        _api.Characters = [Summary("Arthasdk")];
+        var page = RenderPage();
+        page.WaitForElement("[data-testid=remove-all]").Click();
+
+        page.FindAll("[data-testid=removal-dialog] button").First(button => button.TextContent.Trim() == "Cancel").Click();
+
+        page.FindAll("[data-testid=removal-dialog]").ShouldBeEmpty();
+        page.Find("[data-testid=characters]").ShouldNotBeNull();
+        _api.Removals.ShouldBe(0);
+    }
+
+    /// <summary>A failed removal says nothing changed and keeps the characters.</summary>
+    [Fact]
+    public void AFailedRemovalKeepsTheCharacters()
+    {
+        _environment.EnvironmentName = TestEnvironments.Dev;
+        _api.Characters = [Summary("Arthasdk")];
+        var page = RenderPage();
+        page.WaitForElement("[data-testid=remove-all]").Click();
+        _api.Fails = true;
+
+        page.FindAll("[data-testid=removal-dialog] button").First(button => button.TextContent.Trim() == "Remove all").Click();
+
+        Notifications.WaitForAssertion(() => Notifications.Find("[data-testid=removal-notice]").ClassList.ShouldContain("toast-danger"));
+        Notifications.Find("[data-testid=removal-notice] .toast-close").Click();
+        Notifications.FindAll("[data-testid=removal-notice]").ShouldBeEmpty();
+    }
+
+    /// <summary>Production never shows the removal, even with characters (#597).</summary>
+    [Fact]
+    public void ProductionNeverShowsTheRemoval()
+    {
+        _api.Characters = [Summary("Arthasdk")];
+
+        var page = RenderPage();
+
+        page.WaitForElement("[data-testid=characters]");
+        page.FindAll("[data-testid=remove-all]").ShouldBeEmpty();
+        page.FindAll("[data-testid=test-only]").ShouldBeEmpty();
+    }
+
     /// <summary>Shows the empty state to a player without characters.</summary>
     [Fact]
     public void PlayerWithoutCharactersSeesTheEmptyState()
@@ -128,6 +211,12 @@ public sealed class MyCharactersTests : BunitContext
     #endregion Tests
 
     #region Private Helpers
+    /// <summary>Builds a character summary for a test.</summary>
+    /// <param name="name">The character name.</param>
+    /// <returns>The summary.</returns>
+    private static CharacterSummary Summary(string name) =>
+        new(Guid.NewGuid(), "Icecrown", name, "Paladin", 80, null, 0, DateTimeOffset.UtcNow);
+
     /// <summary>Signs a player in and renders the page.</summary>
     /// <returns>The rendered page.</returns>
     private IRenderedComponent<MyCharacters> RenderPage()

@@ -19,6 +19,9 @@ public sealed partial class MyCharacters : IDisposable
     #region Fields
     /// <summary>Stores the source of the token that cancels API calls when the player leaves the page.</summary>
     private readonly CancellationTokenSource _lifetime = new();
+
+    /// <summary>Stores the outcome of the latest removal, shown as a notification.</summary>
+    private ReviewNotice? _notice;
     #endregion Fields
 
     #region Properties
@@ -43,6 +46,13 @@ public sealed partial class MyCharacters : IDisposable
     /// <summary>Gets or sets the navigation manager.</summary>
     [Inject]
     private NavigationManager Navigation { get; set; } = default!;
+
+    /// <summary>Gets or sets the environment, which decides whether the removal is offered.</summary>
+    [Inject]
+    private IHostEnvironment Environment { get; set; } = default!;
+
+    /// <summary>Gets a value indicating whether "Remove all my characters" shows: on dev and test, with something to remove (#597).</summary>
+    private bool ShowsRemoval => Environment.OffersTestTools() && ViewModel.HasAnythingToRemove;
     #endregion Properties
 
     #region Public Methods
@@ -105,6 +115,18 @@ public sealed partial class MyCharacters : IDisposable
         await ViewModel.LoadWaitingAsync(userId, _lifetime.Token);
         StateHasChanged();
     }
+
+    /// <summary>Removes all the player's characters after the confirmation and shows the outcome.</summary>
+    /// <returns>A task that completes when the outcome is shown.</returns>
+    private async Task RemoveAllAsync()
+    {
+        var state = AuthenticationState is null ? null : await AuthenticationState;
+        var userId = Guid.TryParse(state?.User.FindFirst(RaidManagerClaimTypes.UserId)?.Value, out var id) ? id : (Guid?)null;
+        _notice = await ViewModel.RemoveAllAsync(userId, _lifetime.Token);
+    }
+
+    /// <summary>Forgets the notification once it closes.</summary>
+    private void ForgetNotice() => _notice = null;
 
     /// <summary>Opens the review page, returning here when the player continues.</summary>
     private void Review() => Navigation.NavigateTo(CharacterRoutes.ReviewFor(CharacterRoutes.Mine));
